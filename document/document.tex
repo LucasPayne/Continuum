@@ -386,7 +386,18 @@ $dPhi(i, ..., \tau), dPsi, Phi(i, ...)$
 
 \section{Solving Poisson's equation}
 
-\section{Solving the inviscid Burgers equation}
+\section{Hyperbolic conservation laws}
+\todo{
+Advection, advection-diffusion, Burgers equation.
+Derive analytic solution to advection equation with the method of characteristics.
+Discuss propogation of information, the connection to hyperbolic conservation laws,
+$$u_t + f_x = 0, f = f(u)$$
+$$u_t + a(u)u_x = 0, a(u) = df/dt$$
+Interpret as a total derivative
+$$du/dt = \partial u /\partial t + \partial x / \partial t \partial u / \partial x = 0$$
+Characteristics defined by IVPs
+$$dx/dt = a(u).$$
+}
 \begin{equation}
     \pdf{u}{t} + u\pdf{u}{x} = 0.
 \end{equation}
@@ -450,9 +461,21 @@ The completing equation is
 \begin{equation}\label{ConservationOfMass}
     \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho u) = 0,
 \end{equation}
-which expresses that the only way mass enters or exits a closed region is by advection by $u$. If $u$ is conservative, mass is conserved.
+which expresses that the only way mass enters or exits a closed region is by advection by $u$.
+\todo{
+Had ``If $u$ is conservative, mass is conserved''
+which is wrong. Mass is always conserved.
+A conservative vector field is not to do with this, rather to do with potentials.
+}
+
 \eqref{ConservationOfMomentum} and \eqref{ConservationOfMass} combined give the correct formulation, from first principles, of Newton's second law in continuum mechanics.
 A more direct derivation, which makes the connection to Newton's second law much clearer, requires the material derivative.
+
+\todo{
+Really show why these two equations (conservation of mass and conservation of linear momentum) give
+the Cauchy momentum equation.
+}
+
 % >>>
 \subsection{Advection, transport, and the total and material derivatives} % <<<
 Consider a vector field $u$ on a domain $U$. Any spatial quantity $\phi$ on $U$ can be transported along $u$.
@@ -543,6 +566,7 @@ the \textit{Euler equations of motion} are
     \nabla \cdot u = 0.
 \end{split}
 \end{equation}
+\todo{I think there might be some conservation terms missing}
 The \textit{pressure} $p$ is an unknown. The Cauchy stress tensor, and thus the pressure, is \textit{defined} to give those internal non-shear forces
 which give incompressibility.
 % >>>
@@ -607,6 +631,9 @@ A. F. Monna, \textit{Dirichlet's principle: A mathematical comedy of errors and 
 
 \bibitem{pde_larsson}
 Stig Larsson, \textit{Partial differential equations with numerical methods}, 2003
+
+\bibitem{lax_1973}
+Peter Lax, \textit{Hyperbolic Systems of Conservation Laws and the Mathematical Theory of Shock Waves}, 1973
 
 
 \end{thebibliography}

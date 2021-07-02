@@ -9,17 +9,17 @@
 \contentsline {subsection}{\numberline {3.1}Weak forms of partial differential equations}{7}
 \contentsline {subsection}{\numberline {3.2}Computing integrals over trial functions}{8}
 \contentsline {section}{\numberline {4}Solving Poisson's equation}{9}
-\contentsline {section}{\numberline {5}Solving the inviscid Burgers equation}{9}
-\contentsline {section}{\numberline {6}Deriving the Navier-Stokes equations}{9}
+\contentsline {section}{\numberline {5}Hyperbolic conservation laws}{9}
+\contentsline {section}{\numberline {6}Deriving the Navier-Stokes equations}{10}
 \contentsline {subsection}{\numberline {6.1}Conservation laws and continuity equations}{10}
-\contentsline {subsubsection}{\numberline {6.1.1}Conservation of momentum}{10}
-\contentsline {subsubsection}{\numberline {6.1.2}Conservation of mass}{10}
+\contentsline {subsubsection}{\numberline {6.1.1}Conservation of momentum}{11}
+\contentsline {subsubsection}{\numberline {6.1.2}Conservation of mass}{11}
 \contentsline {subsection}{\numberline {6.2}Advection, transport, and the total and material derivatives}{11}
-\contentsline {subsection}{\numberline {6.3}The Cauchy momentum equation}{11}
-\contentsline {subsection}{\numberline {6.4}The Euler equations for inviscid flow}{12}
+\contentsline {subsection}{\numberline {6.3}The Cauchy momentum equation}{12}
+\contentsline {subsection}{\numberline {6.4}The Euler equations for inviscid flow}{13}
 \contentsline {subsubsection}{\numberline {6.4.1}Incompressibility}{13}
 \contentsline {subsubsection}{\numberline {6.4.2}Inviscid flow}{13}
-\contentsline {subsection}{\numberline {6.5}Viscous flow and Newtonian fluids}{13}
-\contentsline {section}{\numberline {7}Solving (certain cases of) the Navier-Stokes equations}{13}
-\contentsline {section}{\numberline {8}Appendix A: Classical mechanics}{13}
-\contentsline {subsection}{\numberline {8.1}Potential and kinetic energy}{13}
+\contentsline {subsection}{\numberline {6.5}Viscous flow and Newtonian fluids}{14}
+\contentsline {section}{\numberline {7}Solving (certain cases of) the Navier-Stokes equations}{14}
+\contentsline {section}{\numberline {8}Appendix A: Classical mechanics}{14}
+\contentsline {subsection}{\numberline {8.1}Potential and kinetic energy}{14}
