@@ -2,4 +2,15 @@ __stuff
 __stuff/
 __stuff/*
 __stuff/**/*
-
+__mesh_processing
+__mesh_processing/
+__mesh_processing/*
+__mesh_processing/**/*
+__fem
+__fem/
+__fem/*
+__fem/**/*
+__meshing
+__meshing/
+__meshing/*
+__meshing/**/*

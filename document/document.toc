@@ -1,25 +1,27 @@
-\contentsline {section}{\numberline {1}Introduction}{3}
-\contentsline {section}{\numberline {2}Variational calculus}{3}
-\contentsline {subsection}{\numberline {2.1}Some history and motivation}{3}
-\contentsline {subsection}{\numberline {2.2}Deriving the Euler-Lagrange equations}{4}
-\contentsline {subsubsection}{\numberline {2.2.1}The G\^ateaux derivative}{5}
-\contentsline {subsubsection}{\numberline {2.2.2}Integration by parts}{6}
-\contentsline {subsubsection}{\numberline {2.2.3}Some examples of Euler-Lagrange equations}{7}
-\contentsline {section}{\numberline {3}The finite element method}{7}
-\contentsline {subsection}{\numberline {3.1}Weak forms of partial differential equations}{7}
-\contentsline {subsection}{\numberline {3.2}Computing integrals over trial functions}{8}
-\contentsline {section}{\numberline {4}Solving Poisson's equation}{9}
-\contentsline {section}{\numberline {5}Hyperbolic conservation laws}{9}
-\contentsline {section}{\numberline {6}Deriving the Navier-Stokes equations}{10}
-\contentsline {subsection}{\numberline {6.1}Conservation laws and continuity equations}{10}
-\contentsline {subsubsection}{\numberline {6.1.1}Conservation of momentum}{11}
-\contentsline {subsubsection}{\numberline {6.1.2}Conservation of mass}{11}
-\contentsline {subsection}{\numberline {6.2}Advection, transport, and the total and material derivatives}{11}
-\contentsline {subsection}{\numberline {6.3}The Cauchy momentum equation}{12}
-\contentsline {subsection}{\numberline {6.4}The Euler equations for inviscid flow}{13}
-\contentsline {subsubsection}{\numberline {6.4.1}Incompressibility}{13}
-\contentsline {subsubsection}{\numberline {6.4.2}Inviscid flow}{13}
-\contentsline {subsection}{\numberline {6.5}Viscous flow and Newtonian fluids}{14}
-\contentsline {section}{\numberline {7}Solving (certain cases of) the Navier-Stokes equations}{14}
-\contentsline {section}{\numberline {8}Appendix A: Classical mechanics}{14}
-\contentsline {subsection}{\numberline {8.1}Potential and kinetic energy}{14}
+\contentsline {chapter}{Contents}{2}
+\contentsline {section}{\numberline {0.1}Introduction}{3}
+\contentsline {section}{\numberline {0.2}Variational calculus}{3}
+\contentsline {subsection}{Some history and motivation}{3}
+\contentsline {subsection}{Deriving the Euler-Lagrange equations}{4}
+\contentsline {subsubsection}{The G\^ateaux derivative}{4}
+\contentsline {subsubsection}{Integration by parts}{5}
+\contentsline {subsubsection}{Some examples of Euler-Lagrange equations}{6}
+\contentsline {section}{\numberline {0.3}The finite element method}{6}
+\contentsline {subsection}{Weak forms of partial differential equations}{6}
+\contentsline {subsection}{Computing integrals over trial functions}{7}
+\contentsline {section}{\numberline {0.4}Solving Poisson's equation}{8}
+\contentsline {section}{\numberline {0.5}Hyperbolic conservation laws}{8}
+\contentsline {section}{\numberline {0.6}Deriving the Navier-Stokes equations}{8}
+\contentsline {subsection}{Conservation laws and continuity equations}{8}
+\contentsline {subsubsection}{Conservation of momentum}{9}
+\contentsline {subsubsection}{Conservation of mass}{9}
+\contentsline {subsection}{Advection, transport, and the total and material derivatives}{9}
+\contentsline {subsection}{The Cauchy momentum equation}{10}
+\contentsline {subsection}{The Euler equations for inviscid flow}{11}
+\contentsline {subsubsection}{Incompressibility}{11}
+\contentsline {subsubsection}{Inviscid flow}{11}
+\contentsline {subsection}{Viscous flow and Newtonian fluids}{11}
+\contentsline {section}{\numberline {0.7}Solving (certain cases of) the Navier-Stokes equations}{11}
+\contentsline {section}{\numberline {0.8}Appendix A: Classical mechanics}{11}
+\contentsline {subsection}{Potential and kinetic energy}{11}
+\contentsline {chapter}{Bibliography}{13}
