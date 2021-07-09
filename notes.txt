@@ -80,5 +80,25 @@ Now by Stokes' theorem
 so clearly d(hodge_star) is another way to express the divergence (here taking a 1-form to an n-form, which makes
 sense since it is defined by the limit of a hypersurface integral restricted to an n-dim subspace, the whole space).
 
-    
+Now, since we are quantifying over subdomains, but want to "discretize the space of subdomains", it is useful
+to reveal the duality between the integrand and domain,
+ == integral_{domain} d(hodge_star)du Indicator(subdomain) = 0.
+Replace Indicator(subdomain), quantified over subdomains, with v from some "test space".
+ == integral_{domain} d(hodge_star)du v = 0.
+Now, of course, there is no notion of "subdomain boundary", but we want to forget that we "differentialised", requiring
+that d(hodge_star)d exists everywhere in the domain for u (as in, the limit of the flux integral exists and is unique for all boundary hypersurfaces
+shrinking into the point).
+However, the exterior derivative is dual to the boundary operator (this idea being written as Stokes' theorem).
 
+    integral_{subdomain} d(hodge_star)du                            (1)
+  = integral_{domain} d(hodge_star)du Indicator(subdomain)          (2)
+  = integral_{subdomain_boundary} (hodge_star)du                    (Stokes' from (1))
+How do we get (Stokes' from (2))?
+Replace Indicator(subdomain) by some test function v (working generally with the duality of integrand and domain).
+  = integral_{domain} d(hodge_star)du v
+
+integral_{domain} d(hodge_star)du v
+    = integral_{domain_boundary} (hodge_star)du v
+        +- integral_{domain} (hodge_star)du ^ dv
+If v is constant, the second term cancels. If it is not constant, then
+the second term measures the "extent of miscaulation" due to changes in boundary integrals when moving the central point (...).
