@@ -1,3 +1,5 @@
+https://www.comsol.com/multiphysics/finite-element-method
+
 https://www.ljll.math.upmc.fr/frey/software.html
 
 gmsh
@@ -10,7 +12,7 @@ gmsh paper "simple academic geometries"
 https://www.graphics.rwth-aachen.de/software/openvolumemesh/intro/
 openvolumemesh, Leif Kobbelt
 
-Stokes theorem is the conceptual motivation for the exterior derivative.
+Stokes' theorem is the conceptual motivation for the exterior derivative.
 A differential form is an alternating multilinear form. Alternatingness gives
 homogeneous identification of the form's action on subspaces (if a subspace is rebasis'd,
 the evaluation of the form changes by the determinant of the transformation matrix).
@@ -35,7 +37,7 @@ corresponds to the characteristic function of the subset.
 Consider some flux function h which transports some energy in a domain.
 To say "energy is conserved" we write the integral equation
     integral_{subdomain boundary} dot(h, n)dx = 0
-where n is the outward pointing outward from the boundary.
+where n is the normal pointing outward from the boundary.
 
 Fourier's law that heat flux is proportional to the negative gradient of heat gives,
 letting u be the heat distribution,
@@ -49,7 +51,8 @@ This is the Laplace equation.
 
 Now, starting at the Laplace equation, how can we recover the conservation law over subdomains?
 Just define the subdomain and integrate over it. Everything is exactly backwards.
-However, in a Galerkin method, we can't quantify over all subdomains.
+However, in a Galerkin method, we can't quantify over all subdomains. We want some discretization of the "space"
+of subdomains, so we only need to guarantee that the "conservation laws" hold on certain subdomains.
 
 Suppose we have a given u (a general u, not necessarily from some finite-dimensional trial space).
 The conservation law is that, over every subdomain, we have
@@ -61,6 +64,7 @@ and require that
     integral_{subdomain_1 boundary} dot(grad(u), n)dx = 0,
     integral_{subdomain_2 boundary} dot(grad(u), n)dx = 0,
     ...
+(--------TODO: Is this method related to finite volumes?)
 However it is fruitful to think of the full duality between integrand and domain.
 
 "integral_{subdomain boundary} dot(grad(u), n)dx = 0"
@@ -101,4 +105,17 @@ integral_{domain} d(hodge_star)du v
     = integral_{domain_boundary} (hodge_star)du v
         +- integral_{domain} (hodge_star)du ^ dv
 If v is constant, the second term cancels. If it is not constant, then
-the second term measures the "extent of miscaulation" due to changes in boundary integrals when moving the central point (...).
+the second term measures the "extent of miscalculation" due to changes in boundary integrals when moving the central point (...).
+
+Think of Dirac deltas and distributions.
+The gradient of the indicator function of a subdomain is 0 everywhere except on the boundary,
+where it is an "infinite normal vector".
+
+  integral_{subdomain_boundary} u
+= integral_{subdomain} du
+= integral du Indicator(subdomain)
+
+  integral u ^ dIndicator(subdomain)
+= integral_{subdomain_boundary} u
+Maybe it would be useful to explicitly mention the Trace operator (pullback of boundary inclusion).
+

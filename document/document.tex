@@ -2,6 +2,8 @@
 % https://terrytao.wordpress.com/2007/03/18/why-global-regularity-for-navier-stokes-is-hard/#comment-625243
 % \documentclass{article}
 \documentclass[11pt,a4paper]{memoir}
+% \setsecnumdepth{subsubsection}
+\setsecnumdepth{subsection}
 \setlrmarginsandblock{3cm}{3cm}{*} % Centre adjustment
 \setulmarginsandblock{2.5cm}{*}{1}
 \checkandfixthelayout 
@@ -11,6 +13,7 @@
 \usepackage{mathtools}
 \usepackage{microtype}
 \usepackage{dirtytalk}
+\usepackage{relsize}
 \newcommand{\bb}{\begin{bmatrix}}
 \newcommand{\bbe}{\end{bmatrix}}
 \newcommand{\pr}{\prime}
@@ -24,13 +27,13 @@
 \newcommand{\om}{\Omega}
 \newcommand{\pom}{{\partial\Omega}}
 \newcommand{\diver}{\text{div}}
-\newcommand{\pdf}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\Part}[2]{\frac{\partial #1}{\partial #2}}
 % footnotes
 \renewcommand\footnoterule{}
 
 \newcommand{\todo}[1]{\vskip 0.1in \hrule \vskip 0.03in {#1} \vskip 0.03in \hrule \vskip 0.1in}
 
-\title{A Treatise on the Finite Element Method
+\title{Variational methods for the Navier-Stokes equations
 \scriptsize{(working title)}
 }
 \author{Lucas Payne}
@@ -38,591 +41,91 @@
 \begin{document}
 \maketitle
 
-% Physical derivation of the heat equation
-% Fick's law, continuity equation
-% Conservation law
-% Constitutive relations
-% 
-% Continuum mechanics
-%     Cauchy stress tensor
-%     The principle of linear momentum
-% Deviatoric stresses
-% The Reynolds transport theorem
-% 
-% Weak solutions to partial differential equations
-% The Euler-Lagrange equations
-
-
-\begin{itemize}
-\item The analytic theory of variational methods.
-      Euler-Lagrange equations.
-\item Try and derive and describe integration by parts intuitively (Why should it be possible? What does it do to differentiability
-requirements and why is this allowable, what does this imply?)
-\item Discussion of Dirichlet's principle and resolution of problems with Sobolev spaces, distributions, etc.
-\item Examples. Poisson's problem analysis.
-
-\item The finite element method, overview and application to Poisson's problem (linear), Burger's equation (non-linear).
-\item Galerkin methods.
-
-\item ...
-\item Using the finite element method to solve some very difficult problem (such as the Navier-Stokes equations in 2D).
-\item ...
-\item (possibly appendices)
-\item Numerics, discussion of libraries for equation solving (petsc, linpack, lapack),
-standard numerical tools used often in finite element solving. Possibly dicuss issues
-such as conditioning and precision.
-
-
-\end{itemize}
-\newpage
-
-
 \tableofcontents
-\newpage
 
-\section{Introduction}
-\todo{
-Modelling physical processes and problems with partial differential equations, then solving them numerically.
-Possibly a physically-motivated derivation of the heat equation as described in Larsson.
-
-}
-
-\section{Variational calculus}
-\subsection{Some history and motivation}
-
-The variational calculus is effectively the calculus of function spaces. Variational methods consider the local changes of functionals with respect to perturbations
-of their input functions. The calculus stems from techniques developed around the turn of the 18th century. A classical problem of a variational nature,
-which was a great motivator for the development of these methods, is a challenge posed by Swiss mathematician Johann Bernoulli.
-The challenge was taken up in 1697 by Sir Isaac Newton, Gottfried Leibniz, Marquis de l'H\^opital, and Jacob Bernoulli, among others. The
-brachistochrone problem, as stated by Bernoulli, is \cite{johann_bernoulli}
-
-\say{
-Given two points A and B in a vertical plane, what is the curve traced out by a point acted on only by gravity, which starts at A and reaches B in the shortest time.
-}
-
-A fundamental idea is that the optimal curve (a function $C:[0,1]\rightarrow \mathbb{R}^2$) is the minimizer of a certain ``energy'' functional $E$,
-a function from the space of feasible curves to $\mathbb{R}$. A \textit{functional derivative} is defined, leading to a theorem in complete analogy to the principle, attributed to Fermat, that a necessary condition for $x^*$ to be a minimizer of a differentiable function $f(x)$ is that the function is stationary at $x^*$:
-    $$\nabla f(x^*) = 0.$$
-One such derivative is the \textit{G\^ateaux derivative}, denoted
-$\frac{dE}{du}$, which will be defined below.
-$u$, in a certain sense, is from the space of possible infinitesmal deformations of the curve, which preserve required boundary conditions and differentiability. With a functional derivative defined, the analogue to Fermat's theorem is that
-    $$\frac{dE}{du}(u^*) = 0$$
-is necessary for $u^*$ to be a minimizer. This PDE is called the \textit{Euler-Lagrange equation} of the minimization problem, and, in particular, gives the
-exact minimizer if the minimized energy $f(u)$ is strictly convex.
-\footnote{
-$f(u)$ is strictly convex if $\theta f(u) + (1-\theta)f(v) > f(\theta u + (1 - \theta) v)$ for $0 < \theta < 1$. For $f \in C^2$ this means that the function has strictly positive curvature, and thus no non-global minimizers.
-}
-\todo{Application to brachistochrone problem, deriving $\cosh$ solution by defining a suitable energy}
-
-
-A more fundamental example is given by Poisson's equation,
-\begin{equation}\label{Poisson}
-    \Delta u = g,
-\end{equation}
-which is the Euler-Lagrange equation of a certain quadratic (and therefore convex) energy minimization problem, minimizing what is called the \textit{Dirichlet energy},
-$f(u) = \int_\Omega \norm{\nabla u}^2\,dx.$
-This idea, and its validity, was heavily investigated by mathematicians [---when and by who?], and is called \textit{Dirichlet's principle} \cite{dirichlet_principle}. The minimizer of $f$ is not necessarily a solution to \eqref{Poisson}, but it is necessarily a solution to what is called
-the \textit{weak} form of \eqref{Poisson},
-\begin{equation}\label{WeakPoisson}
-    \int_\Omega u \nabla \phi\,dx  = \int_\Omega g\phi\,dx.
-\end{equation}
-(---dubious)
-\todo{Correct details}
-
-
-\subsection{Deriving the Euler-Lagrange equations} % <<<
-The functional derivative and the Euler-Lagrange equations are the very basic tools of variational calculus,
-directly analagous to the gradient and Fermat's theorem of stationary points. Here they are derived for a certain
-class of functionals, those defined by density integrals. Some examples of functionals of this kind are:
-\begin{itemize}
-\item
-    The Dirichlet energy, $E(u) = \int_\Omega \norm{\nabla u}^2\,dx$, which is the Euclidean square-norm of the gradient.
-    Minimization leads to harmonic functions, solutions of $\nabla u = 0$ on the interior.
-\item
-    $E(u) = \int_\Omega \frac{1}{2}\norm{\nabla u}^2 + ug\,dx$ for some $g:\Omega\rightarrow\mathbb{R}$ defined on the interior of $\Omega$.
-    Minimization leads to solutions of Poisson's equation, $\nabla u = g$ on the interior or exterior of the closed domain. This is used
-    for example to compute gravitational potential fields.
-\item
-    The length of a curve segment, where $c:[0,1]\rightarrow \mathbb{R}^2$ is differentiable, $E(c) = \int_0^1 \norm{c^\prime(x)}\,dx$.
-\item
-    The area of a surface patch, where $s:[0,1]^2\rightarrow \mathbb{R}^3$ is differentiable, $E(s) = \int_0^1\int_0^1 \sqrt{\det(J_s(x,y)^T J_s(x,y))}\,dx\,dy$.
-    Minimizing this energy is a case of what is called Plateau's problem.
-\item
-    $E(u) = \int_\Omega \norm{\nabla u} + \frac{\lambda}{2} \norm{f(x) - u(x)}^2\,dx,$
-    an energy whose minimization balances the total variation and the deviation from some target function.
-    This is a popular functional in image denoising.
-\item
-    (todo: correct physics) The work done by a particle moving as $c:[0,1]\rightarrow \mathbb{R}$ in force field $v$,
-    $\int_0^1 c^\prime(t)\cdot v(c(t))\,dt$.
-\item
-    A light ray travels in a curve $c:[0,1]\rightarrow \mathbb{R}^2$ with endpoints predetermined, through an inhomogeneous medium with varying speed-of-light $\phi(x) > 0$.
-    Then $E(c) = \int_0^1 \frac{c^\prime(t)}{\phi(c(x))}\,dx$ is minimized by Fermat's principle of least time.
-\end{itemize}
-The discussion here is not rigorous.
-
-\subsubsection{The G\^ateaux derivative}
-\todo{Define $U$ to be a suitably general function space for which this works.}
-
-Suppose we have some functional energy $E$, a function of $u \in U$ and its first $n$ derivatives,
-which is a density integral over the \textit{Lagrangian} $\fancyL$,
-    $$E = E(u, u^\prime, \cdots, u^{(n)}) = \int_\Omega \fancyL(u(x),u^\prime(x),\cdots,u^{(n)}(x))\,dx.$$
-Here $u^{(k)}$ is understood to be the tensor of all $k$'th partial derivatives. To measure
-the response of the functional $E$ to small perturbations of $u$, $u + \epsilon h$ for some $h$, we need $u + \epsilon h$ to
-have sufficiently many derivatives and bounded integrals (or is ``admissable'' in Dirichlet's terminology \cite{dirichlet_principle}). Suppose $h$ is defined to be of some function space $V$ such that
-this is true.
-The G\^ateaux derivative is derived through taking limits in the exact same way as the regular derivative.
-If $u$ is perturbed by $h$ then $u^\prime$ is perturbed by $h^\prime$, and so on. If the limit exists, then the
-linear response of $E$ to this perturbation is
-\begin{align*}
-    \frac{dE}{du}\Big|_h &\coloneqq \lim_{\epsilon \rightarrow 0} \frac{1}{\epsilon} \left(E(u + \epsilon h, u^\prime + \epsilon h^\pr, \cdots, u^{(n)} + \epsilon h^{(n)})
-        - E(u, u^\pr, \cdots, u^{(n)})\right).\\
-\end{align*}
-For energy functionals based on a Lagrangian $\fancyL$, this gives by Taylor expansion of $E$ with respect to the $u^{(i)}$,
-\begin{equation}\label{gateaux_lagrangian}
-\begin{split}
-    \frac{dE}{du}\Big|_h &=
-        \lim_{\epsilon \rightarrow 0} \frac{1}{\epsilon} \int_\Omega \mathcal{L}(u +\epsilon h, u^\pr + \epsilon h^\pr,\cdots, u^{(n)} + \epsilon h^{(n)})
-            - \mathcal{L}(u, u^\pr,\cdots, u^{(n)})\, dx \\
-        &= \lim_{\epsilon \rightarrow 0} \frac{1}{\epsilon}
-                \int_\Omega \mathcal{L}
-                    + \epsilon h\frac{\partial\mathcal{L}}{\partial u}
-                    + \epsilon h^\pr\frac{\partial\mathcal{L}}{\partial u^\pr}
-                    +\cdots
-                    + \epsilon h^{(n)}\frac{\partial\mathcal{L}}{\partial u^{(n)}} + O(\epsilon^2)
-                    - \mathcal{L}\,dx\\
-        &= \int_\Omega h\frac{\partial\mathcal{L}}{\partial u} + h^\prime\frac{\partial\fancyL}{\partial u^\prime} + \cdots + h^{(n)}\frac{\partial\fancyL}{\partial u^{(n)}}\,dx
-\end{split}
-\end{equation}
-\todo{Explain why this result is expected, as it just adds up the responses of the density.}
-
-This is a suitable definition of a ``functional derivative'' of an energy defined by a Lagrangian,
-but it would be nice to form instead a ``functional gradient'', an object encoding functional derivative information
-in all directions of perturbation.
-In analogy to the gradient encoding all directional derivatives,
-\begin{align*}
-    \lim_{\epsilon\rightarrow 0} \frac{f(x + \epsilon d) - f(x)}{\epsilon} = \inner{\nabla f, d},
-\end{align*}
-the functional gradient $\frac{dE}{du}$ is defined such that
-    $$\frac{dE}{du}\Big|_h
-    = \int_\Omega h\frac{\partial\mathcal{L}}{\partial u} + h^\prime\frac{\partial\fancyL}{\partial u^\prime} + \cdots + h^{(n)}\frac{\partial\fancyL}{\partial u^{(n)}}\,dx
-     = \inner{\frac{dE}{du}, h} = \int_\Omega \frac{dE}{du}(x)h(x)\,dx.
-$$
-This is possible due to what at first may seem like an unintuitive trick, repeated integration by parts.
-
-
-
-\subsubsection{Integration by parts}
-\todo{Make good derivation and reasoning for integration by parts. Is exterior calculus necessary? It seems
-to be for making sense of multi-dimensional integration by parts. Introduce any formalisms used in the derivation.}
-\textit{Integration by parts} is a generalization of the generalized Stokes theorem.
-The \textit{generalized Stokes theorem} is written
-\begin{equation}\label{generalized_stokes}
-    \int_\om d\omega = \int_\pom \omega.
-\end{equation}
-
-Integration by parts formulae are a consequence of the (alternating) Leibniz product rule satisfied by the exterior derivative,
-\begin{align*}
-    \int_\om d(\phi\wedge \omega) = \int_\pom \phi\wedge\omega
-        = \int_\om d\phi \wedge \omega + (-1)^{\text{deg}(\phi)}\int_\om \phi \wedge d\omega.
-\end{align*}
-
-\todo{Work out boundary terms, here the boundary integral is assumed zero (not always valid).}
-
-Repeated integration by parts is then induced,
-\begin{align*}
-    \frac{dE}{du}\Big|_h &=
-        \int_\Omega h\frac{\partial\mathcal{L}}{\partial u}
-            + h^\prime\frac{\partial\fancyL}{\partial u^\prime}
-            + \cdots
-            + h^{(n)}\frac{\partial\fancyL}{\partial u^{(n)}}\,dx \\
-    &= \sum_{k=0}^n \int_\om \frac{\partial\mathcal L}{\partial u^{(k)}} d^k h \,dx \\
-    &= \sum_{k=0}^n \int_\om (-1)^k h d^k \frac{\partial\mathcal L}{\partial u^{(k)}}\,dx \\
-    &= \int_\om \left(\sum_{k=0}^n (-1)^k d^k \frac{\partial\mathcal L}{\partial u^{(k)}}\right)h\,dx.
-\end{align*}
-It follows that
-\begin{equation}\label{functional_gradient_zero_boundary}
-    \frac{dE}{du} \coloneqq \sum_{k=0}^n (-1)^k d^k \frac{\partial\mathcal L}{\partial u^{(k)}}
-\end{equation}
-is a suitable definition. Setting this to zero gives the Euler-Lagrange equation of the functional $E$,
-whose solutions are stationary points of $E$ with respect to variations.
-
-
-% The formalisms of exterior calculus can be used to mechanistically derive integration-by-parts formulae.
-% For example, in finite-element methods for Poisson equations, a generalization of the divergence theorem is used to remove the requirement
-% of twice-weak-differentiability of the trial functions.
-% \begin{align*}
-%     & \int_\om \diver(\phi F)\, dx = \int_\om \star d(\phi \star F^\flat)\, dx = \int_\pom \phi F\cdot\hat{n}\, dx \\
-%     \equiv\quad& \int_\om \star (d\phi \wedge \star F^\flat + \phi d\star F^\flat)\, dx = \int_\pom \phi F\cdot\hat{n}\, dx \\
-%     \equiv\quad& \int_\om \nabla \phi \cdot F\, dx + \int_\om \phi\, \diver F\,dx = \int_\pom \phi F\cdot\hat{n}\, dx \\
-% \end{align*}
-
-% G\^ateaux derivative derivation of IBP for 1D. Geometric reasoning for divergence result.
-
-\subsubsection{Some examples of Euler-Lagrange equations}
-Here the Laplace equation and Plateau's problem for minimal surfaces are considered.
-It is shown that the Laplace equation solves for a stationary function of the \textit{Dirichlet energy},
-whose gradient descent algorithm leads to the heat equation.
-\todo{example}
-
-Applying the Euler-Lagrange equations to find stationary points of the arc-length/area functional of a curve/surface
-leads to a non-linear diffusion process called mean-curvature flow, which can be implemented on a computer to find
-locally \textit{minimal surfaces}, surfaces which interpolate a boundary and whose area can only increase under small perturbations.
-\todo{example}
-% >>>
-
-\section{The finite element method}
-\todo{
-Discuss numerical solution of partial differential equations, central ideas in finite element methods.
-I don't think a comparison to other methods would be very useful, should give a self-contained motivation for this particular
-set of discretization ideas.
-Describe connection to variational methods.
-Galerkin methods.
-}
-
-
-\subsection{Weak forms of partial differential equations} % <<<
-% Weak solutions are strong solutions if they are sufficiently differentiable.
-% FEM has grounds in elliptic operator theory.
-% Terminology, Dirichlet and Neumann, essential and natural, weak and strong, start to differ.
-% The Riesz representation theorem.
-% $a(.,.)$ induces the ``energy norm''.
-% Galerkin methods
-% Boundary conditions, Dirichlet Neumann Robin (p100 isogeometric analysis)
-% Integration by parts
-% Divergence theorem reasoning, integration by parts as generalization.
-% Summation by parts, sequences.
-% Weak derivatives
-% Locally integrable functions
-% $L^1_{loc}(\Omega)$ integrable over compact sets in the interior.
-% Dirac delta function with weak derivative and integration by parts as motivation for generalised functions.
-% Sobolev spaces
-% $$\norm{f}_{w^k_p(\Omega)} \coloneqq \left(\sum_{|\alpha| \leq k} \norm{D_w^\alpha f}^p_{L^p(\Omega)}\right)^{\frac{1}{p}}.$$
-% Does this just say that the weak derivatives are $L^p$ integrable? If a function is not $L^p$ integrable then it cannot be added to an $L^p$ integrable function to get an $L^p$ integrable function. $L^p$ is a vector space, so sums of $L^p$ functions are in $L^p$
-% Might need H\"older's inequality.
-% Cauchy-Schwartz inequality:
-%     $$\left<u, v\right> \leq \sqrt{\left<u, u\right>}\sqrt{\left<v, v\right>}.$$
-% Ciarlet finite element definition: Element domain, shape functions $P$, nodal basis $\mathcal{N}$ for $P^\pr = P^*$. The nodal
-% basis can be of point-evaluation functionals. These can form a basis as the dual space is of the same finite dimension,
-% and the values of point-evaluation functionals determine the shape function (and if there is a basis of shape functions, the coefficients of this basis).
-% This is all in one element. Point nodal functionals will be along the boundary to give $C^0$ continuity. $(K,P,N)$ is a \textit{finite element}.
-% A nodal basis of $P$ is defined as being dual to the nodal basis $\mathcal{N}$ of $P^*$. $\mathcal{N}_i(\phi_j) = \delta_{ij}$.
-% A nodal basis is $1$ at the corresponding node point and zero at the others.
-% Center-edge elements, Serendipity elements, Charged-particle point distribution
-
-
-The partial differential equation (without initial or boundary conditions) is formulated as
-\begin{align*}
-    \fancyA u = f,
-\end{align*}
-where $\fancyA$ is a (not necessarily linear) differential operator.
-The weak form of this PDE is
-\begin{equation}\label{weak_form}
-    \inner{\fancyA u, \phi} = \inner{f, \phi}
-\end{equation}
-for $\phi \in S \subset V$. If $S$ is finite dimensional with a basis of $\{\phi_1,\cdots,\phi_n\}$,
-then a solution to \eqref{weak_form} is a solution to the system of equations
-\begin{align*}
-    \inner{\fancyA u, \phi_i} = \inner{f, \phi_i}
-\end{align*}
-for $1 \leq i \leq n$. Supposing $u_s = u^i \phi_i$ is an approximate solution, and $f_I$ is $f$ projected onto $S$, we can instead solve a finite system of equations
-\begin{align*}
-    & \inner{\fancyA u_s, \phi_i} = \inner{f, \phi_i} \\
-    \equiv\quad& \inner{\fancyA(u^j \phi_j), \phi_i} = \inner{f_I, \phi_i}.
-\end{align*}
-This system can be expanded, even for non-linear $\fancyA$, into a system of equations in mass matrices.
-For example, consider the non-linear equation with its weak form for test functions in $S$:
-\begin{align*}
-    \text{Strong form}\quad& -u^\ppr + u^2 = f \\
-    \text{Weak form}\quad& \int_\Omega u^\pr \phi_i^\pr\, dx + \int_\Omega u^2 \phi_i\, dx = \inner{f, \phi_i}
-\end{align*}
-Considering again $u_s = u^i \phi_i$ and $f_I$ the projected $f$, the discrete weak form is
-\begin{align*}
-    todo
-    % & u^j\int_\Omega \phi_j^\pr \phi_i^\pr\, dx + (u^j)^2\int_\Omega \phi_j^2 \phi_i\, dx = \inner{f_I, \phi_i}.
-\end{align*}
---------
-INCORRECT
---------
-This is a non-linear system of equations that is feasibly solvable with a computer.
-Letting $A = \left(\inner{\phi^\pr_i, \phi^\pr_j}\right)$, $B = \left(\inner{\phi_i^2, \phi_j}\right)$, $C = \left(\inner{\phi_i, \phi_j}\right)$, the equations are
-\begin{align*}
-    A\bar{u} + B\bar{u}^2 = C\bar{f},
-\end{align*}
-where $\bar{u}^2$ is squared component-wise, and $\bar{u}$, $\bar{f}$ are respective vectors of coefficients.
-
-% >>>
-% >>>
-\subsection{Computing integrals over trial functions} % <<<
-
-% Reference element
-% Change of variables with Jacobian
-% 
-% Assembly of static data, tensors
-% FEniCS form compiler
-
-Let $G_T: T \rightarrow N \subset \mathbb{R}^n$ be defined as
-    $$G_T(x) = p^i \Phi_i(x)$$
-where $p^i \in \mathbb{R}^n$ are \textit{control points} and $\Phi_i$ are basis functions on the reference domain which form a partition of unity. This is a common paradigm for parametric surfaces,
-such as B\'ezier patches, in geometric design.
-
-\begin{align*}
-    J = \pdf{G_T(x)_\gamma}{x_\tau} = p^i_\gamma\pdf{\Phi_i(x)_\gamma}{x_\tau}
-\end{align*}
-
-Consider a point-quadrature rule over points $g_i \in T$ with corresponding weights $w^i$.
-The change of variables formula and quadrature is
-\begin{align*}
-    \int_N f(x)\, dx = \int_T f(x)|J(x)|\, dx \approx w^i f(g_i)|J(g_i)|.
-\end{align*}
-We can then reduce the amount of computation needed for these quadratures, if we know the basis functions over each element \textit{a priori},
-by pre-computing a tensor of values
-\begin{align*}
-    \text{TABLE}(i, \gamma, \tau) = \pdf{\Phi_i(g_i)_\gamma}{x_\tau}.
-\end{align*}
-This stores all information about Jacobians of the element-mapping basis functions at the relevant
-quadrature points, and thus forms a basis for the discrete Jacobian-field on the reference element.
-The unknowns are the control points $p^i$. The quadrature is then computed as
-\begin{align*}
-    \int_N{f(x)\, dx} \approx w^i f(g_i) \left\vert\left(p^k_\gamma\,\text{TABLE}(k, \gamma, \tau)\right)_{\gamma,\tau}\right\vert.
-\end{align*}
-
-$dPhi(i, ..., \tau), dPsi, Phi(i, ...)$
-``...'' are for vector-valued basis functions. $\tau$ is the axis index of the partial derivative.
-
-\section{Solving Poisson's equation}
-
-\section{Hyperbolic conservation laws}
-\todo{
-Advection, advection-diffusion, Burgers equation.
-Derive analytic solution to advection equation with the method of characteristics.
-Discuss propogation of information, the connection to hyperbolic conservation laws,
-$$u_t + f_x = 0, f = f(u)$$
-$$u_t + a(u)u_x = 0, a(u) = df/dt$$
-Interpret as a total derivative
-$$du/dt = \partial u /\partial t + \partial x / \partial t \partial u / \partial x = 0$$
-Characteristics defined by IVPs
-$$dx/dt = a(u).$$
-}
+\chapter{Continuum mechanics}
+\section{On $F = ma$} % <<<
 \begin{equation}
-    \pdf{u}{t} + u\pdf{u}{x} = 0.
+    \text{Total force = change of momentum}.
 \end{equation}
-Using implicit Euler,
-\begin{align*}
-    &u^0 = g \\
-    &\frac{u^{n+1} - u^n}{\Delta t} + u^{n+1}\pdf{u^{n+1}}{x} = 0.
-\end{align*}
-In the update equation, letting $u = u^{n+1}$ be the unknown and $u_p = u^n$ be constant, integrating against a test function gives
-\begin{align*}
-    &\int_\Omega \frac{u}{\Delta t}v + u\pdf{u}{x}v\,dx = \int_\Omega \frac{u_p}{\Delta t} v\,dx.
-\end{align*}
-Let $u = u^i\phi_i$ be a combination of basis trial functions. Since the left-hand-side is linear in the test function $v$, it is necessary and sufficient
-that the equation is satisfied separately for each $v = \psi_j$. This gives a finite system of equations
-\begin{align*}
-    &\frac{u^i}{\Delta t}\int_\Omega \phi_i\psi_j\,dx + \int_{\Omega} (u^i\phi_i)(u^i \pdf{\phi_i}{x})\psi_j\,dx = \frac{1}{\Delta t}\int_\Omega u_p \psi_j\,dx.
-\end{align*}
+In this form, Newton's second law of motion states that there is such a thing called ``force'',
+a non-explanatory measurement made along a trajectory of a mechanical system, which is used to measure change in momentum.
+Newton's three laws, namely those of inertia, force, and equilibrium, have found universal success in application
+to mechanical systems. Separate from any particular notion of position and space, the principles of Newtonian mechanics
+apply to complex systems, and as we shall see, are fundamental to the derivation of equations of fluid motion.
+A primary example is that of a free rigid body, say, a cube of constant density. Under the assumption of rigidity,
+the state of the rigid body can be encoded with six numbers. These numbers describe position and orientation, which are paired
+to \textit{linear momentum} and \textit{angular momentum}.
+
+\subsection{The Newtonian free particle}
+We suppose that we have some space, called a configuration space, describing the possible states of the mechanical system. We suppose here
+that this space forms a finite dimensional manifold, which is true for the typical unconstrained configuration spaces such as those of rigid
+body motions.
+
+\subsubsection{Symmetry, momenta, and inertia}
+
+Consider first the idea of a free particle in $X = \mathbb{R}^3$ describing a traditional point in space that can move by translation.
+One fundamental assumption is that the laws of physics should ``look the same'' from the point of view of each point.
+This is formalized by a group action, here
+    $$g \in G \cong (\mathbb{R}, +),\quad x\in X,\quad g\cdot x = x + g.$$
+Of course, $G$'s action has only one orbit, as in, it is transitive. Denoting by $G\cdot x$ the orbit of $x$ under the action of $G$,
+the group action induces an equivalence relation on $X$:
+    $$x, y \in X,\quad x \sim y \Leftrightarrow G\cdot x = G\cdot y.$$
+Since there is only one orbit, we see that $x \sim y$ for all $x, y \in X$, as in, we are considering each point as ``the same''.
+% In this case, $G$ forms a topological (in particular, Lie)  group which is homeomorphic to the space that is acting on. If we may consider mechanics
+% as the study of motion, then it seems suitable that our kinematics, the study of trajectories of motion in the purely geometrical sense,
+% should study curves in this topological group. We may distinguish an ``initial point/state'', which we normalize to the group identity.
+% In this conception, we consider ``curves of translations'' rather than curves of points/states.
+%
+% We, of course, have ambiguity in the choice of point to normalize to the group identity. If we have two curves
+%     $$\gamma_1 : [0,1] \rightarrow X,\quad \gamma_2 : [0,1] \rightarrow X,$$
+% Suppose there was a canonical idea of a body ``at rest''. Now, suppose a body exhibits some motion.
+
+\subsubsection{Energy and time}
+\subsection{The Lagrangian free particle}
+\subsubsection{The kinetic energy}
+\subsubsection{From $F=ma$ to the principle of least action}
+
+\subsection{Systems of forces}
+Force has been defined as a non-explanatory measurement. Here, discuss physical modelling with prescribed forces.
+\subsubsection{The Euler-Lagrange equations}
 
 
 % >>>
-
-
-\section{Deriving the Navier-Stokes equations}
-\todo{Motivation}
-\subsection{Conservation laws and continuity equations} % <<<
-Let $\Omega \subset U$ be a domain in $U$. A conserved quantity, named here energy (measured in Joules), can advect and disperse, and this is modelled in general by
-a flux function $j(x, t)$. For $U = \mathbb{R}^3$ this flux function has units $Jm^{-2}s^{-1}$.
-It is assumed that energy is introduced into
-the system purely through source term $p(x, t)$ with units $Jm^{-3}s^{-1}$.
-
-The rate of change of total energy in $\Omega$ is then 
-\begin{align*}
-    \frac{d}{dt} \int_\Omega E\, dx = \int_{\partial\Omega} -j\cdot \hat{n}\, dS + \int_\Omega p\, dx,
-\end{align*}
-which by the divergence theorem is
-\begin{align*}
-    \int_\Omega \frac{\partial E}{\partial t} + \nabla \cdot j - p\, dx = 0.
-\end{align*}
-For this to be true of general domain $\Omega$, the integrand must be identically zero:
-\begin{equation}
-    \frac{\partial E}{\partial t} + \nabla \cdot j = p.
-\end{equation}
-This is a general form for a conservation law. If the flux $j$ is measured as the amount of energy being moved over a small boundary element
-in the direction of the normal by a vector field $u$, then the vector field on the boundary of region $\Omega$ is transfering the quantity there either into, along, or out of the region. Therefore in this case $j = E u$ and the equation becomes
-\begin{equation}
-    \frac{\partial E}{\partial t} + \nabla \cdot (E u) = p.
-\end{equation}
-\subsubsection{Conservation of momentum}
-For example, the conserved quantity may be \textit{momentum}, $\rho u$, the product
-of scalar mass-density field $\rho$ and flow-velocity field $u$. As this is a conserved vector quantity, the conservation law is written
-separately for each component of momentum, which is then compacted with $\otimes$ denoting the outer product:
-\begin{equation}\label{ConservationOfMomentum}
-\begin{split}
-    \frac{\partial(\rho u_i)}{\partial t} + \nabla \cdot \left(\rho u_i u\right) &= p, \quad i=1,2,3\\
-    \equiv\quad \frac{\partial(\rho u)}{\partial t} + \nabla \cdot \left(\rho u \otimes u\right) &= p.
-\end{split}
-\end{equation}
-\subsubsection{Conservation of mass}
-Equation \eqref{ConservationOfMomentum} is incomplete. Nothing has been said about restrictions on the mass density $\rho$.
-The completing equation is
-\begin{equation}\label{ConservationOfMass}
-    \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho u) = 0,
-\end{equation}
-which expresses that the only way mass enters or exits a closed region is by advection by $u$.
-\todo{
-Had ``If $u$ is conservative, mass is conserved''
-which is wrong. Mass is always conserved.
-A conservative vector field is not to do with this, rather to do with potentials.
-}
-
-\eqref{ConservationOfMomentum} and \eqref{ConservationOfMass} combined give the correct formulation, from first principles, of Newton's second law in continuum mechanics.
-A more direct derivation, which makes the connection to Newton's second law much clearer, requires the material derivative.
-
-\todo{
-Really show why these two equations (conservation of mass and conservation of linear momentum) give
-the Cauchy momentum equation.
-}
-
+\section{From $F = ma$ to $\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}} = 0$: The Euler-Lagrange equations} % <<<
 % >>>
-\subsection{Advection, transport, and the total and material derivatives} % <<<
-Consider a vector field $u$ on a domain $U$. Any spatial quantity $\phi$ on $U$ can be transported along $u$.
-The \textit{total derivative} is defined as
-    $$\frac{d\phi}{dt} = \frac{\partial \phi}{\partial t} + \frac{\partial x}{\partial t} \cdot \nabla \phi.$$
-
-When evaluated at $p$, this measures the rate of change of $\phi$ with respect to $t$-parameterised motion along a curve through $p$.
-When this curve is given by the flow of a vector field $u$, this is called the \textit{material derivative}, denoted
-    $$\frac{D\phi}{Dt} = \frac{\partial \phi}{\partial t} + u\cdot \nabla \phi.$$
-Setting this to zero completes the derivation of the transport equation. $\frac{D \phi}{Dt} = 0$ (with $u$ implicit) states that from the point of view of
-a particle moving along $u$, $\phi$ remains unchanged. $u$ can, for example, model the deformation velocity field of a material.
+\section{From $F = ma$ to $\frac{Du}{Dt} = \frac{1}{\rho}\nabla\cdot\sigma + f$: The Cauchy momentum equations} % <<<
 % >>>
-\subsection{The Cauchy momentum equation} % <<<
-In the 1820s Cauchy began the extension of Euler's laws of mechanics to deformable materials.
-A fundamental object introduced is the \textit{Cauchy stress tensor}, denoted here by $T = T(x, t)$, which will now be motivated.
-
-To distinguish continuum mechanics from point-particle mechanics, model-dependent internal forces are required. If these internal forces
-were not present then this could hardly be called a cohesive object, and the mechanics would effectively reduce to that of a continuum of non-interacting point-particles.
-
-By \textit{internal force} what is meant here is a force exerted on a small region of the material by its immediately adjacent particles.
-Consider $\Omega \subset U$ a domain. Integrating the exerted forces along the boundary $\partial\Omega$ gives a vector flux, for which the divergence
-theorem applies.
-\begin{equation}\label{TDiv}
-\begin{split}
-    \int_{\partial\Omega} T \cdot \hat{n}\, dS
-         = \int_\Omega \nabla \cdot T\, dV.
-\end{split}
-\end{equation}
-The divergence theorem here gives a differential force, a measurement of internal stress for each point in the material.
-Here $\nabla \cdot T$, when $U$ is three-dimensional, is understood to be the vector
-    $$\nabla \cdot T = \bb \nabla \cdot T_1 & \nabla \cdot T_2 & \nabla \cdot T_3 \bbe^T,$$
-where $T_i$ denote the stress in the unit normal aligned to axis $x_i$ (in matrix terms, the $i$'th column of $T$).
-
-
-
-\todo{Geometric derivation of Cauchy stress tensor. (why is it a linear transformation?)}
-% $T$ gives a means of measuring the internal forces of the material, and computationally takes the form of a (space-and-time-varying) matrix representing a linear transformation of oriented surface elements (given by normal vectors) to directional forces.
-
-
-The \textit{Cauchy momentum equation} is
-\begin{equation}\label{Cauchy}
-    \rho \frac{Du}{Dt} = \nabla \cdot T + \rho g.
-\end{equation}
-
-$g = g(x, t)$ is a space-and-time-varying body force acting
-on the system, such as, for example, Earth's gravitational pull.
-This $g$ is a force, which is per-unit-mass, which is why
-$\rho g$ appears in \eqref{Cauchy}.
-\todo{---rederive this, maybe incorrect masses}
-
-As defined above, $\frac{D}{Dt}$ denotes the \textit{material derivative}. In the mechanics of a point particle,
-the particle has a velocity at each time. The definition of velocity and acceleration \textit{follow} this point.
-This leads to the relevant idea of acceleration in continuum mechanics:
-$\frac{Du}{Dt} = \frac{\partial u}{\partial t} + u\cdot \nabla u$.
-By inertia we want to follow a particle as it continues in the direction of its velocity, and see if this velocity is changing.
-This readily gives an interpretation of \eqref{Cauchy} as simply an instance of
-\begin{equation}\label{Newton}
-    F = ma.
-\end{equation}
-The left-hand-side of \eqref{Cauchy} is mass (here a differential density) times acceleration,
-and the right-hand-side is force. Rather than a general force term, \eqref{Cauchy} splits the forces into internal stress forces
-determined by the Cauchy stress tensor, and other external body forces. This is a general momentum equation for
-continuum mechanics. A specific instance of a problem with a certain continuum material model requires
-\begin{itemize}
-    \item A definition of the Cauchy stress tensor, which likely relies on differential operators.
-    \item A definition of any other external body forces acting on the material.
-    \item Any other restrictive equations (for example, $\nabla \cdot u = r$).
-    \item Initial/boundary conditions for which these combined equations form a well-posed problem.
-\end{itemize}
+\section{The Cauchy momentum equations as Euler-Lagrange equations} % <<<
 % >>>
-\subsection{The Euler equations for inviscid flow} % <<<
-The Cauchy momentum equation is the basic skeleton for developing equations of fluid motion.
-
-\subsubsection{Incompressibility}
-We will assume that the fluid is \textit{incompressible}.
-Compressibility is the basis of acoustic waves, so of course this assumption is non-physical. However, if we are interested in the bulk-movement flow,
-in many cases acoustic waves will have neglible effect.
-
-\subsubsection{Inviscid flow}
-We need to define a Cauchy stress tensor. Internal forces are measured across an oriented surface element $\delta S$ with normal $\hat{n}$ by evaluating
-$T\cdot \hat{n}$. The component of this force perpendicular to $\hat{n}$ is called a \textit{shear force}.
-If there is no shear force, then the matrix representation of the Cauchy stress tensor will be $\alpha I$ for some scalar function $\alpha$.
-The tensor divergence is equal to a gradient: $\nabla \cdot \left(\alpha I\right) = \nabla \alpha$. Letting $\alpha$ here be $\alpha = -p$,
-the \textit{Euler equations of motion} are
-\begin{equation}\label{Euler}
-\begin{split}
-    \rho \frac{Du}{Dt} = -\nabla p + \rho g \\
-    \nabla \cdot u = 0.
-\end{split}
-\end{equation}
-\todo{I think there might be some conservation terms missing}
-The \textit{pressure} $p$ is an unknown. The Cauchy stress tensor, and thus the pressure, is \textit{defined} to give those internal non-shear forces
-which give incompressibility.
+\section{Transport of quantity and continuity equations} % <<<
 % >>>
-\subsection{Viscous flow and Newtonian fluids} % <<<
-So far the derivations have been geometric rather than physical.
+\section{The continuum hypothesis and constitutive relations} % <<<
 % >>>
 
+\chapter{The Navier-Stokes equations}
+% \section{The continuum hypothesis}
+% \section{Body and stress forces}
+% \section{Conservation laws}
+% \subsection{Conservation of mass}
+% \subsection{Conservation of linear momentum}
+% \subsection{Conservation of angular momentum}
+% \subsection{Conservation of energy}
+% \subsection{Differentialization and coordinates}
+% Navier-Stokes in expanded differential form for Cartesian coordinates. Maybe useful for finite differences.
+% Working backwards to the weak form doesn't make much sense.
+% \subsection{Kinds of fluids}
+% \subsubsection{Incompressible fluids}
+% \subsubsection{Inviscid flow}
+% \subsubsection{Irrotational flow}
+% \subsubsection{Steady flow}
+% \subsubsection{Viscous flow and Newtonian fluids}
 
-\section{Solving (certain cases of) the Navier-Stokes equations}
-
-
-\section{Appendix A: Classical mechanics}
-\subsection{Potential and kinetic energy} % <<<
-Consider the paths of particles in a closed system with position and momentum evolving in time
-due to the action of a conservative force, $f = -\nabla U$ where $U$ is called the \textit{potential energy}.
-Unit mass is assumed here.
-\begin{equation}
-\begin{split}
-    x^\ppr = f(x) = -\nabla U(x).
-\end{split}
-\end{equation}
-
-Given the conservative force field $f$, $U$ can be defined by quadrature as
-\begin{equation}
-\begin{split}
-    U(x(t)) &= x_0 + \int_{t_0}^t x^\pr(\tau) \cdot(-f(x(\tau)))\, d\tau. \\
-\end{split}
-\end{equation}
-
-We want to derive an energy conservation law $\frac{dE}{dt} = 0$, so as $U(x(t))$ varies, we need to define
-some energy term $T$ where the potential energy ``comes from'' and ``goes'', and let $E = U + T$.
-Potential energy $U$ is purely a function of position $x$. Assume that $T = T(x^\pr(t))$ is purely a function of momentum, with the assumption of unit mass.
-We then need $\frac{dT}{dt} = -\frac{dU}{dt}$. By writing $T$ in terms of quadrature along the phase curve $(x(t),x^\pr(t))$, we have
-
-\begin{equation}
-\begin{split}
-    T(x^\pr(t)) &= x_0^\pr + \int_{t_0}^t f(x(\tau)) \cdot \frac{dT}{dx^\pr}\, d\tau. \\
-\end{split}
-\end{equation}
-Therefore we want $\frac{dT}{dx^\pr} = x^\pr$, and a possible energy term is $T = |x^\pr|^2/2$.
-This, by construction, gives
-\begin{equation}
-\begin{split}
-    \frac{d}{dt}\left(U + T\right) &= \left[x^\pr(t)\cdot (-f(x(t)))\right] + \left[f(x(t))\cdot x^\pr(t)\right] = 0.
-\end{split}
-\end{equation}
-$T(x^\pr)$ is called the \textit{kinetic energy}. $E = U + T$ is called the \textit{total energy} of the configuration $(x(t), x^\pr(t))$ in the closed system.
-% >>>
-
-
-
+\chapter{The finite element method}
+\section{Discretizing variational principles}
+% The weak form is exactly analagous to perturbation principle in the principle of least action.
+% To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
+% equation is the Euler-Lagrange equation of the Dirichlet energy.
 
 
 \begin{thebibliography}{9}
@@ -633,12 +136,23 @@ Johann Bernoulli, \textit{``Problema novum ad cujus solutionem Mathematici invit
 \bibitem{dirichlet_principle}
 A. F. Monna, \textit{Dirichlet's principle: A mathematical comedy of errors and its influence on the development of analysis}, 1975
 
-
 \bibitem{pde_larsson}
 Stig Larsson, \textit{Partial differential equations with numerical methods}, 2003
 
 \bibitem{lax_1973}
 Peter Lax, \textit{Hyperbolic Systems of Conservation Laws and the Mathematical Theory of Shock Waves}, 1973
+
+\bibitem{lanczos}
+Cornelius Lanczos, \textit{The Variational Principles of Mechanics}, 1952
+
+\bibitem{batchelor}
+G. K. Batchelor, \textit{Introduction to Fluid Dynamics}, 1967
+
+\bibitem{leal}
+L. Gary Leal, \textit{Advanced Transport Phenomena: Fluid Mechanics and Convectice Transport Processes}, 2007
+
+\bibitem{fem_ns}
+Vivette Girault, Pierre-Arnaud Raviart, \textit{Finite Element Methods for Navier-Stokes equations}, 1986
 
 
 \end{thebibliography}
