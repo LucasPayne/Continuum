@@ -4,6 +4,7 @@
 \documentclass[11pt,a4paper]{memoir}
 % \setsecnumdepth{subsubsection}
 \setsecnumdepth{subsection}
+\setcounter{tocdepth}{2}
 \setlrmarginsandblock{3cm}{3cm}{*} % Centre adjustment
 \setulmarginsandblock{2.5cm}{*}{1}
 \checkandfixthelayout 
@@ -14,6 +15,9 @@
 \usepackage{microtype}
 \usepackage{dirtytalk}
 \usepackage{relsize}
+\usepackage{csquotes}
+\usepackage{epigraph}
+\usepackage{physics}
 \newcommand{\bb}{\begin{bmatrix}}
 \newcommand{\bbe}{\end{bmatrix}}
 \newcommand{\pr}{\prime}
@@ -23,7 +27,8 @@
 \newcommand{\fancyA}{\mathcal{A}}
 \newcommand{\fancyL}{\mathcal{L}}
 \newcommand{\fancyN}{\mathcal{N}}
-\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+\newcommand{\fancyP}{\mathcal{P}}
+% \newcommand{\norm}[1]{\left\Vert#1\right\Vert}
 \newcommand{\om}{\Omega}
 \newcommand{\pom}{{\partial\Omega}}
 \newcommand{\diver}{\text{div}}
@@ -44,63 +49,252 @@
 \tableofcontents
 
 \chapter{Continuum mechanics}
-\section{On $F = ma$} % <<<
+\chapterprecishere{
+Corpus omne perseverare in statu suo quiescendi vel movendi uniformiter in directum, nisi quatenus a viribus impressis cogitur statum suum mutare.
+\\\\
+Mutationem motus proportionalem esse vi motrici impressae, \& fieri secundum lineam rectam qua vis illa imprimitur.
+\\\\
+Actioni contrariam semper \& aequalem esse reactionem: sive corporum duorum actiones in se mutuo semper esse aequales \& in partes contrarias dirigi.
+\par\raggedleft \textup{Newton \cite{newton}}}
+\section{Newton's laws of motion} % <<<
+
+Newton's three laws, namely those of inertia, force, and equilibrium, have found universal success in application
+to mechanical systems such as the pendulum, the motion of an rigid body, the evolution of a bending beam, and, as we shall see,
+the motion of fluid. \textit{Mechanics} could be thought of as the study of physical motion, but the word ``physical'' might be misleading.
+Newton's principles are mathematical in nature, applicable to the study of motion in a general sense as some unambiguously
+measurable state which evolves in time.
+
+\subsection{Symmetry, momenta, and inertia}
+Mechanics as a theory of physical motion will require a definition of physical motion. A first attempt might be to posit
+that ``physical states'' are representable as points in a finite-dimensional manifold, which we call the configuration space $X$, which is the case for typical
+notions of state such as the two angles in a double pendulum, or the position and orientation of a rigid body. We might define a motion as
+a continuous time-parameterized curve
+    $$\gamma: [t_1, t_2] \rightarrow X.$$
+
+(--- motivation of $F = ma$, and momenta as fundamental quantity).
+
+We start in the middle:
 \begin{equation}
     \text{Total force = change of momentum}.
 \end{equation}
-In this form, Newton's second law of motion states that there is such a thing called ``force'',
-a non-explanatory measurement made along a trajectory of a mechanical system, which is used to measure change in momentum.
-Newton's three laws, namely those of inertia, force, and equilibrium, have found universal success in application
-to mechanical systems. Separate from any particular notion of position and space, the principles of Newtonian mechanics
-apply to complex systems, and as we shall see, are fundamental to the derivation of equations of fluid motion.
-A primary example is that of a free rigid body, say, a cube of constant density. Under the assumption of rigidity,
-the state of the rigid body can be encoded with six numbers. These numbers describe position and orientation, which are paired
-to \textit{linear momentum} and \textit{angular momentum}.
+In this form, Newton's second law of motion states that a (non-explanatory) measurement of change of momentum will be called ``force''.
 
-\subsection{The Newtonian free particle}
-We suppose that we have some space, called a configuration space, describing the possible states of the mechanical system. We suppose here
-that this space forms a finite dimensional manifold, which is true for the typical unconstrained configuration spaces such as those of rigid
-body motions.
-
-\subsubsection{Symmetry, momenta, and inertia}
-
-Consider first the idea of a free particle in $X = \mathbb{R}^3$ describing a traditional point in space that can move by translation.
-One fundamental assumption is that the laws of physics should ``look the same'' from the point of view of each point.
-This is formalized by a group action, here
-    $$g \in G \cong (\mathbb{R}, +),\quad x\in X,\quad g\cdot x = x + g.$$
-Of course, $G$'s action has only one orbit, as in, it is transitive. Denoting by $G\cdot x$ the orbit of $x$ under the action of $G$,
-the group action induces an equivalence relation on $X$:
-    $$x, y \in X,\quad x \sim y \Leftrightarrow G\cdot x = G\cdot y.$$
-Since there is only one orbit, we see that $x \sim y$ for all $x, y \in X$, as in, we are considering each point as ``the same''.
-% In this case, $G$ forms a topological (in particular, Lie)  group which is homeomorphic to the space that is acting on. If we may consider mechanics
-% as the study of motion, then it seems suitable that our kinematics, the study of trajectories of motion in the purely geometrical sense,
-% should study curves in this topological group. We may distinguish an ``initial point/state'', which we normalize to the group identity.
-% In this conception, we consider ``curves of translations'' rather than curves of points/states.
-%
-% We, of course, have ambiguity in the choice of point to normalize to the group identity. If we have two curves
-%     $$\gamma_1 : [0,1] \rightarrow X,\quad \gamma_2 : [0,1] \rightarrow X,$$
-% Suppose there was a canonical idea of a body ``at rest''. Now, suppose a body exhibits some motion.
-
-\subsubsection{Energy and time}
-\subsection{The Lagrangian free particle}
-\subsubsection{The kinetic energy}
-\subsubsection{From $F=ma$ to the principle of least action}
-
-\subsection{Systems of forces}
-Force has been defined as a non-explanatory measurement. Here, discuss physical modelling with prescribed forces.
-\subsubsection{The Euler-Lagrange equations}
 
 
 % >>>
-\section{From $F = ma$ to $\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}} = 0$: The Euler-Lagrange equations} % <<<
+\section{The Euler-Lagrange equations: \small{From $F = ma$ to $\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}} = 0$}} % <<<
+\subsection{A Lagrangian of a mechanical system}
+Force is an intensive measurement of the change in momentum. In the language of calculus,
+\begin{equation}\label{force_equation}
+    \int_{s_1}^{s_2} F\,dt = \fancyP(s_2) - \fancyP(s_1)
+\end{equation}
+for all time subintervals $[s_1, s_2] \subset [t_1, t_2]$. If we restrict $F$ to be conservative and a function only of position $q$, then we may
+let $F = -\Part{V}{q}$ for some potential function $V$. Suppose also that $\mathcal{P} = \Part{T}{\dot{q}}$ for some potential function
+(called the ``kinetic energy'') independent
+of position $q$. We then define a Lagrangian of the mechanical system to be
+    $$\fancyL(q, \dot{q}, t) = T(\dot{q}, t) - V(q, t) = \text{kinetic} - \text{potential}.$$
+By definition, we have the force equation \eqref{force_equation} as
+    $$-\int_{s_1}^{s_2} \Part{\fancyL}{q}\,dt = \Part{\fancyL}{\dot{q}}(s_2) - \Part{\fancyL}{\dot{q}}(s_1).$$
+The step toward the calculus of variations (---)
+\begin{equation}\label{el_inner_product_sum}
+        \int_{s_1}^{s_2} \Part{\fancyL}{q}h\,dt + \int_{s_1}^{s_2} \Part{\fancyL}{\dot{q}}\frac{dh}{dt}\,dt = 0
+    \quad\equiv\quad    \left<\Part{\fancyL}{q}, h\right> + \left<\Part{\fancyL}{\dot{q}}, \frac{dh}{dt}\right> = 0.
+\end{equation}
+Adjointness of differential operator $\frac{d}{dt}$ to $-\frac{d}{dt}$, and integration by parts. (---)
+By linearity, we then get the reformulation of \eqref{el_inner_product_sum} as
+\newcommand{\gateauxlagrangian}{\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}}}
+    $$\left<\gateauxlagrangian, h\right> = 0$$
+for all perturbation functions $h$.
+
+\subsection{The first variation of a functional}
+In the calculus of variations, $\gateauxlagrangian$ is an instance of the \textit{G\^ateaux derivative}, also called the ``first variation'' of
+the functional
+\begin{align*}
+    S[q] \coloneqq \int_{t_1}^{t_2} \fancyL(q, \dot{q}, t)\,dt.
+\end{align*}
+The first variation measures response of the value of $S$, called the \textit{action}, to perturbations of the (differentiable) input function $q$,
+and is denoted
+\begin{equation}
+    \frac{\delta S}{\delta q(t)} \coloneqq \gateauxlagrangian.
+\end{equation}
+The first variation is linear in the perturbation function, and so another term for the G\^ateaux derivative could be ``functional gradient''.
+Setting this to zero gives the Euler-Lagrange equations, and the practice of determining trajectories of motions as stationary curves of the action is called the ``principle of stationary action''.
+
+\subsection{From the Lagrangian to the equations of motion}
+In the framework of Lagrangian mechanics, $\fancyP \coloneqq \Part{\fancyL}{\dot{q}}$ is the momentum. If there are $d$ degrees of freedom
+in the mechanical system, and we suppose that $q_1,\cdots,q_d$ are (local) variables of state, then we say that $\fancyP_i \coloneqq \Part{\fancyL}{\dot{q}_i}$
+are \textit{conjugate} to the $q_i$.
+
+(---) By inducing the equations of motion by a Lagrangian, we get systems with a ``physical interpretation'' with ``physically meaningful'' force measurements.
+
+\subsection{Why ---?}
+These variational ideas appear because, no matter if our configuration space is finite-dimensional, time forms a continuum, and therefore if we
+globally consider the calculus of the motion as a whole, it must be a ``variational'' calculus. (---)
+
+(---) Physical process, conservation laws, conservative forces (hint at thermodynamics limiting the range of stress tensors?)
+
+When we consider mechanical models of continuum processes, we will see that these same ideas appear in the spatial dimensions too.
+A variational understanding of a continuum mechanics model leads very easily to a class of methods called Galerkin methods for solving
+the corresponding (PDE) equations of motion.
+
+
 % >>>
-\section{From $F = ma$ to $\frac{Du}{Dt} = \frac{1}{\rho}\nabla\cdot\sigma + f$: The Cauchy momentum equations} % <<<
+\section{Configuration spaces as function spaces} % <<<
+\subsection{The state of a continuum model}
+(--- discuss continuum modelling).
+Here we work with position function $x$ and velocity $u$, rather than $q$ and $\dot{q}$, but the principles are the same.
+Let $U$ be some region of, say, $\mathbb{R}^2$.
+We define $x : U\times [t_1, t_2] \rightarrow U$ where $x$ is invertible to be the \textit{displacement function},
+where $x(X_0, t)$ gives the (---).
+The ``displacement function'' is just the $q$ discussed before. Here, however, the possible states, or displacement functions,
+exist in an infinite-dimensional configuration space. We define the \textit{velocity field} $u: U \times [t_1, t_2] \rightarrow \mathbb{R}^2$
+to be the ``differential generator'' of the displacement function. This is, again, just an instance of $\dot{q}$ as discussed before.
+Importantly, $x$ and $u$ are functions of the same domain, and therefore $u$ is a function of the reference configuration.
+Further, we define $\rho : U \rightarrow \mathbb{R}^{+}$ to be the \textit{mass density function}, and define our momentum to be
+$\fancyP = \rho u$.
+Newton's laws then give
+    $$\int_{s_1}^{s_2} F\,dt = \rho u(s_2) - \rho u(s_1).$$
+No new mechanics has been introduced. We just have a different notion of position (a different, here infinite dimensional, configuration space $X$)
+and a relation between velocity variables and the momentum.
+(---body forces, surfaces forces, Lagrangian and Eulerian specifications, Reynolds tranport theorem, material derivative)
+From $F = \frac{dp}{dt}$ to $\nabla\cdot\sigma + \rho f = \frac{D(\rho u)}{Dt}$
 % >>>
-\section{The Cauchy momentum equations as Euler-Lagrange equations} % <<<
+\section{The kinematics of the continuum} % <<<
+--- transport of quantity in the continuum.
+\subsection{Continuity equations and conservation laws}
+\subsubsection{The integral form of a continuity equation}
+Consider some spatial quantity in the continuum $\phi$ (which could be scalar, vector or tensor-valued (---maybe specialize here to scalar)), and a flux function $j$ which by which
+this quantity flows through the continuum. By definition we want this flux function to just push quantity around, and not create or destroy it:
+the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the continuity
+condition
+\begin{equation}\label{continuity_equation}
+    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\partial\Omega_0} \phi j\cdot (-\hat{n})\,dx + \int_{\Omega_0} s\,dx.
+\end{equation}
+for arbitrary control volumes $\Omega_0$ in the continuum. $-\hat{n}$ denotes the inward-pointing normal to the boundary of the control volume. This simply says that the change in the total quantity in the fixed control volume
+is accounted for exactly by that quantity pushed through the boundary by the flux function $j$, and the internal sources and sinks of quantity $s$.
+
+\subsubsection{The differential form of a continuity equation}
+A common technique in continuum modelling is the use of Stokes' theorem to simplify integral expressions.
+Equation \eqref{continuity_equation} becomes
+\begin{equation}\label{continuity_equation_differential}
+    \Part{\phi}{t} = -\nabla\cdot (\phi j) + s
+\end{equation}
+(---assuming $\phi$ is a scalar quantity, the general form requires the wedge product) assuming that $\phi j$ is sufficiently differentiable such that the limiting integral exists.
+It should be noted that Stokes' theorem and its specializations are really \textit{definitions} of (pointwise) quantities
+such as the divergence and curl as limits of these integral expressions for arbitrarily small regions.
+Continuity relations are most naturally expressed in form \eqref{continuity_equation}, while the form
+\eqref{continuity_equation_differential} may be more useful for techniques such as finite differences.
+For example, it is a theorem of Gauss that in Euclidean space we have
+\begin{equation}\label{gauss_euclidean_divergence}
+    \nabla \cdot j = \Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z},
+\end{equation}
+and we get \eqref{continuity_equation_differential} in the form
+\begin{equation}\label{continuity_equation_expanded}
+    \Part{\phi}{t} = -\nabla \phi \cdot j - \phi\left(\Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}\right) + s,
+\end{equation}
+by the product rule.
+As one equation in a system of PDEs, \eqref{continuity_equation_expanded} is readily discretized by finite differences. For example, using forward difference in time and
+central differences in space, our discrete scheme is
+\begin{equation}\label{continuity_equation_finite_differences}
+\begin{split}
+    \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = &-\frac{\phi(\hat{x} + e_1\Delta x/2) - \phi(\hat{x} - e_1\Delta x/2)}{\Delta x}j_x \\
+                                                    &-\frac{\phi(\hat{x} + e_2\Delta y/2) - \phi(\hat{x} - e_2\Delta y/2)}{\Delta y}j_y \\
+                                                    &-\frac{\phi(\hat{x} + e_3\Delta z/2) - \phi(\hat{x} - e_3\Delta z/2)}{\Delta z}j_z \\
+                                                    &-\frac{j_x(\hat{x} + e_1\Delta x/2) - j_x(\hat{x} - e_1\Delta x/2)}{\Delta x}\phi \\
+                                                    &-\frac{j_y(\hat{x} + e_2\Delta y/2) - j_y(\hat{x} - e_2\Delta y/2)}{\Delta y}\phi \\
+                                                    &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi +s.
+\end{split}
+\end{equation}
+Later, when we discuss numerical methods for solving continuum models, we will not take this route. The methods of interest, \textit{Galerkin} methods,
+work naturally with the integral form \eqref{continuity_equation}.
+It will be seen later that many constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialization of the original integral form of physical PDEs.
+(--- note: Maybe not exactly, as the integral conservation is quantified over regions, while the weak form is quantified over test functions,
+which still need to be sufficiently differentiabile. But I think that this must express the same continuity relation.)
+
+\subsection{The Reynolds transport theorem}
+\subsubsection{The integral form of Reynolds transport}
+With our integral formulation of a continuity relation \eqref{continuity_equation}, the control volume $\Omega_0$ is fixed.
+We may change our perspective by considering, in addition to the flux function $j$ (which transports quantity $\phi$), another
+vector field $\hat{u}$ which will transport our control volume $\Omega_0$. The rate of change of some time-dependent quantity $\gamma$ in this
+\textit{moving} control volume is expressed as
+\begin{equation}\label{reynolds_rate_of_change}
+    \frac{d}{dt}\int_{\Omega_0(t)}\gamma\,dx,
+\end{equation}
+where $\Omega_0(t)$ implicitly denotes that $\Omega_0$ is being transported under the flow of $\hat{u}$.
+Clearly, this rate of change of quantity $\gamma$ is due to the motion of the control volume (--- draw a picture of positive and negative contributions at
+the boundary), as well as internal changes of $\gamma$ inside the (fixed) control volume.
+The formal expression of these contributions to the rate of change \eqref{reynolds_rate_of_change} is
+\begin{equation}\label{reynolds_transport_theorem}
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\gamma\,dx\right]}_{t=0} =
+        \int_{\Omega_0(0)}\Part{\gamma}{t}\,dx + \int_{\partial\Omega_0(0)}\gamma \hat{u}\cdot\hat{n} \,dx.
+\end{equation}
+This result is called the \textit{Reynolds transport theorem},
+a generalization of Feynman's popularized ``differentiation under the integral sign'' \cite{feynman_trick},
+otherwise named the Leibniz integral rule.
+\subsubsection{The differential form of Reynolds transport}
+ In the limit, with the routine application of Stokes' theorem, we can differentialize \eqref{reynolds_transport_theorem}
+to get
+\begin{equation}\label{reynolds_transport_theorem_differential}
+    \frac{d_{\hat{u}}\gamma}{d_{\hat{u}}t} = \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
+\end{equation}
+where $\frac{d_{\hat{u}}}{d_{\hat{u}}t}$ denotes a ``convective derivative'' with respect to $\hat{u}$, which measures
+the change in volume of a quantity when a small control volume around the point of evaluation is moved, expanded or contracted by the flow field $\hat{u}$. (--- notation and terminology? This is not a material derivative, since the divergence of the flow field is considered to expand/contract the small control volume).
+
+\subsubsection{Reynolds transport applied to a continuity equation}
+Letting our quantity $\gamma$ in \eqref{reynolds_transport_theorem} be the quantity $\phi$ transported by flux function $j$
+(described in continuity equation \eqref{continuity_equation}), we can get a specialized form of the Reynolds transport theorem for continuity equations.
+Term $\Part{\gamma}{t}$ in \eqref{reynolds_transport_theorem} becomes $\Part{\phi}{t}$ in the differential form of the continuity equation \eqref{continuity_equation_differential}, giving
+\begin{equation}\label{reynolds_transport_continuity_equation}
+\begin{split}
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\phi\,dx\right]}_{t=0}
+        &= \int_{\Omega_0(0)}-\nabla\cdot(\phi j) + s\,dx + \int_{\partial\Omega_0(0)}\phi \hat{u}\cdot\hat{n} \,dx \\
+        &= \int_{\Omega_0(0)}s\,dx + \int_{\partial\Omega_0(0)}\phi (\hat{u} - j)\cdot\hat{n} \,dx.
+\end{split}
+\end{equation}
+This has a clear interpretation. The $\hat{u} - j$ term is due to us wanting to measure the contributions to the total $\phi$ due to the moving boundary of
+$\Omega_0$, where the motion that matters is \textit{relative} to the flux of the quantity $j$. Specifically, if we move the control volume by
+the same flux function $j$ (letting $\hat{u} = j$), we get
+\begin{equation}\label{lagrangian_transport}
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\phi\,dx\right]}_{t=0}
+        = \int_{\Omega_0(0)}s\,dx.
+\end{equation}
+In fact, \eqref{lagrangian_transport} is just another form for the conservation law \eqref{continuity_equation},
+where the ``frame of reference'' for measurement of $\phi$ follows the transport of $\phi$. This simply means that as we follow some volume of quantity
+original situated in $\Omega_0$, a conservation law posits that the only change detected is due to the source function $s$. In differential form
+\eqref{lagrangian_transport} becomes
+\begin{equation}\label{lagrangian_transport_differential}
+    \frac{d_j\phi}{d_j t} = s,
+\end{equation}
+a succint equivalent to \eqref{continuity_equation_differential}.
+This idea, of following the flow while making measurements, is called the \textit{Lagrangian} perspective, in contrast to the \textit{Eulerian} (fixed) perspective.
+Before describing these notions of flow, we first investigate the property of incompressibility.
+
+\subsection{Incompressible and compressible transport}
+While the continuity equation \eqref{continuity_equation} gives us a general conservation law, transporting some quantity
+through our continuum (---without loss of generality, assume some domain $U \subset \mathbb{R}^2$), this is simply analogous
+to how general vector fields on the configuration space describe the evolution of a state in a finite-dimensional mechanical system
+(--- note that the ``vector field'' in consideration for the continuum case is really a ``vector field of vector fields'' on $X$, since
+a vector in the tangent space of $X$ here would be the vector field giving transport.
+Need to clearly distinguish these notions and use clear terminology, as it could be confusing).
+Analagous to the constraints on the motion
+of a finite mechanical system,
+(--- section on Lagrangian mechanics should have an example of constraints of motion for a pendulum)
+we can constrain possible movement of our continuous quantity to \textit{incompressible transport}. Much like how, in the framework of Lagrangian mechanics,
+constraints on motion are implicitly enforced by strong ``virtual forces'', constraining transport to be incompressible will lead to
+the notion of \textit{pressure}, when we later consider the dynamics of the continuum.
+
+\subsubection{Incompressibility}
+
+
+
 % >>>
-\section{Transport of quantity and continuity equations} % <<<
+
+\section{The dynamics of the continuum} % <<<
 % >>>
 \section{The continuum hypothesis and constitutive relations} % <<<
+% >>>
+\section{Lagrangians of Cauchy momentum equations} % <<<
+--- Require conservative body forces and ``thermodynamic conditions'' on surface forces, such that there exists a Lagrangian.
 % >>>
 
 \chapter{The Navier-Stokes equations}
@@ -123,12 +317,16 @@ Force has been defined as a non-explanatory measurement. Here, discuss physical 
 
 \chapter{The finite element method}
 \section{Discretizing variational principles}
-% The weak form is exactly analagous to perturbation principle in the principle of least action.
+% The weak form is exactly analogous to perturbation principle in the principle of least action.
 % To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
 % equation is the Euler-Lagrange equation of the Dirichlet energy.
 
 
 \begin{thebibliography}{9}
+
+\bibitem{newton}
+Isaac Newton, \textit{Philosophiae Naturalis Principia Mathematica (Third edition)}, 1726.
+
 \bibitem{johann_bernoulli}
 Johann Bernoulli, \textit{``Problema novum ad cujus solutionem Mathematici invitantur.'' (A new problem to whose solution mathematicians are invited.)}, 1696.
 (retrieved from wikipedia/brachistochrone\_curve)
@@ -149,11 +347,16 @@ Cornelius Lanczos, \textit{The Variational Principles of Mechanics}, 1952
 G. K. Batchelor, \textit{Introduction to Fluid Dynamics}, 1967
 
 \bibitem{leal}
-L. Gary Leal, \textit{Advanced Transport Phenomena: Fluid Mechanics and Convectice Transport Processes}, 2007
+L. Gary Leal, \textit{Advanced Transport Phenomena: Fluid Mechanics and Convective Transport Processes}, 2007
 
 \bibitem{fem_ns}
 Vivette Girault, Pierre-Arnaud Raviart, \textit{Finite Element Methods for Navier-Stokes equations}, 1986
 
+\bibitem{feynman_trick}
+Richard Feynman, \textit{Surely You're Joking, Mr. Feynman!}, 1985
+
+\bibitem{arnold}
+V.I. Arnol'd, \textit{Mathematical Methods of Classical Mechanics}, 1978
 
 \end{thebibliography}
 
