@@ -18,6 +18,8 @@
 \usepackage{csquotes}
 \usepackage{epigraph}
 \usepackage{physics}
+\usepackage{cancel}
+\usepackage{bm}
 \newcommand{\bb}{\begin{bmatrix}}
 \newcommand{\bbe}{\end{bmatrix}}
 \newcommand{\pr}{\prime}
@@ -31,6 +33,8 @@
 % \newcommand{\norm}[1]{\left\Vert#1\right\Vert}
 \newcommand{\om}{\Omega}
 \newcommand{\pom}{{\partial\Omega}}
+\newcommand{\omn}{\Omega_0}
+\newcommand{\pomn}{{\partial\Omega_0}}
 \newcommand{\diver}{\text{div}}
 \newcommand{\Part}[2]{\frac{\partial #1}{\partial #2}}
 % footnotes
@@ -163,8 +167,9 @@ From $F = \frac{dp}{dt}$ to $\nabla\cdot\sigma + \rho f = \frac{D(\rho u)}{Dt}$
 --- transport of quantity in the continuum.
 \subsection{Continuity equations and conservation laws}
 \subsubsection{The integral form of a continuity equation}
-Consider some spatial quantity in the continuum $\phi$ (which could be scalar, vector or tensor-valued (---maybe specialize here to scalar)), and a flux function $j$ which by which
-this quantity flows through the continuum. By definition we want this flux function to just push quantity around, and not create or destroy it:
+Consider some spatial quantity in the continuum $\phi$, and a flux function $j$ which by which
+this quantity flows through the continuum. For clarity, we will begin by specializing $\phi$ to be a scalar, although later we will find it useful to
+transport vector quantities such as momentum. By definition we want this flux function to just push quantity around, and not create or destroy it:
 the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the continuity
 condition
 \begin{equation}\label{continuity_equation}
@@ -266,26 +271,72 @@ original situated in $\Omega_0$, a conservation law posits that the only change 
     \frac{d_j\phi}{d_j t} = s,
 \end{equation}
 a succint equivalent to \eqref{continuity_equation_differential}.
-This idea, of following the flow while making measurements, is called the \textit{Lagrangian} perspective, in contrast to the \textit{Eulerian} (fixed) perspective.
+The idea of following the flow while making measurements is called the \textit{Lagrangian} perspective, in contrast to the \textit{Eulerian} (fixed) perspective.
 Before describing these notions of flow, we first investigate the property of incompressibility.
 
 \subsection{Incompressible and compressible transport}
-While the continuity equation \eqref{continuity_equation} gives us a general conservation law, transporting some quantity
-through our continuum (---without loss of generality, assume some domain $U \subset \mathbb{R}^2$), this is simply analogous
-to how general vector fields on the configuration space describe the evolution of a state in a finite-dimensional mechanical system
-(--- note that the ``vector field'' in consideration for the continuum case is really a ``vector field of vector fields'' on $X$, since
-a vector in the tangent space of $X$ here would be the vector field giving transport.
-Need to clearly distinguish these notions and use clear terminology, as it could be confusing).
-Analagous to the constraints on the motion
-of a finite mechanical system,
+% While the continuity equation \eqref{continuity_equation} gives us a general conservation law, transporting some quantity
+% through our continuum (---without loss of generality, assume some domain $U \subset \mathbb{R}^2$), this is simply analogous
+% to how general vector fields on the configuration space describe the evolution of a state in a finite-dimensional mechanical system
+% (--- note that the ``vector field'' in consideration for the continuum case is really a ``vector field of vector fields'' on $X$, since
+% a vector in the tangent space of $X$ here would be the vector field giving transport.
+% Need to clearly distinguish these notions and use clear terminology, as it could be confusing).
+Analogous to constraints on the motion of a finite mechanical system,
 (--- section on Lagrangian mechanics should have an example of constraints of motion for a pendulum)
 we can constrain possible movement of our continuous quantity to \textit{incompressible transport}. Much like how, in the framework of Lagrangian mechanics,
 constraints on motion are implicitly enforced by strong ``virtual forces'', constraining transport to be incompressible will lead to
 the notion of \textit{pressure}, when we later consider the dynamics of the continuum.
 
-\subsubection{Incompressibility}
+\subsubsection{Incompressibility}
+Incompressibility is a constraint on the form of a flux function $j$.
+By incompressibility we mean that a control volume being transported by $j$ will have
+constant volume. While $j$ may transport other quantities, we express incompressibility by requiring the flux function to transport a constant ``volume quantity''
+with a corresponding null source function,
+    $$\phi_{\text{vol}} = 1,\quad s_{\text{vol}} = 0.$$
+The corresponding conservation law, in differential form \eqref{continuity_equation_differential}, is
+\begin{equation}\label{volume_conservation_law}
+    \Part{\phi_{\text{vol}}}{t} = -\nabla \cdot (\phi_{\text{vol}}j) + s_{\text{vol}}
+        \quad\Rightarrow\quad \nabla\cdot j = 0.
+\end{equation}
+This is our incompressibility constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
+there is an inward or outward flux which would contract or expand a transported control volume.
 
+\subsubsection{The material derivative}
+Assuming an incompressible (divergence-free) flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
+\eqref{lagrangian_transport_differential} following a control volume becomes
+\begin{equation}\label{lagrangian_transport_differential}
+    \frac{d_j\phi}{d_j t} = \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
+\end{equation}
+We define the \textit{material derivative} to be
+\begin{equation}\label{material_derivative}
+    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
+\end{equation}
+It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
+(--- why define this?)
 
+\subsection{Transport of vector and tensor quantities}
+All previous discussion on the transport of scalar quantities applies trivially to vector and tensor quantities.
+However, some notational discussion is needed in order to establish differentialized forms of continuity equations and the Reynolds transport theorem.
+\subsubsection{Reynolds transport of vector and tensor quantities}
+For a general tensor quantity $\Phi$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
+\begin{equation}\label{reynolds_transport_theorem_tensor}
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\Phi\,dx\right]}_{t=0} =
+        \int_{\Omega_0(0)}\Part{\Phi}{t}\,dx + \int_{\partial\Omega_0(0)}\Phi \left(\hat{u}\cdot\hat{n}\right) \,dx.
+\end{equation}
+The step to the differential form \eqref{reynolds_transport_theorem_differential}, however, needs some thought
+as rearranging
+    $$\text{``}\Phi\left(\hat{u}\cdot \hat{n}\right) = (\Phi\hat{u})\cdot \hat{n}\text{''}$$
+in order to apply the divergence theorem makes no sense. However, the divergence $\nabla \cdot$ was \textit{defined}
+to evaluate the limit of this boundary integral for arbitrarily small $\Omega_0$. We therefore have a natural generalization of the
+divergence for arbitrary tensors $\Psi$, as the limit of the boundary integral of the \textit{contraction} of $\Psi$ with the outward normal
+$\hat{n}$ (--- or rather, contravariant surface element). The divergence of a rank $n$ tensor is then a rank $n-1$ tensor,
+\begin{equation}\label{tensor_divergence}
+    \nabla\cdot\Psi \coloneqq
+        \lim_{\epsilon \rightarrow 0} \frac{1}{\lvert \Omega_{\epsilon} \rvert}
+        \int_{\partial\Omega_{\epsilon}} \Psi : \hat{n}\,dx.
+\end{equation}
+We can then rewrite $\Phi \left(\hat{u}\cdot \hat{n}\right)$ in \eqref{reynolds_transport_theorem_tensor} as
+    $$
 
 % >>>
 
