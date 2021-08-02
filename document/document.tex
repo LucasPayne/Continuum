@@ -143,39 +143,31 @@ the corresponding (PDE) equations of motion.
 
 
 % >>>
-\section{Configuration spaces as function spaces} % <<<
-\subsection{The state of a continuum model}
-(--- discuss continuum modelling).
-Here we work with position function $x$ and velocity $u$, rather than $q$ and $\dot{q}$, but the principles are the same.
-Let $U$ be some region of, say, $\mathbb{R}^2$.
-We define $x : U\times [t_1, t_2] \rightarrow U$ where $x$ is invertible to be the \textit{displacement function},
-where $x(X_0, t)$ gives the (---).
-The ``displacement function'' is just the $q$ discussed before. Here, however, the possible states, or displacement functions,
-exist in an infinite-dimensional configuration space. We define the \textit{velocity field} $u: U \times [t_1, t_2] \rightarrow \mathbb{R}^2$
-to be the ``differential generator'' of the displacement function. This is, again, just an instance of $\dot{q}$ as discussed before.
-Importantly, $x$ and $u$ are functions of the same domain, and therefore $u$ is a function of the reference configuration.
-Further, we define $\rho : U \rightarrow \mathbb{R}^{+}$ to be the \textit{mass density function}, and define our momentum to be
-$\fancyP = \rho u$.
-Newton's laws then give
-    $$\int_{s_1}^{s_2} F\,dt = \rho u(s_2) - \rho u(s_1).$$
-No new mechanics has been introduced. We just have a different notion of position (a different, here infinite dimensional, configuration space $X$)
-and a relation between velocity variables and the momentum.
-(---body forces, surfaces forces, Lagrangian and Eulerian specifications, Reynolds tranport theorem, material derivative)
-From $F = \frac{dp}{dt}$ to $\nabla\cdot\sigma + \rho f = \frac{D(\rho u)}{Dt}$
-% >>>
 \section{The kinematics of the continuum} % <<<
---- transport of quantity in the continuum.
+
+Before considering continuum processes in the framework of Newtonian and Lagrangian mechanics, we will look at a fundamental notion of a ``motion''
+of a point in a function space. Many continuum models in physics, such as the heat equation,
+Maxwell's equations, and the equations of fluid motion, are formed by \textit{continuity equations}. These laws posit that the
+evolution of the state (represented by a function) is
+due to the transport of the quantity that the function measures, which is either pushed around (by some flux either predetermined or dependent on the current state)
+or created and destroyed at sources and sinks.
+
+(--- figure of some manifold embedded in space, and some vector field pushing quantity around)
+
+We consider here the transport of quantities (scalar, vector, and tensor) on a general finite-dimensional manifold $M$,
+colloquially called ``the continuum''. All transporting vector fields (or flux functions) are considered to be tangent to this manifold $M$.
+
 \subsection{Continuity equations and conservation laws}
 \subsubsection{The integral form of a continuity equation}
-Consider some spatial quantity in the continuum $\phi$, and a flux function $j$ which by which
-this quantity flows through the continuum. For clarity, we will begin by specializing $\phi$ to be a scalar, although later we will find it useful to
+Consider some spatial quantity on $M$, $\phi$, and a flux function $j$ which by which
+this quantity flows around $M$. For clarity, we will begin by specializing $\phi$ to be a scalar, although later we will find it useful to
 transport vector quantities such as momentum. By definition we want this flux function to just push quantity around, and not create or destroy it:
 the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the continuity
 condition
 \begin{equation}\label{continuity_equation}
     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\partial\Omega_0} \phi j\cdot (-\hat{n})\,dx + \int_{\Omega_0} s\,dx.
 \end{equation}
-for arbitrary control volumes $\Omega_0$ in the continuum. $-\hat{n}$ denotes the inward-pointing normal to the boundary of the control volume. This simply says that the change in the total quantity in the fixed control volume
+for arbitrary control volumes $\Omega_0$ in the continuum. The term $-\hat{n}$ denotes the inward-pointing normal to the boundary of the control volume. This simply says that the change in the total quantity in the fixed control volume
 is accounted for exactly by that quantity pushed through the boundary by the flux function $j$, and the internal sources and sinks of quantity $s$.
 
 \subsubsection{The differential form of a continuity equation}
@@ -184,12 +176,12 @@ Equation \eqref{continuity_equation} becomes
 \begin{equation}\label{continuity_equation_differential}
     \Part{\phi}{t} = -\nabla\cdot (\phi j) + s
 \end{equation}
-(---assuming $\phi$ is a scalar quantity, the general form requires the wedge product) assuming that $\phi j$ is sufficiently differentiable such that the limiting integral exists.
-It should be noted that Stokes' theorem and its specializations are really \textit{definitions} of (pointwise) quantities
+assuming that $\phi j$ is sufficiently differentiable such that the limiting integral exists.
+It should be noted that Stokes' theorem and its specializations are really \textit{definitions} of pointwise quantities
 such as the divergence and curl as limits of these integral expressions for arbitrarily small regions.
 Continuity relations are most naturally expressed in form \eqref{continuity_equation}, while the form
 \eqref{continuity_equation_differential} may be more useful for techniques such as finite differences.
-For example, it is a theorem of Gauss that in Euclidean space we have
+For example, it is a theorem of Gauss that in Euclidean space ($M = \mathbb{R}^3$) we have
 \begin{equation}\label{gauss_euclidean_divergence}
     \nabla \cdot j = \Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z},
 \end{equation}
@@ -212,7 +204,7 @@ central differences in space, our discrete scheme is
 \end{equation}
 Later, when we discuss numerical methods for solving continuum models, we will not take this route. The methods of interest, \textit{Galerkin} methods,
 work naturally with the integral form \eqref{continuity_equation}.
-It will be seen later that many constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialization of the original integral form of physical PDEs.
+It will be seen later that some constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialization of the original integral form of physical PDEs.
 (--- note: Maybe not exactly, as the integral conservation is quantified over regions, while the weak form is quantified over test functions,
 which still need to be sufficiently differentiabile. But I think that this must express the same continuity relation.)
 
@@ -247,16 +239,17 @@ the change in volume of a quantity when a small control volume around the point 
 
 \subsubsection{Reynolds transport applied to a continuity equation}
 Letting our quantity $\gamma$ in \eqref{reynolds_transport_theorem} be the quantity $\phi$ transported by flux function $j$
-(described in continuity equation \eqref{continuity_equation}), we can get a specialized form of the Reynolds transport theorem for continuity equations.
+(described in continuity equation \eqref{continuity_equation}), we get a specialized form of the Reynolds transport theorem for continuity equations.
 Term $\Part{\gamma}{t}$ in \eqref{reynolds_transport_theorem} becomes $\Part{\phi}{t}$ in the differential form of the continuity equation \eqref{continuity_equation_differential}, giving
 \begin{equation}\label{reynolds_transport_continuity_equation}
 \begin{split}
     \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\phi\,dx\right]}_{t=0}
         &= \int_{\Omega_0(0)}-\nabla\cdot(\phi j) + s\,dx + \int_{\partial\Omega_0(0)}\phi \hat{u}\cdot\hat{n} \,dx \\
-        &= \int_{\Omega_0(0)}s\,dx + \int_{\partial\Omega_0(0)}\phi (\hat{u} - j)\cdot\hat{n} \,dx.
+        &= \int_{\Omega_0(0)}s\,dx + \int_{\partial\Omega_0(0)}\phi (\hat{u} - j)\cdot\hat{n} \,dx
 \end{split}
 \end{equation}
-This has a clear interpretation. The $\hat{u} - j$ term is due to us wanting to measure the contributions to the total $\phi$ due to the moving boundary of
+by Stokes' theorem. This has a clear interpretation.
+The $\hat{u} - j$ term is due to us wanting to measure the contributions to the total $\phi$ due to the moving boundary of
 $\Omega_0$, where the motion that matters is \textit{relative} to the flux of the quantity $j$. Specifically, if we move the control volume by
 the same flux function $j$ (letting $\hat{u} = j$), we get
 \begin{equation}\label{lagrangian_transport}
@@ -304,7 +297,7 @@ there is an inward or outward flux which would contract or expand a transported 
 \subsubsection{The material derivative}
 Assuming an incompressible (divergence-free) flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
 \eqref{lagrangian_transport_differential} following a control volume becomes
-\begin{equation}\label{lagrangian_transport_differential}
+\begin{equation}
     \frac{d_j\phi}{d_j t} = \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
 \end{equation}
 We define the \textit{material derivative} to be
@@ -316,30 +309,91 @@ It is a convention to leave the vector field $j$ implicit, as material derivativ
 
 \subsection{Transport of vector and tensor quantities}
 All previous discussion on the transport of scalar quantities applies trivially to vector and tensor quantities.
+This will soonest be of use in the discussion of conservation of momenta, which are vector quantities.
 However, some notational discussion is needed in order to establish differentialized forms of continuity equations and the Reynolds transport theorem.
 \subsubsection{Reynolds transport of vector and tensor quantities}
-For a general tensor quantity $\Phi$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
+For a general tensor quantity $\Gamma$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
 \begin{equation}\label{reynolds_transport_theorem_tensor}
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\Phi\,dx\right]}_{t=0} =
-        \int_{\Omega_0(0)}\Part{\Phi}{t}\,dx + \int_{\partial\Omega_0(0)}\Phi \left(\hat{u}\cdot\hat{n}\right) \,dx.
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\Gamma\,dx\right]}_{t=0} =
+        \int_{\Omega_0(0)}\Part{\Gamma}{t}\,dx + \int_{\partial\Omega_0(0)}\Gamma \left(\hat{u}\cdot\hat{n}\right) \,dx.
 \end{equation}
 The step to the differential form \eqref{reynolds_transport_theorem_differential}, however, needs some thought
 as rearranging
-    $$\text{``}\Phi\left(\hat{u}\cdot \hat{n}\right) = (\Phi\hat{u})\cdot \hat{n}\text{''}$$
+    $$\text{``}\Gamma\left(\hat{u}\cdot \hat{n}\right) = (\Gamma\hat{u})\cdot \hat{n}\text{''}$$
 in order to apply the divergence theorem makes no sense. However, the divergence $\nabla \cdot$ was \textit{defined}
 to evaluate the limit of this boundary integral for arbitrarily small $\Omega_0$. We therefore have a natural generalization of the
 divergence for arbitrary tensors $\Psi$, as the limit of the boundary integral of the \textit{contraction} of $\Psi$ with the outward normal
-$\hat{n}$ (--- or rather, contravariant surface element). The divergence of a rank $n$ tensor is then a rank $n-1$ tensor,
+$\hat{n}$ (which is a contravariant vector). The divergence of a rank $n$ tensor is then a rank $n-1$ tensor,
 \begin{equation}\label{tensor_divergence}
-    \nabla\cdot\Psi \coloneqq
-        \lim_{\epsilon \rightarrow 0} \frac{1}{\lvert \Omega_{\epsilon} \rvert}
-        \int_{\partial\Omega_{\epsilon}} \Psi : \hat{n}\,dx.
+    \int_{\Omega_0} \nabla\cdot\Psi\,dx \coloneqq
+        \int_{\partial{\Omega_0}} \Psi : \hat{n}\,dx.
 \end{equation}
-We can then rewrite $\Phi \left(\hat{u}\cdot \hat{n}\right)$ in \eqref{reynolds_transport_theorem_tensor} as
+We can then rewrite $\Gamma \left(\hat{u}\cdot \hat{n}\right)$ in \eqref{reynolds_transport_theorem_tensor} as
+    $$\Gamma \left(\hat{u}\cdot \hat{n}\right) = \left(\Gamma \otimes \hat{u}\right) : \hat{n},$$
+where the tensor product $\otimes$ ``defers contraction'' of $\hat{u}$ with $\hat{n}$, by storing it as a component of product tensor $\Gamma \otimes \hat{u}$.
+This leads to a differentialization of \eqref{reynolds_transport_theorem_tensor},
+\begin{equation}\label{reynolds_transport_theorem_tensor_differential}
+    \frac{d_{\hat{u}}\Gamma}{d_{\hat{u}}t} = \Part{\Gamma}{t} + \nabla \cdot(\Gamma \otimes \hat{u}).
+\end{equation}
+(--- interpretation of this. This does actually make sense from ``first principles'' rather than tensor algebra.)
+\subsubsection{Continuity equations for vector and tensor quantities}
+With the previous ideas from tensor algebra, it will be easy to describe continuity relations for transport of tensors. The integral form of the scalar continuity equation \eqref{continuity_equation}, generalized to transported tensor $\Phi$, trivially becomes
+\begin{equation}\label{continuity_equation_tensor}
+    \frac{d}{dt} \int_{\Omega_0} \Phi\,dx = \int_{\partial\Omega_0} \Phi \left(j\cdot (-\hat{n})\right)\,dx + \int_{\Omega_0} s\,dx.
+\end{equation}
+By the same tensor algebra as above we have
     $$
+        \Phi \left(j\cdot (-\hat{n})\right) = -\left(\Phi \otimes j\right) : \hat{n},
+    $$
+giving \eqref{continuity_equation_tensor} differentialized as
+\begin{equation}\label{continuity_equation_tensor_differential}
+    \Part{\Phi}{t} = -\nabla\cdot (\Phi \otimes j) + s.
+\end{equation}
+Finally, we may take a Lagrangian perspective on the transport of tensor $\Phi$ by letting the boundary transport in
+\eqref{reynolds_transport_theorem_tensor_differential}
+be the flux function, $\hat{u} = j$,
+and $\Gamma$ be the tensor $\Phi$ being transported by $j$, giving
+\begin{equation}\label{lagrangian_transport_tensor_differential}
+    \frac{d_j \Phi}{d_j t} = \cancel{-\nabla\cdot\left(\Phi\otimes j\right)} + s + \cancel{\nabla\cdot\left(\Phi\otimes j\right)} = s.
+\end{equation}
+(--- This shows that tensor transport is a trivial modification of the previous results.)
 
 % >>>
+\section{The dynamics of the continuum}
+We consider a time interval $[t_1, t_2]$ in which our physical motions will take place.
 
+\subsection{Position maps}
+(--- terminology?)
+We may consider the manifold $M$ as the parametric domain of some points living in an ambient manifold $N$.
+We will call this the ``position function''
+    $$x:M\times [t_1, t_2] \rightarrow N.$$
+In general, $x$ needs not be continuous, differentiable, or invertible
+--- these restrictions are only introduced in accord to the physical meaning of the position map. For example, models of small beam deflections
+may require continuity, and invertibility to prevent self-intersections.
+
+(---figure of abstract square domain mapping to a bent beam, and a figure of a map from a reference configuration to itself.)
+
+
+
+
+(--- discuss continuum modelling).
+Here we work with position function $x$ and velocity $u$, rather than $q$ and $\dot{q}$, but the principles are the same.
+Let $U$ be some region of, say, $\mathbb{R}^2$.
+We define $x : U\times [t_1, t_2] \rightarrow U$ where $x$ is invertible to be the \textit{displacement function},
+where $x(X_0, t)$ gives the (---).
+The ``displacement function'' is just the $q$ discussed before. Here, however, the possible states, or displacement functions,
+exist in an infinite-dimensional configuration space. We define the \textit{velocity field} $u: U \times [t_1, t_2] \rightarrow \mathbb{R}^2$
+to be the ``differential generator'' of the displacement function. This is, again, just an instance of $\dot{q}$ as discussed before.
+Importantly, $x$ and $u$ are functions of the same domain, and therefore $u$ is a function of the reference configuration.
+Further, we define $\rho : U \rightarrow \mathbb{R}^{+}$ to be the \textit{mass density function}, and define our momentum to be
+$\fancyP = \rho u$.
+Newton's laws then give
+    $$\int_{s_1}^{s_2} F\,dt = \rho u(s_2) - \rho u(s_1).$$
+No new mechanics has been introduced. We just have a different notion of position (a different, here infinite dimensional, configuration space $X$)
+and a relation between velocity variables and the momentum.
+(---body forces, surfaces forces, Lagrangian and Eulerian specifications, Reynolds tranport theorem, material derivative)
+From $F = \frac{dp}{dt}$ to $\nabla\cdot\sigma + \rho f = \frac{D(\rho u)}{Dt}$
+% >>>
 \section{The dynamics of the continuum} % <<<
 % >>>
 \section{The continuum hypothesis and constitutive relations} % <<<
