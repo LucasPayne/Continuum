@@ -70,10 +70,10 @@ measurable state which evolves in time.
 
 \subsection{Symmetry, momenta, and inertia}
 Mechanics as a theory of physical motion will require a definition of physical motion. A first attempt might be to posit
-that ``physical states'' are representable as points in a finite-dimensional manifold, which we call the configuration space $X$, which is the case for typical
+that ``physical states'' are representable as points in a finite-dimensional manifold, which we call the configuration space $C$, which is the case for typical
 notions of state such as the two angles in a double pendulum, or the position and orientation of a rigid body. We might define a motion as
 a continuous time-parameterized curve
-    $$\gamma: [t_1, t_2] \rightarrow X.$$
+    $$\gamma: [t_1, t_2] \rightarrow C.$$
 
 (--- motivation of $F = ma$, and momenta as fundamental quantity).
 
@@ -143,7 +143,7 @@ the corresponding (PDE) equations of motion.
 
 
 % >>>
-\section{The kinematics of the continuum} % <<<
+\section{Transport} % <<<
 
 Before considering continuum processes in the framework of Newtonian and Lagrangian mechanics, we will look at a fundamental notion of a ``motion''
 of a point in a function space. Many continuum models in physics, such as the heat equation,
@@ -271,8 +271,8 @@ Before describing these notions of flow, we first investigate the property of in
 % While the continuity equation \eqref{continuity_equation} gives us a general conservation law, transporting some quantity
 % through our continuum (---without loss of generality, assume some domain $U \subset \mathbb{R}^2$), this is simply analogous
 % to how general vector fields on the configuration space describe the evolution of a state in a finite-dimensional mechanical system
-% (--- note that the ``vector field'' in consideration for the continuum case is really a ``vector field of vector fields'' on $X$, since
-% a vector in the tangent space of $X$ here would be the vector field giving transport.
+% (--- note that the ``vector field'' in consideration for the continuum case is really a ``vector field of vector fields'' on $C$, since
+% a vector in the tangent space of $C$ here would be the vector field giving transport.
 % Need to clearly distinguish these notions and use clear terminology, as it could be confusing).
 Analogous to constraints on the motion of a finite mechanical system,
 (--- section on Lagrangian mechanics should have an example of constraints of motion for a pendulum)
@@ -359,46 +359,115 @@ and $\Gamma$ be the tensor $\Phi$ being transported by $j$, giving
 (--- This shows that tensor transport is a trivial modification of the previous results.)
 
 % >>>
-\section{The dynamics of the continuum}
-We consider a time interval $[t_1, t_2]$ in which our physical motions will take place.
+\section{The kinematics of the continuum}
+Transport equations are just one notion of ``physical motion'' in a continuum model.
+These transport equations, with prescribed flux and source functions, determine a continuous process on a fixed
+domain $M$. These conserved quantities (time-varying maps from $M$ to some measurement space (--scalars, tensors))
+are then components of the total configuration space $C$, which clearly must be infinite-dimensional.
+We now consider another, more geometrical component of $C$
+which will let us model a physical domain with alterating shape.
+In our discussion we will consider a fixed time interval $[t_1, t_2]$ in which our physical motions will take place.
 
 \subsection{Position maps}
 (--- terminology?)
 We may consider the manifold $M$ as the parametric domain of some points living in an ambient manifold $N$.
-We will call this the ``position function''
+We will call this the ``position map''
     $$x:M\times [t_1, t_2] \rightarrow N.$$
-In general, $x$ needs not be continuous, differentiable, or invertible
---- these restrictions are only introduced in accord to the physical meaning of the position map. For example, models of small beam deflections
+In general, $x$ needs not be continuous, differentiable, or invertible.
+These restrictions are only introduced in accord to the physical meaning of the position map. For example, models of small beam deflections
 may require continuity, and invertibility to prevent self-intersections.
 
 (---figure of abstract square domain mapping to a bent beam, and a figure of a map from a reference configuration to itself.)
 
+Continuum mechanics will study the physical motion of $x$, and other maps, where the equations of motion are, for example,
+transport equations.
+
+
+% \subsubsection{Displacement maps}
+% --- possibly discuss.
+% --- M is a subdomain of N, define a map which gives a displacement vector, which might only really make sense in Euclidean space.
+% 
+% \subsection{The configuration space of a continuum model}
+% In sections (ref) and (ref) we discussed the mechanics of a physical system which can be encoded as a point in a finite-dimensional configuration manifold
+% $C$. Clearly, however, if we consider $x$ a part of the physical state, the space of states will be infinite-dimensional. $x$ is just one possibly
+% useful state variable which we have used for demonstration. We may, for example, consider continuum models for advection-diffusion processes \cite{turing} on some non-moving domain, without the use of a position function. $x$ is an instance of a \textit{point valued} map, in constrast to quantity (scalar or tensor) valued maps
+% discussed previously. (---discuss why continuity equations would not apply (?))
+% 
+% Continuum mechanics will study the physical motion of $x$, and other maps, where the equations of motion are, for example,
+% transport equations. Each component of our state will have a corresponding velocity. In the case of the position map $x : M \times [t_1, t_2] \rightarrow N$,
+% the velocity is a vector field which
+
+
+\section{The dynamics of the continuum}
+
+\subsection{Velocity}
+Each component of our state $q \in C$ will have a corresponding velocity which ``generates'' a physical motion of that component.
+In the case of the position map $x : M \times [t_1, t_2] \rightarrow N$, the velocity will be given by
+a vector in the tangent space of $N$ at $x(r)$ for each parameter $r \in M$. (---it might be worth using more differential geometric language.)
+
+(---draw this)
+
+For some transported scalar quantity $\phi : M \times [t_1, t_2] \rightarrow \mathbb{R}$, the tangent space at each point of $\mathbb{R}$ is $\mathbb{R}$,
+and therefore our velocity is represented by a scalar function giving local change of $\phi(r)$ for each $r \in M$.
+
+(---draw this, the velocity as a small displacement function which is changing $\phi$)
+
+\subsection{Conservation of mass}
+--- why?
+\subsection{The Cauchy momentum equation}
+If we conserve the linear momentum $\rho u$, a ``quantity of motion'', then we get a continuity equation
+\begin{equation}\label{cauchy_continuity}
+    \frac{d}{dt}\int_{\Omega_0}\rho u\,dx = \int_{\Omega_0} F\,dx - \int_{\partial\Omega_0}\rho u (u\cdot \hat{n})\,dx,
+\end{equation}
+(---include equality notation for tensor contraction)
+where we let the source of linear momentum be $F$, the force. Differentializing \eqref{cauchy_continuity} gives
+\begin{equation}\label{cauchy_continuity_differential}
+    \Part{(\rho u)}{t} + \nabla \cdot (\rho u\otimes u) = F.
+\end{equation}
+This is one form of conservation of linear momentum, which simply states that, in the Lagrangian perspective and allowing
+the flow field $\hat{u}$ to expand and contract the control volume, the only source of linear momentum is the force.
+The left-hand-side of \eqref{cauchy_continuity_differential} is the ``convective derivative'' $\frac{d_u}{d_ut}$ as defined in section (ref).
+However, in this form, we can derive another more convenient form for the Cauchy momentum equation, using the fact that
+$\rho$ is conserved and has no source. Here, this will be derived purely algebraically, although the final form of the equation
+has a useful interpretation. Expanding the partial derivative
+$$
+    \Part{(\rho u)}{t} = \rho\Part{u}{t} + u\Part{\rho}{t}
+$$
+is simple. The tensor divergence $\nabla \cdot (\rho u\otimes u)$ is defined such that
+$$
+    \int_{\Omega_0} \nabla \cdot (\rho u\otimes u)\,dx = \int_{\pomn} (\rho u\otimes u) : \hat{n}\,dx = \int_{\pomn} \rho u (u\cdot\hat{n})\,dx
+$$
+for arbitrary control volumes $\Omega_0$. As $\Omega_0$ becomes small, we can separately assume $u$ and $\rho u$ are constant
+to derive
+$$
+    \int_{\pomn} \rho u (u\cdot\hat{n})\,dx = u\int_{\pomn}(\rho u)\cdot\hat{n}\,dx
+                                              + \rho u\cdot \int_{\pomn} u\hat{n}\,dx + \cdots
+$$
+where a trailing term becomes neglible for a small control volume. This gives a ``tensor product rule'' for the divergence,
+\begin{equation}\label{cauchy_divergence_tensor_product}
+    \nabla\cdot (\rho u \otimes u) = u\nabla\cdot (\rho u) + \rho u\cdot\nabla u.
+\end{equation}
+Equation \eqref{cauchy_continuity_differential} then becomes
+\begin{equation}
+    \rho\Part{u}{t} + u\Part{\rho}{t} + u\nabla\cdot (\rho u) + \rho u\cdot\nabla u = F.
+\end{equation}
+Noting that $\Part{\rho}{t}$ is already given by a continuity equation
+$$\Part{\rho}{t} = -\nabla\cdot(\rho u),$$
+as mass is transported by $u$ and has no source, we get
+\begin{equation}\label{cauchy_continuity_differential_simplified}
+    \rho\Part{u}{t} -\cancel{u\nabla(\rho u)} + \cancel{u\nabla\cdot (\rho u)} + \rho u\cdot\nabla u = F.
+\end{equation}
+Finally, the material derivative as defined in section (ref) is helpful in simplifying \eqref{cauchy_continuity_differential_simplified} to
+\begin{equation}\label{cauchy_continuity_differential_material}
+    \rho\frac{Du}{Dt} = F.
+\end{equation}
 
 
 
-(--- discuss continuum modelling).
-Here we work with position function $x$ and velocity $u$, rather than $q$ and $\dot{q}$, but the principles are the same.
-Let $U$ be some region of, say, $\mathbb{R}^2$.
-We define $x : U\times [t_1, t_2] \rightarrow U$ where $x$ is invertible to be the \textit{displacement function},
-where $x(X_0, t)$ gives the (---).
-The ``displacement function'' is just the $q$ discussed before. Here, however, the possible states, or displacement functions,
-exist in an infinite-dimensional configuration space. We define the \textit{velocity field} $u: U \times [t_1, t_2] \rightarrow \mathbb{R}^2$
-to be the ``differential generator'' of the displacement function. This is, again, just an instance of $\dot{q}$ as discussed before.
-Importantly, $x$ and $u$ are functions of the same domain, and therefore $u$ is a function of the reference configuration.
-Further, we define $\rho : U \rightarrow \mathbb{R}^{+}$ to be the \textit{mass density function}, and define our momentum to be
-$\fancyP = \rho u$.
-Newton's laws then give
-    $$\int_{s_1}^{s_2} F\,dt = \rho u(s_2) - \rho u(s_1).$$
-No new mechanics has been introduced. We just have a different notion of position (a different, here infinite dimensional, configuration space $X$)
-and a relation between velocity variables and the momentum.
-(---body forces, surfaces forces, Lagrangian and Eulerian specifications, Reynolds tranport theorem, material derivative)
-From $F = \frac{dp}{dt}$ to $\nabla\cdot\sigma + \rho f = \frac{D(\rho u)}{Dt}$
+
+\subsection{The continuum hypothesis and constitutive relations} % <<<
 % >>>
-\section{The dynamics of the continuum} % <<<
-% >>>
-\section{The continuum hypothesis and constitutive relations} % <<<
-% >>>
-\section{Lagrangians of Cauchy momentum equations} % <<<
+\subsection{Lagrangians of Cauchy momentum equations} % <<<
 --- Require conservative body forces and ``thermodynamic conditions'' on surface forces, such that there exists a Lagrangian.
 % >>>
 
@@ -462,6 +531,9 @@ Richard Feynman, \textit{Surely You're Joking, Mr. Feynman!}, 1985
 
 \bibitem{arnold}
 V.I. Arnol'd, \textit{Mathematical Methods of Classical Mechanics}, 1978
+
+\bibitem{turing}
+Alan Turing, \textit{The Chemical Basis of Morphogenesis}, 1952
 
 \end{thebibliography}
 

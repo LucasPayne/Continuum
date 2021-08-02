@@ -7,7 +7,7 @@
 \contentsline {subsection}{\numberline {1.2.2}The first variation of a functional}{4}
 \contentsline {subsection}{\numberline {1.2.3}From the Lagrangian to the equations of motion}{4}
 \contentsline {subsection}{\numberline {1.2.4}Why ---?}{5}
-\contentsline {section}{\numberline {1.3}The kinematics of the continuum}{5}
+\contentsline {section}{\numberline {1.3}Transport}{5}
 \contentsline {subsection}{\numberline {1.3.1}Continuity equations and conservation laws}{5}
 \contentsline {subsubsection}{The integral form of a continuity equation}{5}
 \contentsline {subsubsection}{The differential form of a continuity equation}{5}
@@ -21,12 +21,15 @@
 \contentsline {subsection}{\numberline {1.3.4}Transport of vector and tensor quantities}{8}
 \contentsline {subsubsection}{Reynolds transport of vector and tensor quantities}{8}
 \contentsline {subsubsection}{Continuity equations for vector and tensor quantities}{9}
-\contentsline {section}{\numberline {1.4}The dynamics of the continuum}{9}
+\contentsline {section}{\numberline {1.4}The kinematics of the continuum}{9}
 \contentsline {subsection}{\numberline {1.4.1}Position maps}{10}
 \contentsline {section}{\numberline {1.5}The dynamics of the continuum}{10}
-\contentsline {section}{\numberline {1.6}The continuum hypothesis and constitutive relations}{10}
-\contentsline {section}{\numberline {1.7}Lagrangians of Cauchy momentum equations}{10}
-\contentsline {chapter}{\chapternumberline {2}The Navier-Stokes equations}{11}
-\contentsline {chapter}{\chapternumberline {3}The finite element method}{13}
-\contentsline {section}{\numberline {3.1}Discretizing variational principles}{13}
-\contentsline {chapter}{Bibliography}{15}
+\contentsline {subsection}{\numberline {1.5.1}Velocity}{10}
+\contentsline {subsection}{\numberline {1.5.2}Conservation of mass}{10}
+\contentsline {subsection}{\numberline {1.5.3}The Cauchy momentum equation}{10}
+\contentsline {subsection}{\numberline {1.5.4}The continuum hypothesis and constitutive relations}{11}
+\contentsline {subsection}{\numberline {1.5.5}Lagrangians of Cauchy momentum equations}{11}
+\contentsline {chapter}{\chapternumberline {2}The Navier-Stokes equations}{13}
+\contentsline {chapter}{\chapternumberline {3}The finite element method}{15}
+\contentsline {section}{\numberline {3.1}Discretizing variational principles}{15}
+\contentsline {chapter}{Bibliography}{17}
