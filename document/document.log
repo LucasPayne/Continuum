@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  2 AUG 2021 22:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  3 AUG 2021 11:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1782,9 +1782,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 62--62
 Underfull \vbox (badness 1412) has occurred while \output is active []
 
  [3]
-[4] [5] [6] [7] [8] [9] [10] [11] [12
+[4] [5] [6] [7] [8] [9] [10] [11] [12] [13
 
-] [13] [14
+] [14
 
 ] [15] [16
 
@@ -1798,7 +1798,7 @@ bibitemlist
 Here is how much of TeX's memory you used:
  18023 strings out of 494847
  311427 string characters out of 6179081
- 425193 words of memory out of 5000000
+ 425344 words of memory out of 5000000
  21093 multiletter control sequences out of 15000+600000
  551373 words of font info for 140 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
@@ -1822,7 +1822,7 @@ r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on document.pdf (17 pages, 251164 bytes).
+Output written on document.pdf (17 pages, 253260 bytes).
 PDF statistics:
  139 PDF objects out of 1000 (max. 8388607)
  99 compressed objects within 1 object stream

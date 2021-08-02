@@ -396,10 +396,6 @@ transport equations.
 % Continuum mechanics will study the physical motion of $x$, and other maps, where the equations of motion are, for example,
 % transport equations. Each component of our state will have a corresponding velocity. In the case of the position map $x : M \times [t_1, t_2] \rightarrow N$,
 % the velocity is a vector field which
-
-
-\section{The dynamics of the continuum}
-
 \subsection{Velocity}
 Each component of our state $q \in C$ will have a corresponding velocity which ``generates'' a physical motion of that component.
 In the case of the position map $x : M \times [t_1, t_2] \rightarrow N$, the velocity will be given by
@@ -412,9 +408,14 @@ and therefore our velocity is represented by a scalar function giving local chan
 
 (---draw this, the velocity as a small displacement function which is changing $\phi$)
 
+
+
+\section{The dynamics of the continuum}
+
 \subsection{Conservation of mass}
 --- why?
-\subsection{The Cauchy momentum equation}
+\subsection{Conservation of linear momentum}
+\subsubsection{The Eulerian perspective for linear momentum conservation}
 If we conserve the linear momentum $\rho u$, a ``quantity of motion'', then we get a continuity equation
 \begin{equation}\label{cauchy_continuity}
     \frac{d}{dt}\int_{\Omega_0}\rho u\,dx = \int_{\Omega_0} F\,dx - \int_{\partial\Omega_0}\rho u (u\cdot \hat{n})\,dx,
@@ -422,12 +423,13 @@ If we conserve the linear momentum $\rho u$, a ``quantity of motion'', then we g
 (---include equality notation for tensor contraction)
 where we let the source of linear momentum be $F$, the force. Differentializing \eqref{cauchy_continuity} gives
 \begin{equation}\label{cauchy_continuity_differential}
-    \Part{(\rho u)}{t} + \nabla \cdot (\rho u\otimes u) = F.
+    \Part{(\rho u)}{t} = F - \nabla \cdot (\rho u\otimes u).
 \end{equation}
-This is one form of conservation of linear momentum, which simply states that, in the Lagrangian perspective and allowing
-the flow field $\hat{u}$ to expand and contract the control volume, the only source of linear momentum is the force.
-The left-hand-side of \eqref{cauchy_continuity_differential} is the ``convective derivative'' $\frac{d_u}{d_ut}$ as defined in section (ref).
-However, in this form, we can derive another more convenient form for the Cauchy momentum equation, using the fact that
+This simply states that, in the Eulerian perspective,
+the only sources of linear momentum at a point are the force and the amount of momentum ``pushed'' into a small control volume around the point.
+% The left-hand-side of \eqref{cauchy_continuity_differential} is the ``convective derivative'' $\frac{d_u}{d_ut}$ as defined in section (ref).
+\subsubsection{The Lagrangian perspective for linear momentum conservation}
+We can derive another more convenient form of \eqref{cauchy_continuity_differential}, using the fact that
 $\rho$ is conserved and has no source. Here, this will be derived purely algebraically, although the final form of the equation
 has a useful interpretation. Expanding the partial derivative
 $$
@@ -461,14 +463,35 @@ Finally, the material derivative as defined in section (ref) is helpful in simpl
 \begin{equation}\label{cauchy_continuity_differential_material}
     \rho\frac{Du}{Dt} = F.
 \end{equation}
+This form of \eqref{cauchy_continuity_differential} is more obviously a form of $F = ma$.
+
+\subsection{Forces on the continuum}
+Recall that the material derivative is defined as
+    $$\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot \nabla,$$
+which measures the rate of change of a pointwise quantity from the perspective of a particle moving with the flow field $u$.
+The equation \eqref{cauchy_continuity_differential_material} then says that, if the continuum consists of idealized points
+each with a certain linear momentum (in the particle sense), deflection of their inertial path is due only to the application
+of a force $F$ at this point.
+
+\subsubsection{Pressure}
+
+\subsubsection{The Cauchy stress tensor}
+\subsubsection{Body forces}
+
+The linear momentum continuity equation \eqref{cauchy_continuity_differential_material}
+can be modified by splitting the force term $F$ into ``surface'' and ``body'' forces, leading to the
+\textit{Cauchy momentum equation}
+\begin{equation}
+    \rho \frac{Du}{Dt} = \nabla\cdot \sigma + \rho f.
+\end{equation}
+\subsubsection{The Euler-Cauchy stress principle}
 
 
-
+\subsubsection{Lagrangians of Cauchy momentum equations} % <<<
+--- Require conservative body forces and ``thermodynamic conditions'' on surface forces, such that there exists a Lagrangian.
+% >>>
 
 \subsection{The continuum hypothesis and constitutive relations} % <<<
-% >>>
-\subsection{Lagrangians of Cauchy momentum equations} % <<<
---- Require conservative body forces and ``thermodynamic conditions'' on surface forces, such that there exists a Lagrangian.
 % >>>
 
 \chapter{The Navier-Stokes equations}
