@@ -159,7 +159,7 @@ colloquially called ``the continuum''. All transporting vector fields (or flux f
 
 \subsection{Continuity equations and conservation laws}
 \subsubsection{The integral form of a continuity equation}
-Consider some spatial quantity on $M$, $\phi$, and a flux function $j$ which by which
+Consider some spatial quantity $\phi$ on $M$ and a flux function $j$ which by which
 this quantity flows around $M$. For clarity, we will begin by specializing $\phi$ to be a scalar, although later we will find it useful to
 transport vector quantities such as momentum. By definition we want this flux function to just push quantity around, and not create or destroy it:
 the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the continuity
@@ -199,9 +199,10 @@ central differences in space, our discrete scheme is
                                                     &-\frac{\phi(\hat{x} + e_3\Delta z/2) - \phi(\hat{x} - e_3\Delta z/2)}{\Delta z}j_z \\
                                                     &-\frac{j_x(\hat{x} + e_1\Delta x/2) - j_x(\hat{x} - e_1\Delta x/2)}{\Delta x}\phi \\
                                                     &-\frac{j_y(\hat{x} + e_2\Delta y/2) - j_y(\hat{x} - e_2\Delta y/2)}{\Delta y}\phi \\
-                                                    &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi +s.
+                                                    &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi +s
 \end{split}
 \end{equation}
+for $e_1,e_2,e_3$ the standard basis vectors in $\mathbb{R}^3$.
 Later, when we discuss numerical methods for solving continuum models, we will not take this route. The methods of interest, \textit{Galerkin} methods,
 work naturally with the integral form \eqref{continuity_equation}.
 It will be seen later that some constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialization of the original integral form of physical PDEs.
@@ -265,7 +266,7 @@ original situated in $\Omega_0$, a conservation law posits that the only change 
 \end{equation}
 a succint equivalent to \eqref{continuity_equation_differential}.
 The idea of following the flow while making measurements is called the \textit{Lagrangian} perspective, in contrast to the \textit{Eulerian} (fixed) perspective.
-Before describing these notions of flow, we first investigate the property of incompressibility.
+Before describing these notions of flow, we first investigate the property of incompressibility. (--- talk more later about Lagrangian versus Eulerian?)
 
 \subsection{Incompressible and compressible transport}
 % While the continuity equation \eqref{continuity_equation} gives us a general conservation law, transporting some quantity
@@ -277,11 +278,12 @@ Before describing these notions of flow, we first investigate the property of in
 Analogous to constraints on the motion of a finite mechanical system,
 (--- section on Lagrangian mechanics should have an example of constraints of motion for a pendulum)
 we can constrain possible movement of our continuous quantity to \textit{incompressible transport}. Much like how, in the framework of Lagrangian mechanics,
-constraints on motion are implicitly enforced by strong ``virtual forces'', constraining transport to be incompressible will lead to
+constraints on motion are implicitly enforced by strong ``virtual forces'', constraining transport to be non-compressing will lead to
 the notion of \textit{pressure}, when we later consider the dynamics of the continuum.
 
 \subsubsection{Incompressibility}
-Incompressibility is a constraint on the form of a flux function $j$.
+Incompressibility of control volumes gives a constraint on the form of a flux function $j$.
+We call this constrained flux function $j$ non-compressing. (---terminology? It makes more sense to call $j$ non-compressing rather than incompressible.)
 By incompressibility we mean that a control volume being transported by $j$ will have
 constant volume. While $j$ may transport other quantities, we express incompressibility by requiring the flux function to transport a constant ``volume quantity''
 with a corresponding null source function,
@@ -291,11 +293,11 @@ The corresponding conservation law, in differential form \eqref{continuity_equat
     \Part{\phi_{\text{vol}}}{t} = -\nabla \cdot (\phi_{\text{vol}}j) + s_{\text{vol}}
         \quad\Rightarrow\quad \nabla\cdot j = 0.
 \end{equation}
-This is our incompressibility constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
+This is our non-compressing constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
 there is an inward or outward flux which would contract or expand a transported control volume.
 
 \subsubsection{The material derivative}
-Assuming an incompressible (divergence-free) flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
+Assuming an non-compressing (divergence-free) flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
 \eqref{lagrangian_transport_differential} following a control volume becomes
 \begin{equation}
     \frac{d_j\phi}{d_j t} = \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
@@ -309,7 +311,8 @@ It is a convention to leave the vector field $j$ implicit, as material derivativ
 
 \subsection{Transport of vector and tensor quantities}
 All previous discussion on the transport of scalar quantities applies trivially to vector and tensor quantities.
-This will soonest be of use in the discussion of conservation of momenta, which are vector quantities.
+This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity (---should this be mentioned? It doesn't fit into the
+framework so far as there is no notion of position map, this might be confusing and seem to imply ``linear momentum'' is natural for any continuum process).
 However, some notational discussion is needed in order to establish differentialized forms of continuity equations and the Reynolds transport theorem.
 \subsubsection{Reynolds transport of vector and tensor quantities}
 For a general tensor quantity $\Gamma$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
@@ -357,7 +360,8 @@ and $\Gamma$ be the tensor $\Phi$ being transported by $j$, giving
     \frac{d_j \Phi}{d_j t} = \cancel{-\nabla\cdot\left(\Phi\otimes j\right)} + s + \cancel{\nabla\cdot\left(\Phi\otimes j\right)} = s.
 \end{equation}
 (--- This shows that tensor transport is a trivial modification of the previous results.)
-
+\subsubsection{The meaning of tensor transport}
+--- show that this is just a trivial notational convenience, as e.g. vector transport can just be done component-wise.
 % >>>
 \section{The kinematics of the continuum}
 Transport equations are just one notion of ``physical motion'' in a continuum model.
@@ -365,7 +369,7 @@ These transport equations, with prescribed flux and source functions, determine 
 domain $M$. These conserved quantities (time-varying maps from $M$ to some measurement space (--scalars, tensors))
 are then components of the total configuration space $C$, which clearly must be infinite-dimensional.
 We now consider another, more geometrical component of $C$
-which will let us model a physical domain with alterating shape.
+which will let us model a physical domain with alterable shape.
 In our discussion we will consider a fixed time interval $[t_1, t_2]$ in which our physical motions will take place.
 
 \subsection{Position maps}
@@ -416,7 +420,7 @@ and therefore our velocity is represented by a scalar function giving local chan
 --- why?
 \subsection{Conservation of linear momentum}
 \subsubsection{The Eulerian perspective for linear momentum conservation}
-If we conserve the linear momentum $\rho u$, a ``quantity of motion'', then we get a continuity equation
+If we conserve the linear momentum $\rho u$, a ``quantity of motion'', under the flow of $u$, then we get a continuity equation
 \begin{equation}\label{cauchy_continuity}
     \frac{d}{dt}\int_{\Omega_0}\rho u\,dx = \int_{\Omega_0} F\,dx - \int_{\partial\Omega_0}\rho u (u\cdot \hat{n})\,dx,
 \end{equation}
@@ -464,6 +468,18 @@ Finally, the material derivative as defined in section (ref) is helpful in simpl
     \rho\frac{Du}{Dt} = F.
 \end{equation}
 This form of \eqref{cauchy_continuity_differential} is more obviously a form of $F = ma$.
+From this derivation we have the identity
+\begin{equation}\label{mass_conserved_linear_momentum_identity}
+    \Part{(\rho u)}{t} + \nabla\cdot(\rho u\otimes u)
+    = \rho\frac{Du}{Dt}
+\end{equation}
+when mass density $\rho$ is conserved by $u$. The left-hand-side in \eqref{mass_conserved_linear_momentum_identity} is the differentialized Reynolds transport \eqref{reynolds_transport_theorem_tensor_differential},
+which measures the change in total linear momentum when following a small control volume that begins at a point $x^*$ and flows with $u$.
+If we integrate both sides over a control volume and apply the Reynolds transport theorem, we get
+\begin{equation}\label{mass_conserved_linear_momentum_identity_integral}
+    \eval{\frac{d}{dt}\left[\int_{\omn(t)} \rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho \frac{Du}{Dt}\,dx.
+\end{equation}
+
 
 \subsection{Forces on the continuum}
 Recall that the material derivative is defined as
@@ -471,9 +487,35 @@ Recall that the material derivative is defined as
 which measures the rate of change of a pointwise quantity from the perspective of a particle moving with the flow field $u$.
 The equation \eqref{cauchy_continuity_differential_material} then says that, if the continuum consists of idealized points
 each with a certain linear momentum (in the particle sense), deflection of their inertial path is due only to the application
-of a force $F$ at this point.
+of a force $F$ at this point. We next investigate what kinds of forces contribute to $F$, which will lead to the \textit{Cauchy momentum equation},
+the typical form of $F = ma$ in continuum mechanics.
 
 \subsubsection{Pressure}
+If we require the velocity field $u$ of the position map $x$ to be non-compressing (as described in section (ref)),
+then we add to our model equations the constraint
+\begin{equation}\label{noncompressing_velocity}
+    \nabla \cdot u = 0.
+\end{equation}
+We proceed by analogy to a simple mechanical system.
+The state of a pendulum of mass $m$ might be described by two spatial variables $X$ and $Y$ with a constraint
+    $$X^2 + Y^2 = 1.$$
+Given a differentiable pendulum motion, the linear momenta $mv_X$ and $mv_Y$ clearly cannot be constant, as then the pendulum
+would ``fly out'' of its arc.
+From the perspective of the $X,Y$ coordinate system there exists ``virtual forces'' which are exactly those that are needed
+to maintain constraints. These forces have no necessary physical interpretation, as the pendulum model does not explicitly reference
+the tension of the pendulum rod, but are rather those strong forces that must ``come from somewhere'' such that the constraints
+are satisfied. In fact, if we change coordinates to $\theta$, no constraints and virtual forces are needed.
+From a constraint on position $(X,Y)$ we can derive a constraint on velocity $(v_X,v_Y)$ by noting that the velocity must stay inside
+the tangent plane in the configuration space. In this case, we require
+\begin{equation}\label{pendulum_velocity_constraint}
+    Xv_X + Yv_Y = 0.
+\end{equation}
+The continuum velocity constraint \eqref{noncompressing_velocity} is completely analogous to \eqref{pendulum_velocity_constraint}.
+Motions of $x$ are restricted to those which do not compress mass. Clearly, our (per-point) linear momentum $\rho u$
+cannot be constant except in simple parallel flows, implying the existence of some virtual (per-point) force.
+
+
+
 
 \subsubsection{The Cauchy stress tensor}
 \subsubsection{Body forces}
