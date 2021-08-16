@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  16 AUG 2021 17:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  17 AUG 2021 01:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1778,15 +1778,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 62--62
 
  []
 
+[3] [4]
+Underfull \vbox (badness 1286) has occurred while \output is active []
 
-Underfull \vbox (badness 1412) has occurred while \output is active []
+ [5]
+[6] [7] [8] [9] [10] [11] [12] [13] [14]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 670.
 
- [3]
-[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14
 
-] [15] [16
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 670.
+ [15
 
-] [17] [18
+] [16
+
+] [17]
+[18
 
 ]
 bibitemlist
@@ -1800,13 +1810,13 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 18031 strings out of 494847
- 311550 string characters out of 6179081
- 426386 words of memory out of 5000000
- 21097 multiletter control sequences out of 15000+600000
- 551589 words of font info for 142 fonts, out of 8000000 for 9000
+ 18059 strings out of 494847
+ 312006 string characters out of 6179081
+ 425592 words of memory out of 5000000
+ 21118 multiletter control sequences out of 15000+600000
+ 551805 words of font info for 144 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 53i,19n,38p,10403b,295s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 53i,19n,41p,10403b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
@@ -1826,7 +1836,7 @@ st/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/font
 s/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type
 1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/texmf-dist/fonts/type
 1/public/amsfonts/symbols/msbm10.pfb>
-Output written on document.pdf (19 pages, 262369 bytes).
+Output written on document.pdf (19 pages, 267223 bytes).
 PDF statistics:
  147 PDF objects out of 1000 (max. 8388607)
  104 compressed objects within 2 object streams

@@ -75,7 +75,7 @@ notions of state such as the two angles in a double pendulum, or the position an
 a continuous time-parameterized curve
     $$\gamma: [t_1, t_2] \rightarrow C.$$
 
-(--- motivation of $F = ma$, and momenta as fundamental quantity).
+% (--- motivation of $F = ma$, and momenta as fundamental quantity).
 
 We start in the middle:
 \begin{equation}
@@ -152,7 +152,9 @@ evolution of the state (represented by a function) is
 due to the transport of the quantity that the function measures, which is either pushed around (by some flux either predetermined or dependent on the current state)
 or created and destroyed at sources and sinks.
 
-(--- figure of some manifold embedded in space, and some vector field pushing quantity around)
+\vskip 0.2in
+(figure of some manifold embedded in space, and some vector field pushing quantity around)
+\vskip 0.2in
 
 We consider here the transport of quantities (scalar, vector, and tensor) on a general finite-dimensional manifold $M$,
 colloquially called ``the continuum''. All transporting vector fields (or flux functions) are considered to be tangent to this manifold $M$.
@@ -168,8 +170,8 @@ condition
     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx
 \end{equation}
 for arbitrary control volumes $\Omega_0$ in the continuum. The term $-\hat{n}$ denotes the inward-pointing normal to the boundary of the control volume. This simply says that the change in the total quantity in the fixed control volume is accounted for exactly by that quantity pushed through the boundary by the flux function $j$, and the internal sources and sinks of quantity $s$.
---- $s_B$ as a boundary term? Why introduce this? Seems to be needed for the derivation of surface forces.
-(--- It may be useful to add $s_G$ as a boundary source term at $\pomn \cap \pom$ so Dirac delta ideas don't need to be used for non-fluxed boundary source (or, for example, the domain might be a subdomain where the transported function is unknown outside, so the term is introduced through $s_G$.))
+% --- $s_B$ as a boundary term? Why introduce this? Seems to be needed for the derivation of surface forces.
+% (--- It may be useful to add $s_G$ as a boundary source term at $\pomn \cap \pom$ so Dirac delta ideas don't need to be used for non-fluxed boundary source (or, for example, the domain might be a subdomain where the transported function is unknown outside, so the term is introduced through $s_G$.))
 
 \subsubsection{The differential form of a continuity equation}
 A common technique in continuum modelling is the use of Stokes' theorem to simplify integral expressions.
@@ -207,8 +209,8 @@ for $e_1,e_2,e_3$ the standard basis vectors in $\mathbb{R}^3$.
 Later, when we discuss numerical methods for solving continuum models, we will not take this route. The methods of interest, \textit{Galerkin} methods,
 work naturally with the integral form \eqref{continuity_equation}.
 It will be seen later that some constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialization of the original integral form of physical PDEs.
-(--- note: Maybe not exactly, as the integral conservation is quantified over regions, while the weak form is quantified over test functions,
-which still need to be sufficiently differentiabile. But I think that this must express the same continuity relation.)
+% (--- note: Maybe not exactly, as the integral conservation is quantified over regions, while the weak form is quantified over test functions,
+% which still need to be sufficiently differentiabile. But I think that this must express the same continuity relation.)
 
 \subsection{The Reynolds transport theorem}
 \subsubsection{The integral form of Reynolds transport}
@@ -220,8 +222,13 @@ vector field $\hat{u}$ which will transport our control volume $\Omega_0$. The r
     \frac{d}{dt}\int_{\Omega_0(t)}\gamma\,dx,
 \end{equation}
 where $\Omega_0(t)$ implicitly denotes that $\Omega_0$ is being transported under the flow of $\hat{u}$.
-Clearly, this rate of change of quantity $\gamma$ is due to the motion of the control volume (--- draw a picture of positive and negative contributions at
-the boundary), as well as internal changes of $\gamma$ inside the (fixed) control volume.
+Clearly, this rate of change of quantity $\gamma$ is due to the motion of the control volume,
+
+\vskip 0.2in
+(a picture of positive and negative contributions at the boundary)
+\vskip 0.2in
+
+as well as internal changes of $\gamma$ inside the (fixed) control volume.
 The formal expression of these contributions to the rate of change \eqref{reynolds_rate_of_change} is
 \begin{equation}\label{reynolds_transport_theorem}
     \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\gamma\,dx\right]}_{t=0} =
@@ -234,14 +241,16 @@ otherwise named the Leibniz integral rule.
  In the limit, with the routine application of Stokes' theorem, we can differentialize \eqref{reynolds_transport_theorem}
 to get
 \begin{equation}\label{reynolds_transport_theorem_differential}
-    \frac{d_{\hat{u}}\gamma}{d_{\hat{u}}t} = \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
+    % \frac{d_{\hat{u}}\gamma}{d_{\hat{u}}t} = \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\gamma\,dx\right]}_{t=0} \quad\longrightarrow\quad \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
 \end{equation}
-where $\frac{d_{\hat{u}}}{d_{\hat{u}}t}$ denotes a ``convective derivative'' with respect to $\hat{u}$, which measures
-the change in volume of a quantity when a small control volume around the point of evaluation is moved, expanded or contracted by the flow field $\hat{u}$. (--- notation and terminology? This is not a material derivative, since the divergence of the flow field is considered to expand/contract the small control volume).
+as $\Omega_0$ becomes small.
+The right-hand-side of \eqref{reynolds_transport_theorem_differential} measures
+the change in volume of a quantity when a small control volume around the point of evaluation is moved, expanded or contracted by the flow field $\hat{u}$.
 
 \subsubsection{Reynolds transport applied to a continuity equation}
-Letting our quantity $\gamma$ in \eqref{reynolds_transport_theorem} be the quantity $\phi$ transported by flux function $j$
-(described in continuity equation \eqref{continuity_equation}), we get a specialized form of the Reynolds transport theorem for continuity equations.
+Letting our quantity $\gamma$ in \eqref{reynolds_transport_theorem} be the quantity $\phi$ transported by flux function $j$,
+described in continuity equation \eqref{continuity_equation}, we get a specialized form of the Reynolds transport theorem for continuity equations.
 Term $\Part{\gamma}{t}$ in \eqref{reynolds_transport_theorem} becomes $\Part{\phi}{t}$ in the differential form of the continuity equation \eqref{continuity_equation_differential}, giving
 \begin{equation}\label{reynolds_transport_continuity_equation}
 \begin{split}
@@ -263,11 +272,10 @@ where the ``frame of reference'' for measurement of $\phi$ follows the transport
 original situated in $\Omega_0$, a conservation law posits that the only change detected is due to the source function $s$. In differential form
 \eqref{lagrangian_transport} becomes
 \begin{equation}\label{lagrangian_transport_differential}
-    \frac{d_j\phi}{d_j t} = s,
+    \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}) = s,
 \end{equation}
 a succint equivalent to \eqref{continuity_equation_differential}.
-The idea of following the flow while making measurements is called the \textit{Lagrangian} perspective, in contrast to the \textit{Eulerian} (fixed) perspective.
-Before describing these notions of flow, we first investigate the property of incompressibility. (--- talk more later about Lagrangian versus Eulerian?)
+The idea of following the flow while making measurements is called the \textit{Lagrangian} perspective, in contrast to the \textit{Eulerian}, fixed, perspective.
 
 \subsection{Incompressible and compressible transport}
 % While the continuity equation \eqref{continuity_equation} gives us a general conservation law, transporting some quantity
@@ -277,28 +285,14 @@ Before describing these notions of flow, we first investigate the property of in
 % a vector in the tangent space of $C$ here would be the vector field giving transport.
 % Need to clearly distinguish these notions and use clear terminology, as it could be confusing).
 Analogous to constraints on the motion of a finite mechanical system,
-(--- section on Lagrangian mechanics should have an example of constraints of motion for a pendulum)
+% (--- section on Lagrangian mechanics should have an example of constraints of motion for a pendulum)
 we can constrain possible movement of our continuous quantity to \textit{incompressible transport}. Much like how, in the framework of Lagrangian mechanics,
 constraints on motion are implicitly enforced by strong ``virtual forces'', constraining transport to be non-compressing will lead to
 the notion of \textit{pressure}, when we later consider the dynamics of the continuum.
 
-\subsubsection{The material derivative}
-(--- don't assume compressibility, todo. Define as a notion for a ``material point'' which flows but has no volume.)
-Assuming an non-compressing (divergence-free) flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
-\eqref{lagrangian_transport_differential} following a control volume becomes
-\begin{equation}
-    \frac{d_j\phi}{d_j t} = \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
-\end{equation}
-We define the \textit{material derivative} to be
-\begin{equation}\label{material_derivative}
-    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
-\end{equation}
-It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
-(--- why define this?)
-
 \subsubsection{Incompressibility}
 Incompressibility of control volumes gives a constraint on the form of a flux function $j$.
-We call this constrained flux function $j$ non-compressing. (---terminology? It makes more sense to call $j$ non-compressing rather than incompressible.)
+We call this constrained flux function $j$ non-compressing.
 By incompressibility we mean that a control volume being transported by $j$ will have
 constant volume. While $j$ may transport other quantities, we express incompressibility by requiring the flux function to transport a constant ``volume quantity''
 with a corresponding null source function,
@@ -311,11 +305,30 @@ The corresponding conservation law, in differential form \eqref{continuity_equat
 This is our non-compressing constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
 there is an inward or outward flux which would contract or expand a transported control volume.
 
+\subsubsection{The material derivative}
+We define here a differential operator which will be useful later.
+Assuming an non-compressing flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
+\eqref{lagrangian_transport_differential} following a control volume becomes
+\begin{equation}
+    \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
+\end{equation}
+We define the \textit{material derivative} to be
+\begin{equation}\label{material_derivative}
+    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
+\end{equation}
+It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
+The material derivative may be taken with respect to a compressing flux $j$, in which case it measures change from the perspective of an
+ideal point mass with no extent under the flow of $j$. As $j$ has no extent, it can not expand under the flow of $j$.
+
+\vskip 0.2in
+(figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
+\vskip 0.2in
 
 \subsection{Transport of vector and tensor quantities}
 All previous discussion on the transport of scalar quantities applies trivially to vector and tensor quantities.
-This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity (---should this be mentioned? It doesn't fit into the
-framework so far as there is no notion of position map, this might be confusing and seem to imply ``linear momentum'' is natural for any continuum process).
+This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity
+% (---should this be mentioned? It doesn't fit into the
+% framework so far as there is no notion of position map, this might be confusing and seem to imply ``linear momentum'' is natural for any continuum process).
 However, some notational discussion is needed in order to establish differentialized forms of continuity equations and the Reynolds transport theorem.
 \subsubsection{Reynolds transport of vector and tensor quantities}
 For a general tensor quantity $\Gamma$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
@@ -341,7 +354,7 @@ This leads to a differentialization of \eqref{reynolds_transport_theorem_tensor}
 \begin{equation}\label{reynolds_transport_theorem_tensor_differential}
     \frac{d_{\hat{u}}\Gamma}{d_{\hat{u}}t} = \Part{\Gamma}{t} + \nabla \cdot(\Gamma \otimes \hat{u}).
 \end{equation}
-(--- interpretation of this. This does actually make sense from ``first principles'' rather than tensor algebra.)
+% (--- interpretation of this. This does actually make sense from ``first principles'' rather than tensor algebra.)
 \subsubsection{Continuity equations for vector and tensor quantities}
 With the previous ideas from tensor algebra, it will be easy to describe continuity relations for transport of tensors. The integral form of the scalar continuity equation \eqref{continuity_equation}, generalized to transported tensor $\Phi$, trivially becomes
 \begin{equation}\label{continuity_equation_tensor}
@@ -355,39 +368,49 @@ giving \eqref{continuity_equation_tensor} differentialized as
 \begin{equation}\label{continuity_equation_tensor_differential}
     \Part{\Phi}{t} = -\nabla\cdot (\Phi \otimes j) + s.
 \end{equation}
-Finally, we may take a Lagrangian perspective on the transport of tensor $\Phi$ by letting the boundary transport in
-\eqref{reynolds_transport_theorem_tensor_differential}
-be the flux function, $\hat{u} = j$,
-and $\Gamma$ be the tensor $\Phi$ being transported by $j$, giving
-\begin{equation}\label{lagrangian_transport_tensor_differential}
-    \frac{d_j \Phi}{d_j t} = \cancel{-\nabla\cdot\left(\Phi\otimes j\right)} + s + \cancel{\nabla\cdot\left(\Phi\otimes j\right)} = s.
-\end{equation}
-(--- This shows that tensor transport is a trivial modification of the previous results.)
-\subsubsection{The meaning of tensor transport}
---- show that this is just a trivial notational convenience, as e.g. vector transport can just be done component-wise.
+% Finally, we may take a Lagrangian perspective on the transport of tensor $\Phi$ by letting the boundary transport in
+% \eqref{reynolds_transport_theorem_tensor_differential}
+% be the flux function, $\hat{u} = j$,
+% and $\Gamma$ be the tensor $\Phi$ being transported by $j$, giving
+% \begin{equation}\label{lagrangian_transport_tensor_differential}
+%     \frac{d_j \Phi}{d_j t} = \cancel{-\nabla\cdot\left(\Phi\otimes j\right)} + s + \cancel{\nabla\cdot\left(\Phi\otimes j\right)} = s.
+% \end{equation}
+% (--- This shows that tensor transport is a trivial modification of the previous results.)
+% \subsubsection{The meaning of tensor transport}
+% --- show that this is just a trivial notational convenience, as e.g. vector transport can just be done component-wise.
 % >>>
 \section{The kinematics of the continuum}
 Transport equations are just one notion of ``physical motion'' in a continuum model.
 These transport equations, with prescribed flux and source functions, determine a continuous process on a fixed
-domain $M$. These conserved quantities (time-varying maps from $M$ to some measurement space (--scalars, tensors))
-are then components of the total configuration space $C$, which clearly must be infinite-dimensional.
-We now consider another, more geometrical component of $C$
+domain $M$. These conserved quantities are time-varying maps from $M$ to some measurement space of scalars or tensors.
+Each map is a component of the total configuration space $C$, which clearly must be infinite-dimensional.
+We now consider another component of $C$
 which will let us model a physical domain with alterable shape.
 In our discussion we will consider a fixed time interval $[t_1, t_2]$ in which our physical motions will take place.
 
 \subsection{Position maps}
-(--- terminology?)
 We may consider the manifold $M$ as the parametric domain of some points living in an ambient manifold $N$.
 We will call this the ``position map''
-    $$x:M\times [t_1, t_2] \rightarrow N.$$
-In general, $x$ needs not be continuous, differentiable, or invertible.
+    $$y:M\times [t_1, t_2] \rightarrow N.$$
+In general, $y$ needs not be continuous, differentiable, or invertible.
 These restrictions are only introduced in accord to the physical meaning of the position map. For example, models of small beam deflections
 may require continuity, and invertibility to prevent self-intersections.
 
-(---figure of abstract square domain mapping to a bent beam, and a figure of a map from a reference configuration to itself.)
+\vskip 0.2in
+(figure of abstract square domain mapping to a bent beam, and a figure of a map from a reference configuration to itself.)
+\vskip 0.2in
 
-Continuum mechanics will study the physical motion of $x$, and other maps, where the equations of motion are, for example,
-transport equations.
+As an example, suppose we are modelling the heat distribution of a 2D beam supporting a point load which is also a heat source.
+We could model the beam geometry as a smooth invertible map $y: [0,1]^2\rightarrow \mathbb{R}^2$,
+letting $M = [0,1]^2$ and $N = \mathbb{R}^2$. The heat distribution on the beam could be represented
+by a function $h : M \rightarrow \mathbb{R}$, and a heat flux function $j$ could be pulled back to $M$ from $N$.
+
+\vskip 0.2in
+(picture of this)
+\vskip 0.2in
+
+Although this model is so far hopelessly incomplete, we can see that position maps and transport equations are fundamental tools
+used for modelling the \textit{geometry} of a problem.
 
 
 % \subsubsection{Displacement maps}
@@ -404,18 +427,81 @@ transport equations.
 % transport equations. Each component of our state will have a corresponding velocity. In the case of the position map $x : M \times [t_1, t_2] \rightarrow N$,
 % the velocity is a vector field which
 \subsection{Velocity}
-Each component of our state $q \in C$ will have a corresponding velocity which ``generates'' a physical motion of that component.
-In the case of the position map $x : M \times [t_1, t_2] \rightarrow N$, the velocity will be given by
-a vector in the tangent space of $N$ at $x(r)$ for each parameter $r \in M$. (---it might be worth using more differential geometric language.)
+As in the mechanics of a particle, each component of our state $q \in C$ will have a corresponding velocity $\Part{q}{t}$ which ``generates'' a physical motion of that component.
+In the case of the position map $y : M \times [t_1, t_2] \rightarrow N$, the velocity will be given by
+a vector in the tangent space of $N$ at $y(x)$ for each parameter $x \in M$. This vector field is denoted $\dot{y}$.
+This is the \textit{Lagrangian} description of motion. We will find it useful to instead use the \textit{Eulerian} description, where we measure the velocity of the position map in the position domain $N$. Formally we denote this Eulerian velocity by the letter $u$, ubiquitous in fluid mechanics, and let
+    $$u(y, t) \coloneqq \dot{y}(y^{-1}(y, t), t)\quad \text{for all valid $y\in N$.}$$
 
-(---draw this)
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
 
 For some transported scalar quantity $\phi : M \times [t_1, t_2] \rightarrow \mathbb{R}$, the tangent space at each point of $\mathbb{R}$ is $\mathbb{R}$,
-and therefore our velocity is represented by a scalar function giving local change of $\phi(r)$ for each $r \in M$.
+and therefore our velocity is represented by a scalar function $\Part{\phi}{t}$ giving local change in time of $\phi(x)$ for each $x \in M$.
 
-(---draw this, the velocity as a small displacement function which is changing $\phi$)
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
 
+We may denote our total velocities as a state variable $\dot{q}$. 
+When we have state $q$, the corresponding velocity $\dot{q}$ will be in the tangent space of $C$ at $q$, denoted $T_q C$.
+We can then define the space of velocities as the \textit{tangent bundle} of the configuration space,
+    $$TC = \bigcup_{q \in C} T_q C.$$
 
+\subsection{The deformation and velocity gradients}
+We may think of the mechanics of a particle as a special case of our continuum model, where
+$M$ is a single point. In this case we have only one $x \in M$, so we cannot vary $x$.
+However, for a continuum parameter domain $M$ we can take derivatives with respect to our parameter as well as time.
+We can extract important geometric/kinematic information from the spatial derivatives of our position map $y$.
+
+\subsubsection{The deformation gradient}
+The gradient of the position map $y$ with respect to parameter $x \in M$ is called the \textit{deformation gradient}
+\begin{equation}\label{deformation_gradient}
+    \nabla y.
+\end{equation}
+The deformation gradient is equivalent to the \textit{Jacobian matrix}, used to compute the \textit{pushforward}
+of tangent vectors under the displacement map.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+The determinant of the Jacobian matrix is usually denoted $J = \det(\nabla y)$, and is called the Jacobian.
+
+\subsubsection{The velocity gradient}
+Letting $u$ be our Eulerian velocity as defined above, we may express the position map through an ODE,
+\begin{equation}\label{position_map_ode}
+\begin{split}
+    \frac{d}{dt} y(x, t) = u(y(x, t), t),\quad
+    y(x, 0) = y_0(x).
+\end{split}
+\end{equation}
+It is common, especially in flow problems, to let $M$ be a subset of $N$ which is the ``initial geometry''.
+In this case we could let the initial position map be the identity map
+    $$y_0(x) = x \in M \subset N.$$
+For example, given an initial disc in $\mathbb{R}^2$, we may prescribe a constant Eulerian velocity field $u$ and
+see how the original disc is ``mixed''.
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+We can see that, in this case, it is meaningful to take spatial gradients in \eqref{position_map_ode} to derive an ODE for the deformation gradient $\nabla y$:
+\begin{equation}\label{deformation_gradient_ode}
+\begin{split}
+    \nabla \frac{d}{dt} y(x, t) = \nabla u(y(x, t), t),\quad
+    \nabla y(x, 0) = I,
+\end{split}
+\end{equation}
+where $I$ is the identity tensor. This is easily visualized.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+We can see that the term $\nabla u$ is a ``differential generator'' of the deformation gradient.
+The spatial gradient of the Eulerian $\dot{y}$, $\nabla u$, is called the \textit{velocity gradient}.
+
+% Polar decomposition, symmetric and antisymmetric parts.
 
 \section{The dynamics of the continuum}
 
@@ -455,7 +541,8 @@ Differentializing \eqref{cauchy_continuity_eulerian}, by our previously derived 
 \begin{equation}\label{cauchy_continuity_differential}
     \Part{(\rho u)}{t} + \nabla \cdot (\rho u\otimes u) = \rho g + \nabla\cdot\sigma.
 \end{equation}
-We can derive another more convenient form of \eqref{cauchy_continuity_differential} using the fact that
+This is called the \textit{conservative form} of the Cauchy momentum equation.
+We can derive another, possibly more convenient form of \eqref{cauchy_continuity_differential} using the fact that
 $\rho$ is conserved and has no source. Here, this will be derived purely algebraically, although the final form of the equation
 has a useful interpretation. Expanding the partial derivative
 $$
@@ -489,8 +576,7 @@ Finally, the material derivative as defined in section (ref) is helpful in simpl
 \begin{equation}\label{cauchy_continuity_differential_material}
     \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma.
 \end{equation}
-This form of \eqref{cauchy_continuity_differential} is more obviously a form of $F = ma$,
-and is the usual presentation of the Cauchy momentum equation.
+This form of \eqref{cauchy_continuity_differential} is called the \textit{convective form} of the Cauchy momentum equation, and is more obviously a form of $F = ma$.
 % From this derivation we have the identity
 % \begin{equation}\label{mass_conserved_linear_momentum_identity}
 %     \Part{(\rho u)}{t} + \nabla\cdot(\rho u\otimes u)
@@ -518,7 +604,11 @@ Cauchy stress tensor.
 $\sigma$ models the ``material constitution'', and
 therefore we call its specification a \textit{constitutive relation}.
 A constitutive relation specifies how the kinematics of the continuum relate to its dynamics, as in, how the material configuration
-induces forces on the material.
+induces forces on the material. With $\sigma$ specified, the Cauchy momentum equation \eqref{cauchy_continuity_differential_material} becomes well-posed.
+
+\subsubsection{Deviatoric and volumetric stresses}
+Suppose that the tractions are determined only by the velocity gradient,
+    $$\sigma = \sigma(\nabla u).$$
 
 \subsubsection{Pressure in incompressible materials}
 If we require the velocity field $u$ of the position map $x$ to be non-compressing (as described in section (ref)),
@@ -534,7 +624,12 @@ would ``fly out'' of its arc.
 From the perspective of the $X,Y$ coordinate system there exists ``virtual forces'' which are exactly those that are needed
 to maintain constraints. These forces have no necessary physical interpretation, as the pendulum model does not explicitly reference
 the tension of the pendulum rod, but are rather those strong forces that must ``come from somewhere'' such that the constraints
-are satisfied. In fact, if we change coordinates to $\theta$, no constraints and virtual forces are needed.
+are satisfied.
+
+\vskip 0.2in
+(figure)
+\vskip 0.2in
+
 From a constraint on position $(X,Y)$ we can derive a constraint on velocity $(v_X,v_Y)$ by noting that the velocity must stay inside
 the tangent plane in the configuration space. In this case, we require
 \begin{equation}\label{pendulum_velocity_constraint}
@@ -550,37 +645,45 @@ We call this force the \textit{pressure} $p$, and we are now solving for $\rho$,
     \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma,\quad
         \nabla \cdot u = 0.
 \end{align*}
+As there is no explicit mention of $p$, it must be part of the constitutive relation for $\sigma$.
+We let $\sigma$ be
+\begin{align*}
+    \sigma = -pI + \tau \quad\Rightarrow\quad \nabla\cdot\sigma = -\nabla p + \nabla\cdot \tau,
+\end{align*}
+where $I$ is the identity tensor and $\tau$ is called the \textit{deviatoric} component of the Cauchy stress tensor.
+$\tau$ is chosen such that the pressure $p$ entirely encapsulates the isotropic forces which push material volumes apart.
 
+\subsubsection{Completing our equations}
+We have so far been working quite generally with the forms of continuum mechanics models and their constraints. Although we have made some assumptions
+(for example, we require $\sigma$ to be a purely local function, an idealisation due to Cauchy [ref]), we must so far leave
+our systems underdetermined.
+In the next chapter, we will
+investigate an important constitutive relation for the deviatoric stress $\tau$, forming what is called a \textit{Navier-Stokes fluid},
+giving a complete system of equations called the \textit{Navier-Stokes equations}.
 
-
-
-\subsubsection{The Cauchy stress tensor}
-\subsubsection{Body forces}
-
-The linear momentum continuity equation \eqref{cauchy_continuity_differential_material}
-can be modified by splitting the force term $F$ into ``surface'' and ``body'' forces, leading to the
-\textit{Cauchy momentum equation}
-\begin{equation}
-    \rho \frac{Du}{Dt} = \nabla\cdot \sigma + \rho f.
-\end{equation}
-
-
-\subsubsection{Lagrangians of Cauchy momentum equations} % <<<
---- Require conservative body forces and ``thermodynamic conditions'' on surface forces, such that there exists a Lagrangian.
-% >>>
-
-\subsection{The continuum hypothesis and constitutive relations} % <<<
-% >>>
 
 \chapter{The Navier-Stokes equations}
-% \section{The continuum hypothesis}
-% \section{Body and stress forces}
-% \section{Conservation laws}
-% \subsection{Conservation of mass}
-% \subsection{Conservation of linear momentum}
-% \subsection{Conservation of angular momentum}
-% \subsection{Conservation of energy}
-% \subsection{Differentialization and coordinates}
+\section{Deriving the Navier-Stokes equations}
+The incompressible Navier-Stokes equations model the motion of a common kind of viscous fluid called a \textit{Newtonian fluid}.
+They are:
+\begin{itemize}
+\item The Cauchy momentum equation \eqref{cauchy_continuity_differential_material} for mass density $\rho$ and velocity $u$,
+\item an incompressibility constraint $\nabla\cdot u = 0$ and unknown pressure $p$,
+\item and a concrete constitutive relation for the deviatoric stress $\tau$.
+\end{itemize}
+In anticipation, their common form is
+\begin{equation}\label{navier_stokes}
+    \rho\frac{Du}{Dt} = - \nabla p + \nabla\cdot\tau + \rho g,\quad \nabla\cdot u = 0,
+\end{equation}
+where $\tau$ is defined by Stokes' constitutive relation
+\begin{equation}\label{stokes_constitutive_relation}
+    \tau = \mu\left(\nabla u + \nabla u^T\right),
+\end{equation}
+where $\mu$ is called the \textit{viscosity}, and $\nabla u$ is the velocity gradient measuring the local deformation of a small control volume under
+the flow of $u$. Alongside a domain and appropriate initial and boundary conditions, the Navier-Stokes equations \eqref{navier_stokes}
+form a concrete flow problem which
+can be solved numerically, or in special situations analytically.
+
 % Navier-Stokes in expanded differential form for Cartesian coordinates. Maybe useful for finite differences.
 % Working backwards to the weak form doesn't make much sense.
 % \subsection{Kinds of fluids}
