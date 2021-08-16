@@ -42,7 +42,7 @@
 
 \newcommand{\todo}[1]{\vskip 0.1in \hrule \vskip 0.03in {#1} \vskip 0.03in \hrule \vskip 0.1in}
 
-\title{Variational methods for the Navier-Stokes equations
+\title{The finite element method for the Navier-Stokes equations
 \scriptsize{(working title)}
 }
 \author{Lucas Payne}
@@ -165,16 +165,17 @@ transport vector quantities such as momentum. By definition we want this flux fu
 the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the continuity
 condition
 \begin{equation}\label{continuity_equation}
-    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\partial\Omega_0} \phi j\cdot (-\hat{n})\,dx + \int_{\Omega_0} s\,dx.
+    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx
 \end{equation}
-for arbitrary control volumes $\Omega_0$ in the continuum. The term $-\hat{n}$ denotes the inward-pointing normal to the boundary of the control volume. This simply says that the change in the total quantity in the fixed control volume
-is accounted for exactly by that quantity pushed through the boundary by the flux function $j$, and the internal sources and sinks of quantity $s$.
+for arbitrary control volumes $\Omega_0$ in the continuum. The term $-\hat{n}$ denotes the inward-pointing normal to the boundary of the control volume. This simply says that the change in the total quantity in the fixed control volume is accounted for exactly by that quantity pushed through the boundary by the flux function $j$, and the internal sources and sinks of quantity $s$.
+--- $s_B$ as a boundary term? Why introduce this? Seems to be needed for the derivation of surface forces.
+(--- It may be useful to add $s_G$ as a boundary source term at $\pomn \cap \pom$ so Dirac delta ideas don't need to be used for non-fluxed boundary source (or, for example, the domain might be a subdomain where the transported function is unknown outside, so the term is introduced through $s_G$.))
 
 \subsubsection{The differential form of a continuity equation}
 A common technique in continuum modelling is the use of Stokes' theorem to simplify integral expressions.
 Equation \eqref{continuity_equation} becomes
 \begin{equation}\label{continuity_equation_differential}
-    \Part{\phi}{t} = -\nabla\cdot (\phi j) + s
+    \Part{\phi}{t} = s - \nabla\cdot (\phi j)
 \end{equation}
 assuming that $\phi j$ is sufficiently differentiable such that the limiting integral exists.
 It should be noted that Stokes' theorem and its specializations are really \textit{definitions} of pointwise quantities
@@ -187,19 +188,19 @@ For example, it is a theorem of Gauss that in Euclidean space ($M = \mathbb{R}^3
 \end{equation}
 and we get \eqref{continuity_equation_differential} in the form
 \begin{equation}\label{continuity_equation_expanded}
-    \Part{\phi}{t} = -\nabla \phi \cdot j - \phi\left(\Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}\right) + s,
+    \Part{\phi}{t} = s - \nabla \phi \cdot j - \phi\left(\Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}\right),
 \end{equation}
 by the product rule.
 As one equation in a system of PDEs, \eqref{continuity_equation_expanded} is readily discretized by finite differences. For example, using forward difference in time and
 central differences in space, our discrete scheme is
 \begin{equation}\label{continuity_equation_finite_differences}
 \begin{split}
-    \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = &-\frac{\phi(\hat{x} + e_1\Delta x/2) - \phi(\hat{x} - e_1\Delta x/2)}{\Delta x}j_x \\
-                                                    &-\frac{\phi(\hat{x} + e_2\Delta y/2) - \phi(\hat{x} - e_2\Delta y/2)}{\Delta y}j_y \\
-                                                    &-\frac{\phi(\hat{x} + e_3\Delta z/2) - \phi(\hat{x} - e_3\Delta z/2)}{\Delta z}j_z \\
-                                                    &-\frac{j_x(\hat{x} + e_1\Delta x/2) - j_x(\hat{x} - e_1\Delta x/2)}{\Delta x}\phi \\
-                                                    &-\frac{j_y(\hat{x} + e_2\Delta y/2) - j_y(\hat{x} - e_2\Delta y/2)}{\Delta y}\phi \\
-                                                    &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi +s
+    \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = s &-\frac{\phi(\hat{x} + e_1\Delta x/2) - \phi(\hat{x} - e_1\Delta x/2)}{\Delta x}j_x \\
+                                                      &-\frac{\phi(\hat{x} + e_2\Delta y/2) - \phi(\hat{x} - e_2\Delta y/2)}{\Delta y}j_y \\
+                                                      &-\frac{\phi(\hat{x} + e_3\Delta z/2) - \phi(\hat{x} - e_3\Delta z/2)}{\Delta z}j_z \\
+                                                      &-\frac{j_x(\hat{x} + e_1\Delta x/2) - j_x(\hat{x} - e_1\Delta x/2)}{\Delta x}\phi \\
+                                                      &-\frac{j_y(\hat{x} + e_2\Delta y/2) - j_y(\hat{x} - e_2\Delta y/2)}{\Delta y}\phi \\
+                                                      &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi
 \end{split}
 \end{equation}
 for $e_1,e_2,e_3$ the standard basis vectors in $\mathbb{R}^3$.
@@ -281,6 +282,20 @@ we can constrain possible movement of our continuous quantity to \textit{incompr
 constraints on motion are implicitly enforced by strong ``virtual forces'', constraining transport to be non-compressing will lead to
 the notion of \textit{pressure}, when we later consider the dynamics of the continuum.
 
+\subsubsection{The material derivative}
+(--- don't assume compressibility, todo. Define as a notion for a ``material point'' which flows but has no volume.)
+Assuming an non-compressing (divergence-free) flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
+\eqref{lagrangian_transport_differential} following a control volume becomes
+\begin{equation}
+    \frac{d_j\phi}{d_j t} = \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
+\end{equation}
+We define the \textit{material derivative} to be
+\begin{equation}\label{material_derivative}
+    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
+\end{equation}
+It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
+(--- why define this?)
+
 \subsubsection{Incompressibility}
 Incompressibility of control volumes gives a constraint on the form of a flux function $j$.
 We call this constrained flux function $j$ non-compressing. (---terminology? It makes more sense to call $j$ non-compressing rather than incompressible.)
@@ -296,18 +311,6 @@ The corresponding conservation law, in differential form \eqref{continuity_equat
 This is our non-compressing constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
 there is an inward or outward flux which would contract or expand a transported control volume.
 
-\subsubsection{The material derivative}
-Assuming an non-compressing (divergence-free) flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
-\eqref{lagrangian_transport_differential} following a control volume becomes
-\begin{equation}
-    \frac{d_j\phi}{d_j t} = \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
-\end{equation}
-We define the \textit{material derivative} to be
-\begin{equation}\label{material_derivative}
-    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
-\end{equation}
-It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
-(--- why define this?)
 
 \subsection{Transport of vector and tensor quantities}
 All previous discussion on the transport of scalar quantities applies trivially to vector and tensor quantities.
@@ -419,21 +422,40 @@ and therefore our velocity is represented by a scalar function giving local chan
 \subsection{Conservation of mass}
 --- why?
 \subsection{Conservation of linear momentum}
-\subsubsection{The Eulerian perspective for linear momentum conservation}
+
 If we conserve the linear momentum $\rho u$, a ``quantity of motion'', under the flow of $u$, then we get a continuity equation
+\begin{equation}\label{cauchy_continuity_traction}
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho g\,dx + \int_{\pomn(0)}\hat{t}\,dx,
+\end{equation}
+a specific realization of the Lagrangian continuity equation \eqref{lagrangian_transport}. The Lagrangian perspective is convenient
+as it allows us to factor out certain forces on a moving piece of material. The term $g$ is a regular body force per unit mass, where $\rho g$ corresponds to
+the source term $s$ in \eqref{lagrangian_transport}. The boundary term involving $\hat{t}$, however, has no analogue in the scalar continuity equation
+\eqref{lagrangian_transport}.
+This vector term $\hat{t}$ is called the \textit{traction} in continuum mechanics, and measures a local force exerted across the boundary
+of the control volume due to the immediately adjacent material.
+
+\subsubsection{The Euler-Cauchy stress principle}
+Clearly, in accord with Newton, we would like that two $\Omega_0$ and $\Omega_0^\prime$
+which share a boundary element should have equal and opposite tractions across that boundary element.
+Since the normal $\hat{n}$ represents a boundary element, and is negative for the opposite element, if $\hat{t}$ is linear in $\hat{n}$ we have this required
+property. We can then let \eqref{cauchy_continuity_traction} become
 \begin{equation}\label{cauchy_continuity}
-    \frac{d}{dt}\int_{\Omega_0}\rho u\,dx = \int_{\Omega_0} F\,dx - \int_{\partial\Omega_0}\rho u (u\cdot \hat{n})\,dx,
+    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho g\,dx + \int_{\pomn(0)}\sigma:\hat{n}\,dx
 \end{equation}
-(---include equality notation for tensor contraction)
-where we let the source of linear momentum be $F$, the force. Differentializing \eqref{cauchy_continuity} gives
+where $\sigma$ is termed the \textit{Cauchy stress tensor}.
+
+
+% <<<
+\subsubsection{Differentializing the Cauchy momentum equation}
+By application of the Reynolds transport theorem \eqref{reynolds_transport_theorem_tensor} to \eqref{cauchy_continuity} we get
+\begin{equation}\label{cauchy_continuity_eulerian}
+    \frac{d}{dt}\int_{\Omega_0}\rho u\,dx + \int_{\partial\Omega_0}\rho u (u\cdot \hat{n})\,dx = \int_{\Omega_0} \rho g\,dx + \int_{\pomn} \sigma:\hat{n}\,dx.
+\end{equation}
+Differentializing \eqref{cauchy_continuity_eulerian}, by our previously derived tensor identities, gives
 \begin{equation}\label{cauchy_continuity_differential}
-    \Part{(\rho u)}{t} = F - \nabla \cdot (\rho u\otimes u).
+    \Part{(\rho u)}{t} + \nabla \cdot (\rho u\otimes u) = \rho g + \nabla\cdot\sigma.
 \end{equation}
-This simply states that, in the Eulerian perspective,
-the only sources of linear momentum at a point are the force and the amount of momentum ``pushed'' into a small control volume around the point.
-% The left-hand-side of \eqref{cauchy_continuity_differential} is the ``convective derivative'' $\frac{d_u}{d_ut}$ as defined in section (ref).
-\subsubsection{The Lagrangian perspective for linear momentum conservation}
-We can derive another more convenient form of \eqref{cauchy_continuity_differential}, using the fact that
+We can derive another more convenient form of \eqref{cauchy_continuity_differential} using the fact that
 $\rho$ is conserved and has no source. Here, this will be derived purely algebraically, although the final form of the equation
 has a useful interpretation. Expanding the partial derivative
 $$
@@ -447,50 +469,58 @@ for arbitrary control volumes $\Omega_0$. As $\Omega_0$ becomes small, we can se
 to derive
 $$
     \int_{\pomn} \rho u (u\cdot\hat{n})\,dx = u\int_{\pomn}(\rho u)\cdot\hat{n}\,dx
-                                              + \rho u\cdot \int_{\pomn} u\hat{n}\,dx + \cdots
+                                              + \rho u\cdot \int_{\pomn} u\hat{n}\,dx \quad+\quad\cdots
 $$
 where a trailing term becomes neglible for a small control volume. This gives a ``tensor product rule'' for the divergence,
 \begin{equation}\label{cauchy_divergence_tensor_product}
     \nabla\cdot (\rho u \otimes u) = u\nabla\cdot (\rho u) + \rho u\cdot\nabla u.
 \end{equation}
 Equation \eqref{cauchy_continuity_differential} then becomes
-\begin{equation}
-    \rho\Part{u}{t} + u\Part{\rho}{t} + u\nabla\cdot (\rho u) + \rho u\cdot\nabla u = F.
-\end{equation}
+$$
+    \rho\Part{u}{t} + u\Part{\rho}{t} + u\nabla\cdot (\rho u) + \rho u\cdot\nabla u = \rho g + \nabla\cdot\sigma.
+$$
 Noting that $\Part{\rho}{t}$ is already given by a continuity equation
 $$\Part{\rho}{t} = -\nabla\cdot(\rho u),$$
 as mass is transported by $u$ and has no source, we get
-\begin{equation}\label{cauchy_continuity_differential_simplified}
-    \rho\Part{u}{t} -\cancel{u\nabla(\rho u)} + \cancel{u\nabla\cdot (\rho u)} + \rho u\cdot\nabla u = F.
-\end{equation}
-Finally, the material derivative as defined in section (ref) is helpful in simplifying \eqref{cauchy_continuity_differential_simplified} to
+$$
+    \rho\Part{u}{t} -\cancel{u\nabla(\rho u)} + \cancel{u\nabla\cdot (\rho u)} + \rho u\cdot\nabla u = \rho g + \nabla\cdot\sigma.
+$$
+Finally, the material derivative as defined in section (ref) is helpful in simplifying the above to
 \begin{equation}\label{cauchy_continuity_differential_material}
-    \rho\frac{Du}{Dt} = F.
+    \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma.
 \end{equation}
-This form of \eqref{cauchy_continuity_differential} is more obviously a form of $F = ma$.
-From this derivation we have the identity
-\begin{equation}\label{mass_conserved_linear_momentum_identity}
-    \Part{(\rho u)}{t} + \nabla\cdot(\rho u\otimes u)
-    = \rho\frac{Du}{Dt}
-\end{equation}
-when mass density $\rho$ is conserved by $u$. The left-hand-side in \eqref{mass_conserved_linear_momentum_identity} is the differentialized Reynolds transport \eqref{reynolds_transport_theorem_tensor_differential},
-which measures the change in total linear momentum when following a small control volume that begins at a point $x^*$ and flows with $u$.
-If we integrate both sides over a control volume and apply the Reynolds transport theorem, we get
-\begin{equation}\label{mass_conserved_linear_momentum_identity_integral}
-    \eval{\frac{d}{dt}\left[\int_{\omn(t)} \rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho \frac{Du}{Dt}\,dx.
-\end{equation}
-
-
-\subsection{Forces on the continuum}
+This form of \eqref{cauchy_continuity_differential} is more obviously a form of $F = ma$,
+and is the usual presentation of the Cauchy momentum equation.
+% From this derivation we have the identity
+% \begin{equation}\label{mass_conserved_linear_momentum_identity}
+%     \Part{(\rho u)}{t} + \nabla\cdot(\rho u\otimes u)
+%     = \rho\frac{Du}{Dt}
+% \end{equation}
+% when mass density $\rho$ is conserved by $u$. The left-hand-side in \eqref{mass_conserved_linear_momentum_identity} is the differentialized Reynolds transport \eqref{reynolds_transport_theorem_tensor_differential},
+% which measures the change in total linear momentum when following a small control volume that begins at a point $x^*$ and flows with $u$.
+% If we integrate both sides over a control volume and apply the Reynolds transport theorem, we get
+% \begin{equation}\label{mass_conserved_linear_momentum_identity_integral}
+%     \eval{\frac{d}{dt}\left[\int_{\omn(t)} \rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho \frac{Du}{Dt}\,dx.
+% \end{equation}
+% >>>
 Recall that the material derivative is defined as
     $$\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot \nabla,$$
 which measures the rate of change of a pointwise quantity from the perspective of a particle moving with the flow field $u$.
 The equation \eqref{cauchy_continuity_differential_material} then says that, if the continuum consists of idealized points
 each with a certain linear momentum (in the particle sense), deflection of their inertial path is due only to the application
-of a force $F$ at this point. We next investigate what kinds of forces contribute to $F$, which will lead to the \textit{Cauchy momentum equation},
-the typical form of $F = ma$ in continuum mechanics.
+of a body force $\rho g$ at this point, and a total traction force exerted by the surrounding material.
 
-\subsubsection{Pressure}
+
+\subsection{Constitutive relations}
+Body forces typically model
+external fields such as gravity, which act on a material in bulk. We here forget the body forces, and investigate the possible forms of the
+Cauchy stress tensor.
+$\sigma$ models the ``material constitution'', and
+therefore we call its specification a \textit{constitutive relation}.
+A constitutive relation specifies how the kinematics of the continuum relate to its dynamics, as in, how the material configuration
+induces forces on the material.
+
+\subsubsection{Pressure in incompressible materials}
 If we require the velocity field $u$ of the position map $x$ to be non-compressing (as described in section (ref)),
 then we add to our model equations the constraint
 \begin{equation}\label{noncompressing_velocity}
@@ -510,9 +540,16 @@ the tangent plane in the configuration space. In this case, we require
 \begin{equation}\label{pendulum_velocity_constraint}
     Xv_X + Yv_Y = 0.
 \end{equation}
+(--- add Lagrange multipliers to the system, then pressure here is a sort of Lagrange multiplier).
 The continuum velocity constraint \eqref{noncompressing_velocity} is completely analogous to \eqref{pendulum_velocity_constraint}.
 Motions of $x$ are restricted to those which do not compress mass. Clearly, our (per-point) linear momentum $\rho u$
 cannot be constant except in simple parallel flows, implying the existence of some virtual (per-point) force.
+We call this force the \textit{pressure} $p$, and we are now solving for $\rho$, $u$, and $p$ in a coupled system of equations
+\eqref{cauchy_continuity_differential_material} and \eqref{noncompressing_velocity}, repeated here:
+\begin{align*}
+    \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma,\quad
+        \nabla \cdot u = 0.
+\end{align*}
 
 
 
@@ -526,7 +563,6 @@ can be modified by splitting the force term $F$ into ``surface'' and ``body'' fo
 \begin{equation}
     \rho \frac{Du}{Dt} = \nabla\cdot \sigma + \rho f.
 \end{equation}
-\subsubsection{The Euler-Cauchy stress principle}
 
 
 \subsubsection{Lagrangians of Cauchy momentum equations} % <<<
@@ -599,6 +635,9 @@ V.I. Arnol'd, \textit{Mathematical Methods of Classical Mechanics}, 1978
 
 \bibitem{turing}
 Alan Turing, \textit{The Chemical Basis of Morphogenesis}, 1952
+
+\bibitem{applied_mathematics}
+\textit{The Princeton Companion to Applied Mathematics}, 2015
 
 \end{thebibliography}
 
