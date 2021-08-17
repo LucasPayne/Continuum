@@ -427,7 +427,7 @@ used for modelling the \textit{geometry} of a problem.
 % transport equations. Each component of our state will have a corresponding velocity. In the case of the position map $x : M \times [t_1, t_2] \rightarrow N$,
 % the velocity is a vector field which
 \subsection{Velocity}
-As in the mechanics of a particle, each component of our state $q \in C$ will have a corresponding velocity $\Part{q}{t}$ which ``generates'' a physical motion of that component.
+As in the mechanics of a particle, each component of our state $q \in C$ will have a corresponding velocity which ``generates'' a physical motion of that component.
 In the case of the position map $y : M \times [t_1, t_2] \rightarrow N$, the velocity will be given by
 a vector in the tangent space of $N$ at $y(x)$ for each parameter $x \in M$. This vector field is denoted $\dot{y}$.
 This is the \textit{Lagrangian} description of motion. We will find it useful to instead use the \textit{Eulerian} description, where we measure the velocity of the position map in the position domain $N$. Formally we denote this Eulerian velocity by the letter $u$, ubiquitous in fluid mechanics, and let
@@ -499,14 +499,51 @@ where $I$ is the identity tensor. This is easily visualized.
 \vskip 0.2in
 
 We can see that the term $\nabla u$ is a ``differential generator'' of the deformation gradient.
-The spatial gradient of the Eulerian $\dot{y}$, $\nabla u$, is called the \textit{velocity gradient}.
+We call $\nabla u$, the spatial gradient of the Eulerian velocity, the \textit{velocity gradient}.
 
 % Polar decomposition, symmetric and antisymmetric parts.
 
 \section{The dynamics of the continuum}
 
 \subsection{Conservation of mass}
---- why?
+We will take for granted that there is some initial mass density function $\rho_0:M\rightarrow \mathbb{R}^+$
+which we would like to conserve.
+\subsubsection{The Lagrangian form of mass conservation}
+As the position map $y$ evolves, for example under the action of Eulerian velocity field $u$ in the ODE \eqref{position_map_ode},
+we would like a mass density function $\rho : N \rightarrow \mathbb{R}^+$ to be be greater if the position map ``compresses'' the material,
+and smaller if it ``stretches'' the material. Our aim is that the total mass measured in a control volume of $N$ is the same as in its initial configuration.
+We can express this by the integral equation
+\begin{equation}\label{lagrangian_mass_conservation}
+    \int_{\omn} \rho_0(x)\,dx = \int_{y(\omn, t)} \rho(y, t)\,dy,
+\end{equation}
+where $y(\omn, t)$ denotes the domain pushed forward by the position map. By the usual change of variables formula we have
+\begin{equation}\label{lagrangian_mass_conservation_cov}
+    \int_{\omn} \rho_0(x)\,dx = \int_{\omn} \det(\nabla y)\rho(y(x,t), t)\,dx,
+\end{equation}
+where $J = \det(\nabla y)$ is the Jacobian, measuring the local change in the volume element due to the change of variables.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+As \eqref{lagrangian_mass_conservation_cov} must hold identically for all $\Omega_0$, we have the localized conservation law
+\begin{equation}\label{lagrangian_mass_conservation_local}
+    \rho_0 = \det(\nabla y)\rho.
+\end{equation}
+
+\subsubsection{The Eulerian form of mass conservation}
+Conservation law \eqref{lagrangian_mass_conservation_local} is simple. However, it is given in terms of absolute deformation gradient $\nabla y$.
+Instead of asking how mass is distributed
+in comparison to its initial configuration, in order to conserve it, we can ask how mass is transported by $u$.
+This gives an instance of the continuity equation \eqref{continuity_equation}, where we have no source:
+\begin{equation}\label{eulerian_mass_conservation}
+    \frac{d}{dt} \int_{\omn} \rho \,dx + \int_{\pomn} \rho u\cdot \hat{n}\,dx = 0.
+\end{equation}
+With application of Stokes' theorem we have
+\begin{equation}\label{eulerian_mass_conservation_local}
+    \Part{\rho}{t} + \nabla \cdot (\rho u) = 0.
+\end{equation}
+
 \subsection{Conservation of linear momentum}
 
 If we conserve the linear momentum $\rho u$, a ``quantity of motion'', under the flow of $u$, then we get a continuity equation
@@ -566,7 +603,7 @@ Equation \eqref{cauchy_continuity_differential} then becomes
 $$
     \rho\Part{u}{t} + u\Part{\rho}{t} + u\nabla\cdot (\rho u) + \rho u\cdot\nabla u = \rho g + \nabla\cdot\sigma.
 $$
-Noting that $\Part{\rho}{t}$ is already given by a continuity equation
+Noting that $\Part{\rho}{t}$ is already given by continuity equation \eqref{eulerian_mass_conservation_local}
 $$\Part{\rho}{t} = -\nabla\cdot(\rho u),$$
 as mass is transported by $u$ and has no source, we get
 $$
@@ -683,6 +720,87 @@ where $\mu$ is called the \textit{viscosity}, and $\nabla u$ is the velocity gra
 the flow of $u$. Alongside a domain and appropriate initial and boundary conditions, the Navier-Stokes equations \eqref{navier_stokes}
 form a concrete flow problem which
 can be solved numerically, or in special situations analytically.
+
+\section{Scaling and dimension}
+\subsection{The Reynolds number}
+
+\section{Stokes flow}
+If we assume that the advective term $u\cdot \nabla u$ in the incompressible Navier-Stokes equations is ``small'',
+we can ignore it and derive the linear \textit{unsteady Stokes equations}:
+\begin{equation}\label{unsteady_stokes}
+    \rho\Part{u}{t} = \mu\Delta u + \rho g - \nabla p, \quad \nabla\cdot u = 0.
+\end{equation}
+We are assuming validity for low Reynolds number $Re \ll 1$, where convective behaviour is neglible compared to the viscous forces, which for a
+Navier-Stokes fluid ``diffuse'' the linear momentum. Setting the left-hand-side of \eqref{unsteady_stokes} to zero results in the \textit{steady Stokes equations}
+\begin{equation}\label{steady_stokes}
+    \mu\Delta u + \rho g - \nabla p = 0,\quad \nabla\cdot u = 0.
+\end{equation}
+\eqref{unsteady_stokes} can be thought of as a ``gradient descent'' for the stable Stokes flow \eqref{steady_stokes}.
+The steady Stokes equation is a constrained vector Poisson equation, where we have introduced pressure $p$ explicitly.
+It is well-known, by Dirichlet's principle, that we can think
+of a weak solution to the unconstrained vector Poisson equation as a minimizer of the Dirichlet energy
+\begin{equation}\label{steady_stokes_dirichlet_energy}
+    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho gu \,dx = \int_{\Omega} \fancyL\,dx.
+\end{equation}
+\newcommand{\energygradient}{\frac{\delta E}{\delta u}}
+We can see that the Euler-Lagrange equations are
+\begin{align*}
+    \frac{\delta E}{\delta u} = \Part{\fancyL}{u} - \frac{d}{dx}\Part{\fancyL}{\nabla u}
+                              = -\rho g - \mu\Delta u = 0.
+\end{align*}
+We now introduce the incompressibility constraint $c(u) \coloneqq \nabla \cdot u = 0$.
+We have the constrained Euler-Lagrange equations
+\begin{align*}
+      &\frac{\delta E}{\delta u} = -\rho g - \mu\Delta u = \lambda\left(\Part{c}{u} - \frac{d}{dx}\Part{c}{\nabla u}\right) \\
+      \Rightarrow &-\rho g - \mu\Delta u = \lambda\Part{c}{u}.
+\end{align*}
+The interpretation is simple. Our functional gradient $\frac{\delta E}{\delta u}$ measures
+the local change in energy when the velocity field $u$ is perturbed, by
+\begin{align*}
+      \eval{\frac{\delta E}{\delta u}}_{\delta u} = \inner{\frac{\delta E}{\delta u}, \delta u}.
+\end{align*}
+$\delta u$ is an unconstrained virtual displacement of the velocity field. We want a principle of stationary action which
+only cares about \textit{constrained} virtual displacements, so we cannot simply say that $\energygradient = 0$.
+However, if we say that
+\begin{align*}
+    \frac{\delta E}{\delta u} = \lambda \Part{c}{u}
+    \quad\Rightarrow\quad \inner{\energygradient, \delta u} = \inner{\Part{c}{u}, \lambda\delta u}
+\end{align*}
+we mean that, as we must have $\inner{\Part{c}{u}, \delta u} = 0$ for valid virtual displacements, $E$ is stationary with respect to valid displacements.
+$\Part{c}{u}$ is such that
+\begin{align*}
+    \inner{\Part{c}{u}, \delta u} = \nabla \cdot \delta u.
+\end{align*}
+% and so we may say that the functional gradient $\Part{c}{u}$ is a differential operator $\nabla \cdot$.
+For weak solutions of the steady Stokes equation \eqref{steady_stokes} we then want
+\begin{align*}
+    \inner{\rho g + \mu\Delta u, \delta u} + \nabla\cdot \left(\lambda \delta u\right) = 0,\quad \nabla\cdot u = 0.
+\end{align*}
+We have by a product rule of the divergence that
+\begin{align*}
+    \nabla\cdot \left(\lambda \delta u\right) = \nabla\lambda \cdot \delta u + \lambda\nabla\cdot \delta u,
+\end{align*}
+giving the form
+\begin{align*}
+    \inner{\rho g + \mu\Delta u + \nabla\lambda, \delta u} + \lambda \nabla\cdot \delta u = 0,\quad \nabla\cdot u = 0.
+\end{align*}
+for a weakened steady Stokes equation. If we constrain our virtual displacement $\delta u$ to be divergence-free (as in,
+the virtual displacement maintains the constraint of incompressibility), we get form
+\begin{align*}
+    \inner{\rho g + \mu\Delta u + \nabla\lambda, \delta u} = 0,\quad \nabla\cdot u = 0,
+\end{align*}
+and, noting that the inner product integral must vanish identically for all valid virtual displacements $\delta u$, we have
+\begin{align*}
+    \rho g + \mu\Delta u + \nabla\lambda = 0,\quad \nabla\cdot u = 0.
+\end{align*}
+This is just the steady Stokes equations \eqref{steady_stokes}, where $\lambda = -p$! We can see that $p$ is ``actually''
+a Lagrange multiplier.
+
+
+
+
+\section{Pressure}
+
 
 % Navier-Stokes in expanded differential form for Cartesian coordinates. Maybe useful for finite differences.
 % Working backwards to the weak form doesn't make much sense.

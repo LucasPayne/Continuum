@@ -27,17 +27,23 @@
 \contentsline {subsection}{\numberline {1.4.3}The deformation and velocity gradients}{11}
 \contentsline {subsubsection}{The deformation gradient}{11}
 \contentsline {subsubsection}{The velocity gradient}{11}
-\contentsline {section}{\numberline {1.5}The dynamics of the continuum}{11}
-\contentsline {subsection}{\numberline {1.5.1}Conservation of mass}{11}
+\contentsline {section}{\numberline {1.5}The dynamics of the continuum}{12}
+\contentsline {subsection}{\numberline {1.5.1}Conservation of mass}{12}
+\contentsline {subsubsection}{The Lagrangian form of mass conservation}{12}
+\contentsline {subsubsection}{The Eulerian form of mass conservation}{12}
 \contentsline {subsection}{\numberline {1.5.2}Conservation of linear momentum}{12}
-\contentsline {subsubsection}{The Euler-Cauchy stress principle}{12}
-\contentsline {subsubsection}{Differentializing the Cauchy momentum equation}{12}
-\contentsline {subsection}{\numberline {1.5.3}Constitutive relations}{13}
-\contentsline {subsubsection}{Deviatoric and volumetric stresses}{13}
-\contentsline {subsubsection}{Pressure in incompressible materials}{13}
-\contentsline {subsubsection}{Completing our equations}{14}
-\contentsline {chapter}{\chapternumberline {2}The Navier-Stokes equations}{15}
-\contentsline {section}{\numberline {2.1}Deriving the Navier-Stokes equations}{15}
-\contentsline {chapter}{\chapternumberline {3}The finite element method}{17}
-\contentsline {section}{\numberline {3.1}Discretizing variational principles}{17}
-\contentsline {chapter}{Bibliography}{19}
+\contentsline {subsubsection}{The Euler-Cauchy stress principle}{13}
+\contentsline {subsubsection}{Differentializing the Cauchy momentum equation}{13}
+\contentsline {subsection}{\numberline {1.5.3}Constitutive relations}{14}
+\contentsline {subsubsection}{Deviatoric and volumetric stresses}{14}
+\contentsline {subsubsection}{Pressure in incompressible materials}{14}
+\contentsline {subsubsection}{Completing our equations}{15}
+\contentsline {chapter}{\chapternumberline {2}The Navier-Stokes equations}{17}
+\contentsline {section}{\numberline {2.1}Deriving the Navier-Stokes equations}{17}
+\contentsline {section}{\numberline {2.2}Scaling and dimension}{17}
+\contentsline {subsection}{\numberline {2.2.1}The Reynolds number}{17}
+\contentsline {section}{\numberline {2.3}Stokes flow}{17}
+\contentsline {section}{\numberline {2.4}Pressure}{19}
+\contentsline {chapter}{\chapternumberline {3}The finite element method}{21}
+\contentsline {section}{\numberline {3.1}Discretizing variational principles}{21}
+\contentsline {chapter}{Bibliography}{23}
