@@ -31,9 +31,9 @@
 \newcommand{\fancyN}{\mathcal{N}}
 \newcommand{\fancyP}{\mathcal{P}}
 % \newcommand{\norm}[1]{\left\Vert#1\right\Vert}
-\newcommand{\om}{\Omega}
+\newcommand{\om}{{\Omega}}
 \newcommand{\pom}{{\partial\Omega}}
-\newcommand{\omn}{\Omega_0}
+\newcommand{\omn}{{\Omega_0}}
 \newcommand{\pomn}{{\partial\Omega_0}}
 \newcommand{\diver}{\text{div}}
 \newcommand{\Part}[2]{\frac{\partial #1}{\partial #2}}
@@ -949,8 +949,8 @@ The matrix equation \eqref{poisson_matrix_equation} consists of linear equations
     =
     \int_{\om_1}f\,dx,
 \end{align*}
-and so on. We cannot quantify flux integrals
-over arbitrary control volumes, but we can take a number of ``trial'' flux integrals over the finite number of cells $\Omega_i$.
+and so on. We cannot compute flux integrals
+over all arbitrary control volumes, but we can take a number of ``trial'' flux integrals over the finite number of cells $\Omega_i$.
 We can take linear combinations of these equations to get more equations which must hold on a solution.
 For example,
 \begin{equation}\label{example_trial_sum}
@@ -997,13 +997,6 @@ we may choose from many possible bases. For example,
     \text{span}\left\{\Omega_1 + \Omega_2, 2\Omega_2, \Omega_3\right\}.$$
 A key idea, leading to Galerkin methods, is to allow freedom in the choice of our trial space $\Psi$.
 Notably, we do not need $\Psi$ to be a space of formal sums of domains.
-To see this more clearly, we can emphasize the duality between chains and the functions integrated over them by using inner product notation, or ``duality pairing'':
-\begin{equation}
-    \inner{-\nabla \left(\sum_{i=1}^n h_i\phi_i\right), \partial(\om_1 + \om_2)}
-    =
-    \inner{f, \om_1 + \om_2}.
-\end{equation}
-
 The Poisson equation is discretized over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
 which we repeat here:
 \begin{align*}
@@ -1020,8 +1013,8 @@ We can think of these integrals as over the \textit{entire domain} $\Omega$, giv
 where $\chi(\om_j)$ is the indicator function of $\om_j$,
 \begin{align*}
     \chi(\om_j)(x) \coloneqq \left\{\begin{array}{lr}
-        0, &\text{if $x \in \om_j$}\\
-        1, &\text{if $x \notin \om_j$.}\\
+        0 &\text{if $x \in \om_j$}\\
+        1 &\text{if $x \notin \om_j$.}\\
         \end{array}\right.
 \end{align*}
 Now we can instead let
@@ -1039,19 +1032,102 @@ and we see that we still only require the $\phi_i$ to be in $H^1$.
 We can see that equation \eqref{poisson_galerkin} is very similar to the exact fluxes in \eqref{poisson_equation_integral_discretized}.
 There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred convolution'' of flux integrals.
 
-While this is more readily formalized with the notion of a distribution, or generalised function, we will work with the Dirac delta function.
-For example, possibly under some regularity assumptions, we may represent a function of a real variable as
-    $$f = \int_{-\infty}^\infty \delta_x f(x)\,dx,$$
+\subsubsection{Integrating over trial functions versus integrating over domains}
+The reasoning here is in the spirit of Green's functions.
+While this is more readily formalized with the notion of a distribution, or generalised function, we will work with the Dirac delta function,
+defined by
+\begin{align*}
+    \int_{\omn} \delta_y\,dx = 
+    \left\{\begin{array}{lr}
+        1 &\text{if $y \in \omn$}\\
+        0 &\text{otherwise}.\\
+        \end{array}\right.
+\end{align*}
+For example, possibly under some regularity assumptions, we may represent a trial function $\psi_j$ on $\Omega$ as
+    $$f = \int_\Omega \delta_x f(x)\,dx,$$
 which we may call ``Riemann-integral-like''.
-We may instead represent $f$ in a ``Lebesgue-integral-like'' way
+We may instead represent $\psi_j$ in a ``Lebesgue-integral-like'' way by defining
+    $$L_y(\psi_j) \coloneqq \left\{z \in \Omega \mid \psi_j(z) = y\right\}$$
+to be a level set of $\psi_j$, the points of $\Omega$ for which $\psi_j = y$. We can then express $\psi_j$ as
+    $$\psi_j = \int_{-\infty}^\infty \left[\int_{L_y(\psi_j)} y\delta_x \,dx\right]\,dy.$$
+This gives $\psi_j$ as the totality of its level sets.
+For example, if we let $\Psi$ be spanned by the hat functions on some triangulation, each hat function $\psi_j$
+can be thought of as a totality of level sets culminating in the point-set of $\psi_j(p_j) = 1$.
 
-For example, if we let $\Psi$ be spanned by the hat functions on some triangulation, each hat function $\psi_i$
-will be 
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
 
+The discretized Poisson equation \eqref{poisson_galerkin} involves an integral over $\nabla \phi_i \cdot \nabla \psi_j$,
+and we can compute this as
+\begin{equation}\label{flux_convolution}
+\begin{split}
+    \int_{\om} \nabla \phi_i \cdot \nabla \psi_j\,dx
+        &= \int_{-\infty}^\infty \int_{\om} \nabla\phi_i \cdot \nabla\left[\int_{L_y(\psi_j)} y\delta_z \,dz\right]\,dx\,dy\\
+        &= \int_{-\infty}^\infty y \int_{L_y(\psi_j)} \nabla\phi_i \cdot \hat{n}\,dx\,dy.
+\end{split}
+\end{equation}
+We have this final equality by noting that the gradient of $\psi_j$ at $x$, where $f(x) = y$ is orthogonal to the level set $L_y{(\psi_j)}$,
+and has length $y$:
 
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+We can think of the ``flux trial'' \eqref{poisson_galerkin} as involving ``blurred fluxes'' as in \eqref{flux_convolution}.
 For example, if we let $\Phi = \Psi$ be the set of hat functions on some triangulation
 of $\Omega$, then form and solve the matrix system, we get a generally non-conservative system of fluxes. We have lost conservativeness
 by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence.
+
+
+% \subsubsection{Duality and differential geometry}
+% Again, the trial space $\Psi$ needs not be formed by indicator functions of domains.
+% To see this more clearly, we can emphasize the duality between chains and the functions integrated over them by using inner product notation, or ``duality pairing'':
+% \begin{equation}
+%     \inner{-\nabla \left(\sum_{i=1}^n h_i\phi_i\right), \partial\left(\sum_{i=1}^n \omega_i \Omega_i\right)^\perp}
+%     =
+%     \inner{f, \sum_{i=1}^n \omega_i \Omega_i}.
+% \end{equation}
+% The duality pairing is an integral over the whole domain, where pieces of chains (such as the ``surface elements'' in a flux integral) are
+% paired with pieces of function data of the same dimension (such as the heat gradient, or the source function).
+% We can write our original (weak) Poisson problem \eqref{poisson_equation_integral} in this notation as
+% \begin{align*}
+%     \inner{-\nabla h, \pomn^\perp}
+%     =
+%     \inner{f, \omn}.
+% \end{align*}
+% for arbitrary control volumes $\Omega_0$. The $\perp$ symbol denotes an orthogonal complement, as
+% we would like to pair gradient vectors with \textit{normals} to the boundary rather than the boundary elements themselves,
+% as we are calculating total fluxes. More formally, in differential
+% geometry, this should be denoted by the ``Hodge star'' operator $\star$, which we will use from now on, as
+% it will be convenient to think of the orthogonal complement as an operator acting by multiplication:
+% \begin{equation}\label{poisson_duality}
+%     \inner{-\nabla h, \star\pomn}
+%     =
+%     \inner{f, \omn}.
+% \end{equation}
+% By Stokes' theorem we have the form
+% \begin{align*}
+%     \inner{-\nabla \cdot \nabla h, \omn}
+%     =
+%     \inner{f, \omn}.
+% \end{align*}
+% The duality pairing is in fact an inner product, so we see that operator
+% $\star\partial$ is \textit{adjoint} to $\nabla\cdot$.
+% This is exactly what Stokes' theorem was created to say, albeit expressed in a more abstract language.
+% We may ask why we must restrict the chain to be an indicator function. Why not ``integrate against'' some other function,
+% \begin{align*}
+%     \inner{-\nabla \cdot \nabla h, \psi}
+%     =
+%     \inner{f, \psi}?
+% \end{align*}
+% Yet does the form
+% \begin{align*}
+%     \inner{-\nabla h, \star\partial \psi}
+%     =
+%     \inner{f, \psi}
+% \end{align*}
+% make sense?
 
 
 
