@@ -830,22 +830,22 @@ we are working against gravity as well as our virtual force, pressure.
 % \subsubsection{Viscous flow and Newtonian fluids}
 
 \chapter{The finite element method}
-\section{Discretizing variational principles}
+
+\section{Solving the Poisson equation}
 % The weak form is exactly analogous to perturbation principle in the principle of least action.
 % To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
 % equation is the Euler-Lagrange equation of the Dirichlet energy.
 
-\subsection{Solving the Poisson equation}
 As a first example, we will derive a finite element method for the Poisson equation.
 Poisson's equation is a steady-state version of the heat equation.
-\subsubsection{Diffusion processes}
-A diffusion process ``levels out'' some quantity, such as heat or chemical concentration. We can intuitively think of a diffusion as a progressive ``blurring''
-such as is seen in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics. We will stick with
+\subsection{Deriving the Poisson equation through diffusion processes}
+A diffusion process ``levels out'' some quantity, such as heat or some chemical concentration. We can intuitively think of a diffusion as a progressive ``blurring''
+such as in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics. We will stick with
 the notion of heat $h$ as the diffused quantity.
 \textit{Fick's law of diffusion} is a constitutive relation giving the bulk flux of heat $h$ as proportional to the negative gradient:
     $$hj = -\mu\nabla h,$$
 where $\mu$ is called the diffusion coefficient.
-This is one way of saying that heat tends to ``level out''.
+This is one way of saying that heat tends to level out.
 If we form a continuity equation \eqref{continuity_equation} for heat, with source $s$, we get
 \begin{equation}\label{heat_equation_integral}
     \frac{d}{dt} \int_{\Omega_0} h\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \mu \nabla h \cdot \hat{n}\,dx,
@@ -858,26 +858,103 @@ If we further assume that the diffusion coefficient $\mu$ is constant, we get
 \begin{equation}\label{heat_equation_differential_constant}
     \frac{dh}{dt} = s + \mu\nabla \cdot \nabla h = s + \mu\Delta h,
 \end{equation}
-which is the standard heat equation, and simplest example of the use of the Laplacian.
+which is the standard heat equation.
 The steady-state heat equation is then
-\begin{equation}\label{heat_equation_steady_state}
-    -\Delta h = s/\mu.
+\begin{equation}\label{poisson_equation}
+    -\Delta h = f,
 \end{equation}
-
-
-
-It is a standard model of diffusion processes which leads directly to the Laplacian.
-
-
-
-$$\int_{\pomn} -\nabla u \cdot \hat{n}\,dx = \int_{\omn}\,dx$$
-
-\begin{equation}\label{poisson}
-\begin{split}
-    -\Delta u &= g\quad\text{in $\Omega$}, \\
-    u &= 0 \quad \text{on $\partial\Omega$}.
-\end{split}
+where we let $f = s/\mu$ in the above. Equation \eqref{poisson_equation} is called the Poisson equation,
+which models steady-state diffusion processes and can be used to calculate gravitational or electrostatic potential fields.
+In integral form, ``undoing'' the application of Stokes' theorem above, the Poisson equation is
+\begin{equation}\label{poisson_equation_integral}
+    \int_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} f\,dx.
 \end{equation}
+Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
+as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount created by the source function.
+This form will be the most convenient for our numerical methods.
+
+\subsection{Discretizing the Poisson equation}
+Equation \eqref{poisson_equation_integral} is quantified over arbitrary control volumes $\Omega_0$.
+A simple idea is to break the domain $\Omega$ up into small cells $\Omega_1,\cdots,\Omega_n$, and check that the flux integral holds over each of these.
+We will then have $n$ equations on $h$. As this system will be underdetermined ($h$ has infinite degrees of freedom), we must
+restrict $h$ to what we will call a ``test space'',
+    $$\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.$$
+The basis functions $\phi_i$ should generate a ``good'' space of approximations,
+such that our linear system is non-singular.
+We then have a discrete system of equations
+\begin{align*}
+    \int_{\pom_j} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right)\cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n,
+\end{align*}
+which by linearity can be written as
+\begin{equation}\label{poisson_equation_integral_discretized}
+    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
+\end{equation}
+We see here that there must be some restrictions on the $\phi_i$.
+Formally, our basis functions must be in the Sobolev space $H^1$. This simply means that they must have a gradient defined ``almost everywhere''.
+It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
+the integral. Since $f$, our domain decomposition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
+the majority of \eqref{poisson_equation_integral_discretized} to give a matrix system
+
+\newcommand{\integralentry}[2]{\int_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
+\begin{equation}\label{poisson_matrix_equation}
+    A\hat{h} = \begin{bmatrix}
+            \integralentry{1}{1} & \cdots & \integralentry{1}{2} \\
+            \vdots & & \vdots \\
+            \integralentry{n}{1} & \cdots & \integralentry{n}{n}
+            \end{bmatrix}
+    \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
+    =
+    \begin{bmatrix} \int_{\om_1}f\,dx \\ \int_{\om_2}f\,dx \\ \vdots \\ \int_{\om_{n-1}}f\,dx \\ \int_{\om_n}f\,dx \end{bmatrix}
+    = \hat{f}.
+\end{equation}
+If our domain decomposition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+are chosen well, this linear system will be non-singular and hopefully well-conditioned.
+In all cases we have a conservative system of balanced fluxes, but it is another question whether our approximation
+$\Phi\hat{h}$ is good.
+
+\subsubsection{Choosing a domain decomposition and test space}
+Possibly the simplest scheme is to triangulate $\Omega$ as
+    $\Omega = \biguplus T_i$
+such that we have $n$ nodal points.
+Each nodal point $p_i$ will be associated with a piecewise ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
+$0$ at its neighbours.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+As we typically have more triangles than vertices, we cannot use the $T_i$ as our domain decomposition. However, we may
+associate to each $p_i$ a domain $\Omega_i$ called the \textit{Voronoi cell}.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+This scheme has found some success, especially in the domain of geometry processing \cite{polygon_mesh_processing}.
+By Stokes' theorem, the matrix $A$ in \eqref{poisson_matrix_equation} can be thought of as a negative discrete Laplacian,
+$A = -\widetilde{\Delta}$.
+If we compute these integrals, we will find a very simple closed form for the entries of $\widetilde{\Delta}$.
+
+In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
+applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
+
+\vskip 0.2in
+(results and visualization)
+\vskip 0.2in
+
+\subsection{The notion of a trial function}
+The matrix equation \eqref{poisson_matrix_equation} consists of linear equations
+
+\begin{align*}
+    \begin{bmatrix}
+            \integralentry{1}{1} & \cdots & \integralentry{1}{2}
+    \end{bmatrix}
+    \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
+    =
+    \int_{\om_1}f\,dx.
+    = \hat{f}.
+\end{align*}
+and so on.
 
 
 \begin{thebibliography}{9}
@@ -921,6 +998,12 @@ Alan Turing, \textit{The Chemical Basis of Morphogenesis}, 1952
 
 \bibitem{applied_mathematics}
 \textit{The Princeton Companion to Applied Mathematics}, 2015
+
+\bibitem{polygon_mesh_processing}
+Mario Botsch, Leif Kobbelt, Mark Pauly, Pierre Alliez, Bruno L\'evy, \textit{Polygon Mesh Processing}, 2010
+
+\bibitem{ciarlet}
+P. G. Ciarlet, \textit{The Finite Element Method for Elliptic Problems}, 1978
 
 \end{thebibliography}
 
