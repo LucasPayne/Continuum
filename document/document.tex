@@ -836,11 +836,12 @@ we are working against gravity as well as our virtual force, pressure.
 % To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
 % equation is the Euler-Lagrange equation of the Dirichlet energy.
 
-As a first example, we will derive a finite element method for the Poisson equation.
 Poisson's equation is a steady-state version of the heat equation.
+Through this investigation we will derive many of the tools and ideas underlying general Galerkin methods.
+
 \subsection{Deriving the Poisson equation through diffusion processes}
 A diffusion process ``levels out'' some quantity, such as heat or some chemical concentration. We can intuitively think of a diffusion as a progressive ``blurring''
-such as in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics. We will stick with
+such as in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics \cite{tum}. We will stick with
 the notion of heat $h$ as the diffused quantity.
 \textit{Fick's law of diffusion} is a constitutive relation giving the bulk flux of heat $h$ as proportional to the negative gradient:
     $$hj = -\mu\nabla h,$$
@@ -931,9 +932,8 @@ associate to each $p_i$ a domain $\Omega_i$ called the \textit{Voronoi cell}.
 \vskip 0.2in
 
 This scheme has found some success, especially in the domain of geometry processing \cite{polygon_mesh_processing}.
-By Stokes' theorem, the matrix $A$ in \eqref{poisson_matrix_equation} can be thought of as a negative discrete Laplacian,
-$A = -\widetilde{\Delta}$.
-If we compute these integrals, we will find a very simple closed form for the entries of $\widetilde{\Delta}$.
+By Stokes' theorem, the matrix $A$ in \eqref{poisson_matrix_equation} can be thought of as a negative discrete Laplacian.
+If we compute these integrals, we will find a very simple closed form for the entries of $A$.
 
 In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
 applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
@@ -944,17 +944,116 @@ applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangul
 
 \subsection{The notion of a trial function}
 The matrix equation \eqref{poisson_matrix_equation} consists of linear equations
-
 \begin{align*}
-    \begin{bmatrix}
-            \integralentry{1}{1} & \cdots & \integralentry{1}{2}
-    \end{bmatrix}
-    \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
+    \int_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
     =
-    \int_{\om_1}f\,dx.
-    = \hat{f}.
+    \int_{\om_1}f\,dx,
 \end{align*}
-and so on.
+and so on. We cannot quantify flux integrals
+over arbitrary control volumes, but we can take a number of ``trial'' flux integrals over the finite number of cells $\Omega_i$.
+We can take linear combinations of these equations to get more equations which must hold on a solution.
+For example,
+\begin{equation}\label{example_trial_sum}
+    \int_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
+    +
+    \int_{\pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
+    =
+    \int_{\om_1}f\,dx
+    +
+    \int_{\om_2}f\,dx
+\end{equation}
+must hold. At first sight, \eqref{example_trial_sum} cannot directly be interpreted as a statement about a ``flux integral'', but rather about a sum
+of flux integrals. However, a key idea is to regard \eqref{example_trial_sum} as a flux integral over a \textit{formal sum} of domains,
+    $$\Omega_1 + \Omega_2.$$
+We now have the equation
+\begin{equation}
+    \int_{\pom_1 + \pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
+    =
+    \int_{\om_1 + \om_2}f\,dx.
+\end{equation}
+Formally $\Omega_1 + \Omega_2$ is called a \textit{chain}. For example, we may visualize $\Omega_1 + 2\Omega_2 + 0.5\Omega_4$ as:
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+We define the boundary operator $\partial$ to be linear in formal sums e.g.,
+    $$\partial(\Omega_1 + \Omega_2) = \pom_1 + \pom_2.$$
+If $\om_1$ and $\om_2$ share a boundary, we would like $\om_1 + \om_2$ to represent their union, such that a flux
+integral over $\partial(\Omega_1 + \Omega_2)$ evaluates to zero on the shared boundary. This can be done by thinking of
+the boundary as \textit{oriented}, as in, consisting of oriented ``surface elements'' over which flux integrals can be taken.
+For example, the $\hat{n}$ in a flux integral denotes the outward-pointing normal, which represents an ``outward-flux-measuring surface element''.
+The opposite $-\hat{n}$ then represents the ``inward-flux-measuring surface element'', which is outward from the perspective of an adjacent cell.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+We may now define
+    $$\Psi = \text{span}\left\{\Omega_1,\cdots,\Omega_n\right\}$$
+to be the \textit{trial space}, where the span is taken with respect to formal sums. As with any linear space,
+we may choose from many possible bases. For example,
+    $$\Psi = \text{span}\left\{\Omega_1, \Omega_2, \Omega_3\right\} =
+    \text{span}\left\{\Omega_1 + \Omega_2, 2\Omega_2, \Omega_3\right\}.$$
+A key idea, leading to Galerkin methods, is to allow freedom in the choice of our trial space $\Psi$.
+Notably, we do not need $\Psi$ to be a space of formal sums of domains.
+To see this more clearly, we can emphasize the duality between chains and the functions integrated over them by using inner product notation, or ``duality pairing'':
+\begin{equation}
+    \inner{-\nabla \left(\sum_{i=1}^n h_i\phi_i\right), \partial(\om_1 + \om_2)}
+    =
+    \inner{f, \om_1 + \om_2}.
+\end{equation}
+
+The Poisson equation is discretized over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
+which we repeat here:
+\begin{align*}
+    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
+\end{align*}
+Applying Stokes' theorem, we get
+\begin{align*}
+    \sum_{i=1}^n h_i\int_{\om_j} -\Delta \phi_i \,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
+\end{align*}
+We can think of these integrals as over the \textit{entire domain} $\Omega$, giving the form
+\begin{align*}
+    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i\cdot \chi(\om_j)\,dx = \int_{\om} f\cdot\chi(\om_j)\,dx,\quad j=1,\cdots,n.
+\end{align*}
+where $\chi(\om_j)$ is the indicator function of $\om_j$,
+\begin{align*}
+    \chi(\om_j)(x) \coloneqq \left\{\begin{array}{lr}
+        0, &\text{if $x \in \om_j$}\\
+        1, &\text{if $x \notin \om_j$.}\\
+        \end{array}\right.
+\end{align*}
+Now we can instead let
+    $$\Psi = \text{span}\left\{\psi_1,\cdots,\psi_n\right\}$$
+where the $\psi_j$
+need not be the indicator functions of a domain decomposition. We now have the system of equations
+\begin{align*}
+    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i \psi_j\,dx = \int_{\om} f\psi_j\,dx,\quad j=1,\cdots,n.
+\end{align*}
+By integration by parts we have
+\begin{equation}\label{poisson_galerkin}
+    \sum_{i=1}^n h_i\int_{\om} -\nabla \phi_i \cdot \nabla \psi_j\,dx = \int_{\om} f\psi_j\,dx,\quad j=1,\cdots,n,
+\end{equation}
+and we see that we still only require the $\phi_i$ to be in $H^1$.
+We can see that equation \eqref{poisson_galerkin} is very similar to the exact fluxes in \eqref{poisson_equation_integral_discretized}.
+There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred convolution'' of flux integrals.
+
+While this is more readily formalized with the notion of a distribution, or generalised function, we will work with the Dirac delta function.
+For example, possibly under some regularity assumptions, we may represent a function of a real variable as
+    $$f = \int_{-\infty}^\infty \delta_x f(x)\,dx,$$
+which we may call ``Riemann-integral-like''.
+We may instead represent $f$ in a ``Lebesgue-integral-like'' way
+
+For example, if we let $\Psi$ be spanned by the hat functions on some triangulation, each hat function $\psi_i$
+will be 
+
+
+For example, if we let $\Phi = \Psi$ be the set of hat functions on some triangulation
+of $\Omega$, then form and solve the matrix system, we get a generally non-conservative system of fluxes. We have lost conservativeness
+by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence.
+
+
 
 
 \begin{thebibliography}{9}
@@ -1004,6 +1103,11 @@ Mario Botsch, Leif Kobbelt, Mark Pauly, Pierre Alliez, Bruno L\'evy, \textit{Pol
 
 \bibitem{ciarlet}
 P. G. Ciarlet, \textit{The Finite Element Method for Elliptic Problems}, 1978
+
+\bibitem{tum}
+Daniel Cremers, \textit{Variational Methods in Computer Vision},\\(https://vision.in.tum.de/teaching/online/cvvm)
+
+
 
 \end{thebibliography}
 
