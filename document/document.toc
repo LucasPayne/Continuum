@@ -42,8 +42,11 @@
 \contentsline {section}{\numberline {2.1}Deriving the Navier-Stokes equations}{17}
 \contentsline {section}{\numberline {2.2}Scaling and dimension}{17}
 \contentsline {subsection}{\numberline {2.2.1}The Reynolds number}{17}
-\contentsline {section}{\numberline {2.3}Stokes flow}{17}
+\contentsline {section}{\numberline {2.3}Stokes flow and the meaning of pressure}{17}
+\contentsline {subsection}{\numberline {2.3.1}Application to hydrostatics}{19}
 \contentsline {section}{\numberline {2.4}Pressure}{19}
 \contentsline {chapter}{\chapternumberline {3}The finite element method}{21}
 \contentsline {section}{\numberline {3.1}Discretizing variational principles}{21}
+\contentsline {subsection}{\numberline {3.1.1}Solving the Poisson equation}{21}
+\contentsline {subsubsection}{Diffusion processes}{21}
 \contentsline {chapter}{Bibliography}{23}

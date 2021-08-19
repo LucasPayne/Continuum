@@ -724,7 +724,7 @@ can be solved numerically, or in special situations analytically.
 \section{Scaling and dimension}
 \subsection{The Reynolds number}
 
-\section{Stokes flow}
+\section{Stokes flow and the meaning of pressure}
 If we assume that the advective term $u\cdot \nabla u$ in the incompressible Navier-Stokes equations is ``small'',
 we can ignore it and derive the linear \textit{unsteady Stokes equations}:
 \begin{equation}\label{unsteady_stokes}
@@ -735,12 +735,12 @@ Navier-Stokes fluid ``diffuse'' the linear momentum. Setting the left-hand-side 
 \begin{equation}\label{steady_stokes}
     \mu\Delta u + \rho g - \nabla p = 0,\quad \nabla\cdot u = 0.
 \end{equation}
-\eqref{unsteady_stokes} can be thought of as a ``gradient descent'' for the stable Stokes flow \eqref{steady_stokes}.
+Time-dependent equation \eqref{unsteady_stokes} can be thought of as a ``gradient descent'' to find the steady Stokes flow \eqref{steady_stokes}.
 The steady Stokes equation is a constrained vector Poisson equation, where we have introduced pressure $p$ explicitly.
 It is well-known, by Dirichlet's principle, that we can think
 of a weak solution to the unconstrained vector Poisson equation as a minimizer of the Dirichlet energy
 \begin{equation}\label{steady_stokes_dirichlet_energy}
-    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho gu \,dx = \int_{\Omega} \fancyL\,dx.
+    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \inner{\rho g, u} \,dx = \int_{\Omega} \fancyL\,dx.
 \end{equation}
 \newcommand{\energygradient}{\frac{\delta E}{\delta u}}
 We can see that the Euler-Lagrange equations are
@@ -773,9 +773,9 @@ $\Part{c}{u}$ is such that
 \end{align*}
 % and so we may say that the functional gradient $\Part{c}{u}$ is a differential operator $\nabla \cdot$.
 For weak solutions of the steady Stokes equation \eqref{steady_stokes} we then want
-\begin{align*}
+\begin{equation}\label{virtual_pressure_lambda}
     \inner{\rho g + \mu\Delta u, \delta u} + \nabla\cdot \left(\lambda \delta u\right) = 0,\quad \nabla\cdot u = 0.
-\end{align*}
+\end{equation}
 We have by a product rule of the divergence that
 \begin{align*}
     \nabla\cdot \left(\lambda \delta u\right) = \nabla\lambda \cdot \delta u + \lambda\nabla\cdot \delta u,
@@ -785,7 +785,7 @@ giving the form
     \inner{\rho g + \mu\Delta u + \nabla\lambda, \delta u} + \lambda \nabla\cdot \delta u = 0,\quad \nabla\cdot u = 0.
 \end{align*}
 for a weakened steady Stokes equation. If we constrain our virtual displacement $\delta u$ to be divergence-free (as in,
-the virtual displacement maintains the constraint of incompressibility), we get form
+the virtual displacements maintain the constraint of incompressibility), we get the form
 \begin{align*}
     \inner{\rho g + \mu\Delta u + \nabla\lambda, \delta u} = 0,\quad \nabla\cdot u = 0,
 \end{align*}
@@ -794,9 +794,27 @@ and, noting that the inner product integral must vanish identically for all vali
     \rho g + \mu\Delta u + \nabla\lambda = 0,\quad \nabla\cdot u = 0.
 \end{align*}
 This is just the steady Stokes equations \eqref{steady_stokes}, where $\lambda = -p$! We can see that $p$ is ``actually''
-a Lagrange multiplier.
+a Lagrange multiplier, which measures a virtual force that responds to virtual displacements which would break the constraint of incompressibility.
+In fact, we may think of this as a derivation of the pressure.
+To see this more clearly,
+we can substitute $-p$ into \eqref{virtual_pressure_lambda} to get
+\begin{equation}\label{virtual_pressure}
+    \inner{\rho g + \mu\Delta u, \delta u} = \nabla\cdot \left(p \delta u\right),\quad \nabla\cdot u = 0
+\end{equation}
+for unconstrained test functions $\delta u$.
+---discuss hydrostatics, gravity.
 
+\subsection{Application to hydrostatics}
+For example, we may imagine the steady Stokes equations modelling a calm sea with a flat seabed.
+We can let the body force be gravity described by a potential $\phi$:
+    $$\rho g = -\nabla \phi.$$
+If we make a perturbed displacement of the velocity field at the bottom of the ocean, supposing that some volume of water
+is beginning to expand,
+we are working against gravity as well as our virtual force, pressure.
 
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
 
 
 \section{Pressure}
@@ -816,6 +834,50 @@ a Lagrange multiplier.
 % The weak form is exactly analogous to perturbation principle in the principle of least action.
 % To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
 % equation is the Euler-Lagrange equation of the Dirichlet energy.
+
+\subsection{Solving the Poisson equation}
+As a first example, we will derive a finite element method for the Poisson equation.
+Poisson's equation is a steady-state version of the heat equation.
+\subsubsection{Diffusion processes}
+A diffusion process ``levels out'' some quantity, such as heat or chemical concentration. We can intuitively think of a diffusion as a progressive ``blurring''
+such as is seen in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics. We will stick with
+the notion of heat $h$ as the diffused quantity.
+\textit{Fick's law of diffusion} is a constitutive relation giving the bulk flux of heat $h$ as proportional to the negative gradient:
+    $$hj = -\mu\nabla h,$$
+where $\mu$ is called the diffusion coefficient.
+This is one way of saying that heat tends to ``level out''.
+If we form a continuity equation \eqref{continuity_equation} for heat, with source $s$, we get
+\begin{equation}\label{heat_equation_integral}
+    \frac{d}{dt} \int_{\Omega_0} h\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \mu \nabla h \cdot \hat{n}\,dx,
+\end{equation}
+which by application of Stokes' theorem becomes
+\begin{equation}\label{heat_equation_differential}
+    \frac{dh}{dt} = s + \nabla \cdot \left(\mu \nabla h\right).
+\end{equation}
+If we further assume that the diffusion coefficient $\mu$ is constant, we get
+\begin{equation}\label{heat_equation_differential_constant}
+    \frac{dh}{dt} = s + \mu\nabla \cdot \nabla h = s + \mu\Delta h,
+\end{equation}
+which is the standard heat equation, and simplest example of the use of the Laplacian.
+The steady-state heat equation is then
+\begin{equation}\label{heat_equation_steady_state}
+    -\Delta h = s/\mu.
+\end{equation}
+
+
+
+It is a standard model of diffusion processes which leads directly to the Laplacian.
+
+
+
+$$\int_{\pomn} -\nabla u \cdot \hat{n}\,dx = \int_{\omn}\,dx$$
+
+\begin{equation}\label{poisson}
+\begin{split}
+    -\Delta u &= g\quad\text{in $\Omega$}, \\
+    u &= 0 \quad \text{on $\partial\Omega$}.
+\end{split}
+\end{equation}
 
 
 \begin{thebibliography}{9}

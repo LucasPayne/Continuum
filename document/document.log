@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  17 AUG 2021 18:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  19 AUG 2021 15:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1807,13 +1807,13 @@ bibitemlist
 
  (./document.aux) ) 
 Here is how much of TeX's memory you used:
- 18074 strings out of 494847
- 312294 string characters out of 6179081
- 426954 words of memory out of 5000000
- 21127 multiletter control sequences out of 15000+600000
+ 18081 strings out of 494847
+ 312463 string characters out of 6179081
+ 427323 words of memory out of 5000000
+ 21134 multiletter control sequences out of 15000+600000
  552072 words of font info for 147 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 53i,19n,41p,10403b,295s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 53i,20n,41p,10403b,295s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx
 12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
@@ -1833,7 +1833,7 @@ r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on document.pdf (23 pages, 278589 bytes).
+Output written on document.pdf (23 pages, 281979 bytes).
 PDF statistics:
  159 PDF objects out of 1000 (max. 8388607)
  112 compressed objects within 2 object streams
