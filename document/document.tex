@@ -72,7 +72,7 @@ measurable state which evolves in time.
 Mechanics as a theory of physical motion will require a definition of physical motion. A first attempt might be to posit
 that ``physical states'' are representable as points in a finite-dimensional manifold, which we call the configuration space $C$, which is the case for typical
 notions of state such as the two angles in a double pendulum, or the position and orientation of a rigid body. We might define a motion as
-a continuous time-parameterized curve
+a continuous time-parameterised curve
     $$\gamma: [t_1, t_2] \rightarrow C.$$
 
 % (--- motivation of $F = ma$, and momenta as fundamental quantity).
@@ -164,8 +164,8 @@ colloquially called ``the continuum''. All transporting vector fields (or flux f
 Consider some spatial quantity $\phi$ on $M$ and a flux function $j$ which by which
 this quantity flows around $M$. For clarity, we will begin by specializing $\phi$ to be a scalar, although later we will find it useful to
 transport vector quantities such as momentum. By definition we want this flux function to just push quantity around, and not create or destroy it:
-the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the continuity
-condition
+the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the
+conservation condition
 \begin{equation}\label{continuity_equation}
     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx
 \end{equation}
@@ -180,7 +180,7 @@ Equation \eqref{continuity_equation} becomes
     \Part{\phi}{t} = s - \nabla\cdot (\phi j)
 \end{equation}
 assuming that $\phi j$ is sufficiently differentiable such that the limiting integral exists.
-It should be noted that Stokes' theorem and its specializations are really \textit{definitions} of pointwise quantities
+It should be noted that Stokes' theorem and its specialisations are really \textit{definitions} of pointwise quantities
 such as the divergence and curl as limits of these integral expressions for arbitrarily small regions.
 Continuity relations are most naturally expressed in form \eqref{continuity_equation}, while the form
 \eqref{continuity_equation_differential} may be more useful for techniques such as finite differences.
@@ -193,7 +193,7 @@ and we get \eqref{continuity_equation_differential} in the form
     \Part{\phi}{t} = s - \nabla \phi \cdot j - \phi\left(\Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}\right),
 \end{equation}
 by the product rule.
-As one equation in a system of PDEs, \eqref{continuity_equation_expanded} is readily discretized by finite differences. For example, using forward difference in time and
+As one equation in a system of PDEs, \eqref{continuity_equation_expanded} is readily discretised by finite differences. For example, using forward difference in time and
 central differences in space, our discrete scheme is
 \begin{equation}\label{continuity_equation_finite_differences}
 \begin{split}
@@ -208,7 +208,7 @@ central differences in space, our discrete scheme is
 for $e_1,e_2,e_3$ the standard basis vectors in $\mathbb{R}^3$.
 Later, when we discuss numerical methods for solving continuum models, we will not take this route. The methods of interest, \textit{Galerkin} methods,
 work naturally with the integral form \eqref{continuity_equation}.
-It will be seen later that some constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialization of the original integral form of physical PDEs.
+It will be seen later that some constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialisation of the original integral form of physical PDEs.
 % (--- note: Maybe not exactly, as the integral conservation is quantified over regions, while the weak form is quantified over test functions,
 % which still need to be sufficiently differentiabile. But I think that this must express the same continuity relation.)
 
@@ -235,10 +235,10 @@ The formal expression of these contributions to the rate of change \eqref{reynol
         \int_{\Omega_0(0)}\Part{\gamma}{t}\,dx + \int_{\partial\Omega_0(0)}\gamma \hat{u}\cdot\hat{n} \,dx.
 \end{equation}
 This result is called the \textit{Reynolds transport theorem},
-a generalization of Feynman's popularized ``differentiation under the integral sign'' \cite{feynman_trick},
+a generalisation of Feynman's popularised ``differentiation under the integral sign'' \cite{feynman_trick},
 otherwise named the Leibniz integral rule.
 \subsubsection{The differential form of Reynolds transport}
- In the limit, with the routine application of Stokes' theorem, we can differentialize \eqref{reynolds_transport_theorem}
+ In the limit, with the routine application of Stokes' theorem, we can differentialise \eqref{reynolds_transport_theorem}
 to get
 \begin{equation}\label{reynolds_transport_theorem_differential}
     % \frac{d_{\hat{u}}\gamma}{d_{\hat{u}}t} = \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
@@ -250,7 +250,7 @@ the change in volume of a quantity when a small control volume around the point 
 
 \subsubsection{Reynolds transport applied to a continuity equation}
 Letting our quantity $\gamma$ in \eqref{reynolds_transport_theorem} be the quantity $\phi$ transported by flux function $j$,
-described in continuity equation \eqref{continuity_equation}, we get a specialized form of the Reynolds transport theorem for continuity equations.
+described in continuity equation \eqref{continuity_equation}, we get a specialised form of the Reynolds transport theorem for continuity equations.
 Term $\Part{\gamma}{t}$ in \eqref{reynolds_transport_theorem} becomes $\Part{\phi}{t}$ in the differential form of the continuity equation \eqref{continuity_equation_differential}, giving
 \begin{equation}\label{reynolds_transport_continuity_equation}
 \begin{split}
@@ -329,7 +329,7 @@ All previous discussion on the transport of scalar quantities applies trivially 
 This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity
 % (---should this be mentioned? It doesn't fit into the
 % framework so far as there is no notion of position map, this might be confusing and seem to imply ``linear momentum'' is natural for any continuum process).
-However, some notational discussion is needed in order to establish differentialized forms of continuity equations and the Reynolds transport theorem.
+However, some notational discussion is needed in order to establish differentialised forms of continuity equations and the Reynolds transport theorem.
 \subsubsection{Reynolds transport of vector and tensor quantities}
 For a general tensor quantity $\Gamma$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
 \begin{equation}\label{reynolds_transport_theorem_tensor}
@@ -340,7 +340,7 @@ The step to the differential form \eqref{reynolds_transport_theorem_differential
 as rearranging
     $$\text{``}\Gamma\left(\hat{u}\cdot \hat{n}\right) = (\Gamma\hat{u})\cdot \hat{n}\text{''}$$
 in order to apply the divergence theorem makes no sense. However, the divergence $\nabla \cdot$ was \textit{defined}
-to evaluate the limit of this boundary integral for arbitrarily small $\Omega_0$. We therefore have a natural generalization of the
+to evaluate the limit of this boundary integral for arbitrarily small $\Omega_0$. We therefore have a natural generalisation of the
 divergence for arbitrary tensors $\Psi$, as the limit of the boundary integral of the \textit{contraction} of $\Psi$ with the outward normal
 $\hat{n}$ (which is a contravariant vector). The divergence of a rank $n$ tensor is then a rank $n-1$ tensor,
 \begin{equation}\label{tensor_divergence}
@@ -350,13 +350,13 @@ $\hat{n}$ (which is a contravariant vector). The divergence of a rank $n$ tensor
 We can then rewrite $\Gamma \left(\hat{u}\cdot \hat{n}\right)$ in \eqref{reynolds_transport_theorem_tensor} as
     $$\Gamma \left(\hat{u}\cdot \hat{n}\right) = \left(\Gamma \otimes \hat{u}\right) : \hat{n},$$
 where the tensor product $\otimes$ ``defers contraction'' of $\hat{u}$ with $\hat{n}$, by storing it as a component of product tensor $\Gamma \otimes \hat{u}$.
-This leads to a differentialization of \eqref{reynolds_transport_theorem_tensor},
+This leads to a differentialisation of \eqref{reynolds_transport_theorem_tensor},
 \begin{equation}\label{reynolds_transport_theorem_tensor_differential}
     \frac{d_{\hat{u}}\Gamma}{d_{\hat{u}}t} = \Part{\Gamma}{t} + \nabla \cdot(\Gamma \otimes \hat{u}).
 \end{equation}
 % (--- interpretation of this. This does actually make sense from ``first principles'' rather than tensor algebra.)
-\subsubsection{Continuity equations for vector and tensor quantities}
-With the previous ideas from tensor algebra, it will be easy to describe continuity relations for transport of tensors. The integral form of the scalar continuity equation \eqref{continuity_equation}, generalized to transported tensor $\Phi$, trivially becomes
+\subsubsection{Conservation equations for vector and tensor quantities}
+With the previous ideas from tensor algebra, it will be easy to describe continuity relations for transport of tensors. The integral form of the scalar continuity equation \eqref{continuity_equation}, generalised to transported tensor $\Phi$, trivially becomes
 \begin{equation}\label{continuity_equation_tensor}
     \frac{d}{dt} \int_{\Omega_0} \Phi\,dx = \int_{\partial\Omega_0} \Phi \left(j\cdot (-\hat{n})\right)\,dx + \int_{\Omega_0} s\,dx.
 \end{equation}
@@ -364,7 +364,7 @@ By the same tensor algebra as above we have
     $$
         \Phi \left(j\cdot (-\hat{n})\right) = -\left(\Phi \otimes j\right) : \hat{n},
     $$
-giving \eqref{continuity_equation_tensor} differentialized as
+giving \eqref{continuity_equation_tensor} differentialised as
 \begin{equation}\label{continuity_equation_tensor_differential}
     \Part{\Phi}{t} = -\nabla\cdot (\Phi \otimes j) + s.
 \end{equation}
@@ -492,7 +492,7 @@ We can see that, in this case, it is meaningful to take spatial gradients in \eq
     \nabla y(x, 0) = I,
 \end{split}
 \end{equation}
-where $I$ is the identity tensor. This is easily visualized.
+where $I$ is the identity tensor. This is easily visualised.
 
 \vskip 0.2in
 (draw this)
@@ -510,7 +510,7 @@ We will take for granted that there is some initial mass density function $\rho_
 which we would like to conserve.
 \subsubsection{The Lagrangian form of mass conservation}
 As the position map $y$ evolves, for example under the action of Eulerian velocity field $u$ in the ODE \eqref{position_map_ode},
-we would like a mass density function $\rho : N \rightarrow \mathbb{R}^+$ to be be greater if the position map ``compresses'' the material,
+we would like a mass density function $\rho : N \rightarrow \mathbb{R}^+$ to be greater if the position map ``compresses'' the material,
 and smaller if it ``stretches'' the material. Our aim is that the total mass measured in a control volume of $N$ is the same as in its initial configuration.
 We can express this by the integral equation
 \begin{equation}\label{lagrangian_mass_conservation}
@@ -526,7 +526,7 @@ where $J = \det(\nabla y)$ is the Jacobian, measuring the local change in the vo
 (draw this)
 \vskip 0.2in
 
-As \eqref{lagrangian_mass_conservation_cov} must hold identically for all $\Omega_0$, we have the localized conservation law
+As \eqref{lagrangian_mass_conservation_cov} must hold identically for all $\Omega_0$, we have the localised conservation law
 \begin{equation}\label{lagrangian_mass_conservation_local}
     \rho_0 = \det(\nabla y)\rho.
 \end{equation}
@@ -550,7 +550,7 @@ If we conserve the linear momentum $\rho u$, a ``quantity of motion'', under the
 \begin{equation}\label{cauchy_continuity_traction}
     \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho g\,dx + \int_{\pomn(0)}\hat{t}\,dx,
 \end{equation}
-a specific realization of the Lagrangian continuity equation \eqref{lagrangian_transport}. The Lagrangian perspective is convenient
+a specific realisation of the Lagrangian continuity equation \eqref{lagrangian_transport}. The Lagrangian perspective is convenient
 as it allows us to factor out certain forces on a moving piece of material. The term $g$ is a regular body force per unit mass, where $\rho g$ corresponds to
 the source term $s$ in \eqref{lagrangian_transport}. The boundary term involving $\hat{t}$, however, has no analogue in the scalar continuity equation
 \eqref{lagrangian_transport}.
@@ -572,7 +572,7 @@ where $\sigma$ is termed the \textit{Cauchy stress tensor}.
 \subsubsection{Differentializing the Cauchy momentum equation}
 By application of the Reynolds transport theorem \eqref{reynolds_transport_theorem_tensor} to \eqref{cauchy_continuity} we get
 \begin{equation}\label{cauchy_continuity_eulerian}
-    \frac{d}{dt}\int_{\Omega_0}\rho u\,dx + \int_{\partial\Omega_0}\rho u (u\cdot \hat{n})\,dx = \int_{\Omega_0} \rho g\,dx + \int_{\pomn} \sigma:\hat{n}\,dx.
+    \frac{d}{dt}\int_{\Omega_0(0)}\rho u\,dx + \int_{\partial\Omega_0(0)}\rho u (u\cdot \hat{n})\,dx = \int_{\Omega_0(0)} \rho g\,dx + \int_{\pomn} \sigma:\hat{n}\,dx.
 \end{equation}
 Differentializing \eqref{cauchy_continuity_eulerian}, by our previously derived tensor identities, gives
 \begin{equation}\label{cauchy_continuity_differential}
@@ -629,7 +629,7 @@ This form of \eqref{cauchy_continuity_differential} is called the \textit{convec
 Recall that the material derivative is defined as
     $$\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot \nabla,$$
 which measures the rate of change of a pointwise quantity from the perspective of a particle moving with the flow field $u$.
-The equation \eqref{cauchy_continuity_differential_material} then says that, if the continuum consists of idealized points
+The equation \eqref{cauchy_continuity_differential_material} then says that, if the continuum consists of idealised points
 each with a certain linear momentum (in the particle sense), deflection of their inertial path is due only to the application
 of a body force $\rho g$ at this point, and a total traction force exerted by the surrounding material.
 
@@ -698,6 +698,9 @@ In the next chapter, we will
 investigate an important constitutive relation for the deviatoric stress $\tau$, forming what is called a \textit{Navier-Stokes fluid},
 giving a complete system of equations called the \textit{Navier-Stokes equations}.
 
+\chapter{Some ideas in partial differential equations}
+\section{Weak solutions to PDEs}
+\section{Sobolev spaces}
 
 \chapter{The Navier-Stokes equations}
 \section{Deriving the Navier-Stokes equations}
@@ -738,7 +741,7 @@ Navier-Stokes fluid ``diffuse'' the linear momentum. Setting the left-hand-side 
 Time-dependent equation \eqref{unsteady_stokes} can be thought of as a ``gradient descent'' to find the steady Stokes flow \eqref{steady_stokes}.
 The steady Stokes equation is a constrained vector Poisson equation, where we have introduced pressure $p$ explicitly.
 It is well-known, by Dirichlet's principle, that we can think
-of a weak solution to the unconstrained vector Poisson equation as a minimizer of the Dirichlet energy
+of a weak solution to the unconstrained vector Poisson equation as a minimiser of the Dirichlet energy
 \begin{equation}\label{steady_stokes_dirichlet_energy}
     E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \inner{\rho g, u} \,dx = \int_{\Omega} \fancyL\,dx.
 \end{equation}
@@ -817,8 +820,6 @@ we are working against gravity as well as our virtual force, pressure.
 \vskip 0.2in
 
 
-\section{Pressure}
-
 
 % Navier-Stokes in expanded differential form for Cartesian coordinates. Maybe useful for finite differences.
 % Working backwards to the weak form doesn't make much sense.
@@ -838,16 +839,18 @@ we are working against gravity as well as our virtual force, pressure.
 
 Poisson's equation is a steady-state version of the heat equation.
 Through this investigation we will derive many of the tools and ideas underlying general Galerkin methods.
+In particular we will derive a \textit{finite volume method} and a \textit{finite element method} from first principles.
 
 \subsection{Deriving the Poisson equation through diffusion processes}
-A diffusion process ``levels out'' some quantity, such as heat or some chemical concentration. We can intuitively think of a diffusion as a progressive ``blurring''
+A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration. We can intuitively think of a diffusion as a
+progressive ``blurring''
 such as in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics \cite{tum}. We will stick with
-the notion of heat $h$ as the diffused quantity.
-\textit{Fick's law of diffusion} is a constitutive relation giving the bulk flux of heat $h$ as proportional to the negative gradient:
+the notion of temperature $h$ as the diffused quantity.
+\textit{Fick's law of diffusion} is a constitutive relation giving the bulk flux of temperature $h$ as proportional to the negative gradient:
     $$hj = -\mu\nabla h,$$
 where $\mu$ is called the diffusion coefficient.
-This is one way of saying that heat tends to level out.
-If we form a continuity equation \eqref{continuity_equation} for heat, with source $s$, we get
+This is one way of saying that the temperature tends to level out.
+If we form a continuity equation \eqref{continuity_equation} for temperature, with source $s$, we get
 \begin{equation}\label{heat_equation_integral}
     \frac{d}{dt} \int_{\Omega_0} h\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \mu \nabla h \cdot \hat{n}\,dx,
 \end{equation}
@@ -874,7 +877,7 @@ Form \eqref{poisson_equation_integral} clearly shows that we are calculating a s
 as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount created by the source function.
 This form will be the most convenient for our numerical methods.
 
-\subsection{Discretizing the Poisson equation}
+\subsection{Discretizing the Poisson equation}\label{discretizing_poisson}
 Equation \eqref{poisson_equation_integral} is quantified over arbitrary control volumes $\Omega_0$.
 A simple idea is to break the domain $\Omega$ up into small cells $\Omega_1,\cdots,\Omega_n$, and check that the flux integral holds over each of these.
 We will then have $n$ equations on $h$. As this system will be underdetermined ($h$ has infinite degrees of freedom), we must
@@ -893,13 +896,13 @@ which by linearity can be written as
 We see here that there must be some restrictions on the $\phi_i$.
 Formally, our basis functions must be in the Sobolev space $H^1$. This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
-the integral. Since $f$, our domain decomposition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
+the integral. Since the source $f$, our domain decomposition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
 the majority of \eqref{poisson_equation_integral_discretized} to give a matrix system
 
 \newcommand{\integralentry}[2]{\int_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
 \begin{equation}\label{poisson_matrix_equation}
     A\hat{h} = \begin{bmatrix}
-            \integralentry{1}{1} & \cdots & \integralentry{1}{2} \\
+            \integralentry{1}{1} & \cdots & \integralentry{1}{n} \\
             \vdots & & \vdots \\
             \integralentry{n}{1} & \cdots & \integralentry{n}{n}
             \end{bmatrix}
@@ -938,11 +941,15 @@ If we compute these integrals, we will find a very simple closed form for the en
 In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
 applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
 
+\subsubsection{Results and visualisation}
 \vskip 0.2in
-(results and visualization)
+(results and visualisation)
 \vskip 0.2in
+We have worked through an instance of a \textit{finite volume method} \cite{pde_larsson}.
+Finite volume methods are characterised by an exact domain partition and computation of flux integrals.
+Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
 
-\subsection{The notion of a trial function}
+\subsection{The notion of a trial function}\label{trial_function}
 The matrix equation \eqref{poisson_matrix_equation} consists of linear equations
 \begin{align*}
     \int_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
@@ -971,7 +978,7 @@ We now have the equation
     =
     \int_{\om_1 + \om_2}f\,dx.
 \end{equation}
-Formally $\Omega_1 + \Omega_2$ is called a \textit{chain}. For example, we may visualize $\Omega_1 + 2\Omega_2 + 0.5\Omega_4$ as:
+Formally $\Omega_1 + \Omega_2$ is called a \textit{chain}. For example, we may visualise $\Omega_1 + 2\Omega_2 + 0.5\Omega_4$ as:
 
 \vskip 0.2in
 (draw this)
@@ -997,7 +1004,7 @@ we may choose from many possible bases. For example,
     \text{span}\left\{\Omega_1 + \Omega_2, 2\Omega_2, \Omega_3\right\}.$$
 A key idea, leading to Galerkin methods, is to allow freedom in the choice of our trial space $\Psi$.
 Notably, we do not need $\Psi$ to be a space of formal sums of domains.
-The Poisson equation is discretized over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
+The Poisson equation is discretised over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
 which we repeat here:
 \begin{align*}
     \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
@@ -1017,6 +1024,8 @@ where $\chi(\om_j)$ is the indicator function of $\om_j$,
         1 &\text{if $x \notin \om_j$.}\\
         \end{array}\right.
 \end{align*}
+Note that we can now think of our trial space $\Psi$ as a span of functions, instead of a span of domains:
+    $$\Psi = \text{span}\left\{\chi(\Omega_1),\cdots,\chi(\Omega_n)\right\}.$$
 Now we can instead let
     $$\Psi = \text{span}\left\{\psi_1,\cdots,\psi_n\right\}$$
 where the $\psi_j$
@@ -1034,7 +1043,7 @@ There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred
 
 \subsubsection{Integrating over trial functions versus integrating over domains}
 The reasoning here is in the spirit of Green's functions.
-While this is more readily formalized with the notion of a distribution, or generalised function, we will work with the Dirac delta function,
+While this is more readily formalised with the notion of a distribution, or generalised function, we will work with the Dirac delta function,
 defined by
 \begin{align*}
     \int_{\omn} \delta_y\,dx = 
@@ -1058,7 +1067,7 @@ can be thought of as a totality of level sets culminating in the point-set of $\
 (draw this)
 \vskip 0.2in
 
-The discretized Poisson equation \eqref{poisson_galerkin} involves an integral over $\nabla \phi_i \cdot \nabla \psi_j$,
+The discretised Poisson equation \eqref{poisson_galerkin} involves an integral over $\nabla \phi_i \cdot \nabla \psi_j$,
 and we can compute this as
 \begin{equation}\label{flux_convolution}
 \begin{split}
@@ -1067,7 +1076,7 @@ and we can compute this as
         &= \int_{-\infty}^\infty y \int_{L_y(\psi_j)} \nabla\phi_i \cdot \hat{n}\,dx\,dy.
 \end{split}
 \end{equation}
-We have this final equality by noting that the gradient of $\psi_j$ at $x$, where $f(x) = y$ is orthogonal to the level set $L_y{(\psi_j)}$,
+We have this final equality by noting that the gradient of $\psi_j$ at $x$, where $\psi_j(x) = y$, is orthogonal to the level set $L_y{(\psi_j)}$,
 and has length $y$:
 
 \vskip 0.2in
@@ -1078,6 +1087,16 @@ We can think of the ``flux trial'' \eqref{poisson_galerkin} as involving ``blurr
 For example, if we let $\Phi = \Psi$ be the set of hat functions on some triangulation
 of $\Omega$, then form and solve the matrix system, we get a generally non-conservative system of fluxes. We have lost conservativeness
 by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence.
+
+\subsubsection{Visualisation and results}
+\vskip 0.2in
+(visualisation and results)
+\vskip 0.2in
+We have worked through an instance of a \textit{finite element method}.
+Finite element methods are characterised by a test space $\Phi$ and trial space
+$\Psi$ having \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
+some Sobolev space. We will formally define a ``finite element method'', following Ciarlet \cite{ciarlet},
+after one more example, the steady Stokes equations.
 
 
 % \subsubsection{Duality and differential geometry}
@@ -1128,6 +1147,58 @@ by the ``blurring'' of the flux integrals, but we may have gained advantages in 
 %     \inner{f, \psi}
 % \end{align*}
 % make sense?
+
+\section{Solving the steady Stokes equations}
+The steady Stokes equations \eqref{steady_stokes} are solved for a stable incompressible Navier-Stokes flow,
+where we assume the Reynolds number is $Re \ll 1$ and thus convective processes are neglible in comparison to viscous processes.
+Due to this simplification, the Steady stokes equations \eqref{steady_stokes}, repeated here:
+\begin{align*}
+    \mu\Delta u + \rho g - \nabla p = 0,\quad \nabla\cdot u = 0,
+\end{align*}
+form a constrained linear equation.
+
+\subsection{The weak form}
+In principle we should keep the Stokes equation
+in integral form (using the conservative-form Cauchy momentum equation \eqref{cauchy_continuity_eulerian}), and continue as we did
+in section \ref{trial_function}. However,
+we will take a formal step to skip the reasoning of section \ref{trial_function}, typical of finite element method derivations.
+As we start with the \textit{differential} equation \eqref{steady_stokes}, we can introduce a trial space $\Psi$ and then ``weaken''
+the equation by integrating against $v \in \Psi$, and removing the Laplacian by integration by parts:
+\begin{equation}\label{steady_stokes_weak}
+    \int_\Omega \left(\mu\Delta u + \rho g\right)v\,dx = 0
+    \quad\equiv\quad
+    \int_\Omega -\mu\nabla u\cdot \nabla v\,dx = \int_\Omega \rho gv\,dx.
+\end{equation}
+
+\subsection{Forming a linear system}
+Noting that the left-hand-side of \eqref{steady_stokes_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
+is a linear functional in $\psi$, it is standard practice (ref) to write this kind of equation as
+\begin{equation}
+    a(u, v) = f(v).
+\end{equation}
+Our subsequent derivations are much the same as in \ref{discretizing_poisson}, simplified by our new notation.
+We can now approximate $u$ in the test space $\Phi$ as $\hat{u} = \sum_{i=1}^nu_i\phi_i$. By linearity we only need to compute
+trials over the basis trial functions $\psi_j$.
+We then have the linear system of equations
+\begin{equation}\label{elliptic_bilinear_form}
+    \sum_{i=1}^n u_i a\left(\phi_i, \psi_j\right) = f(\psi_j),\quad j=1,\cdots,n,
+\end{equation}
+which can be written in matrix form as
+\begin{equation}\label{elliptic_bilinear_form_matrix}
+    A\hat{u} = \begin{bmatrix}
+            a(\phi_1, \psi_1) & \cdots & a(\phi_1, \psi_n) \\
+            \vdots & & \vdots \\
+            a(\phi_n, \psi_1) & \cdots & a(\phi_n, \psi_n)
+            \end{bmatrix}
+    \begin{bmatrix} u_1 \\ u_2 \\ \vdots \\ u_{n-1} \\ u_n \end{bmatrix}
+    =
+    \begin{bmatrix} f(\psi_1) \\ f(\psi_2) \\ \vdots \\ f(\psi_{n-1}) \\ f(\psi_{n}) \end{bmatrix}
+    = \hat{f}.
+\end{equation}
+It should be noted that each term in $\eqref{elliptic_bilinear_form}$ is a vector of the dimension of the domain $\Omega$
+(as $u$ is a velocity field),
+and therefore $A$ and $\hat{f}$ in \eqref{elliptic_bilinear_form_matrix} have vector entries.
+
 
 
 
@@ -1183,6 +1254,8 @@ P. G. Ciarlet, \textit{The Finite Element Method for Elliptic Problems}, 1978
 \bibitem{tum}
 Daniel Cremers, \textit{Variational Methods in Computer Vision},\\(https://vision.in.tum.de/teaching/online/cvvm)
 
+\bibitem{evans}
+Lawrence Evans, \textit{Partial Differential Equations}, 2010
 
 
 \end{thebibliography}
