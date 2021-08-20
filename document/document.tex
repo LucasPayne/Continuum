@@ -727,7 +727,7 @@ can be solved numerically, or in special situations analytically.
 \section{Scaling and dimension}
 \subsection{The Reynolds number}
 
-\section{Stokes flow and the meaning of pressure}
+\section{Stokes flow and the meaning of pressure}\label{pressure_derivation}
 If we assume that the advective term $u\cdot \nabla u$ in the incompressible Navier-Stokes equations is ``small'',
 we can ignore it and derive the linear \textit{unsteady Stokes equations}:
 \begin{equation}\label{unsteady_stokes}
@@ -743,7 +743,7 @@ The steady Stokes equation is a constrained vector Poisson equation, where we ha
 It is well-known, by Dirichlet's principle, that we can think
 of a weak solution to the unconstrained vector Poisson equation as a minimiser of the Dirichlet energy
 \begin{equation}\label{steady_stokes_dirichlet_energy}
-    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \inner{\rho g, u} \,dx = \int_{\Omega} \fancyL\,dx.
+    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho g\cdot u \,dx = \int_{\Omega} \fancyL\,dx.
 \end{equation}
 \newcommand{\energygradient}{\frac{\delta E}{\delta u}}
 We can see that the Euler-Lagrange equations are
@@ -1155,23 +1155,28 @@ Due to this simplification, the Steady stokes equations \eqref{steady_stokes}, r
 \begin{align*}
     \mu\Delta u + \rho g - \nabla p = 0,\quad \nabla\cdot u = 0,
 \end{align*}
-form a constrained linear equation.
+form a constrained linear equation. As we saw in section \ref{pressure_derivation}, the pressure term $p$ is a Lagrange multiplier introduced
+alongside the constraint $\nabla\cdot u = 0$. We will begin by discretizing the \textit{unconstrained} steady Stokes equations,
+which are a vector Poisson equation:
+\begin{equation}\label{steady_stokes_unconstrained}
+    -\mu\Delta u = \rho g.
+\end{equation}
 
 \subsection{The weak form}
 In principle we should keep the Stokes equation
 in integral form (using the conservative-form Cauchy momentum equation \eqref{cauchy_continuity_eulerian}), and continue as we did
 in section \ref{trial_function}. However,
 we will take a formal step to skip the reasoning of section \ref{trial_function}, typical of finite element method derivations.
-As we start with the \textit{differential} equation \eqref{steady_stokes}, we can introduce a trial space $\Psi$ and then ``weaken''
+As we start with the \textit{differential} equation \eqref{steady_stokes_unconstrained}, we can introduce a trial space $\Psi$ and then ``weaken''
 the equation by integrating against $v \in \Psi$, and removing the Laplacian by integration by parts:
-\begin{equation}\label{steady_stokes_weak}
-    \int_\Omega \left(\mu\Delta u + \rho g\right)v\,dx = 0
+\begin{equation}\label{steady_stokes_unconstrained_weak}
+    \int_\Omega -\mu\Delta uv\,dx = \int_\Omega \rho gv\,dx
     \quad\equiv\quad
     \int_\Omega -\mu\nabla u\cdot \nabla v\,dx = \int_\Omega \rho gv\,dx.
 \end{equation}
 
 \subsection{Forming a linear system}
-Noting that the left-hand-side of \eqref{steady_stokes_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
+Noting that the left-hand-side of \eqref{steady_stokes_unconstrained_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
 is a linear functional in $\psi$, it is standard practice (ref) to write this kind of equation as
 \begin{equation}
     a(u, v) = f(v).
@@ -1198,7 +1203,38 @@ which can be written in matrix form as
 It should be noted that each term in $\eqref{elliptic_bilinear_form}$ is a vector of the dimension of the domain $\Omega$
 (as $u$ is a velocity field),
 and therefore $A$ and $\hat{f}$ in \eqref{elliptic_bilinear_form_matrix} have vector entries.
+The matrix $A$ is symmetric positive-definite, and we can therefore think of a solution to \eqref{elliptic_bilinear_form_matrix}
+as as a minimizer of the scalar quadratic form
+\begin{equation}\label{elliptic_quadratic_form}
+    \hat{E}(\hat{u}) \coloneqq \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}.
+\end{equation}
+This is simply a discrete realisation of the fact that we can, as described in section \ref{pressure_derivation}, think
+of a solution to the vector Poisson equation as a minimizer of the Dirichlet energy \eqref{steady_stokes_dirichlet_energy},
+\begin{align*}
+    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho g\cdot u \,dx.
+\end{align*}
 
+\subsubsection{Enforcing constraints}
+For a symmetric positive-definite system such as \eqref{elliptic_bilinear_form_matrix}, we can
+introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solution is then given by the constrained optimization
+\begin{equation}
+\begin{aligned}
+& \underset{\hat{u}}{\text{minimize}}
+& & \hat{E}(\hat{u}) =  \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}\\
+& \text{subject to}
+& & c^T\hat{u} = 0.
+\end{aligned}
+\end{equation}
+We can solve for the constrained extrema by Lagrange multipliers:
+\begin{align*}
+    A\hat{u} - \hat{f} = \lambda c.
+\end{align*}
+This is least-squares. Letting $P = I - \frac{cc^T}{c^Tc}$, which orthogonally projects the $c$ component out of vectors,
+we have an equivalent system
+\begin{align*}
+    PA\hat{u} - P\hat{f} = 0,
+\end{align*}
+which is full-rank when restricted to the subspace orthogonal to $c$ (the space that satisfies the constraint $c^Tx = 0$).
 
 
 

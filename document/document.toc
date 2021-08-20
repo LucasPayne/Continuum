@@ -59,4 +59,5 @@
 \contentsline {section}{\numberline {4.2}Solving the steady Stokes equations}{28}
 \contentsline {subsection}{\numberline {4.2.1}The weak form}{28}
 \contentsline {subsection}{\numberline {4.2.2}Forming a linear system}{28}
+\contentsline {subsubsection}{Enforcing constraints}{29}
 \contentsline {chapter}{Bibliography}{31}
