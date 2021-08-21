@@ -698,7 +698,7 @@ In the next chapter, we will
 investigate an important constitutive relation for the deviatoric stress $\tau$, forming what is called a \textit{Navier-Stokes fluid},
 giving a complete system of equations called the \textit{Navier-Stokes equations}.
 
-\chapter{Some ideas in partial differential equations}
+\chapter{Some functional analysis}
 \section{Weak solutions to PDEs}
 \section{Sobolev spaces}
 
@@ -742,8 +742,11 @@ Time-dependent equation \eqref{unsteady_stokes} can be thought of as a ``gradien
 The steady Stokes equation is a constrained vector Poisson equation, where we have introduced pressure $p$ explicitly.
 It is well-known, by Dirichlet's principle, that we can think
 of a weak solution to the unconstrained vector Poisson equation as a minimiser of the Dirichlet energy
-\begin{equation}\label{steady_stokes_dirichlet_energy}
-    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho g\cdot u \,dx = \int_{\Omega} \fancyL\,dx.
+\begin{equation}
+\begin{aligned}
+& \underset{u}{\text{minimize}}
+& & E(u) =  \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g}.\\
+\end{aligned}
 \end{equation}
 \newcommand{\energygradient}{\frac{\delta E}{\delta u}}
 We can validate this by computing the Euler-Lagrange equations:
@@ -753,7 +756,15 @@ We can validate this by computing the Euler-Lagrange equations:
     \frac{\delta E}{\delta u} = \Part{\fancyL}{u} - \frac{d}{dx}\Part{\fancyL}{u_x}
                               = -\rho g - \mu\Delta u = 0.
 \end{align*}
-We now introduce the incompressibility constraint $\nabla \cdot u = 0$.
+We now introduce the incompressibility constraint $\nabla \cdot u = 0$, giving the constrained minimization
+\begin{equation}\label{stokes_flow_optimization}
+\begin{aligned}
+& \underset{u}{\text{minimize}}
+& & E(u) =  \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g}\\
+& \text{subject to}
+& & \nabla\cdot u = 0.
+\end{aligned}
+\end{equation}
 It is not immediately obvious how to use the method of Lagrange multipliers here, as $\nabla\cdot$ is a differential operator.
 We cannot just write
     $$\text{``}\frac{\delta E}{\delta u} = \lambda\nabla\cdot\text{''}$$
@@ -1139,7 +1150,7 @@ which are a vector Poisson equation:
     -\mu\Delta u = \rho g.
 \end{equation}
 
-\subsection{The weak form}
+\subsection{The unconstrained weak form}
 In principle we should keep the Stokes equation
 in integral form (using the conservative-form Cauchy momentum equation \eqref{cauchy_continuity_eulerian}), and continue as we did
 in section \ref{trial_function}. However,
@@ -1152,7 +1163,7 @@ the equation by integrating against $v \in \Psi$, and removing the Laplacian by 
     \int_\Omega -\mu\nabla u\cdot \nabla v\,dx = \int_\Omega \rho gv\,dx.
 \end{equation}
 
-\subsection{Discretizing the steady Stokes equation}
+\subsection{Discretizing the vector Poisson equation}\label{discretizing_vector_poisson}
 Noting that the left-hand-side of \eqref{steady_stokes_unconstrained_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
 is a linear functional in $\psi$, it is standard practice (ref) to write this kind of equation as
 \begin{equation}
@@ -1180,42 +1191,80 @@ which can be written in matrix form as
 It should be noted that each term in $\eqref{elliptic_bilinear_form}$ is a vector of the dimension of the domain $\Omega$
 (as $u$ is a velocity field),
 and therefore $A$ and $\hat{f}$ in \eqref{elliptic_bilinear_form_matrix} have vector entries.
-The matrix $A$ is symmetric positive-definite, and we can therefore think of a solution to \eqref{elliptic_bilinear_form_matrix}
-as as a minimizer of the scalar quadratic form
-\begin{equation}\label{elliptic_quadratic_form}
-    \hat{E}(\hat{u}) \coloneqq \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}.
-\end{equation}
-This is simply a discrete realisation of the fact that we can, as described in section \ref{pressure_derivation}, think
-of a solution to the vector Poisson equation as a minimizer of the Dirichlet energy \eqref{steady_stokes_dirichlet_energy},
-\begin{align*}
-    E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho g\cdot u \,dx.
-\end{align*}
+% The matrix $A$ is symmetric positive-definite, and we can therefore think of a solution to \eqref{elliptic_bilinear_form_matrix}
+% as as a minimizer of the scalar quadratic form
+% \begin{equation}\label{elliptic_quadratic_form}
+%     \hat{E}(\hat{u}) \coloneqq \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}.
+% \end{equation}
+% This is simply a discrete realisation of the fact that we can, as described in section \ref{pressure_derivation}, think
+% of a solution to the vector Poisson equation as a minimizer of the Dirichlet energy \eqref{steady_stokes_dirichlet_energy},
+% \begin{align*}
+%     E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \inner{\nabla u, \nabla u} - \rho g\cdot u \,dx.
+% \end{align*}
+We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $u$, although in general this will not satisfy $\nabla\cdot u = 0$.
 
-\subsection{Enforcing constraints}
-For a symmetric positive-definite system such as \eqref{elliptic_bilinear_form_matrix}, we can
-introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solution is then given by the constrained optimization
-\begin{equation}
+\subsection{The constrained weak form}
+As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
+when solving the optimization problem \eqref{stokes_flow_optimization}:
+\begin{equation*}
 \begin{aligned}
-& \underset{\hat{u}}{\text{minimize}}
-& & \hat{E}(\hat{u}) =  \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}\\
+& \underset{u}{\text{minimize}}
+& & E(u) =  \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g}\\
 & \text{subject to}
-& & c^T\hat{u} = 0.
+& & \nabla\cdot u = 0.
 \end{aligned}
+\end{equation*}
+\newcommand{\trialconstraint}{{\Psi_{\text{constraint}}}}
+\newcommand{\testpressure}{{\Phi_{\text{pressure}}}}
+As a first idea, we can introduce $p$ as a variable to solve for.
+Pressure then needs to be discretized, so we introduce another test space $\testpressure$.
+To get a weak form of the steady Stokes equations \eqref{steady_stokes}, which are two equations including the constraint $\nabla\cdot u = 0$, we introduce
+another trial space $\trialconstraint$, whose functions will be integrated against $\nabla\cdot u$. The weak form is then
+\begin{equation*}
+\begin{split}
+    &\int_\om \left(\mu\Delta u + \rho g - \nabla p\right)\cdot v\,dx = 0,\\
+    &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$},
+\end{split}
+\end{equation*}
+which by integration by parts can be written as
+\begin{equation}\label{steady_stokes_weak}
+\begin{split}
+    &\int_\om \mu\nabla u\cdot\nabla v + \left(\nabla\cdot p\right)v\,dx = \int_\om -\rho g\cdot v\,dx,\\
+    &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
+\end{split}
 \end{equation}
-We can visualise this optimization by the level sets of the quadratic energy:
+% As in section \ref{discretizing_vector_poisson}, we introduce notation for the bilinear and linear forms in \eqref{steady_stokes_weak},
+% giving the form
+% \begin{equation}
+% \begin{split}
+%     a(u, v) + b(v, p) = 
+% \end{split}
+% \end{equation}
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
-
-We can solve for the constrained extrema by Lagrange multipliers:
-\begin{align*}
-    A\hat{u} - \hat{f} = \lambda c.
-\end{align*}
-If we solve for $u^*$ in $Au^* = b$, we can see that
-$A(u - u^*) = \lambda c$, giving the projection formula
-    $$u = u^* + A^{-1}(\lambda c).$$
+% For a symmetric positive-definite system such as \eqref{elliptic_bilinear_form_matrix}, we can
+% introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solution is then given by the constrained optimization
+% \begin{equation}
+% \begin{aligned}
+% & \underset{\hat{u}}{\text{minimize}}
+% & & \hat{E}(\hat{u}) =  \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}\\
+% & \text{subject to}
+% & & c^T\hat{u} = 0.
+% \end{aligned}
+% \end{equation}
+% We can visualise this optimization by the level sets of the quadratic energy:
+% 
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+% 
+% 
+% We can solve for the constrained extrema by Lagrange multipliers:
+% \begin{align*}
+%     A\hat{u} - \hat{f} = \lambda c.
+% \end{align*}
+% If we solve for $u^*$ in $Au^* = b$, we can see that
+% $A(u - u^*) = \lambda c$, giving the projection formula
+%     $$u = u^* + A^{-1}(\lambda c).$$
 
 
 
