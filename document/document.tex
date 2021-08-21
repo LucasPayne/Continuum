@@ -765,7 +765,7 @@ We now introduce the incompressibility constraint $\nabla \cdot u = 0$, giving t
 & & \nabla\cdot u = 0.
 \end{aligned}
 \end{equation}
-It is not immediately obvious how to use the method of Lagrange multipliers here, as $\nabla\cdot$ is a differential operator.
+It is not immediately obvious how to form the constrained Euler-Lagrange equations here, as $\nabla\cdot$ is a differential operator.
 We cannot just write
     $$\text{``}\frac{\delta E}{\delta u} = \lambda\nabla\cdot\text{''}$$
 for scalar function $\lambda$, as we can with a pointwise linear constraint such as $u\cdot v = 0$ for some vector field $v$. However, this is just a problem of
@@ -794,6 +794,32 @@ We can now reasonably apply the localisation step to get the constrained Euler-L
 Along with the constraint $\nabla\cdot u = 0$, this is just the steady Stokes equations \eqref{steady_stokes}, where $\lambda = p$! We can see that $p$ is ``actually''
 a Lagrange multiplier, which measures a virtual force that responds to virtual displacements which would break the constraint of incompressibility.
 In fact, we may think of this as a derivation of the pressure.
+
+\subsubsection{Alternative direct derivation in terms of a modified energy}
+Previously, we emphasized the meaning of the Lagrange multiplier. One utility of Lagrange's methods is their automated calculational power.
+It is standard to express that a solution to the optimization
+problem \eqref{stokes_flow_optimization}, with a differentiable equality constraint, is a stationary point of the modified energy
+\begin{equation}\label{stokes_flow_modified_energy}
+    L(u, \lambda) \coloneqq \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g} - \inner{\lambda, \nabla\cdot u}.\\
+\end{equation}
+We can take an evaluated first variation with respect to $u$ to get
+\begin{align*}
+    \inner{\frac{\delta L}{\delta u}, \delta u} = \inner{-\rho g - \mu\Delta u, \delta u} - \inner{\lambda, \nabla\cdot\delta u},
+\end{align*}
+which by integration by parts becomes
+\begin{equation}
+    \inner{\frac{\delta L}{\delta u}, \delta u} = \inner{-\rho g - \mu\Delta u + \nabla \lambda, \delta u}.
+\end{equation}
+We then get
+\begin{equation}
+\begin{split}
+    \frac{\delta L}{\delta u} &= -\rho g - \mu\Delta u + \nabla \lambda = 0,\\
+    \frac{\delta L}{\delta \lambda} &= -\nabla\cdot u = 0,
+\end{split}
+\end{equation}
+which are the steady Stokes equations \eqref{steady_stokes} with pressure $p = \lambda$.
+
+
 
 \subsection{Application to hydrostatics}
 For example, we may imagine the steady Stokes equations modelling a calm sea with a flat seabed.
@@ -1250,7 +1276,7 @@ We now have a simplified notation for the weak form \eqref{steady_stokes_weak},
 % Solving for $u^*$ in the equation $a(u^*, v) = f(v)$ is the standard vector Poisson equation, resulting in a symmetric-positive-definite
 % system when the test and trials spaces are discretized. We can imagine letting $p = 0$ and solving for $u^*$.
 % The first condition of \eqref{steady_stokes_weak_notation} will hold, but the second condition (does $b(u^*, q) = 0$?) generally will not.
-Working with discrete function spaces, we get a $2n\times 2n$ linear system in the unknown $u_i$ and $p_i$,
+Working with discrete function spaces, we get a $2n\times 2n$ linear system in the unknowns $u_1,\cdots,u_n$ and $p_1,\cdots,p_n$,
 \begin{equation}\label{steady_stokes_weak_notation}
 \begin{split}
     &\sum_{i=1}^n u_i a\left(\phi_i, \psi_j\right) + \sum_{i=1}^np_i\hat{b}\left(\phi^C_i, \psi_j\right) = f(\psi_j),\\
@@ -1259,20 +1285,21 @@ Working with discrete function spaces, we get a $2n\times 2n$ linear system in t
 \end{equation}
 To emphasize the linear system structure of \eqref{steady_stokes_weak_notation}, the block matrix form is:
 \begin{equation}\label{steady_stokes_matrix}
+\def\arraystretch{1.5}
 \begin{split}
     M\hat{x}
     &= \begin{bmatrix}
             A & \hat{B} \\
-            0 & B
+            B & 0
     \end{bmatrix}\hat{x} \\
     &= \left[\begin{array}{@{}ccc|ccc@{}}
             a(\phi_1, \psi_1) & \cdots & a(\phi_1, \psi_n)     & \hat{b}(\phi^C_1, \psi_1) & \cdots & \hat{b}(\phi^C_1, \psi_n) \\
             \vdots & & \vdots                                  & \vdots & & \vdots \\
             a(\phi_n, \psi_1) & \cdots & a(\phi_n, \psi_n)     & \hat{b}(\phi^Cn, \psi_1) & \cdots & \hat{b}(\phi^C_n, \psi_n) \\
             \hline
-            & & & b(\phi_1, \psi^C_1) & \cdots & b(\phi_1, \psi^C_n) \\
-            & & & \vdots & & \vdots \\
-            & & & b(\phi_n, \psi^C_1) & \cdots & b(\phi_n, \psi^C_n)
+            b(\phi_1, \psi^C_1) & \cdots & b(\phi_1, \psi^C_n) & 0 &\cdots& 0      \\
+            \vdots & & \vdots \\                               & \vdots & & \vdots \\
+            b(\phi_n, \psi^C_1) & \cdots & b(\phi_n, \psi^C_n) & 0 &\cdots& 0       
     \end{array}\right]
     \left[\begin{array}{c} u_1 \\ \vdots \\ u_n \\ \hline p_1 \\ \vdots \\ p_n \end{array}\right]
     =
@@ -1280,8 +1307,8 @@ To emphasize the linear system structure of \eqref{steady_stokes_weak_notation},
     = \hat{b}.
 \end{split}
 \end{equation}
-For the vector Poisson equation, we ended up with a symmetric-positive-definite system \eqref{elliptic_bilinear_form_matrix}, which is known to be stably solvable.
-We can ask how reasonable it is to solve \eqref{steady_stokes_matrix}.
+For the vector Poisson equation, letting $\Phi = \Psi$, we ended up with a symmetric-positive-definite system \eqref{elliptic_bilinear_form_matrix}, which is known to be stably solvable.
+We can ask how reasonable it is to solve \eqref{steady_stokes_matrix}, and what trial and test spaces we should use.
 
 % For a symmetric positive-definite system such as \eqref{elliptic_bilinear_form_matrix}, we can
 % introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solution is then given by the constrained optimization
@@ -1364,6 +1391,10 @@ Daniel Cremers, \textit{Variational Methods in Computer Vision},\\(https://visio
 
 \bibitem{evans}
 Lawrence Evans, \textit{Partial Differential Equations}, 2010
+
+\bibitem{DOLFIN}
+Documentation for DOLFIN-1.5.0 (Python),\\
+(https://fenicsproject.org/olddocs/dolfin/1.5.0/python/index.html)
 
 
 \end{thebibliography}

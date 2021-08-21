@@ -46,6 +46,7 @@
 \contentsline {section}{\numberline {3.2}Scaling and dimension}{19}
 \contentsline {subsection}{\numberline {3.2.1}The Reynolds number}{19}
 \contentsline {section}{\numberline {3.3}Stokes flow and the meaning of pressure}{19}
+\contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{21}
 \contentsline {subsection}{\numberline {3.3.1}Application to hydrostatics}{21}
 \contentsline {chapter}{\chapternumberline {4}The finite element method}{23}
 \contentsline {section}{\numberline {4.1}Solving the Poisson equation}{23}
