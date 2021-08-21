@@ -746,66 +746,43 @@ of a weak solution to the unconstrained vector Poisson equation as a minimiser o
     E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho g\cdot u \,dx = \int_{\Omega} \fancyL\,dx.
 \end{equation}
 \newcommand{\energygradient}{\frac{\delta E}{\delta u}}
-We can see that the Euler-Lagrange equations are
+We can validate this by computing the Euler-Lagrange equations:
 \begin{align*}
-    \frac{\delta E}{\delta u} = \Part{\fancyL}{u} - \frac{d}{dx}\Part{\fancyL}{\nabla u}
+    % \frac{\delta E}{\delta u} = \Part{\fancyL}{u} - \frac{d}{dx}\Part{\fancyL}{\nabla u}
+    % notation?
+    \frac{\delta E}{\delta u} = \Part{\fancyL}{u} - \frac{d}{dx}\Part{\fancyL}{u_x}
                               = -\rho g - \mu\Delta u = 0.
 \end{align*}
-We now introduce the incompressibility constraint $c(u) \coloneqq \nabla \cdot u = 0$.
-We have the constrained Euler-Lagrange equations
+We now introduce the incompressibility constraint $\nabla \cdot u = 0$.
+It is not immediately obvious how to use the method of Lagrange multipliers here, as $\nabla\cdot$ is a differential operator.
+We cannot just write
+    $$\text{``}\frac{\delta E}{\delta u} = \lambda\nabla\cdot\text{''}$$
+for scalar function $\lambda$, as we can with a pointwise linear constraint such as $u\cdot v = 0$ for some vector field $v$. However, this is just a problem of
+notation. The evaluation of energy change with perturbations is defined as
 \begin{align*}
-      &\frac{\delta E}{\delta u} = -\rho g - \mu\Delta u = \lambda\left(\Part{c}{u} - \frac{d}{dx}\Part{c}{\nabla u}\right) \\
-      \Rightarrow &-\rho g - \mu\Delta u = \lambda\Part{c}{u}.
+    \inner{\frac{\delta E}{\delta u}, \delta u} = \int_\Omega \frac{\delta E}{\delta u}\cdot\delta u\,dx.
 \end{align*}
-The interpretation is simple. Our functional gradient $\frac{\delta E}{\delta u}$ measures
-the local change in energy when the velocity field $u$ is perturbed, by
-\begin{align*}
-      \eval{\frac{\delta E}{\delta u}}_{\delta u} = \inner{\frac{\delta E}{\delta u}, \delta u}.
-\end{align*}
-$\delta u$ is an unconstrained virtual displacement of the velocity field. We want a principle of stationary action which
-only cares about \textit{constrained} virtual displacements, so we cannot simply say that $\energygradient = 0$.
-However, if we say that
-\begin{align*}
-    \frac{\delta E}{\delta u} = \lambda \Part{c}{u}
-    \quad\Rightarrow\quad \inner{\energygradient, \delta u} = \inner{\Part{c}{u}, \lambda\delta u}
-\end{align*}
-we mean that, as we must have $\inner{\Part{c}{u}, \delta u} = 0$ for valid virtual displacements, $E$ is stationary with respect to valid displacements.
-$\Part{c}{u}$ is such that
-\begin{align*}
-    \inner{\Part{c}{u}, \delta u} = \nabla \cdot \delta u.
-\end{align*}
-% and so we may say that the functional gradient $\Part{c}{u}$ is a differential operator $\nabla \cdot$.
-For weak solutions of the steady Stokes equation \eqref{steady_stokes} we then want
-\begin{equation}\label{virtual_pressure_lambda}
-    \inner{\rho g + \mu\Delta u, \delta u} + \nabla\cdot \left(\lambda \delta u\right) = 0,\quad \nabla\cdot u = 0.
+We want this measure of energy change to be purely a divergence measure, up to a scalar multiplier $\lambda$:
+\begin{equation}\label{el_pressure_constrained_div}
+    \int_\Omega \frac{\delta E}{\delta u}\cdot\delta u\,dx = \int_\om \lambda \nabla\cdot \delta u\,dx.
 \end{equation}
-We have by a product rule of the divergence that
-\begin{align*}
-    \nabla\cdot \left(\lambda \delta u\right) = \nabla\lambda \cdot \delta u + \lambda\nabla\cdot \delta u,
-\end{align*}
-giving the form
-\begin{align*}
-    \inner{\rho g + \mu\Delta u + \nabla\lambda, \delta u} + \lambda \nabla\cdot \delta u = 0,\quad \nabla\cdot u = 0.
-\end{align*}
-for a weakened steady Stokes equation. If we constrain our virtual displacement $\delta u$ to be divergence-free (as in,
-the virtual displacements maintain the constraint of incompressibility), we get the form
-\begin{align*}
-    \inner{\rho g + \mu\Delta u + \nabla\lambda, \delta u} = 0,\quad \nabla\cdot u = 0,
-\end{align*}
-and, noting that the inner product integral must vanish identically for all valid virtual displacements $\delta u$, we have
-\begin{align*}
-    \rho g + \mu\Delta u + \nabla\lambda = 0,\quad \nabla\cdot u = 0.
-\end{align*}
-This is just the steady Stokes equations \eqref{steady_stokes}, where $\lambda = -p$! We can see that $p$ is ``actually''
+This means
+that virtual displacements with $\nabla\cdot\delta u = 0$ will not cause an energy change, which is the condition that
+we want for a stationary point.
+We can now apply integration by parts to \eqref{el_pressure_constrained_div}, assuming that $\delta u$ vanishes on the boundary of the domain, to get
+\begin{equation}
+    \int_\Omega \frac{\delta E}{\delta u}\cdot\delta u\,dx = -\int_\om \nabla\lambda \cdot \delta u\,dx.
+\end{equation}
+We can now reasonably apply the localisation step to get the constrained Euler-Lagrange equations
+\begin{equation}
+\begin{split}
+           \frac{\delta E}{\delta u} = -\nabla \lambda
+    \quad\equiv\quad \mu\Delta u + \rho g - \nabla \lambda = 0.
+\end{split}
+\end{equation}
+Along with the constraint $\nabla\cdot u = 0$, this is just the steady Stokes equations \eqref{steady_stokes}, where $\lambda = p$! We can see that $p$ is ``actually''
 a Lagrange multiplier, which measures a virtual force that responds to virtual displacements which would break the constraint of incompressibility.
 In fact, we may think of this as a derivation of the pressure.
-To see this more clearly,
-we can substitute $-p$ into \eqref{virtual_pressure_lambda} to get
-\begin{equation}\label{virtual_pressure}
-    \inner{\rho g + \mu\Delta u, \delta u} = \nabla\cdot \left(p \delta u\right),\quad \nabla\cdot u = 0
-\end{equation}
-for unconstrained test functions $\delta u$.
----discuss hydrostatics, gravity.
 
 \subsection{Application to hydrostatics}
 For example, we may imagine the steady Stokes equations modelling a calm sea with a flat seabed.
@@ -1094,8 +1071,8 @@ by the ``blurring'' of the flux integrals, but we may have gained advantages in 
 \vskip 0.2in
 We have worked through an instance of a \textit{finite element method}.
 Finite element methods are characterised by a test space $\Phi$ and trial space
-$\Psi$ having \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
-some Sobolev space. We will formally define a ``finite element method'', following Ciarlet \cite{ciarlet},
+$\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
+some Sobolev space, constructed over a domain tessellation. We will formally define a ``finite element method'', following Ciarlet \cite{ciarlet},
 after one more example, the steady Stokes equations.
 
 
@@ -1175,7 +1152,7 @@ the equation by integrating against $v \in \Psi$, and removing the Laplacian by 
     \int_\Omega -\mu\nabla u\cdot \nabla v\,dx = \int_\Omega \rho gv\,dx.
 \end{equation}
 
-\subsection{Forming a linear system}
+\subsection{Discretizing the steady Stokes equation}
 Noting that the left-hand-side of \eqref{steady_stokes_unconstrained_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
 is a linear functional in $\psi$, it is standard practice (ref) to write this kind of equation as
 \begin{equation}
@@ -1214,7 +1191,7 @@ of a solution to the vector Poisson equation as a minimizer of the Dirichlet ene
     E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \norm{\nabla u}^2 - \rho g\cdot u \,dx.
 \end{align*}
 
-\subsubsection{Enforcing constraints}
+\subsection{Enforcing constraints}
 For a symmetric positive-definite system such as \eqref{elliptic_bilinear_form_matrix}, we can
 introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solution is then given by the constrained optimization
 \begin{equation}
@@ -1225,16 +1202,20 @@ introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solutio
 & & c^T\hat{u} = 0.
 \end{aligned}
 \end{equation}
+We can visualise this optimization by the level sets of the quadratic energy:
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+
 We can solve for the constrained extrema by Lagrange multipliers:
 \begin{align*}
     A\hat{u} - \hat{f} = \lambda c.
 \end{align*}
-This is least-squares. Letting $P = I - \frac{cc^T}{c^Tc}$, which orthogonally projects the $c$ component out of vectors,
-we have an equivalent system
-\begin{align*}
-    PA\hat{u} - P\hat{f} = 0,
-\end{align*}
-which is full-rank when restricted to the subspace orthogonal to $c$ (the space that satisfies the constraint $c^Tx = 0$).
+If we solve for $u^*$ in $Au^* = b$, we can see that
+$A(u - u^*) = \lambda c$, giving the projection formula
+    $$u = u^* + A^{-1}(\lambda c).$$
 
 
 
