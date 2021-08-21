@@ -882,7 +882,7 @@ which by linearity can be written as
     \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
 \end{equation}
 We see here that there must be some restrictions on the $\phi_i$.
-Formally, our basis functions must be in the Sobolev space $H^1$. This simply means that they must have a gradient defined ``almost everywhere''.
+Formally, our basis functions must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
 the integral. Since the source $f$, our domain decomposition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
 the majority of \eqref{poisson_equation_integral_discretized} to give a matrix system
@@ -1025,7 +1025,7 @@ By integration by parts we have
 \begin{equation}\label{poisson_galerkin}
     \sum_{i=1}^n h_i\int_{\om} -\nabla \phi_i \cdot \nabla \psi_j\,dx = \int_{\om} f\psi_j\,dx,\quad j=1,\cdots,n,
 \end{equation}
-and we see that we still only require the $\phi_i$ to be in $H^1$.
+and we see that we still only require the $\phi_i$ to be in $H^1(\Omega)$.
 We can see that equation \eqref{poisson_galerkin} is very similar to the exact fluxes in \eqref{poisson_equation_integral_discretized}.
 There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred convolution'' of flux integrals.
 
@@ -1158,9 +1158,9 @@ we will take a formal step to skip the reasoning of section \ref{trial_function}
 As we start with the \textit{differential} equation \eqref{steady_stokes_unconstrained}, we can introduce a trial space $\Psi$ and then ``weaken''
 the equation by integrating against $v \in \Psi$, and removing the Laplacian by integration by parts:
 \begin{equation}\label{steady_stokes_unconstrained_weak}
-    \int_\Omega -\mu\Delta uv\,dx = \int_\Omega \rho gv\,dx
+    \int_\Omega -\mu\Delta u\cdot v\,dx = \int_\Omega \rho g\cdot v\,dx
     \quad\equiv\quad
-    \int_\Omega -\mu\nabla u\cdot \nabla v\,dx = \int_\Omega \rho gv\,dx.
+    \int_\Omega -\mu\nabla u : \nabla v\,dx = \int_\Omega \rho g\cdot v\,dx.
 \end{equation}
 
 \subsection{Discretizing the vector Poisson equation}\label{discretizing_vector_poisson}
@@ -1188,9 +1188,6 @@ which can be written in matrix form as
     \begin{bmatrix} f(\psi_1) \\ f(\psi_2) \\ \vdots \\ f(\psi_{n-1}) \\ f(\psi_{n}) \end{bmatrix}
     = \hat{f}.
 \end{equation}
-It should be noted that each term in $\eqref{elliptic_bilinear_form}$ is a vector of the dimension of the domain $\Omega$
-(as $u$ is a velocity field),
-and therefore $A$ and $\hat{f}$ in \eqref{elliptic_bilinear_form_matrix} have vector entries.
 % The matrix $A$ is symmetric positive-definite, and we can therefore think of a solution to \eqref{elliptic_bilinear_form_matrix}
 % as as a minimizer of the scalar quadratic form
 % \begin{equation}\label{elliptic_quadratic_form}
@@ -1201,7 +1198,7 @@ and therefore $A$ and $\hat{f}$ in \eqref{elliptic_bilinear_form_matrix} have ve
 % \begin{align*}
 %     E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \inner{\nabla u, \nabla u} - \rho g\cdot u \,dx.
 % \end{align*}
-We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $u$, although in general this will not satisfy $\nabla\cdot u = 0$.
+We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $\sum_{i=1}^n u_i\phi_i$, although in general this will not satisfy $\nabla\cdot u = 0$.
 
 \subsection{The constrained weak form}
 As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
@@ -1229,17 +1226,62 @@ another trial space $\trialconstraint$, whose functions will be integrated again
 which by integration by parts can be written as
 \begin{equation}\label{steady_stokes_weak}
 \begin{split}
-    &\int_\om \mu\nabla u\cdot\nabla v + \left(\nabla\cdot p\right)v\,dx = \int_\om -\rho g\cdot v\,dx,\\
+    &\int_\om -\mu\nabla u : \nabla v - \left(\nabla\cdot v\right)p\,dx = \int_\om \rho g\cdot v\,dx,\\
     &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
 \end{split}
 \end{equation}
-% As in section \ref{discretizing_vector_poisson}, we introduce notation for the bilinear and linear forms in \eqref{steady_stokes_weak},
-% giving the form
-% \begin{equation}
-% \begin{split}
-%     a(u, v) + b(v, p) = 
-% \end{split}
-% \end{equation}
+As in section \ref{discretizing_vector_poisson}, we introduce notation for the bilinear and linear forms in \eqref{steady_stokes_weak}:
+\begin{equation}
+\begin{split}
+    a(u, v) &\coloneqq \int_\om-\mu\nabla u : \nabla v\,dx,\quad\text{for $u \in \Phi, v \in \Psi$},\\
+    \hat{b}(p, v) &\coloneqq \int_\om-\left(\nabla\cdot v\right)p\,dx,\quad\text{for $p \in \testpressure, v \in \Psi$},\\
+    b(u, q) &\coloneqq \int_\om-\left(\nabla\cdot u\right)q\,dx,\quad\text{for $u \in \Phi, q \in \trialconstraint$},\\
+    f(v) &\coloneqq \int_\om \rho g\cdot v\,dx\quad\text{for $v \in \Psi$}.
+\end{split}
+\end{equation}
+Although they have the same form, $b$ and $\hat{b}$ are distinguished as they take inputs in different function spaces.
+We now have a simplified notation for the weak form \eqref{steady_stokes_weak},
+\begin{equation}\label{steady_stokes_weak_notation}
+\begin{split}
+    &a(u, v) + \hat{b}(p, v) = f(v),\\
+    &b(u, q) = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
+\end{split}
+\end{equation}
+% Solving for $u^*$ in the equation $a(u^*, v) = f(v)$ is the standard vector Poisson equation, resulting in a symmetric-positive-definite
+% system when the test and trials spaces are discretized. We can imagine letting $p = 0$ and solving for $u^*$.
+% The first condition of \eqref{steady_stokes_weak_notation} will hold, but the second condition (does $b(u^*, q) = 0$?) generally will not.
+Working with discrete function spaces, we get a $2n\times 2n$ linear system in the unknown $u_i$ and $p_i$,
+\begin{equation}\label{steady_stokes_weak_notation}
+\begin{split}
+    &\sum_{i=1}^n u_i a\left(\phi_i, \psi_j\right) + \sum_{i=1}^np_i\hat{b}\left(\phi^C_i, \psi_j\right) = f(\psi_j),\\
+    &\sum_{i=1}^nu_ib\left(\phi_i, \psi^C_j\right) = 0,\quad j=1,\cdots.n.
+\end{split}
+\end{equation}
+To emphasize the linear system structure of \eqref{steady_stokes_weak_notation}, the block matrix form is:
+\begin{equation}\label{steady_stokes_matrix}
+\begin{split}
+    M\hat{x}
+    &= \begin{bmatrix}
+            A & \hat{B} \\
+            0 & B
+    \end{bmatrix}\hat{x} \\
+    &= \left[\begin{array}{@{}ccc|ccc@{}}
+            a(\phi_1, \psi_1) & \cdots & a(\phi_1, \psi_n)     & \hat{b}(\phi^C_1, \psi_1) & \cdots & \hat{b}(\phi^C_1, \psi_n) \\
+            \vdots & & \vdots                                  & \vdots & & \vdots \\
+            a(\phi_n, \psi_1) & \cdots & a(\phi_n, \psi_n)     & \hat{b}(\phi^Cn, \psi_1) & \cdots & \hat{b}(\phi^C_n, \psi_n) \\
+            \hline
+            & & & b(\phi_1, \psi^C_1) & \cdots & b(\phi_1, \psi^C_n) \\
+            & & & \vdots & & \vdots \\
+            & & & b(\phi_n, \psi^C_1) & \cdots & b(\phi_n, \psi^C_n)
+    \end{array}\right]
+    \left[\begin{array}{c} u_1 \\ \vdots \\ u_n \\ \hline p_1 \\ \vdots \\ p_n \end{array}\right]
+    =
+    \left[\begin{array}{c} f(\psi_1) \\ \vdots \\ f(\psi_{n}) \\ \hline 0 \\ \vdots \\ 0 \end{array}\right]
+    = \hat{b}.
+\end{split}
+\end{equation}
+For the vector Poisson equation, we ended up with a symmetric-positive-definite system \eqref{elliptic_bilinear_form_matrix}, which is known to be stably solvable.
+We can ask how reasonable it is to solve \eqref{steady_stokes_matrix}.
 
 % For a symmetric positive-definite system such as \eqref{elliptic_bilinear_form_matrix}, we can
 % introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solution is then given by the constrained optimization
