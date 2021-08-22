@@ -159,7 +159,7 @@ or created and destroyed at sources and sinks.
 We consider here the transport of quantities (scalar, vector, and tensor) on a general finite-dimensional manifold $M$,
 colloquially called ``the continuum''. All transporting vector fields (or flux functions) are considered to be tangent to this manifold $M$.
 
-\subsection{Continuity equations and conservation laws}
+\subsection{Continuity equations and conservation laws}\label{conservation_laws}
 \subsubsection{The integral form of a continuity equation}
 Consider some spatial quantity $\phi$ on $M$ and a flux function $j$ which by which
 this quantity flows around $M$. For clarity, we will begin by specializing $\phi$ to be a scalar, although later we will find it useful to
@@ -845,12 +845,64 @@ we are working against gravity as well as our virtual force, pressure.
 % \subsubsection{Viscous flow and Newtonian fluids}
 
 \chapter{The finite element method}
+\section{Introduction}
+
+Consider a single conservation law as described in section \ref{conservation_laws}. This law
+was given in two forms, ``integral'' \eqref{continuity_equation}:
+\begin{equation*}
+    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
+\end{equation*}
+and ``differential'' \eqref{continuity_equation_differential}:
+\begin{equation*}
+    \Part{\phi}{t} = s - \nabla\cdot (\phi j).
+\end{equation*}
+Thinking about \eqref{continuity_equation} will lead to Galerkin methods, which include finite volumes, finite elements, and spectral methods.
+Thinking about \eqref{continuity_equation_differential} will lead, primarily, to the finite difference method, historically the first and
+still very important in applications. We will discuss the latter first.
+
+\subsection{Discretization of the differential form}
+The finite difference method will take equation \eqref{continuity_equation_differential} and, for example, expand the divergence by Gauss' theorem
+\eqref{gauss_euclidean_divergence}:
+$$
+    \nabla \cdot j = \Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}.
+$$
+The approximate solution may be represented by a number of samples on the domain, for example, a grid. The term
+$j_x$ above could then be approximated by a secant, for example a central difference.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+However, we have not necessarily given a real interpretation of what the solution samples at grid points say about the solution everywhere.
+They could be a coefficients of, for example, hat basis functions.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+Yet a finite difference discretization of \eqref{continuity_equation_differential} may not take this into account at all. One might feel that
+limits have been taken too soon, and that the integral form \eqref{continuity_equation} gives clearer routes to discretizations which
+have geometric meaning.
+
+\subsection{Discretization of the integral form}
+The integral conservation law \eqref{continuity_equation} is a geometric statement about fluxes
+of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
+We have an infinite number of control volumes, and therefore equations which must hold, and an infinite-dimensional
+space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite-dimensional sub-space of possible solutions.
+A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
+
+\vskip 0.2in
+(figure)
+\vskip 0.2in
+
+Finite element methods, and more generally Galerkin methods, live comfortably in the language of weak solutions, integral forms of partial differential equations,
+and the calculus of variations. Some methods of this kind will be derived in the subsequent sections, investigating discretizations of the integral forms
+of the Poisson equation and Stokes flow.
 
 \section{Solving the Poisson equation}
 % The weak form is exactly analogous to perturbation principle in the principle of least action.
 % To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
 % equation is the Euler-Lagrange equation of the Dirichlet energy.
-
 Poisson's equation is a steady-state version of the heat equation.
 Through this investigation we will derive many of the tools and ideas underlying general Galerkin methods.
 In particular we will derive a \textit{finite volume method} and a \textit{finite element method} from first principles.
@@ -1176,7 +1228,7 @@ which are a vector Poisson equation:
     -\mu\Delta u = \rho g.
 \end{equation}
 
-\subsection{The unconstrained weak form}
+\subsection{Discretizing the vector Poisson equation}\label{discretizing_vector_poisson}
 In principle we should keep the Stokes equation
 in integral form (using the conservative-form Cauchy momentum equation \eqref{cauchy_continuity_eulerian}), and continue as we did
 in section \ref{trial_function}. However,
@@ -1189,7 +1241,6 @@ the equation by integrating against $v \in \Psi$, and removing the Laplacian by 
     \int_\Omega -\mu\nabla u : \nabla v\,dx = \int_\Omega \rho g\cdot v\,dx.
 \end{equation}
 
-\subsection{Discretizing the vector Poisson equation}\label{discretizing_vector_poisson}
 Noting that the left-hand-side of \eqref{steady_stokes_unconstrained_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
 is a linear functional in $\psi$, it is standard practice (ref) to write this kind of equation as
 \begin{equation}
@@ -1226,7 +1277,7 @@ which can be written in matrix form as
 % \end{align*}
 We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $\sum_{i=1}^n u_i\phi_i$, although in general this will not satisfy $\nabla\cdot u = 0$.
 
-\subsection{The constrained weak form}
+\subsection{Discretizing the steady Stokes equations}
 As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
 when solving the optimization problem \eqref{stokes_flow_optimization}:
 \begin{equation*}
@@ -1395,6 +1446,9 @@ Lawrence Evans, \textit{Partial Differential Equations}, 2010
 \bibitem{DOLFIN}
 Documentation for DOLFIN-1.5.0 (Python),\\
 (https://fenicsproject.org/olddocs/dolfin/1.5.0/python/index.html)
+
+\bibitem{fenics_book}
+Anders Logg, Kent-Andre Mardal, Garth N. Wells (editors), \textit{The FEniCS book}, 2012.
 
 
 \end{thebibliography}

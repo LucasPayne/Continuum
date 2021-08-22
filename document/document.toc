@@ -49,16 +49,18 @@
 \contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{21}
 \contentsline {subsection}{\numberline {3.3.1}Application to hydrostatics}{21}
 \contentsline {chapter}{\chapternumberline {4}The finite element method}{23}
-\contentsline {section}{\numberline {4.1}Solving the Poisson equation}{23}
-\contentsline {subsection}{\numberline {4.1.1}Deriving the Poisson equation through diffusion processes}{23}
-\contentsline {subsection}{\numberline {4.1.2}Discretizing the Poisson equation}{24}
-\contentsline {subsubsection}{Choosing a domain decomposition and test space}{24}
-\contentsline {subsubsection}{Results and visualisation}{25}
-\contentsline {subsection}{\numberline {4.1.3}The notion of a trial function}{25}
-\contentsline {subsubsection}{Integrating over trial functions versus integrating over domains}{27}
-\contentsline {subsubsection}{Visualisation and results}{28}
-\contentsline {section}{\numberline {4.2}Solving the steady Stokes equations}{28}
-\contentsline {subsection}{\numberline {4.2.1}The unconstrained weak form}{28}
-\contentsline {subsection}{\numberline {4.2.2}Discretizing the vector Poisson equation}{28}
-\contentsline {subsection}{\numberline {4.2.3}The constrained weak form}{29}
-\contentsline {chapter}{Bibliography}{31}
+\contentsline {section}{\numberline {4.1}Introduction}{23}
+\contentsline {subsection}{\numberline {4.1.1}Discretization of the differential form}{23}
+\contentsline {subsection}{\numberline {4.1.2}Discretization of the integral form}{24}
+\contentsline {section}{\numberline {4.2}Solving the Poisson equation}{24}
+\contentsline {subsection}{\numberline {4.2.1}Deriving the Poisson equation through diffusion processes}{24}
+\contentsline {subsection}{\numberline {4.2.2}Discretizing the Poisson equation}{25}
+\contentsline {subsubsection}{Choosing a domain decomposition and test space}{25}
+\contentsline {subsubsection}{Results and visualisation}{26}
+\contentsline {subsection}{\numberline {4.2.3}The notion of a trial function}{26}
+\contentsline {subsubsection}{Integrating over trial functions versus integrating over domains}{28}
+\contentsline {subsubsection}{Visualisation and results}{29}
+\contentsline {section}{\numberline {4.3}Solving the steady Stokes equations}{29}
+\contentsline {subsection}{\numberline {4.3.1}Discretizing the vector Poisson equation}{29}
+\contentsline {subsection}{\numberline {4.3.2}Discretizing the steady Stokes equations}{30}
+\contentsline {chapter}{Bibliography}{33}
