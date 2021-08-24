@@ -1,5 +1,14 @@
 % Terry Tao, on writing: https://terrytao.wordpress.com/advice-on-writing-papers/
 % https://terrytao.wordpress.com/2007/03/18/why-global-regularity-for-navier-stokes-is-hard/#comment-625243
+
+
+% https://fenicsproject.org/olddocs/dolfin/1.5.0/python/demo/documented/stokes-iterative/python/documentation.html
+%
+%
+%
+%
+%
+
 % \documentclass{article}
 \documentclass[11pt,a4paper]{memoir}
 % \setsecnumdepth{subsubsection}
@@ -42,17 +51,15 @@
 
 \newcommand{\todo}[1]{\vskip 0.1in \hrule \vskip 0.03in {#1} \vskip 0.03in \hrule \vskip 0.1in}
 
-\title{The finite element method for the Navier-Stokes equations
-\scriptsize{(working title)}
-}
+\begin{document}
+\title{\Huge \textbf{The finite element method for the Navier-Stokes equations}}
 \author{Lucas Payne}
 
-\begin{document}
 \maketitle
 
 \tableofcontents
 
-\chapter{Continuum mechanics}
+\chapter{Mechanics}
 \chapterprecishere{
 Corpus omne perseverare in statu suo quiescendi vel movendi uniformiter in directum, nisi quatenus a viribus impressis cogitur statum suum mutare.
 \\\\
@@ -63,8 +70,8 @@ Actioni contrariam semper \& aequalem esse reactionem: sive corporum duorum acti
 \section{Newton's laws of motion} % <<<
 
 Newton's three laws, namely those of inertia, force, and equilibrium, have found universal success in application
-to mechanical systems such as the pendulum, the motion of an rigid body, the evolution of a bending beam, and, as we shall see,
-the motion of fluid. \textit{Mechanics} could be thought of as the study of physical motion, but the word ``physical'' might be misleading.
+to mechanical systems such as the pendulum, the motion of a rigid body, the evolution of a bending beam, and, as we shall see,
+the motion of a fluid. \textit{Mechanics} could be thought of as the study of physical motion, but the word ``physical'' might be misleading.
 Newton's principles are mathematical in nature, applicable to the study of motion in a general sense as some unambiguously
 measurable state which evolves in time.
 
@@ -143,11 +150,12 @@ the corresponding (PDE) equations of motion.
 
 
 % >>>
+\chapter{Continuum mechanics}
 \section{Transport} % <<<
 
 Before considering continuum processes in the framework of Newtonian and Lagrangian mechanics, we will look at a fundamental notion of a ``motion''
 of a point in a function space. Many continuum models in physics, such as the heat equation,
-Maxwell's equations, and the equations of fluid motion, are formed by \textit{continuity equations}. These laws posit that the
+Maxwell's equations, and the equations of fluid motion, are formed by \textit{conservation equations}. These laws posit that the
 evolution of the state (represented by a function) is
 due to the transport of the quantity that the function measures, which is either pushed around (by some flux either predetermined or dependent on the current state)
 or created and destroyed at sources and sinks.
@@ -236,7 +244,7 @@ The formal expression of these contributions to the rate of change \eqref{reynol
 \end{equation}
 This result is called the \textit{Reynolds transport theorem},
 a generalisation of Feynman's popularised ``differentiation under the integral sign'' \cite{feynman_trick},
-otherwise named the Leibniz integral rule.
+otherwise named the Leibniz integral rule. See, for example, \cite{leal} for a formal derivation of \eqref{reynolds_transport_theorem}.
 \subsubsection{The differential form of Reynolds transport}
  In the limit, with the routine application of Stokes' theorem, we can differentialise \eqref{reynolds_transport_theorem}
 to get
@@ -534,7 +542,7 @@ As \eqref{lagrangian_mass_conservation_cov} must hold identically for all $\Omeg
 \subsubsection{The Eulerian form of mass conservation}
 Conservation law \eqref{lagrangian_mass_conservation_local} is simple. However, it is given in terms of absolute deformation gradient $\nabla y$.
 Instead of asking how mass is distributed
-in comparison to its initial configuration, in order to conserve it, we can ask how mass is transported by $u$.
+in comparison to its initial configuration, we can ask how mass is transported by $u$.
 This gives an instance of the continuity equation \eqref{continuity_equation}, where we have no source:
 \begin{equation}\label{eulerian_mass_conservation}
     \frac{d}{dt} \int_{\omn} \rho \,dx + \int_{\pomn} \rho u\cdot \hat{n}\,dx = 0.
@@ -543,6 +551,14 @@ With application of Stokes' theorem we have
 \begin{equation}\label{eulerian_mass_conservation_local}
     \Part{\rho}{t} + \nabla \cdot (\rho u) = 0.
 \end{equation}
+Following \cite{leal}, there is a more geometrical statement of this equation, which will be useful when
+we discuss ``material points''
+By a divergence product rule \eqref{eulerian_mass_conservation_local} is equivalent to
+\begin{equation}\label{eulerian_mass_conservation_local_material}
+    \Part{\rho}{t} + u\cdot\nabla\rho + \rho\nabla\cdot u = 0
+    \quad\Rightarrow\quad \frac{D\rho}{Dt} = -\rho\nabla\cdot u,
+\end{equation}
+where $\frac{D}{Dt}$ is the material derivative as defined in \eqref{material_derivative}.
 
 \subsection{Conservation of linear momentum}
 
@@ -572,7 +588,7 @@ where $\sigma$ is termed the \textit{Cauchy stress tensor}.
 \subsubsection{Differentializing the Cauchy momentum equation}
 By application of the Reynolds transport theorem \eqref{reynolds_transport_theorem_tensor} to \eqref{cauchy_continuity} we get
 \begin{equation}\label{cauchy_continuity_eulerian}
-    \frac{d}{dt}\int_{\Omega_0(0)}\rho u\,dx + \int_{\partial\Omega_0(0)}\rho u (u\cdot \hat{n})\,dx = \int_{\Omega_0(0)} \rho g\,dx + \int_{\pomn} \sigma:\hat{n}\,dx.
+    \int_{\Omega_0(0)}\Part{(\rho u)}{t}\,dx + \int_{\partial\Omega_0(0)}\rho u (u\cdot \hat{n})\,dx = \int_{\Omega_0(0)} \rho g\,dx + \int_{\pomn(0)} \sigma:\hat{n}\,dx.
 \end{equation}
 Differentializing \eqref{cauchy_continuity_eulerian}, by our previously derived tensor identities, gives
 \begin{equation}\label{cauchy_continuity_differential}
@@ -633,21 +649,64 @@ The equation \eqref{cauchy_continuity_differential_material} then says that, if 
 each with a certain linear momentum (in the particle sense), deflection of their inertial path is due only to the application
 of a body force $\rho g$ at this point, and a total traction force exerted by the surrounding material.
 
+\subsubsection{The system of conservation laws}
+The conservation equations derived are conservation of mass \eqref{eulerian_mass_conservation_local} and conservation of linear momentum \eqref{cauchy_continuity_differential_material}.
+Here the equations are given in their typical differential form for flow problems, with the Eulerian perspective of mass conservation, and the
+convective form of linear momentum conservation.
+\begin{equation}\label{conservation_system}
+\begin{split}
+    \frac{D\rho}{Dt} + \rho\nabla\cdot u = 0 &\quad\text{(Conservation of mass)},
+    \\
+    \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma &\quad\text{(Conservation of linear momentum)}.
+\end{split}
+\end{equation}
+The unknowns include mass density $\rho$ and velocity $u$, described by $1 + d$ scalar functions where $d$ is the dimension of the domain.
+We can see there are $1 + d$ equations by expanding $u$ in terms of components in some basis.
+\begin{align*}
+\begin{split}
+    \rho\frac{Du_i}{Dt} = \rho g_i + \left(\nabla\cdot\sigma\right)_i &\quad\text{(Conservation of linear momentum components)},
+    \\
+    i=1,\cdots,d. &
+\end{split}
+\end{align*}
+When $g$ and $\sigma$ are known, this system is well-formed, but not very interesting.
+This effectively models a continuum of non-interacting material points, with a linear-momentum-introducing source function $\rho g + \nabla\cdot \sigma$.
+However, we usually let $g$ be known (as this is a per-mass external body force, for example gravity), and the Cauchy stress tensor $\sigma$ be unknown.
+This gives $d^2$ more unknowns, so the system is heavily underdetermined. In effect, the system \eqref{conservation_system} is
+really underdetermined because we don't have a specific material in mind.
 
 \subsection{Constitutive relations}
-Body forces typically model
-external fields such as gravity, which act on a material in bulk. We here forget the body forces, and investigate the possible forms of the
+We here investigate possible forms of the
 Cauchy stress tensor.
-$\sigma$ models the ``material constitution'', and
-therefore we call its specification a \textit{constitutive relation}.
+A specification of $\sigma$ is called a \textit{constitutive relation},
+as $\sigma$ depends on the ``material constitution''.
 A constitutive relation specifies how the kinematics of the continuum relate to its dynamics, as in, how the material configuration
-induces forces on the material. With $\sigma$ specified, the Cauchy momentum equation \eqref{cauchy_continuity_differential_material} becomes well-posed.
+induces forces on the material. With $\sigma$ specified, the Cauchy momentum equation \eqref{cauchy_continuity_differential_material} becomes well-posed
+(however, in general, $\sigma$ may depend on new variables such as temperature, requiring further equations).
+
+\subsubsection{The notion of a material point}
+The system \eqref{conservation_system} is given in terms of
+the material derivative $\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot\nabla$.
 
 \subsubsection{Deviatoric and volumetric stresses}
 Suppose that the tractions are determined only by the velocity gradient,
     $$\sigma = \sigma(\nabla u).$$
+We have the symmetric-antisymmetric splitting of the velocity gradient
+\newcommand{\usym}{\frac{1}{2}\left(\nabla u + \nabla u^T\right)}
+\newcommand{\uantisym}{\frac{1}{2}\left(\nabla u - \nabla u^T\right)}
+\begin{align*}
+    \nabla u = \usym + \uantisym.
+\end{align*}
+The symmetric term $\usym$ can be thought of as differential generator of stretching (as the exponential of a symmetric matrix is symmetric-positive-definite),
+and the antisymmetric term $\uantisym$ can be thought of as a differential generator of rotations (as the exponential of an antisymmetric matrix is orthogonal).
+
+
+
 
 \subsubsection{Pressure in incompressible materials}
+The concept of pressure will be very important in our discussion of the Navier-Stokes equations, so we introduce it
+here. A detailed derivation of the pressure is given in terms of Stokes flow in section \ref{pressure_derivation}.
+
 If we require the velocity field $u$ of the position map $x$ to be non-compressing (as described in section (ref)),
 then we add to our model equations the constraint
 \begin{equation}\label{noncompressing_velocity}
@@ -703,6 +762,13 @@ giving a complete system of equations called the \textit{Navier-Stokes equations
 \section{Sobolev spaces}
 
 \chapter{The Navier-Stokes equations}
+
+\section{The kinematics of flow}
+\subsection{Vorticity}
+\subsection{The Helmholtz decomposition}
+\subsubsection{The stream function}
+\subsubsection{The velocity potential}
+
 \section{Deriving the Navier-Stokes equations}
 The incompressible Navier-Stokes equations model the motion of a common kind of viscous fluid called a \textit{Newtonian fluid}.
 They are:
@@ -741,7 +807,7 @@ Navier-Stokes fluid ``diffuse'' the linear momentum. Setting the left-hand-side 
 Time-dependent equation \eqref{unsteady_stokes} can be thought of as a ``gradient descent'' to find the steady Stokes flow \eqref{steady_stokes}.
 The steady Stokes equation is a constrained vector Poisson equation, where we have introduced pressure $p$ explicitly.
 It is well-known, by Dirichlet's principle, that we can think
-of a weak solution to the unconstrained vector Poisson equation as a minimiser of the Dirichlet energy
+of a weak solution to the unconstrained vector Poisson equation as a minimiser of the Dirichlet energy,
 \begin{equation}
 \begin{aligned}
 & \underset{u}{\text{minimize}}
@@ -791,7 +857,8 @@ We can now reasonably apply the localisation step to get the constrained Euler-L
     \quad\equiv\quad \mu\Delta u + \rho g - \nabla \lambda = 0.
 \end{split}
 \end{equation}
-Along with the constraint $\nabla\cdot u = 0$, this is just the steady Stokes equations \eqref{steady_stokes}, where $\lambda = p$! We can see that $p$ is ``actually''
+Along with the constraint $\nabla\cdot u = 0$, this is just the steady Stokes equations \eqref{steady_stokes}, where $\lambda = p$! We can see that the pressure $p$
+is actually
 a Lagrange multiplier, which measures a virtual force that responds to virtual displacements which would break the constraint of incompressibility.
 In fact, we may think of this as a derivation of the pressure.
 
@@ -888,7 +955,7 @@ have geometric meaning.
 The integral conservation law \eqref{continuity_equation} is a geometric statement about fluxes
 of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
 We have an infinite number of control volumes, and therefore equations which must hold, and an infinite-dimensional
-space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite-dimensional sub-space of possible solutions.
+space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite-dimensional subspace of possible solutions.
 A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
 
 \vskip 0.2in
@@ -897,7 +964,15 @@ A supposed solution will be represented by the coefficients of some choice of ba
 
 Finite element methods, and more generally Galerkin methods, live comfortably in the language of weak solutions, integral forms of partial differential equations,
 and the calculus of variations. Some methods of this kind will be derived in the subsequent sections, investigating discretizations of the integral forms
-of the Poisson equation and Stokes flow.
+of some physical PDEs. In order:
+\begin{itemize}
+    \item The linear Poisson equation: Finite volumes, finite elements, linear systems.
+    \item The linear Stokes equations: FEM with constraints, time-dependence.
+    \item A non-linear Poisson equation: Non-linear FEM.
+    \item A non-linear heat equation: Non-linear, time-dependent FEM.
+    \item The Burgers equation: Introduces shocks and the numerical effect of viscosity.
+\end{itemize}
+This is in order to build up concepts to solve the non-linear time-dependent Navier-Stokes equations.
 
 \section{Solving the Poisson equation}
 % The weak form is exactly analogous to perturbation principle in the principle of least action.
@@ -906,6 +981,13 @@ of the Poisson equation and Stokes flow.
 Poisson's equation is a steady-state version of the heat equation.
 Through this investigation we will derive many of the tools and ideas underlying general Galerkin methods.
 In particular we will derive a \textit{finite volume method} and a \textit{finite element method} from first principles.
+In anticipation, some results are shown below:
+
+\vskip 0.2in
+(visualisations)
+\vskip 0.2in
+
+We will defer the important step of analysis of our methods' convergence and stability to a later section.
 
 \subsection{Deriving the Poisson equation through diffusion processes}
 A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration. We can intuitively think of a diffusion as a
@@ -1152,7 +1234,8 @@ and has length $y$:
 We can think of the ``flux trial'' \eqref{poisson_galerkin} as involving ``blurred fluxes'' as in \eqref{flux_convolution}.
 For example, if we let $\Phi = \Psi$ be the set of hat functions on some triangulation
 of $\Omega$, then form and solve the matrix system, we get a generally non-conservative system of fluxes. We have lost conservativeness
-by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence.
+by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence: in this case,
+the linear system will be symmetric-positive-definite, and stably solvable by, for example, conjugate gradients.
 
 \subsubsection{Visualisation and results}
 \vskip 0.2in
@@ -1214,15 +1297,16 @@ after one more example, the steady Stokes equations.
 % \end{align*}
 % make sense?
 
-\section{Solving the steady Stokes equations}
-The steady Stokes equations \eqref{steady_stokes} are solved for a stable incompressible Navier-Stokes flow,
-where we assume the Reynolds number is $Re \ll 1$ and thus convective processes are neglible in comparison to viscous processes.
+\section{Solving the Stokes equations}
+The Stokes equations \eqref{unsteady_stokes}, which are solved for a stable incompressible Navier-Stokes flow,
+assume the Reynolds number is $Re \ll 1$ and thus convective processes are neglible in comparison to viscous processes.
+We will begin with the steady-state form \eqref{steady_stokes}.
 Due to this simplification, the Steady stokes equations \eqref{steady_stokes}, repeated here:
 \begin{align*}
     \mu\Delta u + \rho g - \nabla p = 0,\quad \nabla\cdot u = 0,
 \end{align*}
 form a constrained linear equation. As we saw in section \ref{pressure_derivation}, the pressure term $p$ is a Lagrange multiplier introduced
-alongside the constraint $\nabla\cdot u = 0$. We will begin by discretizing the \textit{unconstrained} steady Stokes equations,
+with the constraint $\nabla\cdot u = 0$. We will begin by discretizing the \textit{unconstrained} steady Stokes equations,
 which are a vector Poisson equation:
 \begin{equation}\label{steady_stokes_unconstrained}
     -\mu\Delta u = \rho g.
@@ -1276,8 +1360,10 @@ which can be written in matrix form as
 %     E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \inner{\nabla u, \nabla u} - \rho g\cdot u \,dx.
 % \end{align*}
 We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $\sum_{i=1}^n u_i\phi_i$, although in general this will not satisfy $\nabla\cdot u = 0$.
+As some preliminary analysis, if $\Phi = \Psi$ and have the same basis functions, we have a symmetric-positive-definite system. This form of linear system is known to be stably solvable,
+for example by the conjugate gradient method.
 
-\subsection{Discretizing the steady Stokes equations}
+\subsection{Discretizing the steady Stokes equations}\label{discretizing_steady_stokes}
 As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
 when solving the optimization problem \eqref{stokes_flow_optimization}:
 \begin{equation*}
@@ -1328,7 +1414,7 @@ We now have a simplified notation for the weak form \eqref{steady_stokes_weak},
 % system when the test and trials spaces are discretized. We can imagine letting $p = 0$ and solving for $u^*$.
 % The first condition of \eqref{steady_stokes_weak_notation} will hold, but the second condition (does $b(u^*, q) = 0$?) generally will not.
 Working with discrete function spaces, we get a $2n\times 2n$ linear system in the unknowns $u_1,\cdots,u_n$ and $p_1,\cdots,p_n$,
-\begin{equation}\label{steady_stokes_weak_notation}
+\begin{equation}
 \begin{split}
     &\sum_{i=1}^n u_i a\left(\phi_i, \psi_j\right) + \sum_{i=1}^np_i\hat{b}\left(\phi^C_i, \psi_j\right) = f(\psi_j),\\
     &\sum_{i=1}^nu_ib\left(\phi_i, \psi^C_j\right) = 0,\quad j=1,\cdots.n.
@@ -1358,35 +1444,103 @@ To emphasize the linear system structure of \eqref{steady_stokes_weak_notation},
     = \hat{b}.
 \end{split}
 \end{equation}
+\subsubsection{Is this method reasonable?}
 For the vector Poisson equation, letting $\Phi = \Psi$, we ended up with a symmetric-positive-definite system \eqref{elliptic_bilinear_form_matrix}, which is known to be stably solvable.
 We can ask how reasonable it is to solve \eqref{steady_stokes_matrix}, and what trial and test spaces we should use.
+In fact, in the problem \eqref{steady_stokes_weak_notation}, and more generally in a ``saddle point problem'', arising
+in Lagrange-multiplier methods for constrained PDEs, we should not choose just any test and trial spaces.
+The Ladyzhenskaya--Babu\v{s}ka--Brezzi condition, discussed later, enforces restrictions on choices that result in a stable method.
+We will until then continue with computations.
 
-% For a symmetric positive-definite system such as \eqref{elliptic_bilinear_form_matrix}, we can
-% introduce a linear constraint $c^T\hat{u} = 0$, and our natural ``best'' solution is then given by the constrained optimization
-% \begin{equation}
-% \begin{aligned}
-% & \underset{\hat{u}}{\text{minimize}}
-% & & \hat{E}(\hat{u}) =  \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}\\
-% & \text{subject to}
-% & & c^T\hat{u} = 0.
-% \end{aligned}
+\subsubsection{Results and visualisation}
+\vskip 0.2in
+(results and visualisation)
+\vskip 0.2in
+
+\subsection{Discretizing the unsteady Stokes equations}\label{discretizing_unsteady_stokes}
+The steady Stokes above are the stable state of the time-dependent Stokes flow,
+after the transient flow behaviour settles down. The unsteady Stokes equations \eqref{unsteady_stokes} are
+\begin{equation*}
+    \rho\Part{u}{t} = \mu\Delta u + \rho g - \nabla p, \quad \nabla\cdot u = 0.
+\end{equation*}
+These form an initial-boundary-value problem, and this will be our first attempt at discretizing a PDE in time.
+We could think of solving with the test and trial spaces over the domain $\Omega \times [0, T)$, but this is typically not done due to the memory costs,
+and different qualitative meaning of the time variable. Instead, we will use an implicit-Euler finite difference in time: 
+\begin{equation}\label{unsteady_stokes_implicit_euler}
+    \frac{\rho}{\Delta t} \left(u^{(n)} - u^{(n-1)}\right) = \mu\Delta u^{(n)} + \rho g - \nabla p^{(n)}, \quad \nabla\cdot u^{(n)} = 0,
+\end{equation}
+where $\Delta t$ is a fixed time step, and $u^{(n)}$ and $p^{(n)}$ is the solution at time $t_n = n\Delta t$. We can weaken each step
+\eqref{unsteady_stokes_implicit_euler}
+by integrating against trial functions $v \in \Psi$ and $q \in \trialconstraint$, performing integration by parts as in section \ref{discretizing_steady_stokes},
+\newcommand{\uprev}{{u_{\text{prev}}}}
+and rearranging the knowns and unknowns. We can also let $u$ be $u^{(n)}$, $p$ be $p^{(n)}$, and $\uprev$ be $u^{(n-1)}$ in the above to simplify
+subsequent notation. The weak form of \eqref{unsteady_stokes_implicit_euler} is then:
+% \begin{equation}\label{unsteady_stokes_implicit_euler_weak}
+% \begin{split}
+%     \frac{\rho}{\Delta t} \int_\om \left(u^{(n)} - u^{(n-1)}\right)\cdot v\,dx
+%         &= \int_\om \mu\nabla u^{(n)}:\nabla v + \rho g\cdot v + \left(\nabla\cdot v\right) p^{(n)}\,dx,\\
+%     \quad \int_\om \left(\nabla\cdot u^{(n)}\right) q\,dx &= 0.
+% \end{split}
 % \end{equation}
-% We can visualise this optimization by the level sets of the quadratic energy:
-% 
-% \vskip 0.2in
-% (draw this)
-% \vskip 0.2in
-% 
-% 
-% We can solve for the constrained extrema by Lagrange multipliers:
-% \begin{align*}
-%     A\hat{u} - \hat{f} = \lambda c.
-% \end{align*}
-% If we solve for $u^*$ in $Au^* = b$, we can see that
-% $A(u - u^*) = \lambda c$, giving the projection formula
-%     $$u = u^* + A^{-1}(\lambda c).$$
+\begin{equation}\label{unsteady_stokes_implicit_euler_weak}
+\begin{split}
+    \int_\om \frac{\rho}{\Delta t} u\cdot v - \mu\nabla u:\nabla v - \left(\nabla\cdot v\right)p\,dx
+        &= \int_\om \frac{\rho}{\Delta t}\uprev\cdot v + \rho g \cdot v\,dx,\\
+    \quad \int_\om \left(\nabla\cdot u\right) q\,dx &= 0,
+\end{split}
+\end{equation}
+% and with the linear form definitions in section \ref{discretizing_steady_stokes} this is
+% \begin{equation}\label{unsteady_stokes_implicit_euler_weak_notation}
+% \begin{split}
+%     &\int_\om \frac{\rho}{\Delta t} u\cdot v \,dx + a(u, v) + \hat{b}(p, v) = \int_\om \frac{\rho}{\Delta t} \uprev\cdot v \,dx + f(v),\\
+%     &b(u, q) = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
+% \end{split}
+% \end{equation}
+We can define the linear forms as
+\begin{equation}
+\begin{split}
+    a(u, v) &\coloneqq \int_\om\frac{\rho}{\Delta t}u\cdot v -\mu\nabla u : \nabla v\,dx,\quad\text{for $u \in \Phi, v \in \Psi$},\\
+    \hat{b}(p, v) &\coloneqq \int_\om-\left(\nabla\cdot v\right)p\,dx,\quad\text{for $p \in \testpressure, v \in \Psi$},\\
+    b(u, q) &\coloneqq \int_\om-\left(\nabla\cdot u\right)q\,dx,\quad\text{for $u \in \Phi, q \in \trialconstraint$},\\
+    f(v) &\coloneqq \int_\om \frac{\rho}{\Delta t}\uprev\cdot v + g\cdot v\,dx\quad\text{for $v \in \Psi$}
+\end{split}
+\end{equation}
+to reexpress \eqref{unsteady_stokes_implicit_euler_weak} in the notation
+\begin{equation}
+\begin{split}
+    &a(u, v) + \hat{b}(p, v) = f(v),\\
+    &b(u, q) = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
+\end{split}
+\end{equation}
+This is the same structure as in the steady Stokes system \eqref{steady_stokes_weak_notation},
+and so the matrix block structure is the same as in \eqref{steady_stokes_matrix}. Therefore, every step we need to solve a linear system
+that is very similar to the steady Stokes problem. In fact this step can be thought of as successively introducing the momentum source $\rho g$
+(ignoring convection), while solving for the new pressure force needed to keep the fluid non-compressed.
+
+\subsubsection{Discretizing the initial condition}
+We may have some analytically determined, or otherwise, initial velocity field $u$ with $\nabla\cdot u = 0$.
+We would like to form $u^{(0)}$ in order to start the iteration. The velocity $u$ should be projected in some way into the test space $\Psi$.
+Enforcing $u^{(0)}$ to give the same ``blurred average'' value when evaluated against a trial function,
+\begin{equation}\label{initial_velocity_projection}
+    \int_\om u^{(0)}\cdot v\,dx = \int_\om u \cdot v\,dx,\quad \forall v \in \Psi,
+\end{equation}
+gives a linear system
+\begin{equation}\label{initial_velocity_projection_linear_system}
+    \sum_{i=1}^n u^{(0)}_i \int_\om \phi_i \cdot \psi_j\,dx = \int_\om u\cdot \psi_j\,dx,
+    \quad j=1,\cdots,n.
+\end{equation}
+Solving this linear system for the $u^{(0)}_i$ gives $u^{(0)} = \sum_{i=1}^n u^{(0)}_i \phi_i$ as a projection of $u$ onto $\Phi$.
+This projection is orthogonal if $\Phi = \Psi$, and therefore could be considered the ``best'' such projection under the Euclidean norm.
+This is the standard Gramian matrix construction for projection in approximation theory \cite{approximation_theory}.
 
 
+\section{Solving non-linear equations}
+\subsection{A non-linear Poisson equation}
+\subsection{A non-linear heat equation}
+\subsection{The Burgers equation}
+
+
+\chapter{Solving the Navier-Stokes equations}
 
 
 \begin{thebibliography}{9}
@@ -1450,6 +1604,8 @@ Documentation for DOLFIN-1.5.0 (Python),\\
 \bibitem{fenics_book}
 Anders Logg, Kent-Andre Mardal, Garth N. Wells (editors), \textit{The FEniCS book}, 2012.
 
+\bibitem{approximation_theory}
+E. Ward Cheney, \textit{Introduction to Approximation Theory}, 1966.
 
 \end{thebibliography}
 
