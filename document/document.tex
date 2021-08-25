@@ -151,6 +151,13 @@ the corresponding (PDE) equations of motion.
 
 % >>>
 \chapter{Continuum mechanics}
+\section{Introduction}
+--- Introduction.
+
+Although the focus later will be on fluid mechanics, a large set of fundamental concepts of solid and fluid mechanics
+are the same. The key distinction appears when one focuses on displacements and materials with ``shear strength'' (solids)  versus flows
+and materials with no shear strength (common fluids).
+
 \section{Transport} % <<<
 
 Before considering continuum processes in the framework of Newtonian and Lagrangian mechanics, we will look at a fundamental notion of a ``motion''
@@ -296,7 +303,7 @@ Analogous to constraints on the motion of a finite mechanical system,
 % (--- section on Lagrangian mechanics should have an example of constraints of motion for a pendulum)
 we can constrain possible movement of our continuous quantity to \textit{incompressible transport}. Much like how, in the framework of Lagrangian mechanics,
 constraints on motion are implicitly enforced by strong ``virtual forces'', constraining transport to be non-compressing will lead to
-the notion of \textit{pressure}, when we later consider the dynamics of the continuum.
+the notion of \textit{pressure}, derived in section \ref{pressure_derivation}.
 
 \subsubsection{Incompressibility}
 Incompressibility of control volumes gives a constraint on the form of a flux function $j$.
@@ -438,7 +445,7 @@ When we have state $q$, the corresponding velocity $\dot{q}$ will be in the tang
 We can then define the space of velocities as the \textit{tangent bundle} of the configuration space,
     $$TC = \bigcup_{q \in C} T_q C.$$
 
-\subsection{The deformation and velocity gradients}
+\subsection{The deformation and velocity gradients}\label{deformation_and_velocity_gradients}
 We may think of the mechanics of a particle as a special case of our continuum model, where
 $M$ is a single point. In this case we have only one $x \in M$, so we cannot vary $x$.
 However, for a continuum parameter domain $M$ we can take derivatives with respect to our parameter as well as time.
@@ -491,24 +498,22 @@ We can see that the term $\nabla u$ is a ``differential generator'' of the defor
 We call $\nabla u$, the spatial gradient of the Eulerian velocity, the \textit{velocity gradient}.
 
 % Polar decomposition, symmetric and antisymmetric parts.
-\subsection{Material points and material derivatives}
-Assuming an non-compressing flux function $j$ which transports quantity $\phi$, the differential form of the Reynolds transport theorem
+\subsection{Material points and material derivatives}\label{material_points}
+\subsubsection{The material derivative}
+
+Assuming an non-compressing flux function $u$ which transports quantity $\phi$, the differential form of the Reynolds transport theorem
 \eqref{lagrangian_transport_differential} becomes
 \begin{equation}
-    \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
+    \Part{\phi}{t} + \nabla\cdot(\phi u) = \Part{\phi}{t} + u\cdot\nabla\phi + \cancel{\phi \nabla\cdot u}.
 \end{equation}
 We define the \textit{material derivative} to be
 \begin{equation}\label{material_derivative}
-    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
+    \frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot\nabla.
 \end{equation}
-It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
-The material derivative may be taken with respect to a compressing flux $j$, in which case it measures change from the perspective of an
-ideal point mass with no extent under the flow of $j$. As $j$ has no extent, it can not expand under the flow of $j$.
+It is a convention to leave the vector field $u$ implicit, as material derivatives are usually taken with respect to the velocity field.
+This derivative \eqref{material_derivative} will turn out to measure ``per-volume'' quantities.
 
-\vskip 0.2in
-(figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
-\vskip 0.2in
-
+\subsubsection{Pieces of the continuum}
 A \textit{material element} is a small piece of a continuum model which evolves with the displacement and flow.
 In fluid dynamics this is also called a fluid parcel, although it should not be thought of as an object placed in the fluid, but
 rather some tracer such as a non-diffusing dye.
@@ -521,9 +526,14 @@ In continuum mechanics a \textit{material point} is the ideal point of the conti
 At a certain point, we can imagine an arbitrarily small fluid parcel being transported by the flow.
 No matter how small this is, the parcel will still start to shear, expand, and contract due
 to the flow.
-The material derivative was defined as $\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot\nabla$. Notably this derivative contains no divergence term, and so does not measure the
+The material derivative was defined as $\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot\nabla$. Notably this derivative contains no divergence term, and so does not
+measure the
 change of a quantity due to expansion and contraction of the arbitrarily small fluid parcel. Therefore we can think of the material derivative as acting
 on \textit{per-volume} quantities.
+
+\vskip 0.2in
+(figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
+\vskip 0.2in
 
 \section{The dynamics of the continuum}
 
@@ -587,7 +597,7 @@ the source term $s$ in \eqref{lagrangian_transport}. The boundary term involving
 This vector term $\hat{t}$ is called the \textit{traction} in continuum mechanics, and measures a local force exerted across the boundary
 of the control volume due to the immediately adjacent material.
 
-\subsubsection{The Euler-Cauchy stress principle}
+\subsubsection{The Euler-Cauchy stress principle}\label{stress_principle}
 Clearly, in accord with Newton, we would like that two $\Omega_0$ and $\Omega_0^\prime$
 which share a boundary element should have equal and opposite tractions across that boundary element.
 Since the normal $\hat{n}$ represents a boundary element, and is negative for the opposite element, if $\hat{t}$ is linear in $\hat{n}$ we have this required
@@ -663,7 +673,7 @@ The equation \eqref{cauchy_continuity_differential_material} then says that, if 
 each with a certain linear momentum (in the particle sense), deflection of their inertial path is due only to the application
 of a body force $\rho g$ at this point, and a total traction force exerted by the surrounding material.
 
-\subsubsection{The system of conservation laws so far}
+\subsection{Constitutive relations}\label{constitutive_relations}
 The conservation equations derived are conservation of mass \eqref{eulerian_mass_conservation_local} and conservation of linear momentum \eqref{cauchy_continuity_differential_material}.
 Here the equations are given in their typical differential form for flow problems, with the Eulerian perspective of mass conservation, and the
 convective form of linear momentum conservation:
@@ -689,101 +699,95 @@ However, we usually let $g$ be known (as this is a per-mass external body force,
 This gives $d^2$ more unknowns, so the system is heavily underdetermined. In effect, the system \eqref{conservation_system} is
 underdetermined because we don't have a specific material in mind.
 
-\subsection{Constitutive relations}
+\subsubsection{Constitutive relations}
 A specification of the Cauchy stress tensor $\sigma$ is called a \textit{constitutive relation},
 as $\sigma$ depends on the ``material constitution''.
 A constitutive relation specifies how the material configuration
 induces forces on the material, or rather, how kinematics is related to dynamics. With $\sigma$ specified, the Cauchy momentum equation \eqref{cauchy_continuity_differential_material} becomes well-posed
 (however, in general, $\sigma$ may depend on new variables such as temperature, requiring further equations).
 
+% \subsubsection{Deviatoric and volumetric stresses}
+% Suppose that the tractions are determined only by the velocity gradient,
+%     $$\sigma = \sigma(\nabla u).$$
+% We have the symmetric-antisymmetric splitting of the velocity gradient
+% \newcommand{\usym}{\frac{1}{2}\left(\nabla u + \nabla u^T\right)}
+% \newcommand{\uantisym}{\frac{1}{2}\left(\nabla u - \nabla u^T\right)}
+% \begin{align*}
+%     \nabla u = \usym + \uantisym.
+% \end{align*}
+% The symmetric term $\usym$ can be thought of as differential generator of stretching (as the exponential of a symmetric matrix is symmetric-positive-definite),
+% and the antisymmetric term $\uantisym$ can be thought of as a differential generator of rotations (as the exponential of an antisymmetric matrix is orthogonal).
 
+% \subsubsection{Pressure in incompressible materials}
+% TODO: Shorten or remove
+% 
+% 
+% The concept of pressure will be very important in our discussion of the Navier-Stokes equations, so we introduce it
+% here. A detailed derivation of the pressure is given in terms of Stokes flow in section \ref{pressure_derivation}.
+% 
+% If we require the velocity field $u$ of the position map $x$ to be non-compressing (as described in section (ref)),
+% then we add to our model equations the constraint
+% \begin{equation}\label{noncompressing_velocity}
+%     \nabla \cdot u = 0.
+% \end{equation}
+% We proceed by analogy to a simple mechanical system.
+% The state of a pendulum of mass $m$ might be described by two spatial variables $X$ and $Y$ with a constraint
+%     $$X^2 + Y^2 = 1.$$
+% Given a differentiable pendulum motion, the linear momenta $mv_X$ and $mv_Y$ clearly cannot be constant, as then the pendulum
+% would ``fly out'' of its arc.
+% From the perspective of the $X,Y$ coordinate system there exists ``virtual forces'' which are exactly those that are needed
+% to maintain constraints. These forces have no necessary physical interpretation, as the pendulum model does not explicitly reference
+% the tension of the pendulum rod, but are rather those strong forces that must ``come from somewhere'' such that the constraints
+% are satisfied.
+% 
+% \vskip 0.2in
+% (figure)
+% \vskip 0.2in
+% 
+% From a constraint on position $(X,Y)$ we can derive a constraint on velocity $(v_X,v_Y)$ by noting that the velocity must stay inside
+% the tangent plane in the configuration space. In this case, we require
+% \begin{equation}\label{pendulum_velocity_constraint}
+%     Xv_X + Yv_Y = 0.
+% \end{equation}
+% (--- add Lagrange multipliers to the system, then pressure here is a sort of Lagrange multiplier).
+% The continuum velocity constraint \eqref{noncompressing_velocity} is completely analogous to \eqref{pendulum_velocity_constraint}.
+% Motions of $x$ are restricted to those which do not compress mass. Clearly, our (per-point) linear momentum $\rho u$
+% cannot be constant except in simple parallel flows, implying the existence of some virtual (per-point) force.
+% We call this force the \textit{pressure} $p$, and we are now solving for $\rho$, $u$, and $p$ in a coupled system of equations
+% \eqref{cauchy_continuity_differential_material} and \eqref{noncompressing_velocity}, repeated here:
+% \begin{align*}
+%     \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma,\quad
+%         \nabla \cdot u = 0.
+% \end{align*}
+% As there is no explicit mention of $p$, it must be part of the constitutive relation for $\sigma$.
+% We let $\sigma$ be
+% \begin{align*}
+%     \sigma = -pI + \tau \quad\Rightarrow\quad \nabla\cdot\sigma = -\nabla p + \nabla\cdot \tau,
+% \end{align*}
+% where $I$ is the identity tensor and $\tau$ is called the \textit{deviatoric} component of the Cauchy stress tensor.
+% $\tau$ is chosen such that the pressure $p$ entirely encapsulates the isotropic forces which push material volumes apart.
 
-\subsubsection{Deviatoric and volumetric stresses}
-Suppose that the tractions are determined only by the velocity gradient,
-    $$\sigma = \sigma(\nabla u).$$
-We have the symmetric-antisymmetric splitting of the velocity gradient
-\newcommand{\usym}{\frac{1}{2}\left(\nabla u + \nabla u^T\right)}
-\newcommand{\uantisym}{\frac{1}{2}\left(\nabla u - \nabla u^T\right)}
-\begin{align*}
-    \nabla u = \usym + \uantisym.
-\end{align*}
-The symmetric term $\usym$ can be thought of as differential generator of stretching (as the exponential of a symmetric matrix is symmetric-positive-definite),
-and the antisymmetric term $\uantisym$ can be thought of as a differential generator of rotations (as the exponential of an antisymmetric matrix is orthogonal).
-
-
-
-
-\subsubsection{Pressure in incompressible materials}
-The concept of pressure will be very important in our discussion of the Navier-Stokes equations, so we introduce it
-here. A detailed derivation of the pressure is given in terms of Stokes flow in section \ref{pressure_derivation}.
-
-If we require the velocity field $u$ of the position map $x$ to be non-compressing (as described in section (ref)),
-then we add to our model equations the constraint
-\begin{equation}\label{noncompressing_velocity}
-    \nabla \cdot u = 0.
-\end{equation}
-We proceed by analogy to a simple mechanical system.
-The state of a pendulum of mass $m$ might be described by two spatial variables $X$ and $Y$ with a constraint
-    $$X^2 + Y^2 = 1.$$
-Given a differentiable pendulum motion, the linear momenta $mv_X$ and $mv_Y$ clearly cannot be constant, as then the pendulum
-would ``fly out'' of its arc.
-From the perspective of the $X,Y$ coordinate system there exists ``virtual forces'' which are exactly those that are needed
-to maintain constraints. These forces have no necessary physical interpretation, as the pendulum model does not explicitly reference
-the tension of the pendulum rod, but are rather those strong forces that must ``come from somewhere'' such that the constraints
-are satisfied.
-
-\vskip 0.2in
-(figure)
-\vskip 0.2in
-
-From a constraint on position $(X,Y)$ we can derive a constraint on velocity $(v_X,v_Y)$ by noting that the velocity must stay inside
-the tangent plane in the configuration space. In this case, we require
-\begin{equation}\label{pendulum_velocity_constraint}
-    Xv_X + Yv_Y = 0.
-\end{equation}
-(--- add Lagrange multipliers to the system, then pressure here is a sort of Lagrange multiplier).
-The continuum velocity constraint \eqref{noncompressing_velocity} is completely analogous to \eqref{pendulum_velocity_constraint}.
-Motions of $x$ are restricted to those which do not compress mass. Clearly, our (per-point) linear momentum $\rho u$
-cannot be constant except in simple parallel flows, implying the existence of some virtual (per-point) force.
-We call this force the \textit{pressure} $p$, and we are now solving for $\rho$, $u$, and $p$ in a coupled system of equations
-\eqref{cauchy_continuity_differential_material} and \eqref{noncompressing_velocity}, repeated here:
-\begin{align*}
-    \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma,\quad
-        \nabla \cdot u = 0.
-\end{align*}
-As there is no explicit mention of $p$, it must be part of the constitutive relation for $\sigma$.
-We let $\sigma$ be
-\begin{align*}
-    \sigma = -pI + \tau \quad\Rightarrow\quad \nabla\cdot\sigma = -\nabla p + \nabla\cdot \tau,
-\end{align*}
-where $I$ is the identity tensor and $\tau$ is called the \textit{deviatoric} component of the Cauchy stress tensor.
-$\tau$ is chosen such that the pressure $p$ entirely encapsulates the isotropic forces which push material volumes apart.
-
-\subsubsection{Completing our equations}
+\subsubsection{Completing the equations}
 We have so far been working quite generally with the forms of continuum mechanics models and their constraints. Although we have made some assumptions
 (for example, we require $\sigma$ to be a purely local function, an idealisation due to Cauchy [ref]), we must so far leave
 our systems underdetermined.
 In the next chapter, we will
-investigate an important constitutive relation for the deviatoric stress $\tau$, forming what is called a \textit{Navier-Stokes fluid},
+investigate an important constitutive relation for the stress $\sigma$, forming what is called a \textit{Navier-Stokes fluid},
 giving a complete system of equations called the \textit{Navier-Stokes equations}.
-
-\chapter{Some functional analysis}
-\section{Weak solutions to PDEs}
-\section{Sobolev spaces}
 
 \chapter{The Navier-Stokes equations}
 
-\section{The kinematics of flow}
-\subsection{Vorticity}
-\subsection{The Helmholtz decomposition}
-\subsubsection{The stream function}
-\subsubsection{The velocity potential}
+% \section{The kinematics of flow}
+% \subsection{Vorticity}
+% \subsection{The Helmholtz decomposition}
+% \subsubsection{The stream function}
+% \subsubsection{The velocity potential}
 
-\section{Deriving the Navier-Stokes equations}
+\section{Introduction}
 The incompressible Navier-Stokes equations model the motion of a common kind of viscous fluid called a \textit{Newtonian fluid}.
 They are:
 \begin{itemize}
-\item The Cauchy momentum equation \eqref{cauchy_continuity_differential_material} for mass density $\rho$ and velocity $u$,
+\item The Cauchy momentum equation \eqref{cauchy_continuity_differential_material} for constant mass density $\rho$ and velocity $u$,
 \item an incompressibility constraint $\nabla\cdot u = 0$ and unknown pressure $p$,
 \item and a concrete constitutive relation for the deviatoric stress $\tau$.
 \end{itemize}
@@ -795,10 +799,61 @@ where $\tau$ is defined by Stokes' constitutive relation
 \begin{equation}\label{stokes_constitutive_relation}
     \tau = \mu\left(\nabla u + \nabla u^T\right),
 \end{equation}
-where $\mu$ is called the \textit{viscosity}, and $\nabla u$ is the velocity gradient measuring the local deformation of a small control volume under
-the flow of $u$. Alongside a domain and appropriate initial and boundary conditions, the Navier-Stokes equations \eqref{navier_stokes}
+where $\mu$ is called the \textit{viscosity}, and $\nabla u$ is the velocity gradient defined in section \ref{deformation_and_velocity_gradients},
+measuring the local deformation of a small control volume under
+the flow of $u$. We will assume their domain is a subset of $\mathbb{R}^d$, where typically $d = 2$ or $3$, although the Navier-Stokes equations can be solved
+in curved domains (see \cite{stam}).
+Alongside a domain and appropriate initial and boundary conditions, the Navier-Stokes equations \eqref{navier_stokes}
 form a concrete flow problem which
 can be solved numerically, or in special situations analytically.
+
+\section{Constitutive relations for the Navier-Stokes equations}
+We begin with the standard conservation equations of mass and linear momentum, \eqref{conservation_system}:
+\begin{equation*}
+\begin{split}
+    \frac{D\rho}{Dt} + \rho\nabla\cdot u = 0 &\quad\text{(Conservation of mass)},
+    \\
+    \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma &\quad\text{(Conservation of linear momentum)}.
+\end{split}
+\end{equation*}
+As discussed in section \ref{constitutive_relations}, we need to specify $\sigma$ such that the system is well-formed. Firstly, we replace the
+conservation of mass equation with the incompressibility constraint
+\begin{equation*}
+    \nabla \cdot u = 0.
+\end{equation*}
+Assuming a constant mass density $\rho$, this also expresses mass conservation. This will preclude phenomena such as acoustic waves in the fluid,
+but is a good approximation for many studies of fluid motion (see Batchelor \cite{batchelor}).
+
+\subsection{Conservation of angular momentum}
+Angular momentum is traditionally presented in terms of rigid bodies, bodies subject to a distance-preserving constraint between
+material points. It is the moment of linear momentum.
+
+The discussion in section \ref{material_points} indicates that we can think of a very small rigid body at a material point, subject to the flow.
+This will be subject to a ``spin force''.
+
+Let the material point be $c \in \mathbb{R}^d$, which will act as a ``centre of mass', and let $c \in \Omega_0$.
+Define $\bar{x} \coloneqq x - c$.
+Define the moment of linear momentum as
+\begin{equation}\label{moment_of_linear_momentum}
+    \int_{\omn} \bar{x} \wedge \left(\rho u\right)\,dx.
+\end{equation}
+The symbol $\wedge$ indicates the cross product, whose value should be thought of as a pseudo-vector or ``plane with magnitude''.
+We will call this the angular momentum of the control volume $\omn$.
+If the control volume follows the flow, the Reynolds transport theorem \eqref{reynolds_transport_theorem} gives a rate of change of angular momentum:
+\begin{equation}\label{moment_of_linear_momentum_reynolds}
+    \frac{d}{dt}\eval{\left[\int_{\omn(t)} \bar{x} \wedge \left(\rho u\right)\,dx\right]}_{t=0}
+    % = \int_{\omn(0)} \left(x - c\right)\wedge \left(\rho g\right)\,dx + \int_{\pomn(0)} \left(x - c\right) \wedge \hat
+    = \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \rho u (u\cdot \hat{n})\,dx.
+\end{equation}
+The source terms of linear momentum are body forces $\rho g$ on the interior and tractions $\hat{t}$ on the boundary.
+Therefore we have an explicit equation for the rate of change of angular momentum, which we equate to the right-hand-side of
+\eqref{moment_of_linear_momentum_reynolds}:
+\begin{equation}\label{moment_of_linear_momentum_sources}
+    \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \rho u (u\cdot \hat{n})\,dx
+    = \int_{\omn(0)} \bar{x} \wedge \left(\rho g\right)\,dx + \int_{\pomn(0)} \bar{x} \wedge \left(\sigma \hat{n}\right)\,dx.
+\end{equation}
+By the Euler-Cauchy stress principle (section \ref{stress_principle}), we have let the traction $\hat{t} = \sigma \hat{n}$.
+
 
 \section{Scaling and dimension}
 \subsection{The Reynolds number}
@@ -1552,6 +1607,11 @@ This is the standard Gramian matrix construction for projection in approximation
 
 \chapter{Solving the Navier-Stokes equations}
 
+\chapter{Some functional analysis}
+(Appendix)
+\section{Weak solutions to PDEs}
+\section{Sobolev spaces}
+
 
 \begin{thebibliography}{9}
 
@@ -1617,6 +1677,8 @@ Anders Logg, Kent-Andre Mardal, Garth N. Wells (editors), \textit{The FEniCS boo
 \bibitem{approximation_theory}
 E. Ward Cheney, \textit{Introduction to Approximation Theory}, 1966.
 
+\bibitem{stam}
+Jos Stam, \textit{Flows on surfaces of arbitrary topology}, 2003.
 \end{thebibliography}
 
 \end{document}
