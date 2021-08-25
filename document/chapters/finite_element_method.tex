@@ -1,5 +1,7 @@
-\section{Introduction}
+% The Finite Element Method
 
+\section{Introduction}
+% <<<
 Consider a single conservation law as described in section \ref{conservation_laws}. This law
 was given in two forms, ``integral'' \eqref{continuity_equation}:
 \begin{equation*}
@@ -14,6 +16,7 @@ Thinking about \eqref{continuity_equation_differential} will lead, primarily, to
 still very important in applications. We will discuss the latter first.
 
 \subsection{Discretization of the differential form}
+% <<<
 The finite difference method will take equation \eqref{continuity_equation_differential} and, for example, expand the divergence by Gauss' theorem
 \eqref{gauss_euclidean_divergence}:
 $$
@@ -37,7 +40,9 @@ Yet a finite difference discretization of \eqref{continuity_equation_differentia
 limits have been taken too soon, and that the integral form \eqref{continuity_equation} gives clearer routes to discretizations which
 have geometric meaning.
 
+% >>>
 \subsection{Discretization of the integral form}
+% <<<
 The integral conservation law \eqref{continuity_equation} is a geometric statement about fluxes
 of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
 We have an infinite number of control volumes, and therefore equations which must hold, and an infinite-dimensional
@@ -59,8 +64,13 @@ of some physical PDEs. In order:
     \item The Burgers equation: Introduces shocks and the numerical effect of viscosity.
 \end{itemize}
 This is in order to build up concepts to solve the non-linear time-dependent Navier-Stokes equations.
+% >>>
+% >>>
 
 \section{Solving the Poisson equation}
+% <<<
+% Introduction
+% <<<
 % The weak form is exactly analogous to perturbation principle in the principle of least action.
 % To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
 % equation is the Euler-Lagrange equation of the Dirichlet energy.
@@ -74,8 +84,9 @@ In anticipation, some results are shown below:
 \vskip 0.2in
 
 We will defer the important step of analysis of our methods' convergence and stability to a later section.
-
+% >>>
 \subsection{Deriving the Poisson equation through diffusion processes}
+% <<<
 A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration. We can intuitively think of a diffusion as a
 progressive ``blurring''
 such as in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics \cite{tum}. We will stick with
@@ -110,8 +121,9 @@ In integral form, ``undoing'' the application of Stokes' theorem above, the Pois
 Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
 as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount created by the source function.
 This form will be the most convenient for our numerical methods.
-
+% >>>
 \subsection{Discretizing the Poisson equation}\label{discretizing_poisson}
+% <<<
 Equation \eqref{poisson_equation_integral} is quantified over arbitrary control volumes $\Omega_0$.
 A simple idea is to break the domain $\Omega$ up into small cells $\Omega_1,\cdots,\Omega_n$, and check that the flux integral holds over each of these.
 We will then have $n$ equations on $h$. As this system will be underdetermined ($h$ has infinite degrees of freedom), we must
@@ -182,8 +194,9 @@ applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangul
 We have worked through an instance of a \textit{finite volume method} \cite{pde_larsson}.
 Finite volume methods are characterised by an exact domain partition and computation of flux integrals.
 Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
-
+% >>>
 \subsection{The notion of a trial function}\label{trial_function}
+% <<<
 The matrix equation \eqref{poisson_matrix_equation} consists of linear equations
 \begin{align*}
     \int_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
@@ -382,8 +395,13 @@ after one more example, the steady Stokes equations.
 %     \inner{f, \psi}
 % \end{align*}
 % make sense?
+% >>>
+% >>>
 
 \section{Solving the Stokes equations}
+% <<<
+% Introduction 
+% <<<
 The Stokes equations \eqref{unsteady_stokes}, which are solved for a stable incompressible Navier-Stokes flow,
 assume the Reynolds number is $Re \ll 1$ and thus convective processes are neglible in comparison to viscous processes.
 We will begin with the steady-state form \eqref{steady_stokes}.
@@ -397,8 +415,9 @@ which are a vector Poisson equation:
 \begin{equation}\label{steady_stokes_unconstrained}
     -\mu\Delta u = \rho g.
 \end{equation}
-
+% >>>
 \subsection{Discretizing the vector Poisson equation}\label{discretizing_vector_poisson}
+% <<<
 In principle we should keep the Stokes equation
 in integral form (using the conservative-form Cauchy momentum equation \eqref{cauchy_continuity_eulerian}), and continue as we did
 in section \ref{trial_function}. However,
@@ -448,8 +467,9 @@ which can be written in matrix form as
 We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $\sum_{i=1}^n u_i\phi_i$, although in general this will not satisfy $\nabla\cdot u = 0$.
 As some preliminary analysis, if $\Phi = \Psi$ and have the same basis functions, we have a symmetric-positive-definite system. This form of linear system is known to be stably solvable,
 for example by the conjugate gradient method.
-
+% >>>
 \subsection{Discretizing the steady Stokes equations}\label{discretizing_steady_stokes}
+% <<<
 As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
 when solving the optimization problem \eqref{stokes_flow_optimization}:
 \begin{equation*}
@@ -542,8 +562,9 @@ We will until then continue with computations.
 \vskip 0.2in
 (results and visualisation)
 \vskip 0.2in
-
+% >>>
 \subsection{Discretizing the unsteady Stokes equations}\label{discretizing_unsteady_stokes}
+% <<<
 \newcommand{\uprev}{{u_{\text{prev}}}}
 The steady Stokes above are the stable state of the time-dependent Stokes flow,
 after the transient flow behaviour settles down. The unsteady Stokes equations \eqref{unsteady_stokes} are
@@ -619,10 +640,14 @@ Solving this linear system for the $u^{(0)}_i$ gives $u^{(0)} = \sum_{i=1}^n u^{
 This projection is orthogonal if $\Phi = \Psi$, and therefore could be considered the ``best'' such projection under the Euclidean norm.
 This is the standard Gramian matrix construction for projection in approximation theory \cite{approximation_theory}.
 
+% >>>
+% >>>
 
 \section{Solving non-linear equations}
+% <<<
 \subsection{A non-linear Poisson equation}
 \subsection{A non-linear heat equation}
 \subsection{The Burgers equation}
+% >>>
 
 

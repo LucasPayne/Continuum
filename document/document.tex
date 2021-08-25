@@ -1,6 +1,4 @@
 % Terry Tao, on writing: https://terrytao.wordpress.com/advice-on-writing-papers/
-% https://terrytao.wordpress.com/2007/03/18/why-global-regularity-for-navier-stokes-is-hard/#comment-625243
-
 
 % https://fenicsproject.org/olddocs/dolfin/1.5.0/python/demo/documented/stokes-iterative/python/documentation.html
 %
@@ -9,9 +7,9 @@
 %
 %
 
-% \documentclass{article}
+% Preamble
+% <<<
 \documentclass[11pt,a4paper]{memoir}
-% \setsecnumdepth{subsubsection}
 \setsecnumdepth{subsection}
 \setcounter{tocdepth}{2}
 \setlrmarginsandblock{3cm}{3cm}{*} % Centre adjustment
@@ -50,6 +48,7 @@
 \renewcommand\footnoterule{}
 
 \newcommand{\todo}[1]{\vskip 0.1in \hrule \vskip 0.03in {#1} \vskip 0.03in \hrule \vskip 0.1in}
+% >>>
 
 \begin{document}
 \title{\Huge \textbf{The finite element method for the Navier-Stokes equations}}

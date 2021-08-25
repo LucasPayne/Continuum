@@ -68,6 +68,4 @@
 \contentsline {subsection}{\numberline {4.4.3}The Burgers equation}{33}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{35}
 \contentsline {chapter}{\chapternumberline {6}Some functional analysis}{37}
-\contentsline {section}{\numberline {6.1}Weak solutions to PDEs}{37}
-\contentsline {section}{\numberline {6.2}Sobolev spaces}{37}
 \contentsline {chapter}{Bibliography}{39}

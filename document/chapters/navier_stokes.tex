@@ -1,3 +1,5 @@
+% The Navier-Stokes equations
+
 % \section{The kinematics of flow}
 % \subsection{Vorticity}
 % \subsection{The Helmholtz decomposition}
@@ -5,6 +7,7 @@
 % \subsubsection{The velocity potential}
 
 \section{Introduction}
+% <<<
 The incompressible Navier-Stokes equations model the motion of a common kind of viscous fluid called a \textit{Newtonian fluid}.
 They are:
 \begin{itemize}
@@ -27,8 +30,10 @@ in curved domains (see \cite{stam}).
 Alongside a domain and appropriate initial and boundary conditions, the Navier-Stokes equations \eqref{navier_stokes}
 form a concrete flow problem which
 can be solved numerically, or in special situations analytically.
+% >>>
 
 \section{Constitutive relations for the Navier-Stokes equations}
+% <<<
 We begin with the standard conservation equations of mass and linear momentum, \eqref{conservation_system}:
 \begin{equation*}
 \begin{split}
@@ -101,11 +106,15 @@ If \eqref{linear_momentum_for_angular} holds, should \eqref{moment_of_linear_mom
 %     = \int_{\omn(0)} \left(\rho g\right)\,dx + \int_{\pomn(0)} \sigma \hat{n}\,dx.
 % \end{equation*}
 
+% >>>
 
 \section{Scaling and dimension}
+% <<<
 \subsection{The Reynolds number}
+% >>>
 
 \section{Stokes flow and the meaning of pressure}\label{pressure_derivation}
+% <<<
 If we assume that the advective term $u\cdot \nabla u$ in the incompressible Navier-Stokes equations is ``small'',
 we can ignore it and derive the linear \textit{unsteady Stokes equations}:
 \begin{equation}\label{unsteady_stokes}
@@ -212,7 +221,7 @@ we are working against gravity as well as our virtual force, pressure.
 (draw this)
 \vskip 0.2in
 
-
+% >>>
 
 % Navier-Stokes in expanded differential form for Cartesian coordinates. Maybe useful for finite differences.
 % Working backwards to the weak form doesn't make much sense.
