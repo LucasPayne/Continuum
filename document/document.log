@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  25 AUG 2021 17:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  25 AUG 2021 20:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1777,41 +1777,100 @@ Underfull \hbox (badness 10000) in paragraph at lines 69--69
 
  []
 
+[3
 
-Underfull \vbox (badness 1552) has occurred while \output is active []
-
- [3
-
-]
-[4]
-
-Class memoir Warning: The material used in the headers is too large
-(15.45883pt) for the given head height (13.6pt), it is recommended to
-either increase the head height or redesign the header
-(in both cases you will find help in the memoir manual). on input line 153.
-
-
-Overfull \vbox (1.85883pt too high) has occurred while \output is active []
-
-
-[5] [6
-
-] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18
+] [4
 
 ]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 790.
+<figures/2.pdf, id=21, page=11, 551.05875pt x 509.905pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 11>
+Package pdftex.def Info: figures/2.pdf , page11 used on input line 175.
+(pdftex.def)             Requested size: 551.05739pt x 509.90375pt.
+ [5 <./figures/2.pdf>]
+Underfull \vbox (badness 1292) has occurred while \output is active []
 
+ [6]
+<figures/2.pdf, id=41, page=7, 402.50375pt x 731.73375pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 7>
+Package pdftex.def Info: figures/2.pdf , page7 used on input line 250.
+(pdftex.def)             Requested size: 402.50276pt x 731.73196pt.
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+[7 <./figures/2.pdf>] [8] [9]
+<figures/2.pdf, id=58, page=8, 551.05875pt x 727.71875pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 8>
+Package pdftex.def Info: figures/2.pdf , page8 used on input line 406.
+(pdftex.def)             Requested size: 551.05739pt x 727.71696pt.
+ [10 <./figures/2.pdf>]
+<figures/2.pdf, id=68, page=9, 551.05875pt x 519.9425pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 9>
+Package pdftex.def Info: figures/2.pdf , page9 used on input line 419.
+(pdftex.def)             Requested size: 551.05739pt x 519.94124pt.
+<figures/2.pdf, id=69, page=2, 334.24875pt x 731.73375pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 2>
+Package pdftex.def Info: figures/2.pdf , page2 used on input line 447.
+(pdftex.def)             Requested size: 334.24792pt x 731.73196pt.
+ [11 <./figures/2.pdf> <./figures/2.pdf>]
+<figures/2.pdf, id=85, page=3, 395.4775pt x 731.73375pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 3>
+Package pdftex.def Info: figures/2.pdf , page3 used on input line 457.
+(pdftex.def)             Requested size: 395.47653pt x 731.73196pt.
+<figures/2.pdf, id=86, page=4, 497.86pt x 731.73375pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 4>
+Package pdftex.def Info: figures/2.pdf , page4 used on input line 483.
+(pdftex.def)             Requested size: 497.85878pt x 731.73196pt.
+ [12 <./figures/2.pdf> <./figures/2.pdf>]
+<figures/2.pdf, id=101, page=5, 551.05875pt x 630.355pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 5>
+Package pdftex.def Info: figures/2.pdf , page5 used on input line 506.
+(pdftex.def)             Requested size: 551.05739pt x 630.35345pt.
+<figures/1.pdf, id=102, page=1, 551.05875pt x 703.62875pt>
+File: figures/1.pdf Graphic file (type pdf)
+<use figures/1.pdf, page 1>
+Package pdftex.def Info: figures/1.pdf , page1 used on input line 523.
+(pdftex.def)             Requested size: 551.05739pt x 703.62703pt.
+ [13 <./figures/2.pdf> <./figures/1.pdf>]
+<figures/2.pdf, id=119, page=1, 433.62pt x 731.73375pt>
+File: figures/2.pdf Graphic file (type pdf)
+<use figures/2.pdf, page 1>
+Package pdftex.def Info: figures/2.pdf , page1 used on input line 554.
+(pdftex.def)             Requested size: 433.61894pt x 731.73196pt.
+<figures/3.pdf, id=120, page=2, 551.05875pt x 214.8025pt>
+File: figures/3.pdf Graphic file (type pdf)
+<use figures/3.pdf, page 2>
+Package pdftex.def Info: figures/3.pdf , page2 used on input line 570.
+(pdftex.def)             Requested size: 281.16156pt x 109.60027pt.
+ [14 <./figures/2.pdf> <./figures/3.pdf>] [15] [16] [17]
+[18]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 825.
+
+ (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 790.
- [19] [20] [21]
-[22] [23
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 825.
+ [19
+
+]
+<figures/3.pdf, id=153, page=1, 551.05875pt x 387.4475pt>
+File: figures/3.pdf Graphic file (type pdf)
+<use figures/3.pdf, page 1>
+Package pdftex.def Info: figures/3.pdf , page1 used on input line 894.
+(pdftex.def)             Requested size: 298.1987pt x 209.66783pt.
+
+Underfull \vbox (badness 4316) has occurred while \output is active []
+
+ [20 <./figures/3.pdf>] [21] [22] [23
 
 ] [24] [25] [26] [27] [28] [29] [30]
-Overfull \hbox (9.49695pt too wide) detected at line 1511
+Overfull \hbox (9.49695pt too wide) detected at line 1572
 []
  []
 
@@ -1823,48 +1882,39 @@ Overfull \hbox (9.49695pt too wide) detected at line 1511
 
 ]
 bibitemlist
-
-Class memoir Warning: The material used in the headers is too large
-(15.45883pt) for the given head height (13.6pt), it is recommended to
-either increase the head height or redesign the header
-(in both cases you will find help in the memoir manual). on input line 1684.
-
 [39]
 \tf@toc=\write4
 \openout4 = `document.toc'.
 
  (./document.aux) ) 
 Here is how much of TeX's memory you used:
- 18137 strings out of 494847
- 313584 string characters out of 6179081
- 434971 words of memory out of 5000000
- 21180 multiletter control sequences out of 15000+600000
- 552843 words of font info for 153 fonts, out of 8000000 for 9000
+ 18131 strings out of 494847
+ 313956 string characters out of 6179081
+ 434866 words of memory out of 5000000
+ 21183 multiletter control sequences out of 15000+600000
+ 549177 words of font info for 136 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 53i,24n,41p,10403b,297s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 53i,24n,41p,10403b,310s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx
 12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/
-texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-sl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on document.pdf (39 pages, 326718 bytes).
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on document.pdf (39 pages, 4004038 bytes).
 PDF statistics:
- 212 PDF objects out of 1000 (max. 8388607)
- 149 compressed objects within 2 object streams
+ 282 PDF objects out of 1000 (max. 8388607)
+ 174 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 21505 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 15933 words of extra memory for PDF output out of 17280 (max. 10000000)
 

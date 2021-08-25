@@ -67,89 +67,92 @@ Mutationem motus proportionalem esse vi motrici impressae, \& fieri secundum lin
 \\\\
 Actioni contrariam semper \& aequalem esse reactionem: sive corporum duorum actiones in se mutuo semper esse aequales \& in partes contrarias dirigi.
 \par\raggedleft \textup{Newton \cite{newton}}}
-\section{Newton's laws of motion} % <<<
+% \section{Newton's laws of motion} % <<<
+% 
+% Newton's three laws, namely those of inertia, force, and equilibrium, have found universal success in application
+% to mechanical systems such as the pendulum, the motion of a rigid body, the evolution of a bending beam, and, as we shall see,
+% the motion of a fluid. \textit{Mechanics} could be thought of as the study of physical motion, but the word ``physical'' might be misleading.
+% Newton's principles are mathematical in nature, applicable to the study of motion in a general sense as some unambiguously
+% measurable state which evolves in time.
+% 
+% \subsection{Symmetry, momenta, and inertia}
+% Mechanics as a theory of physical motion will require a definition of physical motion. A first attempt might be to posit
+% that ``physical states'' are representable as points in a finite-dimensional manifold, which we call the configuration space $C$, which is the case for typical
+% notions of state such as the two angles in a double pendulum, or the position and orientation of a rigid body. We might define a motion as
+% a continuous time-parameterised curve
+%     $$\gamma: [t_1, t_2] \rightarrow C.$$
+% 
+% % (--- motivation of $F = ma$, and momenta as fundamental quantity).
+% 
+% We start in the middle:
+% \begin{equation}
+%     \text{Total force = change of momentum}.
+% \end{equation}
+% In this form, Newton's second law of motion states that a (non-explanatory) measurement of change of momentum will be called ``force''.
+% 
+% 
+% 
+% % >>>
+% \section{The Euler-Lagrange equations: \small{From $F = ma$ to $\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}} = 0$}} % <<<
+% \subsection{A Lagrangian of a mechanical system}
+% Force is an intensive measurement of the change in momentum. In the language of calculus,
+% \begin{equation}\label{force_equation}
+%     \int_{s_1}^{s_2} F\,dt = \fancyP(s_2) - \fancyP(s_1)
+% \end{equation}
+% for all time subintervals $[s_1, s_2] \subset [t_1, t_2]$. If we restrict $F$ to be conservative and a function only of position $q$, then we may
+% let $F = -\Part{V}{q}$ for some potential function $V$. Suppose also that $\mathcal{P} = \Part{T}{\dot{q}}$ for some potential function
+% (called the ``kinetic energy'') independent
+% of position $q$. We then define a Lagrangian of the mechanical system to be
+%     $$\fancyL(q, \dot{q}, t) = T(\dot{q}, t) - V(q, t) = \text{kinetic} - \text{potential}.$$
+% By definition, we have the force equation \eqref{force_equation} as
+%     $$-\int_{s_1}^{s_2} \Part{\fancyL}{q}\,dt = \Part{\fancyL}{\dot{q}}(s_2) - \Part{\fancyL}{\dot{q}}(s_1).$$
+% The step toward the calculus of variations (---)
+% \begin{equation}\label{el_inner_product_sum}
+%         \int_{s_1}^{s_2} \Part{\fancyL}{q}h\,dt + \int_{s_1}^{s_2} \Part{\fancyL}{\dot{q}}\frac{dh}{dt}\,dt = 0
+%     \quad\equiv\quad    \left<\Part{\fancyL}{q}, h\right> + \left<\Part{\fancyL}{\dot{q}}, \frac{dh}{dt}\right> = 0.
+% \end{equation}
+% Adjointness of differential operator $\frac{d}{dt}$ to $-\frac{d}{dt}$, and integration by parts. (---)
+% By linearity, we then get the reformulation of \eqref{el_inner_product_sum} as
+% \newcommand{\gateauxlagrangian}{\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}}}
+%     $$\left<\gateauxlagrangian, h\right> = 0$$
+% for all perturbation functions $h$.
+% 
+% \subsection{The first variation of a functional}
+% In the calculus of variations, $\gateauxlagrangian$ is an instance of the \textit{G\^ateaux derivative}, also called the ``first variation'' of
+% the functional
+% \begin{align*}
+%     S[q] \coloneqq \int_{t_1}^{t_2} \fancyL(q, \dot{q}, t)\,dt.
+% \end{align*}
+% The first variation measures response of the value of $S$, called the \textit{action}, to perturbations of the (differentiable) input function $q$,
+% and is denoted
+% \begin{equation}
+%     \frac{\delta S}{\delta q(t)} \coloneqq \gateauxlagrangian.
+% \end{equation}
+% The first variation is linear in the perturbation function, and so another term for the G\^ateaux derivative could be ``functional gradient''.
+% Setting this to zero gives the Euler-Lagrange equations, and the practice of determining trajectories of motions as stationary curves of the action is called the ``principle of stationary action''.
+% 
+% \subsection{From the Lagrangian to the equations of motion}
+% In the framework of Lagrangian mechanics, $\fancyP \coloneqq \Part{\fancyL}{\dot{q}}$ is the momentum. If there are $d$ degrees of freedom
+% in the mechanical system, and we suppose that $q_1,\cdots,q_d$ are (local) variables of state, then we say that $\fancyP_i \coloneqq \Part{\fancyL}{\dot{q}_i}$
+% are \textit{conjugate} to the $q_i$.
+% 
+% (---) By inducing the equations of motion by a Lagrangian, we get systems with a ``physical interpretation'' with ``physically meaningful'' force measurements.
+% 
+% \subsection{Why ---?}
+% These variational ideas appear because, no matter if our configuration space is finite-dimensional, time forms a continuum, and therefore if we
+% globally consider the calculus of the motion as a whole, it must be a ``variational'' calculus. (---)
+% 
+% (---) Physical process, conservation laws, conservative forces (hint at thermodynamics limiting the range of stress tensors?)
+% 
+% When we consider mechanical models of continuum processes, we will see that these same ideas appear in the spatial dimensions too.
+% A variational understanding of a continuum mechanics model leads very easily to a class of methods called Galerkin methods for solving
+% the corresponding (PDE) equations of motion.
+% 
+% 
+% % >>>
 
-Newton's three laws, namely those of inertia, force, and equilibrium, have found universal success in application
-to mechanical systems such as the pendulum, the motion of a rigid body, the evolution of a bending beam, and, as we shall see,
-the motion of a fluid. \textit{Mechanics} could be thought of as the study of physical motion, but the word ``physical'' might be misleading.
-Newton's principles are mathematical in nature, applicable to the study of motion in a general sense as some unambiguously
-measurable state which evolves in time.
+The calculus of variations.
 
-\subsection{Symmetry, momenta, and inertia}
-Mechanics as a theory of physical motion will require a definition of physical motion. A first attempt might be to posit
-that ``physical states'' are representable as points in a finite-dimensional manifold, which we call the configuration space $C$, which is the case for typical
-notions of state such as the two angles in a double pendulum, or the position and orientation of a rigid body. We might define a motion as
-a continuous time-parameterised curve
-    $$\gamma: [t_1, t_2] \rightarrow C.$$
-
-% (--- motivation of $F = ma$, and momenta as fundamental quantity).
-
-We start in the middle:
-\begin{equation}
-    \text{Total force = change of momentum}.
-\end{equation}
-In this form, Newton's second law of motion states that a (non-explanatory) measurement of change of momentum will be called ``force''.
-
-
-
-% >>>
-\section{The Euler-Lagrange equations: \small{From $F = ma$ to $\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}} = 0$}} % <<<
-\subsection{A Lagrangian of a mechanical system}
-Force is an intensive measurement of the change in momentum. In the language of calculus,
-\begin{equation}\label{force_equation}
-    \int_{s_1}^{s_2} F\,dt = \fancyP(s_2) - \fancyP(s_1)
-\end{equation}
-for all time subintervals $[s_1, s_2] \subset [t_1, t_2]$. If we restrict $F$ to be conservative and a function only of position $q$, then we may
-let $F = -\Part{V}{q}$ for some potential function $V$. Suppose also that $\mathcal{P} = \Part{T}{\dot{q}}$ for some potential function
-(called the ``kinetic energy'') independent
-of position $q$. We then define a Lagrangian of the mechanical system to be
-    $$\fancyL(q, \dot{q}, t) = T(\dot{q}, t) - V(q, t) = \text{kinetic} - \text{potential}.$$
-By definition, we have the force equation \eqref{force_equation} as
-    $$-\int_{s_1}^{s_2} \Part{\fancyL}{q}\,dt = \Part{\fancyL}{\dot{q}}(s_2) - \Part{\fancyL}{\dot{q}}(s_1).$$
-The step toward the calculus of variations (---)
-\begin{equation}\label{el_inner_product_sum}
-        \int_{s_1}^{s_2} \Part{\fancyL}{q}h\,dt + \int_{s_1}^{s_2} \Part{\fancyL}{\dot{q}}\frac{dh}{dt}\,dt = 0
-    \quad\equiv\quad    \left<\Part{\fancyL}{q}, h\right> + \left<\Part{\fancyL}{\dot{q}}, \frac{dh}{dt}\right> = 0.
-\end{equation}
-Adjointness of differential operator $\frac{d}{dt}$ to $-\frac{d}{dt}$, and integration by parts. (---)
-By linearity, we then get the reformulation of \eqref{el_inner_product_sum} as
-\newcommand{\gateauxlagrangian}{\Part{\fancyL}{q} - \frac{d}{dt}\Part{\fancyL}{\dot{q}}}
-    $$\left<\gateauxlagrangian, h\right> = 0$$
-for all perturbation functions $h$.
-
-\subsection{The first variation of a functional}
-In the calculus of variations, $\gateauxlagrangian$ is an instance of the \textit{G\^ateaux derivative}, also called the ``first variation'' of
-the functional
-\begin{align*}
-    S[q] \coloneqq \int_{t_1}^{t_2} \fancyL(q, \dot{q}, t)\,dt.
-\end{align*}
-The first variation measures response of the value of $S$, called the \textit{action}, to perturbations of the (differentiable) input function $q$,
-and is denoted
-\begin{equation}
-    \frac{\delta S}{\delta q(t)} \coloneqq \gateauxlagrangian.
-\end{equation}
-The first variation is linear in the perturbation function, and so another term for the G\^ateaux derivative could be ``functional gradient''.
-Setting this to zero gives the Euler-Lagrange equations, and the practice of determining trajectories of motions as stationary curves of the action is called the ``principle of stationary action''.
-
-\subsection{From the Lagrangian to the equations of motion}
-In the framework of Lagrangian mechanics, $\fancyP \coloneqq \Part{\fancyL}{\dot{q}}$ is the momentum. If there are $d$ degrees of freedom
-in the mechanical system, and we suppose that $q_1,\cdots,q_d$ are (local) variables of state, then we say that $\fancyP_i \coloneqq \Part{\fancyL}{\dot{q}_i}$
-are \textit{conjugate} to the $q_i$.
-
-(---) By inducing the equations of motion by a Lagrangian, we get systems with a ``physical interpretation'' with ``physically meaningful'' force measurements.
-
-\subsection{Why ---?}
-These variational ideas appear because, no matter if our configuration space is finite-dimensional, time forms a continuum, and therefore if we
-globally consider the calculus of the motion as a whole, it must be a ``variational'' calculus. (---)
-
-(---) Physical process, conservation laws, conservative forces (hint at thermodynamics limiting the range of stress tensors?)
-
-When we consider mechanical models of continuum processes, we will see that these same ideas appear in the spatial dimensions too.
-A variational understanding of a continuum mechanics model leads very easily to a class of methods called Galerkin methods for solving
-the corresponding (PDE) equations of motion.
-
-
-% >>>
 \chapter{Continuum mechanics}
 \section{Introduction}
 --- Introduction.
@@ -167,9 +170,10 @@ evolution of the state (represented by a function) is
 due to the transport of the quantity that the function measures, which is either pushed around (by some flux either predetermined or dependent on the current state)
 or created and destroyed at sources and sinks.
 
-\vskip 0.2in
-(figure of some manifold embedded in space, and some vector field pushing quantity around)
-\vskip 0.2in
+% (figure of some manifold embedded in space, and some vector field pushing quantity around)
+\begin{center}
+\includegraphics[angle=90,page=11,width=0.56\linewidth]{figures/2.pdf}
+\end{center}
 
 We consider here the transport of quantities (scalar, vector, and tensor) on a general finite-dimensional manifold $M$,
 colloquially called ``the continuum''. All transporting vector fields (or flux functions) are considered to be tangent to this manifold $M$.
@@ -239,9 +243,12 @@ vector field $\hat{u}$ which will transport our control volume $\Omega_0$. The r
 where $\Omega_0(t)$ implicitly denotes that $\Omega_0$ is being transported under the flow of $\hat{u}$.
 Clearly, this rate of change of quantity $\gamma$ is due to the motion of the control volume,
 
-\vskip 0.2in
-(a picture of positive and negative contributions at the boundary)
-\vskip 0.2in
+% \vskip 0.2in
+% (a picture of positive and negative contributions at the boundary)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=7,width=0.66\linewidth]{figures/2.pdf}
+\end{center}
 
 as well as internal changes of $\gamma$ inside the (fixed) control volume.
 The formal expression of these contributions to the rate of change \eqref{reynolds_rate_of_change} is
@@ -392,18 +399,25 @@ In general, $y$ needs not be continuous, differentiable, or invertible.
 These restrictions are only introduced in accord to the physical meaning of the position map. For example, models of small beam deflections
 may require continuity, and invertibility to prevent self-intersections.
 
-\vskip 0.2in
-(figure of abstract square domain mapping to a bent beam, and a figure of a map from a reference configuration to itself.)
-\vskip 0.2in
+% \vskip 0.2in
+% (figure of abstract square domain mapping to a bent beam, and a figure of a map from a reference configuration to itself.)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=8,width=0.5\linewidth]{figures/2.pdf}
+\end{center}
+
 
 As an example, suppose we are modelling the heat distribution of a 2D beam supporting a point load which is also a heat source.
 We could model the beam geometry as a smooth invertible map $y: [0,1]^2\rightarrow \mathbb{R}^2$,
 letting $M = [0,1]^2$ and $N = \mathbb{R}^2$. The heat distribution on the beam could be represented
 by a function $h : M \rightarrow \mathbb{R}$, and a heat flux function $j$ could be pulled back to $M$ from $N$.
 
-\vskip 0.2in
-(picture of this)
-\vskip 0.2in
+% \vskip 0.2in
+% (picture of this)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=9,width=0.55\linewidth]{figures/2.pdf}
+\end{center}
 
 Although this model is so far hopelessly incomplete, we can see that position maps and transport equations are fundamental tools
 used for modelling the \textit{geometry} of a problem.
@@ -429,16 +443,19 @@ a vector in the tangent space of $N$ at $y(x)$ for each parameter $x \in M$. Thi
 This is the \textit{Lagrangian} description of motion. We will find it useful to instead use the \textit{Eulerian} description, where we measure the velocity of the position map in the position domain $N$. Formally we denote this Eulerian velocity by the letter $u$, ubiquitous in fluid mechanics, and let
     $$u(y, t) \coloneqq \dot{y}(y^{-1}(y, t), t)\quad \text{for all valid $y\in N$.}$$
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=2,width=0.8\linewidth]{figures/2.pdf}
+\end{center}
 
 For some transported scalar quantity $\phi : M \times [t_1, t_2] \rightarrow \mathbb{R}$, the tangent space at each point of $\mathbb{R}$ is $\mathbb{R}$,
 and therefore our velocity is represented by a scalar function $\Part{\phi}{t}$ giving local change in time of $\phi(x)$ for each $x \in M$.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=3,width=0.8\linewidth]{figures/2.pdf}
+\end{center}
 
 We may denote our total velocities as a state variable $\dot{q}$. 
 When we have state $q$, the corresponding velocity $\dot{q}$ will be in the tangent space of $C$ at $q$, denoted $T_q C$.
@@ -459,9 +476,12 @@ The gradient of the position map $y$ with respect to parameter $x \in M$ is call
 The deformation gradient is equivalent to the \textit{Jacobian matrix}, used to compute the \textit{pushforward}
 of tangent vectors under the displacement map.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=4,width=0.5\linewidth]{figures/2.pdf}
+\end{center}
 
 The determinant of the Jacobian matrix is usually denoted $J = \det(\nabla y)$, and is called the Jacobian.
 
@@ -478,9 +498,15 @@ In this case we could let the initial position map be the identity map
     $$y_0(x) = x \in M \subset N.$$
 For example, given an initial disc in $\mathbb{R}^2$, we may prescribe a constant Eulerian velocity field $u$ and
 see how the original disc is ``mixed''.
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=5,width=0.4\linewidth]{figures/2.pdf}
+\end{center}
+
+
 We can see that, in this case, it is meaningful to take spatial gradients in \eqref{position_map_ode} to derive an ODE for the deformation gradient $\nabla y$:
 \begin{equation}\label{deformation_gradient_ode}
 \begin{split}
@@ -490,9 +516,12 @@ We can see that, in this case, it is meaningful to take spatial gradients in \eq
 \end{equation}
 where $I$ is the identity tensor. This is easily visualised.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=1,width=0.58\linewidth]{figures/1.pdf}
+\end{center}
 
 We can see that the term $\nabla u$ is a ``differential generator'' of the deformation gradient.
 We call $\nabla u$, the spatial gradient of the Eulerian velocity, the \textit{velocity gradient}.
@@ -518,9 +547,12 @@ A \textit{material element} is a small piece of a continuum model which evolves 
 In fluid dynamics this is also called a fluid parcel, although it should not be thought of as an object placed in the fluid, but
 rather some tracer such as a non-diffusing dye.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[angle=90,page=1,width=0.55\linewidth]{figures/2.pdf}
+\end{center}
 
 In continuum mechanics a \textit{material point} is the ideal point of the continuum, corresponding to some macroscopic averaging in physical models.
 At a certain point, we can imagine an arbitrarily small fluid parcel being transported by the flow.
@@ -531,9 +563,12 @@ measure the
 change of a quantity due to expansion and contraction of the arbitrarily small fluid parcel. Therefore we can think of the material derivative as acting
 on \textit{per-volume} quantities.
 
-\vskip 0.2in
-(figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
-\vskip 0.2in
+% \vskip 0.2in
+% (figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
+% \vskip 0.2in
+\begin{center}
+\includegraphics[page=2,width=0.66\linewidth]{figures/3.pdf}
+\end{center}
 
 \section{The dynamics of the continuum}
 
@@ -839,20 +874,46 @@ Define the moment of linear momentum as
 \end{equation}
 The symbol $\wedge$ indicates the cross product, whose value should be thought of as a pseudo-vector or ``plane with magnitude''.
 We will call this the angular momentum of the control volume $\omn$.
-If the control volume follows the flow, the Reynolds transport theorem \eqref{reynolds_transport_theorem} gives a rate of change of angular momentum:
-\begin{equation}\label{moment_of_linear_momentum_reynolds}
-    \frac{d}{dt}\eval{\left[\int_{\omn(t)} \bar{x} \wedge \left(\rho u\right)\,dx\right]}_{t=0}
-    % = \int_{\omn(0)} \left(x - c\right)\wedge \left(\rho g\right)\,dx + \int_{\pomn(0)} \left(x - c\right) \wedge \hat
-    = \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \rho u (u\cdot \hat{n})\,dx.
+We repeat here an integral form of linear momentum conservation, which already must hold:
+\begin{equation}\label{linear_momentum_for_angular}
+    \int_{\omn(0)} \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \rho u (u\cdot \hat{n})\,dx
+    = \int_{\omn(0)} \rho g\,dx + \int_{\pomn(0)} \sigma \hat{n}\,dx.
 \end{equation}
-The source terms of linear momentum are body forces $\rho g$ on the interior and tractions $\hat{t}$ on the boundary.
-Therefore we have an explicit equation for the rate of change of angular momentum, which we equate to the right-hand-side of
-\eqref{moment_of_linear_momentum_reynolds}:
+It is simple to derive an angular momentum conservation equation, just by taking moments of each vector quantity:
 \begin{equation}\label{moment_of_linear_momentum_sources}
-    \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \rho u (u\cdot \hat{n})\,dx
+    \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \left(\rho u\right)\left(u\cdot \hat{n}\right)\,dx
     = \int_{\omn(0)} \bar{x} \wedge \left(\rho g\right)\,dx + \int_{\pomn(0)} \bar{x} \wedge \left(\sigma \hat{n}\right)\,dx.
 \end{equation}
-By the Euler-Cauchy stress principle (section \ref{stress_principle}), we have let the traction $\hat{t} = \sigma \hat{n}$.
+(This precludes the introduction of surface and body couples which induce no linear momentum but do induce angular momentum
+\cite{leal}. We ignore these torques.)
+\\
+If \eqref{linear_momentum_for_angular} holds, should \eqref{moment_of_linear_momentum_sources} hold automatically?
+
+(... figure)
+\begin{center}
+\includegraphics[page=1,width=0.7\linewidth]{figures/3.pdf}
+\end{center}
+
+
+% If the control volume follows the flow, the Reynolds transport theorem \eqref{reynolds_transport_theorem} gives a rate of change of angular momentum:
+% \begin{equation}\label{moment_of_linear_momentum_reynolds}
+%     \frac{d}{dt}\eval{\left[\int_{\omn(t)} \bar{x} \wedge \left(\rho u\right)\,dx\right]}_{t=0}
+%     % = \int_{\omn(0)} \left(x - c\right)\wedge \left(\rho g\right)\,dx + \int_{\pomn(0)} \left(x - c\right) \wedge \hat
+%     = \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \rho u (u\cdot \hat{n})\,dx.
+% \end{equation}
+% The source terms of linear momentum are body forces $\rho g$ on the interior and tractions $\hat{t}$ on the boundary.
+% Therefore we have an explicit equation for the rate of change of angular momentum, which we equate to the right-hand-side of
+% \eqref{moment_of_linear_momentum_reynolds}:
+% \begin{equation}\label{moment_of_linear_momentum_sources}
+%     \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \rho u (u\cdot \hat{n})\,dx
+%     = \int_{\omn(0)} \bar{x} \wedge \left(\rho g\right)\,dx + \int_{\pomn(0)} \bar{x} \wedge \left(\sigma \hat{n}\right)\,dx.
+% \end{equation}
+% By the Euler-Cauchy stress principle (section \ref{stress_principle}), we have let the traction $\hat{t} = \sigma \hat{n}$.
+% For comparison, we repeat here an integral form of linear momentum conservation, which already must hold:
+% \begin{equation*}
+%     \int_{\omn(0)} \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \rho u (u\cdot \hat{n})\,dx
+%     = \int_{\omn(0)} \left(\rho g\right)\,dx + \int_{\pomn(0)} \sigma \hat{n}\,dx.
+% \end{equation*}
 
 
 \section{Scaling and dimension}

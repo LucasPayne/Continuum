@@ -1,54 +1,47 @@
 \contentsline {chapter}{Contents}{1}
 \contentsline {chapter}{\chapternumberline {1}Mechanics}{3}
-\contentsline {section}{\numberline {1.1}Newton's laws of motion}{3}
-\contentsline {subsection}{\numberline {1.1.1}Symmetry, momenta, and inertia}{3}
-\contentsline {section}{\numberline {1.2}The Euler-Lagrange equations: \relax \fontsize {10}{12}\selectfont \abovedisplayskip 10\p@ plus2\p@ minus5\p@ \abovedisplayshortskip \z@ plus3\p@ \belowdisplayshortskip 6\p@ plus3\p@ minus3\p@ \def \leftmargin \leftmargini \parsep \parsepi \topsep \topsepi \itemsep \itemsepi {\leftmargin \leftmargini \topsep 6\p@ plus2\p@ minus2\p@ \parsep 3\p@ plus2\p@ minus\p@ \itemsep \parsep }\belowdisplayskip \abovedisplayskip {From $F = ma$ to $\frac {\partial \mathcal {L}}{\partial q} - \frac {d}{dt}\frac {\partial \mathcal {L}}{\partial \mathaccentV {dot}05F{q}} = 0$}}{4}
-\contentsline {subsection}{\numberline {1.2.1}A Lagrangian of a mechanical system}{4}
-\contentsline {subsection}{\numberline {1.2.2}The first variation of a functional}{4}
-\contentsline {subsection}{\numberline {1.2.3}From the Lagrangian to the equations of motion}{4}
-\contentsline {subsection}{\numberline {1.2.4}Why ---?}{5}
-\contentsline {chapter}{\chapternumberline {2}Continuum mechanics}{7}
-\contentsline {section}{\numberline {2.1}Introduction}{7}
-\contentsline {section}{\numberline {2.2}Transport}{7}
-\contentsline {subsection}{\numberline {2.2.1}Continuity equations and conservation laws}{7}
-\contentsline {subsubsection}{The integral form of a continuity equation}{7}
-\contentsline {subsubsection}{The differential form of a continuity equation}{8}
-\contentsline {subsection}{\numberline {2.2.2}The Reynolds transport theorem}{8}
-\contentsline {subsubsection}{The integral form of Reynolds transport}{8}
-\contentsline {subsubsection}{The differential form of Reynolds transport}{9}
-\contentsline {subsubsection}{Reynolds transport applied to a continuity equation}{9}
-\contentsline {subsection}{\numberline {2.2.3}Incompressible and compressible transport}{10}
-\contentsline {subsubsection}{Incompressibility}{10}
-\contentsline {subsection}{\numberline {2.2.4}Transport of vector and tensor quantities}{10}
-\contentsline {subsubsection}{Reynolds transport of vector and tensor quantities}{10}
-\contentsline {subsubsection}{Conservation equations for vector and tensor quantities}{11}
-\contentsline {section}{\numberline {2.3}The kinematics of the continuum}{11}
-\contentsline {subsection}{\numberline {2.3.1}Position maps}{11}
-\contentsline {subsection}{\numberline {2.3.2}Velocity}{12}
+\contentsline {chapter}{\chapternumberline {2}Continuum mechanics}{5}
+\contentsline {section}{\numberline {2.1}Introduction}{5}
+\contentsline {section}{\numberline {2.2}Transport}{5}
+\contentsline {subsection}{\numberline {2.2.1}Continuity equations and conservation laws}{6}
+\contentsline {subsubsection}{The integral form of a continuity equation}{6}
+\contentsline {subsubsection}{The differential form of a continuity equation}{6}
+\contentsline {subsection}{\numberline {2.2.2}The Reynolds transport theorem}{7}
+\contentsline {subsubsection}{The integral form of Reynolds transport}{7}
+\contentsline {subsubsection}{The differential form of Reynolds transport}{8}
+\contentsline {subsubsection}{Reynolds transport applied to a continuity equation}{8}
+\contentsline {subsection}{\numberline {2.2.3}Incompressible and compressible transport}{8}
+\contentsline {subsubsection}{Incompressibility}{9}
+\contentsline {subsection}{\numberline {2.2.4}Transport of vector and tensor quantities}{9}
+\contentsline {subsubsection}{Reynolds transport of vector and tensor quantities}{9}
+\contentsline {subsubsection}{Conservation equations for vector and tensor quantities}{10}
+\contentsline {section}{\numberline {2.3}The kinematics of the continuum}{10}
+\contentsline {subsection}{\numberline {2.3.1}Position maps}{10}
+\contentsline {subsection}{\numberline {2.3.2}Velocity}{11}
 \contentsline {subsection}{\numberline {2.3.3}The deformation and velocity gradients}{12}
-\contentsline {subsubsection}{The deformation gradient}{13}
+\contentsline {subsubsection}{The deformation gradient}{12}
 \contentsline {subsubsection}{The velocity gradient}{13}
-\contentsline {subsection}{\numberline {2.3.4}Material points and material derivatives}{13}
-\contentsline {subsubsection}{The material derivative}{13}
+\contentsline {subsection}{\numberline {2.3.4}Material points and material derivatives}{14}
+\contentsline {subsubsection}{The material derivative}{14}
 \contentsline {subsubsection}{Pieces of the continuum}{14}
-\contentsline {section}{\numberline {2.4}The dynamics of the continuum}{14}
-\contentsline {subsection}{\numberline {2.4.1}Conservation of mass}{14}
-\contentsline {subsubsection}{The Lagrangian form of mass conservation}{14}
+\contentsline {section}{\numberline {2.4}The dynamics of the continuum}{15}
+\contentsline {subsection}{\numberline {2.4.1}Conservation of mass}{15}
+\contentsline {subsubsection}{The Lagrangian form of mass conservation}{15}
 \contentsline {subsubsection}{The Eulerian form of mass conservation}{15}
-\contentsline {subsection}{\numberline {2.4.2}Conservation of linear momentum}{15}
-\contentsline {subsubsection}{The Euler-Cauchy stress principle}{15}
+\contentsline {subsection}{\numberline {2.4.2}Conservation of linear momentum}{16}
+\contentsline {subsubsection}{The Euler-Cauchy stress principle}{16}
 \contentsline {subsubsection}{Differentializing the Cauchy momentum equation}{16}
 \contentsline {subsection}{\numberline {2.4.3}Constitutive relations}{17}
-\contentsline {subsubsection}{Constitutive relations}{17}
-\contentsline {subsubsection}{Completing the equations}{17}
+\contentsline {subsubsection}{Constitutive relations}{18}
+\contentsline {subsubsection}{Completing the equations}{18}
 \contentsline {chapter}{\chapternumberline {3}The Navier-Stokes equations}{19}
 \contentsline {section}{\numberline {3.1}Introduction}{19}
 \contentsline {section}{\numberline {3.2}Constitutive relations for the Navier-Stokes equations}{19}
 \contentsline {subsection}{\numberline {3.2.1}Conservation of angular momentum}{20}
-\contentsline {section}{\numberline {3.3}Scaling and dimension}{20}
-\contentsline {subsection}{\numberline {3.3.1}The Reynolds number}{20}
-\contentsline {section}{\numberline {3.4}Stokes flow and the meaning of pressure}{20}
-\contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{21}
+\contentsline {section}{\numberline {3.3}Scaling and dimension}{21}
+\contentsline {subsection}{\numberline {3.3.1}The Reynolds number}{21}
+\contentsline {section}{\numberline {3.4}Stokes flow and the meaning of pressure}{21}
+\contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{22}
 \contentsline {subsection}{\numberline {3.4.1}Application to hydrostatics}{22}
 \contentsline {chapter}{\chapternumberline {4}The finite element method}{23}
 \contentsline {section}{\numberline {4.1}Introduction}{23}
