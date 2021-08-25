@@ -18,16 +18,16 @@
 \contentsline {subsubsection}{Reynolds transport applied to a continuity equation}{9}
 \contentsline {subsection}{\numberline {2.1.3}Incompressible and compressible transport}{10}
 \contentsline {subsubsection}{Incompressibility}{10}
-\contentsline {subsubsection}{The material derivative}{10}
 \contentsline {subsection}{\numberline {2.1.4}Transport of vector and tensor quantities}{10}
-\contentsline {subsubsection}{Reynolds transport of vector and tensor quantities}{11}
+\contentsline {subsubsection}{Reynolds transport of vector and tensor quantities}{10}
 \contentsline {subsubsection}{Conservation equations for vector and tensor quantities}{11}
 \contentsline {section}{\numberline {2.2}The kinematics of the continuum}{11}
-\contentsline {subsection}{\numberline {2.2.1}Position maps}{12}
+\contentsline {subsection}{\numberline {2.2.1}Position maps}{11}
 \contentsline {subsection}{\numberline {2.2.2}Velocity}{12}
-\contentsline {subsection}{\numberline {2.2.3}The deformation and velocity gradients}{13}
-\contentsline {subsubsection}{The deformation gradient}{13}
+\contentsline {subsection}{\numberline {2.2.3}The deformation and velocity gradients}{12}
+\contentsline {subsubsection}{The deformation gradient}{12}
 \contentsline {subsubsection}{The velocity gradient}{13}
+\contentsline {subsection}{\numberline {2.2.4}Material points and material derivatives}{13}
 \contentsline {section}{\numberline {2.3}The dynamics of the continuum}{14}
 \contentsline {subsection}{\numberline {2.3.1}Conservation of mass}{14}
 \contentsline {subsubsection}{The Lagrangian form of mass conservation}{14}
@@ -35,9 +35,8 @@
 \contentsline {subsection}{\numberline {2.3.2}Conservation of linear momentum}{15}
 \contentsline {subsubsection}{The Euler-Cauchy stress principle}{15}
 \contentsline {subsubsection}{Differentializing the Cauchy momentum equation}{15}
-\contentsline {subsubsection}{The system of conservation laws}{16}
+\contentsline {subsubsection}{The system of conservation laws so far}{17}
 \contentsline {subsection}{\numberline {2.3.3}Constitutive relations}{17}
-\contentsline {subsubsection}{The notion of a material point}{17}
 \contentsline {subsubsection}{Deviatoric and volumetric stresses}{17}
 \contentsline {subsubsection}{Pressure in incompressible materials}{17}
 \contentsline {subsubsection}{Completing our equations}{18}

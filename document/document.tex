@@ -313,25 +313,6 @@ The corresponding conservation law, in differential form \eqref{continuity_equat
 This is our non-compressing constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
 there is an inward or outward flux which would contract or expand a transported control volume.
 
-\subsubsection{The material derivative}
-We define here a differential operator which will be useful later.
-Assuming an non-compressing flux function $j$ which transports quantity $\phi$, the ``convective derivative'' in
-\eqref{lagrangian_transport_differential} following a control volume becomes
-\begin{equation}
-    \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
-\end{equation}
-We define the \textit{material derivative} to be
-\begin{equation}\label{material_derivative}
-    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
-\end{equation}
-It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
-The material derivative may be taken with respect to a compressing flux $j$, in which case it measures change from the perspective of an
-ideal point mass with no extent under the flow of $j$. As $j$ has no extent, it can not expand under the flow of $j$.
-
-\vskip 0.2in
-(figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
-\vskip 0.2in
-
 \subsection{Transport of vector and tensor quantities}
 All previous discussion on the transport of scalar quantities applies trivially to vector and tensor quantities.
 This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity
@@ -510,6 +491,39 @@ We can see that the term $\nabla u$ is a ``differential generator'' of the defor
 We call $\nabla u$, the spatial gradient of the Eulerian velocity, the \textit{velocity gradient}.
 
 % Polar decomposition, symmetric and antisymmetric parts.
+\subsection{Material points and material derivatives}
+Assuming an non-compressing flux function $j$ which transports quantity $\phi$, the differential form of the Reynolds transport theorem
+\eqref{lagrangian_transport_differential} becomes
+\begin{equation}
+    \Part{\phi}{t} + \nabla\cdot(\phi j) = \Part{\phi}{t} + j\cdot\nabla\phi + \cancel{\phi \nabla\cdot j}.
+\end{equation}
+We define the \textit{material derivative} to be
+\begin{equation}\label{material_derivative}
+    \frac{D}{Dt} \coloneqq \Part{}{t} + j\cdot\nabla.
+\end{equation}
+It is a convention to leave the vector field $j$ implicit, as material derivatives are usually taken with respect to some unambiguous velocity field.
+The material derivative may be taken with respect to a compressing flux $j$, in which case it measures change from the perspective of an
+ideal point mass with no extent under the flow of $j$. As $j$ has no extent, it can not expand under the flow of $j$.
+
+\vskip 0.2in
+(figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
+\vskip 0.2in
+
+A \textit{material element} is a small piece of a continuum model which evolves with the displacement and flow.
+In fluid dynamics this is also called a fluid parcel, although it should not be thought of as an object placed in the fluid, but
+rather some tracer such as a non-diffusing dye.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+In continuum mechanics a \textit{material point} is the ideal point of the continuum, corresponding to some macroscopic averaging in physical models.
+At a certain point, we can imagine an arbitrarily small fluid parcel being transported by the flow.
+No matter how small this is, the parcel will still start to shear, expand, and contract due
+to the flow.
+The material derivative was defined as $\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot\nabla$. Notably this derivative contains no divergence term, and so does not measure the
+change of a quantity due to expansion and contraction of the arbitrarily small fluid parcel. Therefore we can think of the material derivative as acting
+on \textit{per-volume} quantities.
 
 \section{The dynamics of the continuum}
 
@@ -649,10 +663,10 @@ The equation \eqref{cauchy_continuity_differential_material} then says that, if 
 each with a certain linear momentum (in the particle sense), deflection of their inertial path is due only to the application
 of a body force $\rho g$ at this point, and a total traction force exerted by the surrounding material.
 
-\subsubsection{The system of conservation laws}
+\subsubsection{The system of conservation laws so far}
 The conservation equations derived are conservation of mass \eqref{eulerian_mass_conservation_local} and conservation of linear momentum \eqref{cauchy_continuity_differential_material}.
 Here the equations are given in their typical differential form for flow problems, with the Eulerian perspective of mass conservation, and the
-convective form of linear momentum conservation.
+convective form of linear momentum conservation:
 \begin{equation}\label{conservation_system}
 \begin{split}
     \frac{D\rho}{Dt} + \rho\nabla\cdot u = 0 &\quad\text{(Conservation of mass)},
@@ -673,20 +687,16 @@ When $g$ and $\sigma$ are known, this system is well-formed, but not very intere
 This effectively models a continuum of non-interacting material points, with a linear-momentum-introducing source function $\rho g + \nabla\cdot \sigma$.
 However, we usually let $g$ be known (as this is a per-mass external body force, for example gravity), and the Cauchy stress tensor $\sigma$ be unknown.
 This gives $d^2$ more unknowns, so the system is heavily underdetermined. In effect, the system \eqref{conservation_system} is
-really underdetermined because we don't have a specific material in mind.
+underdetermined because we don't have a specific material in mind.
 
 \subsection{Constitutive relations}
-We here investigate possible forms of the
-Cauchy stress tensor.
-A specification of $\sigma$ is called a \textit{constitutive relation},
+A specification of the Cauchy stress tensor $\sigma$ is called a \textit{constitutive relation},
 as $\sigma$ depends on the ``material constitution''.
-A constitutive relation specifies how the kinematics of the continuum relate to its dynamics, as in, how the material configuration
-induces forces on the material. With $\sigma$ specified, the Cauchy momentum equation \eqref{cauchy_continuity_differential_material} becomes well-posed
+A constitutive relation specifies how the material configuration
+induces forces on the material, or rather, how kinematics is related to dynamics. With $\sigma$ specified, the Cauchy momentum equation \eqref{cauchy_continuity_differential_material} becomes well-posed
 (however, in general, $\sigma$ may depend on new variables such as temperature, requiring further equations).
 
-\subsubsection{The notion of a material point}
-The system \eqref{conservation_system} is given in terms of
-the material derivative $\frac{D}{Dt} \coloneqq \Part{}{t} + u\cdot\nabla$.
+
 
 \subsubsection{Deviatoric and volumetric stresses}
 Suppose that the tractions are determined only by the velocity gradient,
