@@ -38,6 +38,7 @@
 \contentsline {section}{\numberline {3.1}Introduction}{19}
 \contentsline {section}{\numberline {3.2}The equations of fluid motion}{19}
 \contentsline {subsection}{\numberline {3.2.1}Conservation of angular momentum}{20}
+\contentsline {subsection}{\numberline {3.2.2}Conservation of energy}{22}
 \contentsline {section}{\numberline {3.3}Scaling and dimension}{22}
 \contentsline {subsection}{\numberline {3.3.1}The Reynolds number}{22}
 \contentsline {section}{\numberline {3.4}Stokes flow and the meaning of pressure}{22}
@@ -50,7 +51,7 @@
 \contentsline {section}{\numberline {4.2}Solving the Poisson equation}{27}
 \contentsline {subsection}{\numberline {4.2.1}Deriving the Poisson equation through diffusion processes}{27}
 \contentsline {subsection}{\numberline {4.2.2}Discretizing the Poisson equation}{28}
-\contentsline {subsubsection}{Choosing a domain decomposition and test space}{28}
+\contentsline {subsubsection}{Choosing a domain partition and test space}{28}
 \contentsline {subsubsection}{Results and visualisation}{29}
 \contentsline {subsection}{\numberline {4.2.3}The notion of a trial function}{29}
 \contentsline {subsubsection}{Integrating over trial functions versus integrating over domains}{31}
@@ -62,10 +63,12 @@
 \contentsline {subsubsection}{Results and visualisation}{34}
 \contentsline {subsection}{\numberline {4.3.3}Discretizing the unsteady Stokes equations}{34}
 \contentsline {subsubsection}{Discretizing the initial condition}{35}
-\contentsline {section}{\numberline {4.4}Solving non-linear equations}{35}
-\contentsline {subsection}{\numberline {4.4.1}A non-linear Poisson equation}{35}
-\contentsline {subsection}{\numberline {4.4.2}A non-linear heat equation}{35}
-\contentsline {subsection}{\numberline {4.4.3}The Burgers equation}{35}
+\contentsline {section}{\numberline {4.4}Solving non-linear equations}{36}
+\contentsline {subsection}{\numberline {4.4.1}A non-linear Poisson equation}{36}
+\contentsline {subsection}{\numberline {4.4.2}A non-linear heat equation}{36}
+\contentsline {subsection}{\numberline {4.4.3}The Burgers equation}{36}
+\contentsline {section}{\numberline {4.5}Implementing finite element methods}{36}
+\contentsline {subsection}{\numberline {4.5.1}The Ciarlet definition of a finite element space}{36}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{37}
 \contentsline {chapter}{\chapternumberline {6}Some functional analysis}{39}
 \contentsline {chapter}{Bibliography}{41}

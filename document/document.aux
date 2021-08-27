@@ -81,7 +81,6 @@
 \@writefile{toc}{\contentsline {subsubsection}{Constitutive relations}{18}}
 \@writefile{toc}{\contentsline {subsubsection}{Completing the equations}{18}}
 \citation{stam}
-\citation{batchelor}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {3}The Navier-Stokes equations}{19}}
@@ -89,23 +88,25 @@
 \newlabel{navier_stokes}{{\M@TitleReference {3.1}{Introduction}}{19}}
 \newlabel{stokes_constitutive_relation}{{\M@TitleReference {3.2}{Introduction}}{19}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.2}The equations of fluid motion}{19}}
+\newlabel{compressible_system}{{\M@TitleReference {3.3}{The equations of fluid motion}}{19}}
 \citation{leal}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Conservation of angular momentum}{20}}
-\newlabel{moment_of_linear_momentum}{{\M@TitleReference {3.3}{Conservation of angular momentum}}{20}}
-\newlabel{linear_momentum_for_angular}{{\M@TitleReference {3.4}{Conservation of angular momentum}}{20}}
-\newlabel{moment_of_linear_momentum_sources}{{\M@TitleReference {3.5}{Conservation of angular momentum}}{20}}
-\newlabel{linear_momentum_for_angular_localised}{{\M@TitleReference {3.9}{Conservation of angular momentum}}{21}}
-\newlabel{moment_of_linear_momentum_sources_localised}{{\M@TitleReference {3.10}{Conservation of angular momentum}}{21}}
+\newlabel{moment_of_linear_momentum}{{\M@TitleReference {3.4}{Conservation of angular momentum}}{20}}
+\newlabel{linear_momentum_for_angular}{{\M@TitleReference {3.5}{Conservation of angular momentum}}{20}}
+\newlabel{moment_of_linear_momentum_sources}{{\M@TitleReference {3.6}{Conservation of angular momentum}}{20}}
+\newlabel{linear_momentum_for_angular_localised}{{\M@TitleReference {3.10}{Conservation of angular momentum}}{21}}
+\newlabel{moment_of_linear_momentum_sources_localised}{{\M@TitleReference {3.11}{Conservation of angular momentum}}{21}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Conservation of energy}{22}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.3}Scaling and dimension}{22}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}The Reynolds number}{22}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.4}Stokes flow and the meaning of pressure}{22}}
 \newlabel{pressure_derivation}{{\M@TitleReference {3.4}{Stokes flow and the meaning of pressure}}{22}}
-\newlabel{unsteady_stokes}{{\M@TitleReference {3.12}{Stokes flow and the meaning of pressure}}{22}}
-\newlabel{steady_stokes}{{\M@TitleReference {3.13}{Stokes flow and the meaning of pressure}}{22}}
-\newlabel{stokes_flow_optimization}{{\M@TitleReference {3.15}{Stokes flow and the meaning of pressure}}{22}}
-\newlabel{el_pressure_constrained_div}{{\M@TitleReference {3.16}{Stokes flow and the meaning of pressure}}{22}}
+\newlabel{unsteady_stokes}{{\M@TitleReference {3.13}{Stokes flow and the meaning of pressure}}{22}}
+\newlabel{steady_stokes}{{\M@TitleReference {3.14}{Stokes flow and the meaning of pressure}}{22}}
+\newlabel{stokes_flow_optimization}{{\M@TitleReference {3.16}{Stokes flow and the meaning of pressure}}{22}}
+\newlabel{el_pressure_constrained_div}{{\M@TitleReference {3.17}{Stokes flow and the meaning of pressure}}{23}}
 \@writefile{toc}{\contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{23}}
-\newlabel{stokes_flow_modified_energy}{{\M@TitleReference {3.19}{Alternative direct derivation in terms of a modified energy}}{23}}
+\newlabel{stokes_flow_modified_energy}{{\M@TitleReference {3.20}{Alternative direct derivation in terms of a modified energy}}{23}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Application to hydrostatics}{23}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
@@ -129,7 +130,7 @@
 \newlabel{discretizing_poisson}{{\M@TitleReference {4.2.2}{Discretizing the Poisson equation}}{28}}
 \newlabel{poisson_equation_integral_discretized}{{\M@TitleReference {4.9}{Discretizing the Poisson equation}}{28}}
 \newlabel{poisson_matrix_equation}{{\M@TitleReference {4.10}{Discretizing the Poisson equation}}{28}}
-\@writefile{toc}{\contentsline {subsubsection}{Choosing a domain decomposition and test space}{28}}
+\@writefile{toc}{\contentsline {subsubsection}{Choosing a domain partition and test space}{28}}
 \citation{polygon_mesh_processing}
 \citation{pde_larsson}
 \@writefile{toc}{\contentsline {subsubsection}{Results and visualisation}{29}}
@@ -159,14 +160,20 @@
 \newlabel{discretizing_unsteady_stokes}{{\M@TitleReference {4.3.3}{Discretizing the unsteady Stokes equations}}{34}}
 \newlabel{unsteady_stokes_implicit_euler}{{\M@TitleReference {4.25}{Discretizing the unsteady Stokes equations}}{34}}
 \citation{approximation_theory}
+\citation{ciarlet}
+\citation{ham_fem}
+\citation{fenics_book}
 \newlabel{unsteady_stokes_implicit_euler_weak}{{\M@TitleReference {4.26}{Discretizing the unsteady Stokes equations}}{35}}
 \@writefile{toc}{\contentsline {subsubsection}{Discretizing the initial condition}{35}}
 \newlabel{initial_velocity_projection}{{\M@TitleReference {4.29}{Discretizing the initial condition}}{35}}
 \newlabel{initial_velocity_projection_linear_system}{{\M@TitleReference {4.30}{Discretizing the initial condition}}{35}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Solving non-linear equations}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}A non-linear Poisson equation}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}A non-linear heat equation}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}The Burgers equation}{35}}
+\citation{tetgen}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Solving non-linear equations}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}A non-linear Poisson equation}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}A non-linear heat equation}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}The Burgers equation}{36}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Implementing finite element methods}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}The Ciarlet definition of a finite element space}{36}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{37}}
@@ -194,6 +201,8 @@
 \bibcite{fenics_book}{19}
 \bibcite{approximation_theory}{20}
 \bibcite{stam}{21}
+\bibcite{tetgen}{22}
 \@writefile{toc}{\contentsline {chapter}{Bibliography}{41}}
-\memsetcounter{lastsheet}{41}
-\memsetcounter{lastpage}{41}
+\bibcite{ham_fem}{23}
+\memsetcounter{lastsheet}{42}
+\memsetcounter{lastpage}{42}

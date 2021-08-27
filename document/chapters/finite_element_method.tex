@@ -160,7 +160,7 @@ By linearity, to emphasize the separate integrals that need to be computed, the 
 We see here that there must be some restrictions on the $\phi_i$.
 Formally, our basis functions must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
-the integral. Since the source $f$, our domain decomposition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
+the integral. Since the source $f$, our domain partition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
 the majority of \eqref{poisson_equation_integral_discretized} to give a matrix system
 
 \newcommand{\integralentry}[2]{\int_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
@@ -175,12 +175,12 @@ the majority of \eqref{poisson_equation_integral_discretized} to give a matrix s
     \begin{bmatrix} \int_{\om_1}f\,dx \\ \int_{\om_2}f\,dx \\ \vdots \\ \int_{\om_{n-1}}f\,dx \\ \int_{\om_n}f\,dx \end{bmatrix}
     = \hat{f}.
 \end{equation}
-If our domain decomposition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+If our domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
 In all cases we have a conservative system of balanced fluxes, but it is another question whether our approximation
 $\Phi\hat{h}$ is good.
 
-\subsubsection{Choosing a domain decomposition and test space}
+\subsubsection{Choosing a domain partition and test space}
 Possibly the simplest scheme is to triangulate $\Omega$ as
     $\Omega = \biguplus T_i$
 such that we have $n$ nodal points.
@@ -191,7 +191,7 @@ $0$ at its neighbours.
 (draw this)
 \vskip 0.2in
 
-As we typically have more triangles than vertices, we cannot use the $T_i$ as our domain decomposition. However, we may
+As we typically have more triangles than vertices, we cannot use the $T_i$ as our domain partition. However, we may
 associate to each $p_i$ a domain $\Omega_i$ called the \textit{Voronoi cell}.
 
 \vskip 0.2in
@@ -294,7 +294,7 @@ Note that we can now think of our trial space $\Psi$ as a span of functions, ins
 Now we can instead let
     $$\Psi = \text{span}\left\{\psi_1,\cdots,\psi_n\right\}$$
 where the $\psi_j$
-need not be the indicator functions of a domain decomposition. We now have the system of equations
+need not be the indicator functions of a domain partition. We now have the system of equations
 \begin{align*}
     \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i \psi_j\,dx = \int_{\om} f\psi_j\,dx,\quad j=1,\cdots,n.
 \end{align*}
@@ -655,7 +655,7 @@ gives a linear system
     \quad j=1,\cdots,n.
 \end{equation}
 Solving this linear system for the $u^{(0)}_i$ gives $u^{(0)} = \sum_{i=1}^n u^{(0)}_i \phi_i$ as a projection of $u$ onto $\Phi$.
-This projection is orthogonal if $\Phi = \Psi$, and therefore could be considered the ``best'' such projection under the Euclidean norm.
+This projection is orthogonal if $\Phi = \Psi$, and therefore could be considered the ``best'' such projection in the Euclidean norm.
 This is the standard Gramian matrix construction for projection in approximation theory \cite{approximation_theory}.
 
 % >>>
@@ -668,4 +668,28 @@ This is the standard Gramian matrix construction for projection in approximation
 \subsection{The Burgers equation}
 % >>>
 
+\section{Implementing finite element methods}
+% <<<
+\subsection{The Ciarlet definition of a finite element space}
+\cite{ciarlet}, \cite{ham_fem}, \cite{fenics_book}
 
+
+% Discuss Ciarlet definition, difference between FEM, spectral etc. FEM uses a domain partition to help in constructing the basis functions.
+
+One great utility of the finite element method is that it is compatible with complex geometric domains and domain decompositions.
+Some greater effort is needed to apply finite differences correctly across complex boundaries, and it is non-trivial to implement
+a varying resolution of the discretisation. In the finite element method, however, specifying the test and trial functions over
+a square grid is much the same as specifying them over, for example, a surface mesh of arbitrary topology. For modelling, for example,
+heat transfer in a complex solid, one can construct basis functions over a grid on the interior, and over cut-off boundary cells near the exterior.
+This is all in principle, of course, as one needs to
+\begin{enumerate}
+    \item Break the domain up into small pieces.
+    \item Construct the basis and trial functions over this domain partition (e.g. by finding polynomial coefficients).
+    \item Compute all inner products of test and trial functions, and their relevant derivatives, either numerically or analytically.
+    \item Solve possibly many huge sparse linear systems, while possibly changing the structure of the domain partition (requiring changes to the inner products).
+\end{enumerate}
+
+Step (1) is already a field in itself, as evidenced by the open source tool TetGen \cite{tetgen}.
+TetGen is a small tool whose primary purpouse is to perform \textit{constrained Delaunay tetrahedralization}, given a solid boundary and a point cloud on the interior.
+This constructs a valid tetrahedral partition intended for finite element solvers. This is efficiently solved in a very robust manner in over 36k lines of C code --- TetGen is part of the geometric backbone of many FEM solvers (references).
+% >>>

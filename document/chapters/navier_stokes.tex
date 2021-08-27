@@ -37,22 +37,29 @@ can be solved numerically, or in special situations analytically.
 % Introduction
 % <<<
 We begin with the standard conservation equations of mass and linear momentum, \eqref{conservation_system}:
-\begin{equation*}
+\begin{equation}\label{compressible_system}
 \begin{split}
     \frac{D\rho}{Dt} + \rho\nabla\cdot u = 0 &\quad\text{(Conservation of mass)},
     \\
     \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma &\quad\text{(Conservation of linear momentum)}.
 \end{split}
-\end{equation*}
-As discussed in section \ref{constitutive_relations}, we need to specify $\sigma$ such that the system is well-formed. Firstly, we replace the
-conservation of mass equation with the incompressibility constraint
-\begin{equation*}
-    \nabla \cdot u = 0.
-\end{equation*}
-Assuming a constant mass density $\rho$, this also expresses mass conservation. This will preclude phenomena such as acoustic waves in the fluid,
-but is a good approximation for many studies of fluid motion (see Batchelor \cite{batchelor}). We begin by deriving additional conservation laws
-in the specific context of a fluid.
-
+\end{equation}
+% To add incompressibility, our first step is to change the conservation of mass equation to
+% \begin{equation*}
+%     \nabla \cdot u = 0.
+% \end{equation*}
+% Assuming a constant mass density $\rho$, this also expresses mass conservation. This will preclude phenomena such as acoustic waves in the fluid,
+% but is a good approximation for many studies of fluid motion (see Batchelor \cite{batchelor}).
+% However we now have a problem: The conservation of linear momentum in \eqref{compressible_system} has a source term $\rho g + \nabla\cdot\sigma$
+% \newcommand{\virtualforce}{{F_{\text{virtual}}}}
+% which needs not be non-compressing. We need to introduce some virtual force $\virtualforce$ such that
+%     $$\rho g + \nabla\cdot\sigma + \virtualforce$$
+% such that is non-compressing
+As discussed in section \ref{constitutive_relations}, we need to specify the Cauchy stress tensor $\sigma$ such that the system is well-formed.
+It would be helpful to restrict the possible
+form of $\sigma$. In the next section we will show that $\sigma$'s antisymmetric part describes a couple force, a force which induces an angular
+momentum (a ``spin'') in a small control volume, but which doesn't contribute to linear momentum. Therefore, if we do not want couple forces,
+we want $\sigma$ to be symmetric.
 % >>>
 \subsection{Conservation of angular momentum}
 % <<<
@@ -132,7 +139,7 @@ where $\widehat{N}$ is defined in $\mathbb{R}^3$ as the axis-angle vector repres
     Nv = \widehat{N}\wedge v,\quad v\in\mathbb{R}^3
     \\
     N = \begin{bmatrix}
-        0 & \omega_z & \omega_y \\ \omega_z & 0 & -\omega_x  \\ -\omega_y & \omega_x & 0
+        0 & -\omega_z & \omega_y \\ \omega_z & 0 & -\omega_x  \\ -\omega_y & \omega_x & 0
     \end{bmatrix} \Rightarrow \widehat{N} = \begin{bmatrix} \omega_x \\ \omega_y \\ \omega_z \end{bmatrix}.
 \end{split}
 \end{equation}
@@ -145,7 +152,7 @@ which gives
 \begin{equation}
     \int_{\pomn} \bar{x} \wedge \left(\sigma\hat{n}\right)\,dx = \int_\omn \bar{x}\wedge\nabla\cdot\sigma + \widehat{N}\,dx.
 \end{equation}
-This shows that the tractions measured across the boundary, although their contributions to the linear momentum of the control volume conserve it,
+This shows that for the tractions measured across the boundary, although their contributions to the linear momentum of the control volume conserve it,
 there is another contribution to the angular momentum, which is the ``spin part'' of $\sigma$.
 To show this more directly, localise the linear conservation equation \eqref{linear_momentum_for_angular}:
 \begin{equation}\label{linear_momentum_for_angular_localised}
@@ -163,6 +170,8 @@ to imply \eqref{moment_of_linear_momentum_sources_localised} (for linear momentu
 \end{equation}
 So, without the introduction of any explicit angular momentum sources (body and surface couples), the Cauchy stress tensor $\sigma$ is required to be symmetric,
 reducing the $d^2$ unknowns to $d(d+1)/2$ unknowns.
+
+(~~~ May be $\widehat{N}/2$, maybe a sign error. Check Leal p68.)
 
 % (... figure)
 % \begin{center}
@@ -190,6 +199,17 @@ reducing the $d^2$ unknowns to $d(d+1)/2$ unknowns.
 %     = \int_{\omn(0)} \left(\rho g\right)\,dx + \int_{\pomn(0)} \sigma \hat{n}\,dx.
 % \end{equation*}
 % >>>
+% >>>
+
+\subsection{Conservation of energy}
+% <<<
+\begin{equation*}
+\begin{split}
+    \frac{D\rho}{Dt} + \rho\nabla\cdot u = 0 &\quad\text{(Conservation of mass)},\\
+    \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma &\quad\text{(Conservation of linear momentum)},\\
+    \sigma = \sigma^T &\quad\text{(Conservation of angular momentum)}.
+\end{split}
+\end{equation*}
 % >>>
 
 \section{Scaling and dimension}
