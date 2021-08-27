@@ -36,7 +36,7 @@
 \contentsline {subsubsection}{Completing the equations}{18}
 \contentsline {chapter}{\chapternumberline {3}The Navier-Stokes equations}{19}
 \contentsline {section}{\numberline {3.1}Introduction}{19}
-\contentsline {section}{\numberline {3.2}Constitutive relations for the Navier-Stokes equations}{19}
+\contentsline {section}{\numberline {3.2}The equations of fluid motion}{19}
 \contentsline {subsection}{\numberline {3.2.1}Conservation of angular momentum}{20}
 \contentsline {section}{\numberline {3.3}Scaling and dimension}{22}
 \contentsline {subsection}{\numberline {3.3.1}The Reynolds number}{22}

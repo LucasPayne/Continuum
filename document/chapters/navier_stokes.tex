@@ -32,7 +32,7 @@ form a concrete flow problem which
 can be solved numerically, or in special situations analytically.
 % >>>
 
-\section{Constitutive relations for the Navier-Stokes equations}
+\section{The equations of fluid motion}
 % <<<
 % Introduction
 % <<<
@@ -50,7 +50,8 @@ conservation of mass equation with the incompressibility constraint
     \nabla \cdot u = 0.
 \end{equation*}
 Assuming a constant mass density $\rho$, this also expresses mass conservation. This will preclude phenomena such as acoustic waves in the fluid,
-but is a good approximation for many studies of fluid motion (see Batchelor \cite{batchelor}).
+but is a good approximation for many studies of fluid motion (see Batchelor \cite{batchelor}). We begin by deriving additional conservation laws
+in the specific context of a fluid.
 
 % >>>
 \subsection{Conservation of angular momentum}
@@ -146,18 +147,17 @@ which gives
 \end{equation}
 This shows that the tractions measured across the boundary, although their contributions to the linear momentum of the control volume conserve it,
 there is another contribution to the angular momentum, which is the ``spin part'' of $\sigma$.
-
-To show this more directly, differentialise the linear conservation equation \eqref{linear_momentum_for_angular}:
-\begin{equation}
+To show this more directly, localise the linear conservation equation \eqref{linear_momentum_for_angular}:
+\begin{equation}\label{linear_momentum_for_angular_localised}
     \int_{\omn} \Part{(\rho u)}{t} + \nabla\cdot\left(\rho u\otimes u\right) - \rho g - \nabla\cdot\sigma\,dx = 0.
 \end{equation}
 The corresponding differential form of \eqref{moment_of_linear_momentum_sources} is
-\begin{equation}
+\begin{equation}\label{moment_of_linear_momentum_sources_localised}
     \int_{\omn} \bar{x} \wedge \left[\Part{(\rho u)}{t} + \nabla\cdot\left(\rho u\otimes u\right) - \rho g - \nabla\cdot\sigma\right]\,dx
     = \int_\omn \widehat{N}\,dx.
 \end{equation}
-As the conservation law \eqref{linear_momentum_for_angular} must hold for all $\Omega_0$, we can see that for \eqref{linear_momentum_for_angular}
-to imply \eqref{moment_of_linear_momentum_sources} (for linear momentum conservation to imply angular momentum conservation) we need
+As the conservation law \eqref{linear_momentum_for_angular_localised} must hold for all $\Omega_0$, we can see that for \eqref{linear_momentum_for_angular_localised}
+to imply \eqref{moment_of_linear_momentum_sources_localised} (for linear momentum conservation to imply angular momentum conservation) we need
 \begin{equation}
     \widehat{N} = 0 \quad\Rightarrow\quad \sigma = \sigma^T.
 \end{equation}
