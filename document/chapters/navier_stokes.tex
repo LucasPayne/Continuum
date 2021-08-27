@@ -34,6 +34,8 @@ can be solved numerically, or in special situations analytically.
 
 \section{Constitutive relations for the Navier-Stokes equations}
 % <<<
+% Introduction
+% <<<
 We begin with the standard conservation equations of mass and linear momentum, \eqref{conservation_system}:
 \begin{equation*}
 \begin{split}
@@ -50,7 +52,9 @@ conservation of mass equation with the incompressibility constraint
 Assuming a constant mass density $\rho$, this also expresses mass conservation. This will preclude phenomena such as acoustic waves in the fluid,
 but is a good approximation for many studies of fluid motion (see Batchelor \cite{batchelor}).
 
+% >>>
 \subsection{Conservation of angular momentum}
+% <<<
 Angular momentum is traditionally presented in terms of rigid bodies, bodies subject to a distance-preserving constraint between
 material points. It is the moment of linear momentum.
 
@@ -67,23 +71,103 @@ The symbol $\wedge$ indicates the cross product, whose value should be thought o
 We will call this the angular momentum of the control volume $\omn$.
 We repeat here an integral form of linear momentum conservation, which already must hold:
 \begin{equation}\label{linear_momentum_for_angular}
-    \int_{\omn(0)} \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \rho u (u\cdot \hat{n})\,dx
-    = \int_{\omn(0)} \rho g\,dx + \int_{\pomn(0)} \sigma \hat{n}\,dx.
+    \int_{\omn} \Part{(\rho u)}{t}\,dx + \int_{\pomn} \rho u (u\cdot \hat{n})\,dx
+    = \int_{\omn} \rho g\,dx + \int_{\pomn} \sigma \hat{n}\,dx.
 \end{equation}
 It is simple to derive an angular momentum conservation equation, just by taking moments of each vector quantity:
 \begin{equation}\label{moment_of_linear_momentum_sources}
-    \int_{\omn(0)} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \bar{x} \wedge \left(\rho u\right)\left(u\cdot \hat{n}\right)\,dx
-    = \int_{\omn(0)} \bar{x} \wedge \left(\rho g\right)\,dx + \int_{\pomn(0)} \bar{x} \wedge \left(\sigma \hat{n}\right)\,dx.
+    \int_{\omn} \bar{x} \wedge \Part{(\rho u)}{t}\,dx + \int_{\pomn} \bar{x} \wedge \left(\rho u\right)\left(u\cdot \hat{n}\right)\,dx
+    = \int_{\omn} \bar{x} \wedge \left(\rho g\right)\,dx + \int_{\pomn} \bar{x} \wedge \left(\sigma \hat{n}\right)\,dx.
 \end{equation}
 (This precludes the introduction of surface and body couples which induce no linear momentum but do induce angular momentum
 \cite{leal}. We ignore these torques.)
 \\
 If \eqref{linear_momentum_for_angular} holds, should \eqref{moment_of_linear_momentum_sources} hold automatically?
+% Note that as $\Omega_0$ becomes small, $\hat{x}$ will become approximately parallel to $\hat{n}$.
+% 
 
-(... figure)
-\begin{center}
-\includegraphics[page=1,width=0.7\linewidth]{figures/3.pdf}
-\end{center}
+By Stokes' theorem, the final term in \eqref{linear_momentum_for_angular} can be written as
+\begin{align*}
+    \int_{\pomn} \sigma\hat{n}\,dx = \int_\omn\nabla\cdot\sigma\,dx.
+\end{align*}
+
+\vskip 0.2in
+(draw the differentialization happening at each point, contracting a small control volume).
+\vskip 0.2in
+
+With the help of the above picture, we can try to derive a per-point form for the final term in \eqref{moment_of_linear_momentum_sources},
+\begin{align*}
+    \int_{\pomn} \bar{x} \wedge \left(\sigma\hat{n}\right)\,dx = \int_\omn\cdots ? \cdots\,dx.
+\end{align*}
+At a point $c$ in $\omn$, we contract an even smaller control volume $\om_c$ around that point, in order to express
+the boundary integral over $\pomn$ in terms of smaller boundary integrals on the interior. As this takes a limit,
+we can separately assume that $\bar{x} = x - c$ and $\sigma$ are constant in $\om_c$, giving the ``product rule''
+\begin{align*}
+    \int_{\pom_c} \bar{x}\wedge\left(\sigma\hat{n}\right)\,dx \quad\rightarrow\quad
+    \bar{x}\wedge \nabla\cdot \sigma + \text{(some term keeping $\sigma$ constant)}.
+\end{align*}
+We can reason geometrically to find the final term. We can split $\sigma$ into its symmetric part $S$ and antisymmetric part $N$:
+    $$\sigma = \frac{1}{2}\left(\sigma + \sigma^T\right) + \frac{1}{2}\left(\sigma - \sigma^T\right) = S + N.$$
+Antisymmetric matrices have a lot to do with rotations: A special property of antisymmetric matrices is
+    $$\inner{x, Nx} = \inner{x, N^Tx} = \inner{x, -Nx} \quad\Rightarrow\quad \inner{x, Nx} = 0.$$
+In fact the antisymmetric matrices are exactly those which generate rotations (formally, $\exp(N)$ is orthogonal, where $\exp$ is the matrix
+exponential). If $\sigma$ is kept constant over $\pom_c$, we can visualise the tractions contributed by the symmetric and antisymmetric parts of $\sigma$:
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+By the above diagram we can conclude that, letting $\sigma = S + N$ be constant,
+\begin{align*}
+    \int_{\pom_c} \bar{x} \wedge \left(\left(S + N\right)\hat{n}\right)\,dx
+    =
+    \int_{\pom_c} \bar{x} \wedge \left(N\hat{n}\right)\,dx
+    \quad\rightarrow\quad
+    \widehat{N}
+\end{align*}
+where $\widehat{N}$ is defined in $\mathbb{R}^3$ as the axis-angle vector representation of the differential rotation corresponding to $N$:
+\begin{equation}
+\begin{split}
+    Nv = \widehat{N}\wedge v,\quad v\in\mathbb{R}^3
+    \\
+    N = \begin{bmatrix}
+        0 & \omega_z & \omega_y \\ \omega_z & 0 & -\omega_x  \\ -\omega_y & \omega_x & 0
+    \end{bmatrix} \Rightarrow \widehat{N} = \begin{bmatrix} \omega_x \\ \omega_y \\ \omega_z \end{bmatrix}.
+\end{split}
+\end{equation}
+We now have
+\begin{equation}
+    \int_{\pom_c} \bar{x}\wedge\left(\sigma\hat{n}\right)\,dx \quad\rightarrow\quad
+    \bar{x}\wedge \nabla\cdot \sigma + \widehat{N},
+\end{equation}
+which gives 
+\begin{equation}
+    \int_{\pomn} \bar{x} \wedge \left(\sigma\hat{n}\right)\,dx = \int_\omn \bar{x}\wedge\nabla\cdot\sigma + \widehat{N}\,dx.
+\end{equation}
+This shows that the tractions measured across the boundary, although their contributions to the linear momentum of the control volume conserve it,
+there is another contribution to the angular momentum, which is the ``spin part'' of $\sigma$.
+
+To show this more directly, differentialise the linear conservation equation \eqref{linear_momentum_for_angular}:
+\begin{equation}
+    \int_{\omn} \Part{(\rho u)}{t} + \nabla\cdot\left(\rho u\otimes u\right) - \rho g - \nabla\cdot\sigma\,dx = 0.
+\end{equation}
+The corresponding differential form of \eqref{moment_of_linear_momentum_sources} is
+\begin{equation}
+    \int_{\omn} \bar{x} \wedge \left[\Part{(\rho u)}{t} + \nabla\cdot\left(\rho u\otimes u\right) - \rho g - \nabla\cdot\sigma\right]\,dx
+    = \int_\omn \widehat{N}\,dx.
+\end{equation}
+As the conservation law \eqref{linear_momentum_for_angular} must hold for all $\Omega_0$, we can see that for \eqref{linear_momentum_for_angular}
+to imply \eqref{moment_of_linear_momentum_sources} (for linear momentum conservation to imply angular momentum conservation) we need
+\begin{equation}
+    \widehat{N} = 0 \quad\Rightarrow\quad \sigma = \sigma^T.
+\end{equation}
+So, without the introduction of any explicit angular momentum sources (body and surface couples), the Cauchy stress tensor $\sigma$ is required to be symmetric,
+reducing the $d^2$ unknowns to $d(d+1)/2$ unknowns.
+
+% (... figure)
+% \begin{center}
+% \includegraphics[page=1,width=0.7\linewidth]{figures/3.pdf}
+% \end{center}
 
 
 % If the control volume follows the flow, the Reynolds transport theorem \eqref{reynolds_transport_theorem} gives a rate of change of angular momentum:
@@ -105,7 +189,7 @@ If \eqref{linear_momentum_for_angular} holds, should \eqref{moment_of_linear_mom
 %     \int_{\omn(0)} \Part{(\rho u)}{t}\,dx + \int_{\pomn(0)} \rho u (u\cdot \hat{n})\,dx
 %     = \int_{\omn(0)} \left(\rho g\right)\,dx + \int_{\pomn(0)} \sigma \hat{n}\,dx.
 % \end{equation*}
-
+% >>>
 % >>>
 
 \section{Scaling and dimension}
@@ -223,8 +307,6 @@ we are working against gravity as well as our virtual force, pressure.
 
 % >>>
 
-% Navier-Stokes in expanded differential form for Cartesian coordinates. Maybe useful for finite differences.
-% Working backwards to the weak form doesn't make much sense.
 % \subsection{Kinds of fluids}
 % \subsubsection{Incompressible fluids}
 % \subsubsection{Inviscid flow}

@@ -17,13 +17,31 @@ still very important in applications. We will discuss the latter first.
 
 \subsection{Discretization of the differential form}
 % <<<
-The finite difference method will take equation \eqref{continuity_equation_differential} and, for example, expand the divergence by Gauss' theorem
-\eqref{gauss_euclidean_divergence}:
-$$
-    \nabla \cdot j = \Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}.
-$$
+It is a theorem of Gauss that in Euclidean space ($M = \mathbb{R}^3$) we have
+\begin{equation}\label{gauss_euclidean_divergence}
+    \nabla \cdot j = \Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z},
+\end{equation}
+and we get \eqref{continuity_equation_differential} in the form
+\begin{equation}\label{continuity_equation_expanded}
+    \Part{\phi}{t} = s - \nabla \phi \cdot j - \phi\left(\Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}\right),
+\end{equation}
+by the product rule.
+As one equation in a system of PDEs, \eqref{continuity_equation_expanded} is readily discretised by finite differences.
 The approximate solution may be represented by a number of samples on the domain, for example, a grid. The term
-$j_x$ above could then be approximated by a secant, for example a central difference.
+$\Part{j_x}{x}$ above could then be approximated by a secant, for example a central difference.
+For example, using forward difference in time and
+central differences in space, our discrete scheme is
+\begin{equation}\label{continuity_equation_finite_differences}
+\begin{split}
+    \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = s &-\frac{\phi(\hat{x} + e_1\Delta x/2) - \phi(\hat{x} - e_1\Delta x/2)}{\Delta x}j_x \\
+                                                      &-\frac{\phi(\hat{x} + e_2\Delta y/2) - \phi(\hat{x} - e_2\Delta y/2)}{\Delta y}j_y \\
+                                                      &-\frac{\phi(\hat{x} + e_3\Delta z/2) - \phi(\hat{x} - e_3\Delta z/2)}{\Delta z}j_z \\
+                                                      &-\frac{j_x(\hat{x} + e_1\Delta x/2) - j_x(\hat{x} - e_1\Delta x/2)}{\Delta x}\phi \\
+                                                      &-\frac{j_y(\hat{x} + e_2\Delta y/2) - j_y(\hat{x} - e_2\Delta y/2)}{\Delta y}\phi \\
+                                                      &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi
+\end{split}
+\end{equation}
+for $e_1,e_2,e_3$ the standard basis vectors in $\mathbb{R}^3$.
 
 \vskip 0.2in
 (draw this)
@@ -133,9 +151,9 @@ The basis functions $\phi_i$ should generate a ``good'' space of approximations,
 such that our linear system is non-singular.
 We then have a discrete system of equations
 \begin{align*}
-    \int_{\pom_j} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right)\cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n,
+    \int_{\pom_j} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right)\cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
 \end{align*}
-which by linearity can be written as
+By linearity, to emphasize the separate integrals that need to be computed, the above equation can be written as
 \begin{equation}\label{poisson_equation_integral_discretized}
     \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
 \end{equation}

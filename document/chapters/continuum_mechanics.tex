@@ -18,8 +18,8 @@ Before considering continuum processes in the framework of Newtonian and Lagrang
 of a point in a function space. Many continuum models in physics, such as the heat equation,
 Maxwell's equations, and the equations of fluid motion, are formed by \textit{conservation equations}. These laws posit that the
 evolution of the state (represented by a function) is
-due to the transport of the quantity that the function measures, which is either pushed around (by some flux either predetermined or dependent on the current state)
-or created and destroyed at sources and sinks.
+due to the transport of the quantity that the function measures, which is either pushed around (by some flux either predetermined or dependent on the current state),
+introduced into the system at sources, or leaves the system at sinks.
 
 % (figure of some manifold embedded in space, and some vector field pushing quantity around)
 \begin{center}
@@ -34,8 +34,8 @@ colloquially called ``the continuum''. All transporting vector fields (or flux f
 \subsubsection{The integral form of a continuity equation}
 Consider some spatial quantity $\phi$ on $M$ and a flux function $j$ which by which
 this quantity flows around $M$. For clarity, we will begin by specializing $\phi$ to be a scalar, although later we will find it useful to
-transport vector quantities such as momentum. By definition we want this flux function to just push quantity around, and not create or destroy it:
-the creation and destruction of quantity is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the
+transport vector quantities such as momentum. By definition we want this flux function to just push quantity around.
+The entering and exiting of quantity into and out of the system is determined by some arbitrary source function $s$ (of the same kind as $\phi$). These variables are related by the
 conservation condition
 \begin{equation}\label{continuity_equation}
     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx
@@ -46,40 +46,31 @@ for arbitrary control volumes $\Omega_0$ in the continuum. The term $-\hat{n}$ d
 
 \subsubsection{The differential form of a continuity equation}
 A common technique in continuum modelling is the use of Stokes' theorem to simplify integral expressions.
+Stokes' theorem and its specialisations (such as the divergence theorem and Green's theorem) are really \textit{definitions} of pointwise quantities
+such as the divergence and curl as limits of these integral expressions for arbitrarily small regions.
+
+\begin{equation}
+    \nabla\cdot v \coloneqq \lim_{\epsilon \rightarrow 0} \frac{1}{\pom_\epsilon}\int_{\pom_\epsilon}v\cdot\hat{n}\,dx.
+\end{equation}
+\begin{equation}
+    \int_{\pom}v\cdot \hat{n}\,dx = \sum_{i\in\mathcal{I}}\int_{\pom_i}v\cdot \hat{n}\,dx.
+\end{equation}
+\begin{equation}
+    \int_{\pom}v\cdot \hat{n}\,dx = \int_\om \left[\lim_{\epsilon \rightarrow 0}\frac{1}{\pom_{x,\epsilon}}\int_{\pom_{x,\epsilon}}v\cdot\hat{n}\,dx^\prime\right]\,dx.
+\end{equation}
+
+
 Equation \eqref{continuity_equation} becomes
 \begin{equation}\label{continuity_equation_differential}
     \Part{\phi}{t} = s - \nabla\cdot (\phi j)
 \end{equation}
 assuming that $\phi j$ is sufficiently differentiable such that the limiting integral exists.
-It should be noted that Stokes' theorem and its specialisations are really \textit{definitions} of pointwise quantities
-such as the divergence and curl as limits of these integral expressions for arbitrarily small regions.
 Continuity relations are most naturally expressed in form \eqref{continuity_equation}, while the form
 \eqref{continuity_equation_differential} may be more useful for techniques such as finite differences.
-For example, it is a theorem of Gauss that in Euclidean space ($M = \mathbb{R}^3$) we have
-\begin{equation}\label{gauss_euclidean_divergence}
-    \nabla \cdot j = \Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z},
-\end{equation}
-and we get \eqref{continuity_equation_differential} in the form
-\begin{equation}\label{continuity_equation_expanded}
-    \Part{\phi}{t} = s - \nabla \phi \cdot j - \phi\left(\Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}\right),
-\end{equation}
-by the product rule.
-As one equation in a system of PDEs, \eqref{continuity_equation_expanded} is readily discretised by finite differences. For example, using forward difference in time and
-central differences in space, our discrete scheme is
-\begin{equation}\label{continuity_equation_finite_differences}
-\begin{split}
-    \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = s &-\frac{\phi(\hat{x} + e_1\Delta x/2) - \phi(\hat{x} - e_1\Delta x/2)}{\Delta x}j_x \\
-                                                      &-\frac{\phi(\hat{x} + e_2\Delta y/2) - \phi(\hat{x} - e_2\Delta y/2)}{\Delta y}j_y \\
-                                                      &-\frac{\phi(\hat{x} + e_3\Delta z/2) - \phi(\hat{x} - e_3\Delta z/2)}{\Delta z}j_z \\
-                                                      &-\frac{j_x(\hat{x} + e_1\Delta x/2) - j_x(\hat{x} - e_1\Delta x/2)}{\Delta x}\phi \\
-                                                      &-\frac{j_y(\hat{x} + e_2\Delta y/2) - j_y(\hat{x} - e_2\Delta y/2)}{\Delta y}\phi \\
-                                                      &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi
-\end{split}
-\end{equation}
-for $e_1,e_2,e_3$ the standard basis vectors in $\mathbb{R}^3$.
 Later, when we discuss numerical methods for solving continuum models, we will not take this route. The methods of interest, \textit{Galerkin} methods,
 work naturally with the integral form \eqref{continuity_equation}.
-It will be seen later that some constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialisation of the original integral form of physical PDEs.
+It will be seen later that some constructions in the presentation of Galerkin methods, such as the ``weak form'' of a PDE, simply undo the differentialisation
+(for example \eqref{continuity_equation_differential}) of the original integral form of physical PDEs (for example \eqref{continuity_equation}).
 % (--- note: Maybe not exactly, as the integral conservation is quantified over regions, while the weak form is quantified over test functions,
 % which still need to be sufficiently differentiabile. But I think that this must express the same continuity relation.)
 % >>>
@@ -106,8 +97,8 @@ Clearly, this rate of change of quantity $\gamma$ is due to the motion of the co
 as well as internal changes of $\gamma$ inside the (fixed) control volume.
 The formal expression of these contributions to the rate of change \eqref{reynolds_rate_of_change} is
 \begin{equation}\label{reynolds_transport_theorem}
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\gamma\,dx\right]}_{t=0} =
-        \int_{\Omega_0(0)}\Part{\gamma}{t}\,dx + \int_{\partial\Omega_0(0)}\gamma \hat{u}\cdot\hat{n} \,dx.
+    \frac{d}{dt}\int_{\Omega_0(t)}\gamma\,dx = 
+        \int_{\Omega_0(t)}\Part{\gamma}{t}\,dx + \int_{\partial\Omega_0(t)}\gamma \hat{u}\cdot\hat{n} \,dx.
 \end{equation}
 This result is called the \textit{Reynolds transport theorem},
 a generalisation of Feynman's popularised ``differentiation under the integral sign'' \cite{feynman_trick},
@@ -117,7 +108,7 @@ otherwise named the Leibniz integral rule. See, for example, \cite{leal} for a f
 to get
 \begin{equation}\label{reynolds_transport_theorem_differential}
     % \frac{d_{\hat{u}}\gamma}{d_{\hat{u}}t} = \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\gamma\,dx\right]}_{t=0} \quad\longrightarrow\quad \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
+    \frac{d}{dt}\int_{\Omega_0(t)}\gamma\,dx \quad\longrightarrow\quad \Part{\gamma}{t} + \nabla \cdot(\gamma \hat{u}),
 \end{equation}
 as $\Omega_0$ becomes small.
 The right-hand-side of \eqref{reynolds_transport_theorem_differential} measures
@@ -129,9 +120,9 @@ described in continuity equation \eqref{continuity_equation}, we get a specialis
 Term $\Part{\gamma}{t}$ in \eqref{reynolds_transport_theorem} becomes $\Part{\phi}{t}$ in the differential form of the continuity equation \eqref{continuity_equation_differential}, giving
 \begin{equation}\label{reynolds_transport_continuity_equation}
 \begin{split}
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\phi\,dx\right]}_{t=0}
-        &= \int_{\Omega_0(0)}-\nabla\cdot(\phi j) + s\,dx + \int_{\partial\Omega_0(0)}\phi \hat{u}\cdot\hat{n} \,dx \\
-        &= \int_{\Omega_0(0)}s\,dx + \int_{\partial\Omega_0(0)}\phi (\hat{u} - j)\cdot\hat{n} \,dx
+    \frac{d}{dt}\int_{\Omega_0(t)}\phi\,dx
+        &= \int_{\Omega_0(t)}-\nabla\cdot(\phi j) + s\,dx + \int_{\partial\Omega_0(t)}\phi \hat{u}\cdot\hat{n} \,dx \\
+        &= \int_{\Omega_0(t)}s\,dx + \int_{\partial\Omega_0(t)}\phi (\hat{u} - j)\cdot\hat{n} \,dx
 \end{split}
 \end{equation}
 by Stokes' theorem. This has a clear interpretation.
@@ -139,7 +130,7 @@ The $\hat{u} - j$ term is due to us wanting to measure the contributions to the 
 $\Omega_0$, where the motion that matters is \textit{relative} to the flux of the quantity $j$. Specifically, if we move the control volume by
 the same flux function $j$ (letting $\hat{u} = j$), we get
 \begin{equation}\label{lagrangian_transport}
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\phi\,dx\right]}_{t=0}
+    \frac{d}{dt}\int_{\Omega_0(t)}\phi\,dx
         = \int_{\Omega_0(0)}s\,dx.
 \end{equation}
 In fact, \eqref{lagrangian_transport} is just another form for the conservation law \eqref{continuity_equation},
@@ -187,12 +178,12 @@ All previous discussion on the transport of scalar quantities applies trivially 
 This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity
 % (---should this be mentioned? It doesn't fit into the
 % framework so far as there is no notion of position map, this might be confusing and seem to imply ``linear momentum'' is natural for any continuum process).
-However, some notational discussion is needed in order to establish differentialised forms of continuity equations and the Reynolds transport theorem.
+However, some notational discussion is needed in order to establish differential forms of continuity equations and the Reynolds transport theorem.
 \subsubsection{Reynolds transport of vector and tensor quantities}
 For a general tensor quantity $\Gamma$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
 \begin{equation}\label{reynolds_transport_theorem_tensor}
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\Gamma\,dx\right]}_{t=0} =
-        \int_{\Omega_0(0)}\Part{\Gamma}{t}\,dx + \int_{\partial\Omega_0(0)}\Gamma \left(\hat{u}\cdot\hat{n}\right) \,dx.
+    \frac{d}{dt}\int_{\Omega_0(t)}\Gamma\,dx
+        \int_{\Omega_0(t)}\Part{\Gamma}{t}\,dx + \int_{\partial\Omega_0(t)}\Gamma \left(\hat{u}\cdot\hat{n}\right) \,dx.
 \end{equation}
 The step to the differential form \eqref{reynolds_transport_theorem_differential}, however, needs some thought
 as rearranging
@@ -222,7 +213,7 @@ By the same tensor algebra as above we have
     $$
         \Phi \left(j\cdot (-\hat{n})\right) = -\left(\Phi \otimes j\right) : \hat{n},
     $$
-giving \eqref{continuity_equation_tensor} differentialised as
+giving \eqref{continuity_equation_tensor} in differential form as
 \begin{equation}\label{continuity_equation_tensor_differential}
     \Part{\Phi}{t} = -\nabla\cdot (\Phi \otimes j) + s.
 \end{equation}
@@ -374,7 +365,7 @@ see how the original disc is ``mixed''.
 We can see that, in this case, it is meaningful to take spatial gradients in \eqref{position_map_ode} to derive an ODE for the deformation gradient $\nabla y$:
 \begin{equation}\label{deformation_gradient_ode}
 \begin{split}
-    \nabla \frac{d}{dt} y(x, t) = \nabla u(y(x, t), t),\quad
+    \nabla \left[\frac{d}{dt} y(x, t)\right] = \nabla u(y(x, t), t),\quad
     \nabla y(x, 0) = I,
 \end{split}
 \end{equation}
@@ -494,7 +485,7 @@ where $\frac{D}{Dt}$ is the material derivative as defined in \eqref{material_de
 % <<<
 If we conserve the linear momentum $\rho u$, a ``quantity of motion'', under the flow of $u$, then we get a continuity equation
 \begin{equation}\label{cauchy_continuity_traction}
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho g\,dx + \int_{\pomn(0)}\hat{t}\,dx,
+    \frac{d}{dt}\int_{\Omega_0(t)}\rho u\,dx = \int_{\omn(t)} \rho g\,dx + \int_{\pomn(t)}\hat{t}\,dx,
 \end{equation}
 a specific realisation of the Lagrangian continuity equation \eqref{lagrangian_transport}. The Lagrangian perspective is convenient
 as it allows us to factor out certain forces on a moving piece of material. The term $g$ is a regular body force per unit mass, where $\rho g$ corresponds to
@@ -509,7 +500,7 @@ which share a boundary element should have equal and opposite tractions across t
 Since the normal $\hat{n}$ represents a boundary element, and is negative for the opposite element, if $\hat{t}$ is linear in $\hat{n}$ we have this required
 property. We can then let \eqref{cauchy_continuity_traction} become
 \begin{equation}\label{cauchy_continuity}
-    \eval{\frac{d}{dt}\left[\int_{\Omega_0(t)}\rho u\,dx\right]}_{t=0} = \int_{\omn(0)} \rho g\,dx + \int_{\pomn(0)}\sigma:\hat{n}\,dx
+    \frac{d}{dt}\int_{\Omega_0(t)}\rho u\,dx = \int_{\omn(t)} \rho g\,dx + \int_{\pomn(t)}\sigma:\hat{n}\,dx
 \end{equation}
 where $\sigma$ is termed the \textit{Cauchy stress tensor}.
 
