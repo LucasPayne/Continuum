@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  27 AUG 2021 21:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  30 AUG 2021 14:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1867,7 +1867,7 @@ Underfull \vbox (badness 4366) has occurred while \output is active []
 
 ]
 [26] [27] [28] [29] [30] [31] [32]
-Overfull \hbox (9.49695pt too wide) detected at line 570
+Overfull \hbox (9.49695pt too wide) detected at line 572
 []
  []
 
@@ -1885,10 +1885,10 @@ bibitemlist
 
  (./document.aux) ) 
 Here is how much of TeX's memory you used:
- 18152 strings out of 494847
- 314552 string characters out of 6179081
- 436002 words of memory out of 5000000
- 21193 multiletter control sequences out of 15000+600000
+ 18154 strings out of 494847
+ 314590 string characters out of 6179081
+ 437010 words of memory out of 5000000
+ 21195 multiletter control sequences out of 15000+600000
  549012 words of font info for 135 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  53i,24n,41p,10403b,343s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1908,7 +1908,7 @@ nts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on document.pdf (42 pages, 3536930 bytes).
+Output written on document.pdf (42 pages, 3537962 bytes).
 PDF statistics:
  282 PDF objects out of 1000 (max. 8388607)
  175 compressed objects within 2 object streams

@@ -2,6 +2,9 @@
 
 \section{Introduction}
 % <<<
+
+--- Change: Introduce Poisson's equation first, then give the FDM example for the Poisson equation. Then solve Poisson by FEM.
+
 Consider a single conservation law as described in section \ref{conservation_laws}. This law
 was given in two forms, ``integral'' \eqref{continuity_equation}:
 \begin{equation*}
@@ -498,9 +501,12 @@ when solving the optimization problem \eqref{stokes_flow_optimization}:
 & & \nabla\cdot u = 0.
 \end{aligned}
 \end{equation*}
+
 \newcommand{\trialconstraint}{{\Psi_{\text{constraint}}}}
 \newcommand{\testpressure}{{\Phi_{\text{pressure}}}}
-As a first idea, we can introduce $p$ as a variable to solve for.
+As a first idea, we can introduce $p$ as a variable to solve for. Solving for the pressure (the ``dual variable'') simultaneously with the velocity
+(the ``primal variable'')
+is called a primal-dual method for the optimization \eqref{stokes_flow_optimization}, and the resulting finite element method is called \textit{mixed}.
 Pressure then needs to be discretized, so we introduce another test space $\testpressure$.
 To get a weak form of the steady Stokes equations \eqref{steady_stokes}, which are two equations including the constraint $\nabla\cdot u = 0$, we introduce
 another trial space $\trialconstraint$, whose functions will be integrated against $\nabla\cdot u$. The weak form is then
@@ -591,7 +597,7 @@ after the transient flow behaviour settles down. The unsteady Stokes equations \
 \end{equation*}
 These form an initial-boundary-value problem, and this will be our first attempt at discretizing a PDE in time.
 We could think of solving with the test and trial spaces over the domain $\Omega \times [0, T)$, but this is typically not done due to the memory costs,
-and different qualitative meaning of the time variable. Instead, we will use an implicit-Euler finite difference in time: 
+and different qualitative meaning of the time variable \cite{ham_fem}. Instead, we will use an implicit-Euler finite difference in time: 
 \begin{equation}\label{unsteady_stokes_implicit_euler}
     \frac{\rho}{\Delta t} \left(u^{(n)} - u^{(n-1)}\right) = \mu\Delta u^{(n)} + \rho g - \nabla p^{(n)}, \quad \nabla\cdot u^{(n)} = 0,
 \end{equation}
@@ -640,7 +646,7 @@ to reexpress \eqref{unsteady_stokes_implicit_euler_weak} in the notation
 This is the same structure as in the steady Stokes system \eqref{steady_stokes_weak_notation},
 and so the matrix block structure is the same as in \eqref{steady_stokes_matrix}. Therefore, every step we need to solve a linear system
 that is very similar to the steady Stokes problem. In fact this step can be thought of as successively introducing the momentum source $\rho g$
-(ignoring convection), while solving for the new pressure force needed to keep the fluid non-compressed.
+(ignoring convection), while solving for the updated pressure needed to keep the fluid non-compressed.
 
 \subsubsection{Discretizing the initial condition}
 We may have some analytically determined, or otherwise, initial velocity field $u$ with $\nabla\cdot u = 0$.
@@ -676,7 +682,7 @@ This is the standard Gramian matrix construction for projection in approximation
 
 % Discuss Ciarlet definition, difference between FEM, spectral etc. FEM uses a domain partition to help in constructing the basis functions.
 
-One great utility of the finite element method is that it is compatible with complex geometric domains and domain decompositions.
+One great utility of the finite element method is that it is compatible with complex geometric domains and domain partitions.
 Some greater effort is needed to apply finite differences correctly across complex boundaries, and it is non-trivial to implement
 a varying resolution of the discretisation. In the finite element method, however, specifying the test and trial functions over
 a square grid is much the same as specifying them over, for example, a surface mesh of arbitrary topology. For modelling, for example,
@@ -690,6 +696,6 @@ This is all in principle, of course, as one needs to
 \end{enumerate}
 
 Step (1) is already a field in itself, as evidenced by the open source tool TetGen \cite{tetgen}.
-TetGen is a small tool whose primary purpouse is to perform \textit{constrained Delaunay tetrahedralization}, given a solid boundary and a point cloud on the interior.
-This constructs a valid tetrahedral partition intended for finite element solvers. This is efficiently solved in a very robust manner in over 36k lines of C code --- TetGen is part of the geometric backbone of many FEM solvers (references).
+TetGen is a small tool whose primary purpose is to perform \textit{constrained Delaunay tetrahedralization}, given a solid boundary and a point cloud on the interior.
+This constructs a valid tetrahedral partition intended for finite element solvers. The partition is efficiently created in a very robust manner in over 36k lines of C code. TetGen is part of the geometric backbone of many FEA tools (references).
 % >>>

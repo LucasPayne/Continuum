@@ -119,3 +119,19 @@ where it is an "infinite normal vector".
 = integral_{subdomain_boundary} u
 Maybe it would be useful to explicitly mention the Trace operator (pullback of boundary inclusion).
 
+
+
+
+A fluid element has the usual differentialization of the Reynolds transport theorem,
+so it accounts for compression.
+A property "per unit volume" of a fluid element could then be thought of as a property
+of an "ideal point".
+
+
+Antisymmetric and symmetric part by Taylor series in Leal.
+
+
+https://pypi.org/project/symfem/
+
+
+https://finite-element.github.io/index.html

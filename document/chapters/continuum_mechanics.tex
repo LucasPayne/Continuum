@@ -488,7 +488,7 @@ If we conserve the linear momentum $\rho u$, a ``quantity of motion'', under the
     \frac{d}{dt}\int_{\Omega_0(t)}\rho u\,dx = \int_{\omn(t)} \rho g\,dx + \int_{\pomn(t)}\hat{t}\,dx,
 \end{equation}
 a specific realisation of the Lagrangian continuity equation \eqref{lagrangian_transport}. The Lagrangian perspective is convenient
-as it allows us to factor out certain forces on a moving piece of material. The term $g$ is a regular body force per unit mass, where $\rho g$ corresponds to
+as it allows us to separate interior and boundary forces on a moving piece of material. The term $g$ is a regular body force per unit mass, where $\rho g$ corresponds to
 the source term $s$ in \eqref{lagrangian_transport}. The boundary term involving $\hat{t}$, however, has no analogue in the scalar continuity equation
 \eqref{lagrangian_transport}.
 This vector term $\hat{t}$ is called the \textit{traction} in continuum mechanics, and measures a local force exerted across the boundary
@@ -503,6 +503,8 @@ property. We can then let \eqref{cauchy_continuity_traction} become
     \frac{d}{dt}\int_{\Omega_0(t)}\rho u\,dx = \int_{\omn(t)} \rho g\,dx + \int_{\pomn(t)}\sigma:\hat{n}\,dx
 \end{equation}
 where $\sigma$ is termed the \textit{Cauchy stress tensor}.
+This is the integral form of the \textit{Cauchy momentum equation}, the standard
+form of $F = ma$ in continuum mechanics.
 
 
 % <<<
