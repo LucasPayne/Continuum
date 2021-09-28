@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle.c" "dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o" "gcc" "dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o.d"
+  "/home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.c" "dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o" "gcc" "dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o.d"
   )
 
 # Targets to which this target links.

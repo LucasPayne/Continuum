@@ -175,29 +175,29 @@ triangle/fast:
 	cd /home/lucas/Continuum/FiniteElements/build && $(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/build
 .PHONY : triangle/fast
 
-triangle.o: triangle.c.o
-.PHONY : triangle.o
+triangle/triangle.o: triangle/triangle.c.o
+.PHONY : triangle/triangle.o
 
 # target to build an object file
-triangle.c.o:
-	cd /home/lucas/Continuum/FiniteElements/build && $(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o
-.PHONY : triangle.c.o
+triangle/triangle.c.o:
+	cd /home/lucas/Continuum/FiniteElements/build && $(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o
+.PHONY : triangle/triangle.c.o
 
-triangle.i: triangle.c.i
-.PHONY : triangle.i
+triangle/triangle.i: triangle/triangle.c.i
+.PHONY : triangle/triangle.i
 
 # target to preprocess a source file
-triangle.c.i:
-	cd /home/lucas/Continuum/FiniteElements/build && $(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.i
-.PHONY : triangle.c.i
+triangle/triangle.c.i:
+	cd /home/lucas/Continuum/FiniteElements/build && $(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.i
+.PHONY : triangle/triangle.c.i
 
-triangle.s: triangle.c.s
-.PHONY : triangle.s
+triangle/triangle.s: triangle/triangle.c.s
+.PHONY : triangle/triangle.s
 
 # target to generate assembly for a file
-triangle.c.s:
-	cd /home/lucas/Continuum/FiniteElements/build && $(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.s
-.PHONY : triangle.c.s
+triangle/triangle.c.s:
+	cd /home/lucas/Continuum/FiniteElements/build && $(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.s
+.PHONY : triangle/triangle.c.s
 
 # Help Target
 help:
@@ -212,9 +212,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... triangle"
-	@echo "... triangle.o"
-	@echo "... triangle.i"
-	@echo "... triangle.s"
+	@echo "... triangle/triangle.o"
+	@echo "... triangle/triangle.i"
+	@echo "... triangle/triangle.s"
 .PHONY : help
 
 

@@ -69,28 +69,28 @@ include dependencies/triangle/CMakeFiles/triangle.dir/progress.make
 # Include the compile flags for this target's objects.
 include dependencies/triangle/CMakeFiles/triangle.dir/flags.make
 
-dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o: dependencies/triangle/CMakeFiles/triangle.dir/flags.make
-dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o: ../dependencies/triangle/triangle.c
-dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o: dependencies/triangle/CMakeFiles/triangle.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o"
-	cd /home/lucas/Continuum/FiniteElements/build/dependencies/triangle && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o -MF CMakeFiles/triangle.dir/triangle.c.o.d -o CMakeFiles/triangle.dir/triangle.c.o -c /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle.c
+dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o: dependencies/triangle/CMakeFiles/triangle.dir/flags.make
+dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o: ../dependencies/triangle/triangle/triangle.c
+dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o: dependencies/triangle/CMakeFiles/triangle.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o"
+	cd /home/lucas/Continuum/FiniteElements/build/dependencies/triangle && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o -MF CMakeFiles/triangle.dir/triangle/triangle.c.o.d -o CMakeFiles/triangle.dir/triangle/triangle.c.o -c /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.c
 
-dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/triangle.dir/triangle.c.i"
-	cd /home/lucas/Continuum/FiniteElements/build/dependencies/triangle && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle.c > CMakeFiles/triangle.dir/triangle.c.i
+dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/triangle.dir/triangle/triangle.c.i"
+	cd /home/lucas/Continuum/FiniteElements/build/dependencies/triangle && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.c > CMakeFiles/triangle.dir/triangle/triangle.c.i
 
-dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/triangle.dir/triangle.c.s"
-	cd /home/lucas/Continuum/FiniteElements/build/dependencies/triangle && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle.c -o CMakeFiles/triangle.dir/triangle.c.s
+dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/triangle.dir/triangle/triangle.c.s"
+	cd /home/lucas/Continuum/FiniteElements/build/dependencies/triangle && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.c -o CMakeFiles/triangle.dir/triangle/triangle.c.s
 
 # Object files for target triangle
 triangle_OBJECTS = \
-"CMakeFiles/triangle.dir/triangle.c.o"
+"CMakeFiles/triangle.dir/triangle/triangle.c.o"
 
 # External object files for target triangle
 triangle_EXTERNAL_OBJECTS =
 
-dependencies/triangle/libtriangle.a: dependencies/triangle/CMakeFiles/triangle.dir/triangle.c.o
+dependencies/triangle/libtriangle.a: dependencies/triangle/CMakeFiles/triangle.dir/triangle/triangle.c.o
 dependencies/triangle/libtriangle.a: dependencies/triangle/CMakeFiles/triangle.dir/build.make
 dependencies/triangle/libtriangle.a: dependencies/triangle/CMakeFiles/triangle.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library libtriangle.a"
