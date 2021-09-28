@@ -82,3 +82,10 @@
 /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/rebuild_cache.dir
 /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir
 /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/install.dir
+/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/CMakeFiles/install/strip.dir
+/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/CMakeFiles/edit_cache.dir
+/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/CMakeFiles/triangle.dir
+/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/CMakeFiles/rebuild_cache.dir
+/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/CMakeFiles/list_install_components.dir
+/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/CMakeFiles/install/local.dir
+/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/CMakeFiles/install.dir

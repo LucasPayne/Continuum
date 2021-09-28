@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/lucas/computer_graphics/cg_sandbox/include -I/home/lucas/computer_graphics/cg_sandbox/lib -I/home/lucas/computer_graphics/mesh_processing/include -I/home/lucas/computer_graphics/cg_sandbox/dependencies/glfw/include -isystem /usr/include/eigen3
+CXX_INCLUDES = -I/home/lucas/computer_graphics/cg_sandbox/include -I/home/lucas/computer_graphics/cg_sandbox/lib -I/home/lucas/computer_graphics/mesh_processing/include -I/home/lucas/Continuum/FiniteElements/dependencies/triangle -I/home/lucas/computer_graphics/cg_sandbox/dependencies/glfw/include -isystem /usr/include/eigen3
 
-CXX_FLAGS = 
+CXX_FLAGS = -DANSI_DECLARATORS -DTRILIBRARY
 

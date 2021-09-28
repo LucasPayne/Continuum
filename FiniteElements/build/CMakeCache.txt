@@ -609,6 +609,12 @@ spatial_algebra_BINARY_DIR:STATIC=/home/lucas/computer_graphics/cg_sandbox/build
 //Value Computed by CMake
 spatial_algebra_SOURCE_DIR:STATIC=/home/lucas/computer_graphics/cg_sandbox/lib/mathematics/spatial_algebra
 
+//Value Computed by CMake
+triangle_BINARY_DIR:STATIC=/home/lucas/Continuum/FiniteElements/build/dependencies/triangle
+
+//Value Computed by CMake
+triangle_SOURCE_DIR:STATIC=/home/lucas/Continuum/FiniteElements/dependencies/triangle
+
 
 ########################
 # INTERNAL cache entries
@@ -766,7 +772,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=12
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=13
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

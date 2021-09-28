@@ -92,6 +92,7 @@ FiniteElements_EXTERNAL_OBJECTS =
 
 FiniteElements: CMakeFiles/FiniteElements.dir/main.cpp.o
 FiniteElements: CMakeFiles/FiniteElements.dir/build.make
+FiniteElements: dependencies/triangle/libtriangle.a
 FiniteElements: /home/lucas/computer_graphics/cg_sandbox/build/src/libcg_sandbox.a
 FiniteElements: /home/lucas/computer_graphics/cg_sandbox/build/lib/opengl_utilities/libopengl_utilities.a
 FiniteElements: /home/lucas/computer_graphics/cg_sandbox/build/lib/interactive_graphics_context/libinteractive_graphics_context.a

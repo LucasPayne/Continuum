@@ -44,6 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+  include("/home/lucas/Continuum/FiniteElements/build/dependencies/triangle/cmake_install.cmake")
 
 endif()
 

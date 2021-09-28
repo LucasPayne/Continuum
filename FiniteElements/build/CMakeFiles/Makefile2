@@ -64,16 +64,33 @@ CMAKE_BINARY_DIR = /home/lucas/Continuum/FiniteElements/build
 
 # The main recursive "all" target.
 all: CMakeFiles/FiniteElements.dir/all
+all: dependencies/triangle/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: dependencies/triangle/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/FiniteElements.dir/clean
 clean: /home/lucas/computer_graphics/cg_sandbox/build/clean
+clean: dependencies/triangle/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory dependencies/triangle
+
+# Recursive "all" directory target.
+dependencies/triangle/all: dependencies/triangle/CMakeFiles/triangle.dir/all
+.PHONY : dependencies/triangle/all
+
+# Recursive "preinstall" directory target.
+dependencies/triangle/preinstall:
+.PHONY : dependencies/triangle/preinstall
+
+# Recursive "clean" directory target.
+dependencies/triangle/clean: dependencies/triangle/CMakeFiles/triangle.dir/clean
+.PHONY : dependencies/triangle/clean
 
 #=============================================================================
 # Directory level rules for directory /home/lucas/computer_graphics/cg_sandbox/build
@@ -278,6 +295,7 @@ CMakeFiles/FiniteElements.dir/all: /home/lucas/computer_graphics/cg_sandbox/buil
 CMakeFiles/FiniteElements.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/CMakeFiles/mathematics.dir/all
 CMakeFiles/FiniteElements.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/spatial_algebra/CMakeFiles/spatial_algebra.dir/all
 CMakeFiles/FiniteElements.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/all
+CMakeFiles/FiniteElements.dir/all: dependencies/triangle/CMakeFiles/triangle.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteElements.dir/build.make CMakeFiles/FiniteElements.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteElements.dir/build.make CMakeFiles/FiniteElements.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=1,2 "Built target FiniteElements"
@@ -285,7 +303,7 @@ CMakeFiles/FiniteElements.dir/all: /home/lucas/computer_graphics/cg_sandbox/buil
 
 # Build rule for subdir invocation for target.
 CMakeFiles/FiniteElements.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 53
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 55
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/FiniteElements.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 0
 .PHONY : CMakeFiles/FiniteElements.dir/rule
@@ -597,6 +615,32 @@ cg_sandbox: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_san
 /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/clean:
 	$(MAKE) $(MAKESILENT) -f /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/build.make /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/clean
 .PHONY : /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/clean
+
+#=============================================================================
+# Target rules for target dependencies/triangle/CMakeFiles/triangle.dir
+
+# All Build rule for target.
+dependencies/triangle/CMakeFiles/triangle.dir/all:
+	$(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/depend
+	$(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=57,58 "Built target triangle"
+.PHONY : dependencies/triangle/CMakeFiles/triangle.dir/all
+
+# Build rule for subdir invocation for target.
+dependencies/triangle/CMakeFiles/triangle.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dependencies/triangle/CMakeFiles/triangle.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 0
+.PHONY : dependencies/triangle/CMakeFiles/triangle.dir/rule
+
+# Convenience name for target.
+triangle: dependencies/triangle/CMakeFiles/triangle.dir/rule
+.PHONY : triangle
+
+# clean rule for target.
+dependencies/triangle/CMakeFiles/triangle.dir/clean:
+	$(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/clean
+.PHONY : dependencies/triangle/CMakeFiles/triangle.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

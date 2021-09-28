@@ -433,4 +433,5 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: \
   /usr/include/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/subdivision/subdivision.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/tetrahedralization/tetrahedralization.h \
-  /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/fairing/fairing.h
+  /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/fairing/fairing.h \
+  /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle.h

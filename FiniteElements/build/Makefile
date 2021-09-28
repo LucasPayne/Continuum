@@ -317,6 +317,19 @@ cg_sandbox/fast:
 	$(MAKE) $(MAKESILENT) -f /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/build.make /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/build
 .PHONY : cg_sandbox/fast
 
+#=============================================================================
+# Target rules for targets named triangle
+
+# Build rule for target.
+triangle: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 triangle
+.PHONY : triangle
+
+# fast build rule for target.
+triangle/fast:
+	$(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/build
+.PHONY : triangle/fast
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -365,6 +378,7 @@ help:
 	@echo "... reflector"
 	@echo "... spatial_algebra"
 	@echo "... table"
+	@echo "... triangle"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
