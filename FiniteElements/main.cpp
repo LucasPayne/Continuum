@@ -3,6 +3,91 @@
 #include "CameraController.cpp"
 
 
+class LaplaceSolver {
+    using PlaneFunction = std::function<double>(double, double);
+    using SparseMatrix = Eigen::SparseMatrix<double>;
+    using EigenTriplet = Eigen::Triplet<double>;
+public:
+    LaplaceSolver(SurfaceGeometry &_geom);
+
+    void set_dirichlet_boundary(PlaneFunction func);
+
+    void solve();
+
+private:
+    SurfaceGeometry &geom; // Assumes y is 0. The geometry does not change.
+    PlaneFunction dirichlet_boundary_function;
+    int num_interior_vertices;
+    int num_boundary_vertices;
+    VertexAttachment<int> vertex_indices;
+};
+
+LaplaceSolver::LaplaceSolver(SurfaceGeometry &_geom) :
+    geom{_geom}, vertex_indices(_geom.mesh), dirichlet_boundary_function([](double,double)-double> { return 0.0; })
+{
+    num_boundary_vertices = 0;
+    num_interior_vertices = 0;
+    {
+        int full_index = 0;
+        for (auto v : geom.mesh.vertices()) {
+            if (v.on_boundary()) {
+                num_boundary_vertices += 1;
+                vertex_indices[full_index] = -1;
+            } else {
+                num_interior_vertices += 1;
+                vertex_indices[full_index] = num_interior_vertices;
+            }
+            full_index += 1;
+        }
+    }
+}
+void LaplaceSolver::set_dirichlet_boundary(PlaneFunction func)
+{
+    dirichlet_boundary_function = func;
+}
+
+
+void LaplaceSolver::solve() const
+{
+    std::vector<EigenTriplet> coefficients;
+    auto rhs = Eigen::VectorXd<double>(num_interior_vertices);
+
+    for (auto tri : geom.mesh.faces()) {
+        Vertex verts[3];
+        int vertex_index = 0;
+        auto he = tri.halfedge();
+        do {
+            he = he.next();
+            verts[vertex_index] = he.vertex()
+        } while (++vertex_index < 3);
+
+        auto A = geom.positions[verts[0]];
+        auto B = geom.positions[verts[1]];
+        auto C = geom.positions[verts[2]];
+        double triangle_area = 0.5*(B-A).cross(C-A).norm();
+        
+        Eigen::Matrix<double, 3,3> local_stiffness_matrix = {
+            {1, -0.5, -0.5},
+            {-0.5, 0.5, 0},
+            {-0.5, 0, 0.5}
+        };
+        local_stiffness_matrix /= 2*triangle_area;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (verts[j].on_boundary()) {
+                    rhs[i] -= dirichlet_boundary_function
+                } else {
+                    coefficients.pushback(EigenTriplet(vertex_indices[verts[i]], vertex_indices[verts[j]], local_stiffness_matrix[i,j]));
+                }
+            }
+        }
+    }
+
+    auto mass_matrix = SparseMatrix(num_interior_vertices, num_interior_vertices);
+    mass_matrix.setFromTriplets(coefficients.begin(), coefficients.end());
+}
+
+
 class App : public IGC::Callbacks {
 public:
     World &world;
@@ -22,15 +107,10 @@ public:
 
     SurfaceMesh mesh;
     SurfaceGeometry geom;
-
-    VertexAttachment<double> u;
-
-    std::vector<vec2> triangulation_points;
-    std::vector<int> triangulation_triangles;
 };
 
 
-App::App(World &_world) : world{_world}, geom{mesh}, u(mesh)
+App::App(World &_world) : world{_world}, geom{mesh}
 {
     auto cameraman = world.entities.add();
     auto camera = cameraman.add<Camera>(0.1, 300, 0.1, 0.566);
@@ -61,7 +141,6 @@ App::App(World &_world) : world{_world}, geom{mesh}, u(mesh)
     //         (*ps)[i] = 0.2f*(*ps)[i] + vec2(0.5,0.5);
     //     }
     // }
-    
     all_points.insert(all_points.end(), interior_points.begin(), interior_points.end());
     all_points.insert(all_points.end(), boundary_points.begin(), boundary_points.end());
 
@@ -75,7 +154,6 @@ App::App(World &_world) : world{_world}, geom{mesh}, u(mesh)
 
     // Triangulate this point cloud.
     std::string triswitches = "zV";
-
     double *p_mem = (double *) malloc(2*sizeof(double)*all_points.size());
     for (int i = 0; i < all_points.size(); i++) {
         p_mem[2*i] = all_points[i].x();
@@ -87,46 +165,26 @@ App::App(World &_world) : world{_world}, geom{mesh}, u(mesh)
     in.numberofpointattributes = 0;
     in.pointmarkerlist = nullptr;
 
-    int *test_mem = (int *) malloc(sizeof(int)*4);
-    test_mem[0] = 1;
-    test_mem[1] = 10;
-    test_mem[2] = 55;
-    test_mem[3] = 3;
-    in.test_nums = test_mem;
-    in.num_test_nums = 4;
-
     struct triangulateio out = {0};
     out.pointlist = nullptr;
 
-
-    printf("number of points: %d\n", in.numberofpoints);
     in.numberofpointattributes = 0;
     triangulate(&triswitches[0], &in, &out, nullptr);
     
 
     auto vertices = std::vector<Vertex>(out.numberofpoints);
     for (int i = 0; i < out.numberofpoints; i++) {
-        triangulation_points.push_back(vec2(out.pointlist[2*i+0], out.pointlist[2*i+1]));
         auto v = geom.mesh.add_vertex();
         geom.position[v] = Eigen::Vector3f(out.pointlist[2*i+0], 0, out.pointlist[2*i+1]);
         vertices[i] = v;
     }
-
-    triangulation_triangles = std::vector<int>(3*out.numberoftriangles);
     for (int i = 0; i < out.numberoftriangles; i++) {
         int a = out.trianglelist[3*i+0];
         int b = out.trianglelist[3*i+1];
         int c = out.trianglelist[3*i+2];
-        triangulation_triangles[3*i+0] = a;
-        triangulation_triangles[3*i+1] = b;
-        triangulation_triangles[3*i+2] = c;
         geom.mesh.add_triangle(vertices[a], vertices[b], vertices[c]);
     }
     geom.mesh.lock();
-
-    for (auto v : geom.mesh.vertices()) {
-        geom.position[v].y() = 0.1*sin(5*geom.position[v].x());
-    }
 }
 
 void App::close()
@@ -136,17 +194,8 @@ void App::close()
 void App::loop()
 {
     world.graphics.paint.wireframe(geom, mat4x4::identity(), 0.001);
-    
-    // size_t num_tris = triangulation_triangles.size()/3;
-    // for (int i = 0; i < triangulation_triangles.size()/3; i++) {
-    //     auto ps = std::vector<vec2>(4);
-    //     ps[0] = triangulation_points[triangulation_triangles[3*i+0]];
-    //     ps[1] = triangulation_points[triangulation_triangles[3*i+1]];
-    //     ps[2] = triangulation_points[triangulation_triangles[3*i+2]];
-    //     ps[3] = triangulation_points[triangulation_triangles[3*i+0]];
-    //     world.graphics.paint.circles(main_camera, ps, 0.005, vec4(0,0.5,0.5,1));
-    //     world.graphics.paint.chain_2D(ps, 3, vec4(1,0,1,1));
-    // }
+
+    auto solver = LaplaceSolver(geom);
 }
 
 void App::window_handler(WindowEvent e)

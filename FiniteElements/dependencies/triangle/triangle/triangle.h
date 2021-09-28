@@ -277,9 +277,6 @@ struct triangulateio {
   int *edgemarkerlist;            /* Not used with Voronoi diagram; out only */
   REAL *normlist;                /* Used only with Voronoi diagram; out only */
   int numberofedges;                                             /* Out only */
-
-    int num_test_nums;
-    int *test_nums;
 };
 
 #ifdef ANSI_DECLARATORS
