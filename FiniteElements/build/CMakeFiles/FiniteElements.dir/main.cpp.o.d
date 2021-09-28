@@ -434,5 +434,6 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/subdivision/subdivision.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/tetrahedralization/tetrahedralization.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/fairing/fairing.h \
-  /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle.h \
-  /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.h
+  /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle_wrapper.h \
+  /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.h \
+  /home/lucas/Continuum/FiniteElements/CameraController.cpp

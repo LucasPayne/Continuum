@@ -452,13 +452,12 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/subdivision/subdivision.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/tetrahedralization/tetrahedralization.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/fairing/fairing.h \
-  ../dependencies/triangle/triangle.h \
-  ../dependencies/triangle/triangle/triangle.h
+  ../dependencies/triangle/triangle_wrapper.h \
+  ../dependencies/triangle/triangle/triangle.h \
+  ../CameraController.cpp
 
 
 ../dependencies/triangle/triangle/triangle.h:
-
-../dependencies/triangle/triangle.h:
 
 /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/subdivision/subdivision.h:
 
@@ -1182,6 +1181,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/linux/limits.h:
 
+../CameraController.cpp:
+
 /home/lucas/computer_graphics/cg_sandbox/lib/interactive_graphics_context/input.h:
 
 /usr/include/x86_64-linux-gnu/c++/8/bits/cpu_defines.h:
@@ -1343,6 +1344,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/eigen3/Eigen/src/Core/Block.h:
 
 /usr/include/eigen3/Eigen/src/Core/CoreEvaluators.h:
+
+../dependencies/triangle/triangle_wrapper.h:
 
 /usr/include/c++/8/bits/char_traits.h:
 

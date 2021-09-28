@@ -16,6 +16,7 @@ set(eigen3_include_path /usr/include/eigen3)
 # Triangle
 set(triangle_path ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/triangle)
 add_compile_options(-DANSI_DECLARATORS -DTRILIBRARY) # So the header is included correctly.
+# Note: REAL and VOID types must be specified in the application.
 add_subdirectory(${triangle_path})
 
 message(STATUS "triangle: " ${triangle_path})
@@ -35,4 +36,8 @@ add_executable(FiniteElements
 target_link_libraries(FiniteElements
     triangle
     cg_sandbox
+)
+# Give access to locations in source directory.
+target_compile_definitions(FiniteElements PRIVATE
+    DATA="${CMAKE_CURRENT_SOURCE_DIR}/data/"
 )
