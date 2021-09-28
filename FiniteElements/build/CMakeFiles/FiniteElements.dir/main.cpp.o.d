@@ -436,4 +436,63 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/fairing/fairing.h \
   /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle_wrapper.h \
   /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.h \
-  /home/lucas/Continuum/FiniteElements/CameraController.cpp
+  /home/lucas/Continuum/FiniteElements/CameraController.cpp \
+  /usr/include/eigen3/Eigen/SparseCore \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseUtil.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseMatrixBase.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/../plugins/CommonCwiseUnaryOps.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/../plugins/CommonCwiseBinaryOps.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/../plugins/MatrixCwiseUnaryOps.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/../plugins/MatrixCwiseBinaryOps.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/../plugins/BlockMethods.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseAssign.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/CompressedStorage.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/AmbiVector.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseCompressedBase.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseMatrix.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseMap.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/MappedSparseMatrix.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseVector.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseRef.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseCwiseUnaryOp.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseCwiseBinaryOp.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseTranspose.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseBlock.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseDot.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseRedux.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseView.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseDiagonalProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/ConservativeSparseSparseProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseSparseProductWithPruning.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseDenseProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseSelfAdjointView.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseTriangularView.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/TriangularSolver.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparsePermutation.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseFuzzy.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseSolverBase.h \
+  /usr/include/eigen3/Eigen/SparseLU \
+  /usr/include/eigen3/Eigen/OrderingMethods \
+  /usr/include/eigen3/Eigen/src/OrderingMethods/Amd.h \
+  /usr/include/eigen3/Eigen/src/OrderingMethods/../Core/util/NonMPL2.h \
+  /usr/include/eigen3/Eigen/src/OrderingMethods/Ordering.h \
+  /usr/include/eigen3/Eigen/src/OrderingMethods/Eigen_Colamd.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_gemm_kernel.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Structs.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_SupernodalMatrix.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLUImpl.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseColEtree.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Memory.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_heap_relax_snode.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_relax_snode.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pivotL.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_panel_dfs.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_kernel_bmod.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_panel_bmod.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_column_dfs.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_column_bmod.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pruneL.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Utils.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h

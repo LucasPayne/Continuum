@@ -454,8 +454,125 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/fairing/fairing.h \
   ../dependencies/triangle/triangle_wrapper.h \
   ../dependencies/triangle/triangle/triangle.h \
-  ../CameraController.cpp
+  ../CameraController.cpp \
+  /usr/include/eigen3/Eigen/SparseCore \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseUtil.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseMatrixBase.h \
+  /usr/include/eigen3/Eigen/src/plugins/CommonCwiseUnaryOps.h \
+  /usr/include/eigen3/Eigen/src/plugins/CommonCwiseBinaryOps.h \
+  /usr/include/eigen3/Eigen/src/plugins/MatrixCwiseUnaryOps.h \
+  /usr/include/eigen3/Eigen/src/plugins/MatrixCwiseBinaryOps.h \
+  /usr/include/eigen3/Eigen/src/plugins/BlockMethods.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseAssign.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/CompressedStorage.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/AmbiVector.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseCompressedBase.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseMatrix.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseMap.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/MappedSparseMatrix.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseVector.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseRef.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseCwiseUnaryOp.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseCwiseBinaryOp.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseTranspose.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseBlock.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseDot.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseRedux.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseView.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseDiagonalProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/ConservativeSparseSparseProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseSparseProductWithPruning.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseDenseProduct.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseSelfAdjointView.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseTriangularView.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/TriangularSolver.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparsePermutation.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseFuzzy.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseSolverBase.h \
+  /usr/include/eigen3/Eigen/SparseLU \
+  /usr/include/eigen3/Eigen/OrderingMethods \
+  /usr/include/eigen3/Eigen/src/OrderingMethods/Amd.h \
+  /usr/include/eigen3/Eigen/src/Core/util/NonMPL2.h \
+  /usr/include/eigen3/Eigen/src/OrderingMethods/Ordering.h \
+  /usr/include/eigen3/Eigen/src/OrderingMethods/Eigen_Colamd.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_gemm_kernel.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Structs.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_SupernodalMatrix.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLUImpl.h \
+  /usr/include/eigen3/Eigen/src/SparseCore/SparseColEtree.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Memory.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_heap_relax_snode.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_relax_snode.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pivotL.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_panel_dfs.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_kernel_bmod.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_panel_bmod.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_column_dfs.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_column_bmod.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pruneL.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Utils.h \
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h
 
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_column_dfs.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_kernel_bmod.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_panel_dfs.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pivotL.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_relax_snode.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_heap_relax_snode.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Memory.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Structs.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pruneL.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_gemm_kernel.h:
+
+/usr/include/eigen3/Eigen/src/Core/util/NonMPL2.h:
+
+/usr/include/eigen3/Eigen/SparseLU:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseSolverBase.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseFuzzy.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparsePermutation.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/TriangularSolver.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseTriangularView.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseSelfAdjointView.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseProduct.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseSparseProductWithPruning.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseView.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseBlock.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseCwiseBinaryOp.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/MappedSparseMatrix.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseCompressedBase.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseAssign.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseUtil.h:
+
+/usr/include/eigen3/Eigen/SparseCore:
 
 ../dependencies/triangle/triangle/triangle.h:
 
@@ -488,6 +605,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/eigen3/Eigen/src/Geometry/Homogeneous.h:
 
 /usr/include/eigen3/Eigen/src/Geometry/EulerAngles.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseMatrix.h:
 
 /usr/include/eigen3/Eigen/src/Geometry/OrthoMethods.h:
 
@@ -531,9 +650,13 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/eigen3/Eigen/src/Core/Replicate.h:
 
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_panel_bmod.h:
+
 /usr/include/eigen3/Eigen/src/Core/Random.h:
 
 /usr/include/eigen3/Eigen/src/Core/Select.h:
+
+/usr/include/eigen3/Eigen/OrderingMethods:
 
 /usr/include/eigen3/Eigen/src/Core/BooleanRedux.h:
 
@@ -593,6 +716,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/eigen3/Eigen/src/Core/StableNorm.h:
 
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_column_bmod.h:
+
 /usr/include/c++/8/tuple:
 
 /usr/include/x86_64-linux-gnu/c++/8/bits/atomic_word.h:
@@ -627,9 +752,15 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/eigen3/Eigen/src/Core/CwiseUnaryOp.h:
 
+/usr/include/eigen3/Eigen/src/OrderingMethods/Amd.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseRedux.h:
+
 /usr/include/c++/8/cerrno:
 
 /usr/include/c++/8/cstdio:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseColEtree.h:
 
 /usr/include/c++/8/bits/stl_vector.h:
 
@@ -697,9 +828,13 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/8/cwchar:
 
+/usr/include/eigen3/Eigen/src/SparseCore/SparseDenseProduct.h:
+
 /usr/include/ctype.h:
 
 /usr/include/c++/8/bits/postypes.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseMatrixBase.h:
 
 /usr/include/c++/8/bits/stringfwd.h:
 
@@ -729,6 +864,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/errno.h:
 
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Utils.h:
+
 /usr/include/c++/8/bits/hash_bytes.h:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
@@ -736,6 +873,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/strings.h:
 
 /usr/include/eigen3/Eigen/src/Core/arch/CUDA/TypeCasting.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/CompressedStorage.h:
 
 /usr/include/c++/8/typeinfo:
 
@@ -805,6 +944,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/8/bits/invoke.h:
 
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU_SupernodalMatrix.h:
+
 /usr/include/eigen3/Eigen/src/plugins/ArrayCwiseBinaryOps.h:
 
 /usr/include/c++/8/bits/cxxabi_init_exception.h:
@@ -825,6 +966,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/c++/8/bits/os_defines.h:
 
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLUImpl.h:
+
 /home/lucas/computer_graphics/cg_sandbox/lib/opengl_utilities/gl_shader_program.h:
 
 /usr/include/eigen3/Eigen/src/misc/RealSvd2x2.h:
@@ -832,6 +975,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/c++/8/memory:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
+
+/usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h:
 
 /usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix.h:
 
@@ -903,6 +1048,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
+/usr/include/eigen3/Eigen/src/SparseCore/AmbiVector.h:
+
 /usr/include/x86_64-linux-gnu/bits/locale.h:
 
 /usr/include/eigen3/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h:
@@ -916,6 +1063,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/eigen3/Eigen/src/Core/CwiseBinaryOp.h:
 
 /usr/include/c++/8/stdexcept:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseMap.h:
 
 /usr/include/eigen3/Eigen/src/Core/arch/Default/ConjHelper.h:
 
@@ -933,11 +1082,17 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/clang/6.0.0/include/stddef.h:
 
+/usr/include/eigen3/Eigen/src/OrderingMethods/Eigen_Colamd.h:
+
 /usr/include/c++/8/bits/stl_pair.h:
 
 /usr/include/c++/8/bits/concept_check.h:
 
+/usr/include/eigen3/Eigen/src/SparseCore/SparseRef.h:
+
 /home/lucas/computer_graphics/cg_sandbox/include/cg_sandbox.h:
+
+/usr/include/eigen3/Eigen/src/OrderingMethods/Ordering.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
@@ -953,6 +1108,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/eigen3/Eigen/src/Core/arch/CUDA/PacketMathHalf.h:
 
+/usr/include/eigen3/Eigen/src/SparseCore/SparseDot.h:
+
 /usr/include/eigen3/Eigen/src/Core/Assign.h:
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
@@ -964,6 +1121,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/clang/6.0.0/include/stdarg.h:
 
 /usr/include/x86_64-linux-gnu/c++/8/bits/c++locale.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/ConservativeSparseSparseProduct.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
 
@@ -1009,6 +1168,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
 
+/usr/include/eigen3/Eigen/src/SparseCore/SparseTranspose.h:
+
 /usr/include/x86_64-linux-gnu/c++/8/bits/c++config.h:
 
 /usr/include/x86_64-linux-gnu/bits/sysmacros.h:
@@ -1024,6 +1185,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
 /usr/include/x86_64-linux-gnu/bits/time.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseDiagonalProduct.h:
 
 /usr/include/x86_64-linux-gnu/c++/8/bits/ctype_base.h:
 
@@ -1139,6 +1302,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/c++/8/bits/basic_file.h:
 
+/usr/include/eigen3/Eigen/src/SparseCore/SparseCwiseUnaryOp.h:
+
 /usr/include/c++/8/unordered_map:
 
 /usr/include/c++/8/ext/atomicity.h:
@@ -1166,6 +1331,8 @@ CMakeFiles/FiniteElements.dir/main.cpp.o: ../main.cpp \
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
 
 /home/lucas/computer_graphics/cg_sandbox/lib/opengl_utilities/glad/glad.h:
+
+/usr/include/eigen3/Eigen/src/SparseCore/SparseVector.h:
 
 /usr/include/eigen3/Eigen/src/Core/BandMatrix.h:
 
