@@ -19,7 +19,7 @@ public:
 
     VertexAttachment<double> solve();
 
-private:
+// private:
     SurfaceGeometry &geom; // Assumes y is 0. (this is bad, maybe should template the SurfaceGeometry class...)
         //The geometry does not change.
     int num_interior_vertices;
@@ -119,7 +119,7 @@ VertexAttachment<double> LaplaceSolver::solve()
             for (int j = 0; j < 3; j++) {
                 auto grad_j = grad_transform * gradients.row(j).transpose();
                 local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j); //??????????????????????????????????????
-                // local_stiffness_matrix(i,j) = grad_i.dot(grad_j);
+                // local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j);
             }
         }
 
@@ -304,7 +304,7 @@ App::App(World &_world) : world{_world}
     t->position = vec3(0,1,3);
     controller->angle = -2;
     
-    source_force = 20;
+    source_force = 0;
     mesh_N = 5;
     solving_mesh = new SolvingMesh(mesh_N);
 }
@@ -315,11 +315,12 @@ void App::close()
 
 void App::loop()
 {
-    world.graphics.paint.wireframe(solving_mesh->geom, mat4x4::identity(), 0.001);
+    world.graphics.paint.wireframe(solving_mesh->geom, mat4x4::identity(), 0.003);
 
     auto solver = LaplaceSolver(solving_mesh->geom);
     solver.set_dirichlet_boundary([](double x, double y)->double {
-        return 1+0.4*sin(8*x + total_time);
+        // return 1+0.4*sin(8*x + total_time);
+        return 1+0.4*sin(8*x);
         // return 1+0.4*sin(8*x);
         // return x < 0 ? 1.5 : 0.5;
         // return 0.0;
@@ -334,20 +335,41 @@ void App::loop()
         auto geom_pos = solving_mesh->geom.position[v];
         lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
     }
-    world.graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.001);
+    world.graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.003);
 
     auto lifted_boundary_positions = std::vector<vec3>();
+    auto boundary_positions = std::vector<vec3>();
     for (auto v : solving_mesh->geom.mesh.vertices()) {
         if (!v.on_boundary()) continue;
         auto p = solving_mesh->geom.position[v];
         vec3 pp = *((vec3 *) &p[0]);
-        world.graphics.paint.sphere(pp, 0.01, vec4(1,0,0,1));
+        boundary_positions.push_back(pp);
+        // world.graphics.paint.sphere(pp, 0.03, vec4(1,0,0,1));
         p = lifted_geom.position[v];
         pp = *((vec3 *) &p[0]);
         lifted_boundary_positions.push_back(pp);
     }
     lifted_boundary_positions.push_back(lifted_boundary_positions[0]);
-    world.graphics.paint.chain(lifted_boundary_positions, 4, vec4(1,0,0,1));
+    boundary_positions.push_back(boundary_positions[0]);
+    world.graphics.paint.chain(lifted_boundary_positions, 5, vec4(0,0,0,1));
+    world.graphics.paint.chain(boundary_positions, 5, vec4(0,0,0,1));
+    // for (int i = 0; i < boundary_positions.size()-1; i++) {
+    //     world.graphics.paint.line(boundary_positions[i], lifted_boundary_positions[i], 3, vec4(0.5,0.5,0.5,1));
+    // }
+    
+    if (1) {
+        // Draw the exact boundary condition.
+        int num = 300;
+        auto boundary_condition_loop = std::vector<vec3>(num+1);
+        for (int i = 0; i <= num; i++) {
+            float theta = 2*i*M_PI/num;
+            float c = cos(theta);
+            float s = sin(theta);
+            boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
+        }
+        // world.graphics.paint.chain(boundary_condition_loop, 4, vec4(0.65,0.65,0.65,1));
+        world.graphics.paint.chain(boundary_condition_loop, 4, vec4(1,0.6,0.6,1));
+    }
 
     float source_force_change_speed = 20.f;
     if (world.input.keyboard.down(KEY_M)) {
@@ -356,6 +378,13 @@ void App::loop()
     if (world.input.keyboard.down(KEY_N)) {
         source_force -= source_force_change_speed * dt;
     }
+
+    printf("------------------------------------------------------------\n");
+    printf("Source force: %.3f\n", source_force);
+    printf("Number of vertices: %zu\n", solving_mesh->geom.mesh.num_vertices());
+    printf("Number of triangles: %zu\n", solving_mesh->geom.mesh.num_faces());
+    printf("------------------------------------------------------------\n");
+
 }
 
 void App::window_handler(WindowEvent e)

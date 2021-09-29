@@ -261,6 +261,21 @@ void HeatDemo::post_render_update()
         lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
     }
     world->graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.001);
+
+
+    vec4 color = vec4(0.1,0.1,0.5,1);
+    auto lifted_boundary_positions = std::vector<vec3>();
+    for (auto v : geom->mesh.vertices()) {
+        if (!v.on_boundary()) continue;
+        auto p = geom->position[v];
+        vec3 pp = *((vec3 *) &p[0]);
+        world->graphics.paint.sphere(pp, 0.01, color);
+        p = lifted_geom.position[v];
+        pp = *((vec3 *) &p[0]);
+        lifted_boundary_positions.push_back(pp);
+    }
+    lifted_boundary_positions.push_back(lifted_boundary_positions[0]);
+    world->graphics.paint.chain(lifted_boundary_positions, 4, color);
 }
 
 
@@ -290,6 +305,14 @@ public:
 
 App::App(World &_world) : world{_world}
 {
+    // OpenGL ----------------------------------------------------
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    //------------------------------------------------------------
+
     auto cameraman = world.entities.add();
     auto camera = cameraman.add<Camera>(0.1, 300, 0.1, 0.566);
     camera->background_color = vec4(1,1,1,1);

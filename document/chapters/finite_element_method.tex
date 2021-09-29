@@ -3,70 +3,64 @@
 \section{Introduction}
 % <<<
 
---- Change: Introduce Poisson's equation first, then give the FDM example for the Poisson equation. Then solve Poisson by FEM.
+% --- Change: Introduce Poisson's equation first, then give the FDM example for the Poisson equation. Then solve Poisson by FEM.
 
-Consider a single conservation law as described in section \ref{conservation_laws}. This law
-was given in two forms, ``integral'' \eqref{continuity_equation}:
-\begin{equation*}
-    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
-\end{equation*}
-and ``differential'' \eqref{continuity_equation_differential}:
-\begin{equation*}
-    \Part{\phi}{t} = s - \nabla\cdot (\phi j).
-\end{equation*}
-Thinking about \eqref{continuity_equation} will lead to Galerkin methods, which include finite volumes, finite elements, and spectral methods.
-Thinking about \eqref{continuity_equation_differential} will lead, primarily, to the finite difference method, historically the first and
-still very important in applications. We will discuss the latter first.
+Among the fundamental PDEs
+are the heat equation
+    $$\Part{u}{t} = \Delta u + g$$
+and the Poisson equation
+\begin{equation}\label{poisson_compact}
+    -\Delta u = g.
+\end{equation}
+The latter can be thought of as the steady-state version of the former. The solution of a Poisson problem will be a crucial component
+for the solution of the Stokes equations, and since Poisson's equation is likely the simplest non-trivial PDE, it seems ideal to start by discussing
+discretization methods for the Poisson equation \eqref{poisson_compact} in particular.
 
-\subsection{Discretization of the differential form}
-% <<<
-It is a theorem of Gauss that in Euclidean space ($M = \mathbb{R}^3$) we have
+
+\subsection{Ideas for discretization}
+\subsubsection{Discretizing the differential form of the PDE}
+It is a theorem of Gauss that in Euclidean space $\mathbb{R}^3$ we have
 \begin{equation}\label{gauss_euclidean_divergence}
-    \nabla \cdot j = \Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z},
+    \nabla \cdot v = \Part{v_x}{x} + \Part{v_y}{y} + \Part{v_z}{z},
 \end{equation}
-and we get \eqref{continuity_equation_differential} in the form
-\begin{equation}\label{continuity_equation_expanded}
-    \Part{\phi}{t} = s - \nabla \phi \cdot j - \phi\left(\Part{j_x}{x} + \Part{j_y}{y} + \Part{j_z}{z}\right),
+and we get \eqref{poisson_compact} in the form
+\begin{equation}\label{poisson_differential_intro}
+    -\left(\frac{\partial^2 u}{\partial x^2}
+           +\frac{\partial^2 u}{\partial y^2}
+           +\frac{\partial^2 u}{\partial z^2}\right) = g.
 \end{equation}
-by the product rule.
-As one equation in a system of PDEs, \eqref{continuity_equation_expanded} is readily discretised by finite differences.
-The approximate solution may be represented by a number of samples on the domain, for example, a grid. The term
-$\Part{j_x}{x}$ above could then be approximated by a secant, for example a central difference.
-For example, using forward difference in time and
-central differences in space, our discrete scheme is
-\begin{equation}\label{continuity_equation_finite_differences}
-\begin{split}
-    \frac{\phi(t + \Delta t) - \phi(t)}{\Delta t} = s &-\frac{\phi(\hat{x} + e_1\Delta x/2) - \phi(\hat{x} - e_1\Delta x/2)}{\Delta x}j_x \\
-                                                      &-\frac{\phi(\hat{x} + e_2\Delta y/2) - \phi(\hat{x} - e_2\Delta y/2)}{\Delta y}j_y \\
-                                                      &-\frac{\phi(\hat{x} + e_3\Delta z/2) - \phi(\hat{x} - e_3\Delta z/2)}{\Delta z}j_z \\
-                                                      &-\frac{j_x(\hat{x} + e_1\Delta x/2) - j_x(\hat{x} - e_1\Delta x/2)}{\Delta x}\phi \\
-                                                      &-\frac{j_y(\hat{x} + e_2\Delta y/2) - j_y(\hat{x} - e_2\Delta y/2)}{\Delta y}\phi \\
-                                                      &-\frac{j_z(\hat{x} + e_3\Delta z/2) - j_z(\hat{x} - e_3\Delta z/2)}{\Delta z}\phi
-\end{split}
-\end{equation}
-for $e_1,e_2,e_3$ the standard basis vectors in $\mathbb{R}^3$.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
-However, we have not necessarily given a real interpretation of what the solution samples at grid points say about the solution everywhere.
+Thinking about \eqref{poisson_differential_intro} leads to the finite difference method, historically the first and
+still very important in applications.
+This form immediately indicates an effective method
+of discretization, by forming secant approximations of the derivatives over a regular grid. The approximate solution is then
+represented as a function of this grid.
+However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
 They could be a coefficients of, for example, hat basis functions.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
 Yet a finite difference discretization of \eqref{continuity_equation_differential} may not take this into account at all. One might feel that
-limits have been taken too soon, and that the integral form \eqref{continuity_equation} gives clearer routes to discretizations which
-have geometric meaning.
+limits have been taken too soon.
 
-% >>>
-\subsection{Discretization of the integral form}
-% <<<
-The integral conservation law \eqref{continuity_equation} is a geometric statement about fluxes
+% Consider a single conservation law as described in section \ref{conservation_laws}. This law
+% was given in two forms, ``integral'' \eqref{continuity_equation}:
+% \begin{equation*}
+%     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
+% \end{equation*}
+% and ``differential'' \eqref{continuity_equation_differential}:
+% \begin{equation*}
+%     \Part{\phi}{t} = s - \nabla\cdot (\phi j).
+% \end{equation*}
+
+\subsubsection{Discretizing the integral form of the PDE}
+In physics, Poisson's equation is an equilibrium conservation law, and therefore has an integral form.
+This form will give clearer routes to discretizations which
+have geometric meaning.
+% Thinking instead about \eqref{poisson_integral_intro} will lead to Galerkin methods, which include finite volumes, finite elements, and spectral methods.
+For example, the general integral conservation law \eqref{continuity_equation},
+\begin{align*}
+    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
+\end{align*}
+is a geometric statement about fluxes
 of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
-We have an infinite number of control volumes, and therefore equations which must hold, and an infinite-dimensional
+We have an infinite number of control volumes, and therefore an infinite number of equations which must hold, and an infinite-dimensional
 space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite-dimensional subspace of possible solutions.
 A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
 
@@ -75,37 +69,9 @@ A supposed solution will be represented by the coefficients of some choice of ba
 \vskip 0.2in
 
 Finite element methods, and more generally Galerkin methods, live comfortably in the language of weak solutions, integral forms of partial differential equations,
-and the calculus of variations. Some methods of this kind will be derived in the subsequent sections, investigating discretizations of the integral forms
-of some physical PDEs. In order:
-\begin{itemize}
-    \item The linear Poisson equation: Finite volumes, finite elements, linear systems.
-    \item The linear Stokes equations: FEM with constraints, time-dependence.
-    \item A non-linear Poisson equation: Non-linear FEM.
-    \item A non-linear heat equation: Non-linear, time-dependent FEM.
-    \item The Burgers equation: Introduces shocks and the numerical effect of viscosity.
-\end{itemize}
-This is in order to build up concepts to solve the non-linear time-dependent Navier-Stokes equations.
-% >>>
-% >>>
+and the calculus of variations.
+To continue with this idea, we must write the Poisson equation \eqref{poisson_compact} in integral form.
 
-\section{Solving the Poisson equation}
-% <<<
-% Introduction
-% <<<
-% The weak form is exactly analogous to perturbation principle in the principle of least action.
-% To actually be an instance of the principle of least action, we need a Lagrangian. For example, the Poisson
-% equation is the Euler-Lagrange equation of the Dirichlet energy.
-Poisson's equation is a steady-state version of the heat equation.
-Through this investigation we will derive many of the tools and ideas underlying general Galerkin methods.
-In particular we will derive a \textit{finite volume method} and a \textit{finite element method} from first principles.
-In anticipation, some results are shown below:
-
-\vskip 0.2in
-(visualisations)
-\vskip 0.2in
-
-We will defer the important step of analysis of our methods' convergence and stability to a later section.
-% >>>
 \subsection{Deriving the Poisson equation through diffusion processes}
 % <<<
 A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration. We can intuitively think of a diffusion as a
@@ -143,6 +109,7 @@ Form \eqref{poisson_equation_integral} clearly shows that we are calculating a s
 as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount created by the source function.
 This form will be the most convenient for our numerical methods.
 % >>>
+
 \subsection{Discretizing the Poisson equation}\label{discretizing_poisson}
 % <<<
 Equation \eqref{poisson_equation_integral} is quantified over arbitrary control volumes $\Omega_0$.
@@ -357,15 +324,17 @@ of $\Omega$, then form and solve the matrix system, we get a generally non-conse
 by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence: in this case,
 the linear system will be symmetric-positive-definite, and stably solvable by, for example, conjugate gradients.
 
-\subsubsection{Visualisation and results}
-\vskip 0.2in
-(visualisation and results)
-\vskip 0.2in
-We have worked through an instance of a \textit{finite element method}.
+\subsection{Implementing FEM for Poisson's equation}
+
+We have so far worked up to an instance of a \textit{finite element method}.
 Finite element methods are characterised by a test space $\Phi$ and trial space
 $\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
 some Sobolev space, constructed over a domain tessellation. We will formally define a ``finite element method'', following Ciarlet \cite{ciarlet},
 after one more example, the steady Stokes equations.
+
+\begin{center}
+\includegraphics[width=\linewidth]{figures/laplace/laplace.png}
+\end{center}
 
 
 % \subsubsection{Duality and differential geometry}
