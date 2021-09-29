@@ -14,6 +14,7 @@ public:
     LaplaceSolver(SurfaceGeometry &_geom);
 
     void set_dirichlet_boundary(PlaneFunction func);
+    void set_source(PlaneFunction func);
 
     VertexAttachment<double> solve();
 
@@ -23,11 +24,15 @@ private:
     int num_interior_vertices;
     int num_boundary_vertices;
     VertexAttachment<int> vertex_indices;
-    PlaneFunction dirichlet_boundary_function;
+    PlaneFunction dirichlet_boundary_function; // Interpolated.
+    PlaneFunction source_function;
 };
 
 LaplaceSolver::LaplaceSolver(SurfaceGeometry &_geom) :
-    geom{_geom}, vertex_indices(_geom.mesh), dirichlet_boundary_function([](double,double)->double { return 0.0; })
+    geom{_geom},
+    vertex_indices(_geom.mesh),
+    dirichlet_boundary_function([](double,double)->double { return 0.0; }),
+    source_function([](double,double)->double { return 0.0; })
 {
     num_boundary_vertices = 0;
     num_interior_vertices = 0;
@@ -45,13 +50,42 @@ void LaplaceSolver::set_dirichlet_boundary(PlaneFunction func)
 {
     dirichlet_boundary_function = func;
 }
+void LaplaceSolver::set_source(PlaneFunction func)
+{
+    source_function = func;
+}
 
 
 VertexAttachment<double> LaplaceSolver::solve()
 {
     std::vector<EigenTriplet> coefficients;
+
     auto rhs = Eigen::VectorXd(num_interior_vertices);
-    for (int i = 0; i < num_interior_vertices; i++) rhs[i] = 0; //---zero initialize?
+    // for (int i = 0; i < num_interior_vertices; i++) rhs[i] = 0; //---zero initialize?
+
+    // Compute the RHS by integrating trial functions against the source term.
+    
+    // For each interior vertex.
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+
+        double total_triangle_area = 0.0;
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            auto tri = he.face();
+            total_triangle_area += geom.triangle_area(tri);
+            he = he.twin().next();
+        } while (he != start);
+        double g_val = source_function(geom.position[v].x(), geom.position[v].z());
+        // printf("%.2f %.2f\n", total_triangle_area, g_val); getchar();
+        // rhs[vertex_indices[v]] = g_val/3 * total_triangle_area;
+        rhs[vertex_indices[v]] = g_val/3;
+    }
+    // std::cout << rhs << "\n";
+    // getchar();
+    
 
     for (auto tri : geom.mesh.faces()) {
         Vertex verts[3];
@@ -67,11 +101,11 @@ VertexAttachment<double> LaplaceSolver::solve()
         auto C = geom.position[verts[2]];
         double triangle_area = 0.5*(B-A).cross(C-A).norm();
 
+        // Compute the local stiffness matrix.
         Eigen::Matrix<double, 2,2> jacobian_matrix;
         jacobian_matrix <<
             B.x() - A.x(),  C.x() - A.x(),
             B.z() - A.z(),  C.z() - A.z();
-        // auto jacobian_matrix_inverse = jacobian_matrix.inverse();
         auto grad_transform = jacobian_matrix.inverse().transpose();
         Eigen::Matrix<double, 3,2> gradients;
         gradients <<
@@ -239,6 +273,7 @@ public:
 
     Aspect<Camera> main_camera;
 
+    float source_force;
     int mesh_N;
     SolvingMesh *solving_mesh;
 };
@@ -249,12 +284,14 @@ App::App(World &_world) : world{_world}
 {
     auto cameraman = world.entities.add();
     auto camera = cameraman.add<Camera>(0.1, 300, 0.1, 0.566);
+    camera->background_color = vec4(1,1,1,1);
     auto t = cameraman.add<Transform>(0,0,2);
     main_camera = camera;
     auto controller = world.add<CameraController>(cameraman);
     t->position = vec3(0,1,3);
     controller->angle = -2;
     
+    source_force = 20;
     mesh_N = 5;
     solving_mesh = new SolvingMesh(mesh_N);
 }
@@ -269,9 +306,13 @@ void App::loop()
 
     auto solver = LaplaceSolver(solving_mesh->geom);
     solver.set_dirichlet_boundary([](double x, double y)->double {
+        return 1+0.4*sin(8*x + total_time);
         // return 1+0.4*sin(8*x);
-        return x < 0 ? 1.5 : 0.5;
-        // return 1;
+        // return x < 0 ? 1.5 : 0.5;
+        // return 0.0;
+    });
+    solver.set_source([&](double x, double y)->double {
+        return source_force*exp(-5*(x*x+y*y));
     });
     VertexAttachment<double> mesh_u = solver.solve();
     auto lifted_geom = SurfaceGeometry(solving_mesh->geom.mesh);
@@ -282,10 +323,25 @@ void App::loop()
     }
     world.graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.001);
 
+    auto lifted_boundary_positions = std::vector<vec3>();
     for (auto v : solving_mesh->geom.mesh.vertices()) {
+        if (!v.on_boundary()) continue;
         auto p = solving_mesh->geom.position[v];
         vec3 pp = *((vec3 *) &p[0]);
-        if (v.on_boundary()) world.graphics.paint.sphere(pp, 0.01, vec4(1,0,0,1));
+        world.graphics.paint.sphere(pp, 0.01, vec4(1,0,0,1));
+        p = lifted_geom.position[v];
+        pp = *((vec3 *) &p[0]);
+        lifted_boundary_positions.push_back(pp);
+    }
+    lifted_boundary_positions.push_back(lifted_boundary_positions[0]);
+    world.graphics.paint.chain(lifted_boundary_positions, 4, vec4(1,0,0,1));
+
+    float source_force_change_speed = 20.f;
+    if (world.input.keyboard.down(KEY_M)) {
+        source_force += source_force_change_speed * dt;
+    }
+    if (world.input.keyboard.down(KEY_N)) {
+        source_force -= source_force_change_speed * dt;
     }
 }
 
