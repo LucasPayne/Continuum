@@ -65,47 +65,6 @@ CMAKE_BINARY_DIR = /home/lucas/Continuum/FiniteElements/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/local/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-.PHONY : edit_cache/fast
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-.PHONY : rebuild_cache/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
@@ -129,6 +88,47 @@ install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
 	/usr/local/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/local/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+.PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -162,17 +162,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named FiniteElements
+# Target rules for targets named LaplaceSolver
 
 # Build rule for target.
-FiniteElements: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FiniteElements
-.PHONY : FiniteElements
+LaplaceSolver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LaplaceSolver
+.PHONY : LaplaceSolver
 
 # fast build rule for target.
-FiniteElements/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteElements.dir/build.make CMakeFiles/FiniteElements.dir/build
-.PHONY : FiniteElements/fast
+LaplaceSolver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/build
+.PHONY : LaplaceSolver/fast
+
+#=============================================================================
+# Target rules for targets named HeatSolver
+
+# Build rule for target.
+HeatSolver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HeatSolver
+.PHONY : HeatSolver
+
+# fast build rule for target.
+HeatSolver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
+.PHONY : HeatSolver/fast
 
 #=============================================================================
 # Target rules for targets named basic_application
@@ -330,29 +343,53 @@ triangle/fast:
 	$(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/build
 .PHONY : triangle/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
+HeatSolver.o: HeatSolver.cpp.o
+.PHONY : HeatSolver.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteElements.dir/build.make CMakeFiles/FiniteElements.dir/main.cpp.o
-.PHONY : main.cpp.o
+HeatSolver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/HeatSolver.cpp.o
+.PHONY : HeatSolver.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+HeatSolver.i: HeatSolver.cpp.i
+.PHONY : HeatSolver.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteElements.dir/build.make CMakeFiles/FiniteElements.dir/main.cpp.i
-.PHONY : main.cpp.i
+HeatSolver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/HeatSolver.cpp.i
+.PHONY : HeatSolver.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+HeatSolver.s: HeatSolver.cpp.s
+.PHONY : HeatSolver.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteElements.dir/build.make CMakeFiles/FiniteElements.dir/main.cpp.s
-.PHONY : main.cpp.s
+HeatSolver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/HeatSolver.cpp.s
+.PHONY : HeatSolver.cpp.s
+
+LaplaceSolver.o: LaplaceSolver.cpp.o
+.PHONY : LaplaceSolver.o
+
+# target to build an object file
+LaplaceSolver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/LaplaceSolver.cpp.o
+.PHONY : LaplaceSolver.cpp.o
+
+LaplaceSolver.i: LaplaceSolver.cpp.i
+.PHONY : LaplaceSolver.i
+
+# target to preprocess a source file
+LaplaceSolver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/LaplaceSolver.cpp.i
+.PHONY : LaplaceSolver.cpp.i
+
+LaplaceSolver.s: LaplaceSolver.cpp.s
+.PHONY : LaplaceSolver.s
+
+# target to generate assembly for a file
+LaplaceSolver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/LaplaceSolver.cpp.s
+.PHONY : LaplaceSolver.cpp.s
 
 # Help Target
 help:
@@ -368,7 +405,8 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... docs"
 	@echo "... uninstall"
-	@echo "... FiniteElements"
+	@echo "... HeatSolver"
+	@echo "... LaplaceSolver"
 	@echo "... basic_application"
 	@echo "... cg_sandbox"
 	@echo "... glfw"
@@ -379,9 +417,12 @@ help:
 	@echo "... spatial_algebra"
 	@echo "... table"
 	@echo "... triangle"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... HeatSolver.o"
+	@echo "... HeatSolver.i"
+	@echo "... HeatSolver.s"
+	@echo "... LaplaceSolver.o"
+	@echo "... LaplaceSolver.i"
+	@echo "... LaplaceSolver.s"
 .PHONY : help
 
 

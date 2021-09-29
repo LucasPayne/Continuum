@@ -30,14 +30,17 @@ include_directories(
     ${triangle_path}
 )
 
-add_executable(FiniteElements
-    main.cpp
+add_library(common INTERFACE)
+target_compile_definitions(common INTERFACE
+    DATA="${CMAKE_CURRENT_SOURCE_DIR}/data/"
 )
-target_link_libraries(FiniteElements
+target_link_libraries(common INTERFACE
     triangle
     cg_sandbox
 )
-# Give access to locations in source directory.
-target_compile_definitions(FiniteElements PRIVATE
-    DATA="${CMAKE_CURRENT_SOURCE_DIR}/data/"
-)
+
+add_executable(LaplaceSolver LaplaceSolver.cpp)
+target_link_libraries(LaplaceSolver PRIVATE common)
+
+add_executable(HeatSolver HeatSolver.cpp)
+target_link_libraries(HeatSolver PRIVATE common)
