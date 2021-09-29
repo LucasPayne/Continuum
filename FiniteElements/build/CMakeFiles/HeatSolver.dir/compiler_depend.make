@@ -513,8 +513,11 @@ CMakeFiles/HeatSolver.dir/HeatSolver.cpp.o: ../HeatSolver.cpp \
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h \
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pruneL.h \
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Utils.h \
-  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h
+  /usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h \
+  ../mesh_generators.cpp
 
+
+../mesh_generators.cpp:
 
 /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h:
 
