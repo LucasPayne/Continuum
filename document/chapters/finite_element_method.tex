@@ -182,12 +182,23 @@ $0$ at its neighbours. An example decomposition for an ellipse-shaped domain is 
 
 
 
-As we typically have more triangles than vertices, we cannot use the $T_i$ as our domain partition. However, we may
-associate to each $p_i$ a domain $\Omega_i$ called the \textit{barycentric cell} \cite{polygon_mesh_processing}.
+As we typically have more triangles than vertices, we cannot use the $T_i$ as our domain partition.
+However, if we choose some characteristic ``triangle centre'' for each triangle, then we may associate to each
+$p_i$ a domain $\Omega_i$ defined by the polygon which joins the centres of the adjacent triangles.
+Two common choices for the triangle centre are the barycentre, which is the average position of the three vertices, and the circumcentre,
+which is the centre of the unique circle passing through the three vertices. The resulting cell decompositions are displayed in figure
+\ref{cell_decompositions}.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\linewidth]{figures/cell.png}
+    \end{center}
+    \caption{\scriptsize
+        The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$. One example of a hat basis function $\phi_i$ is shown, where
+        the vertical axis is the basis function value.
+    }
+    \label{cell_decompositions}
+\end{figure}
 
 This scheme has found some success, especially in the domain of geometry processing \cite{polygon_mesh_processing}.
 By Stokes' theorem, the matrix $A$ in \eqref{poisson_matrix_equation} can be thought of as a negative discrete Laplacian.
@@ -413,7 +424,7 @@ A typical sparsity pattern for a finite element problem is shown in figure \ref{
         \includegraphics[width=0.26\linewidth]{figures/sparsity_pattern_no_text.png}
     \end{center}
     \caption{\scriptsize
-        The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
+        An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
         The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$.
     }
     \label{sparsity_pattern}
