@@ -20,6 +20,12 @@ vec2 curve(float t)
     return vec2(0.5+0.2*cos(t) + 0.1*sin(t), 0.5+0.2*sin(t));
 }
 
+enum CenterModes {
+    CenterModeBarycentric,
+    CenterModeVoronoi,
+    CenterModeMixedVoronoi,
+    NUM_CENTER_MODES
+};
 
 
 class App : public IGC::Callbacks {
@@ -39,6 +45,8 @@ public:
     std::vector<vec2> ps_draw;
     SurfaceMesh mesh;
     SurfaceGeometry geom;
+
+    int center_mode;
 };
 
 
@@ -47,6 +55,7 @@ App::App(World &_world) :
     world{_world},
     geom(mesh)
 {
+    center_mode = CenterModeBarycentric;
     // OpenGL ----------------------------------------------------
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
@@ -79,20 +88,24 @@ App::App(World &_world) :
         ps_draw[i] *= 0.5;
     }
 
-    int boundary_N = 18;
-    auto boundary_ps = std::vector<Eigen::Vector3f>(boundary_N+1);
-    for (int i = 0; i <= boundary_N; i++) {
+    // int boundary_N = 18;
+    int boundary_N = 10;
+    auto boundary_ps = std::vector<Eigen::Vector3f>(boundary_N);
+    for (int i = 0; i < boundary_N; i++) {
         float t = i*2*M_PI/boundary_N;
         vec2 c = curve(t);
         boundary_ps[i] = Eigen::Vector3f(c.x(), 0, c.y());
     }
 
     // Add interior points.
-    int interior_N = 5;
+    // int interior_N = 5;
+    int interior_N = 2;
+    float from = 0.43f;
+    float to = 0.57f;
     for (int i = 0; i <= interior_N; i++) {
-        float x = 0.3f + i*(0.7f-0.3f)/interior_N;
+        float x = from + i*(to-from)/interior_N;
         for (int j = 0; j <= interior_N; j++) {
-            float y = 0.3f + j*(0.7f-0.3f)/interior_N;
+            float y = from + j*(to-from)/interior_N;
             auto p = Eigen::Vector3f(x,0,y);
             bool exterior = false;
             for (int k = 0; k < boundary_ps.size()-1; k++) {
@@ -155,7 +168,97 @@ void App::close()
 void App::loop()
 {
     world.graphics.paint.chain_2D(ps_draw, 4, vec4(0,0,0,1));
+    // world.graphics.paint.wireframe(geom, mat4x4::identity(), 0.003);
     world.graphics.paint.wireframe(geom, mat4x4::identity(), 0.003);
+    
+
+    auto get_center = [&](Face tri)->Eigen::Vector3f {
+        if (center_mode == CenterModeBarycentric) {
+            return geom.barycenter(tri);
+        } else if (center_mode == CenterModeVoronoi || center_mode == CenterModeMixedVoronoi) {
+            Eigen::Vector3f positions[3];
+            int vertex_index = 0;
+            auto he = tri.halfedge();
+            do {
+                he = he.next();
+                positions[vertex_index] = geom.position[he.vertex()];
+            } while (++vertex_index < 3);
+
+            // https://gamedev.stackexchange.com/questions/60630/how-do-i-find-the-circumcenter-of-a-triangle-in-3d
+            Eigen::Vector3f a = positions[0];
+            Eigen::Vector3f b = positions[1];
+            Eigen::Vector3f c = positions[2];
+            Eigen::Vector3f ac = c - a ;
+            Eigen::Vector3f ab = b - a ;
+            Eigen::Vector3f abXac = ab.cross(ac);
+
+            // this is the vector from a TO the circumsphere center
+            Eigen::Vector3f toCircumsphereCenter = (abXac.cross( ab )*ac.dot(ac) + ac.cross( abXac )*ab.dot(ab)) / (2.f*abXac.dot(abXac)) ;
+            float circumsphereRadius = toCircumsphereCenter.norm();
+            // The 3 space coords of the circumsphere center then:
+            Eigen::Vector3f ccs = a  +  toCircumsphereCenter ; // now this is the actual 3space location
+
+            // if (center_mode == CenterModeMixedVoronoi) {
+            //     if (ccs - a
+            // }
+
+            return ccs;
+        }
+        assert(0);
+    };
+
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        // For each adjacent triangle.
+        auto start = v.halfedge(); //todo: provide this circulator in mesh_processing.
+        auto he = start;
+        auto cell_boundary = std::vector<vec3>();
+
+        vec3 vp = *((vec3 *) &geom.position[v][0]);
+        //world.graphics.paint.sphere(vp, 0.02, vec4(1,0,0,1));
+        do {
+            auto tri = he.face();
+            auto barycenter = get_center(tri);
+
+            auto next_tri = he.twin().next().face();
+            auto next_barycenter = get_center(next_tri);
+            vec3 a = *((vec3 *) &barycenter[0]);
+            vec3 b = *((vec3 *) &next_barycenter[0]);
+            vec3 tip = *((vec3 *) &geom.position[he.tip()][0]);
+            // Intersect a<->b with vp<->tip.
+            auto get_line = [](vec3 A, vec3 B)->vec3 {
+                return vec3(
+                    A.z() - B.z(),
+                    B.x() - A.x(),
+                    A.x()*(B.z() - A.z()) - A.z()*(B.x() - A.x())
+                );
+            };
+            vec3 intersect = vec3::cross(get_line(a,b), get_line(vp,tip));
+            intersect /= intersect.z();
+            float dist = sqrt((intersect.x()-vp.x())*(intersect.x()-vp.x())
+                                +(intersect.y()-vp.z())*(intersect.y()-vp.z()));
+            float mid_length = sqrt((tip.x()-vp.x())*(tip.x()-vp.x())
+                                    +(tip.z()-vp.z())*(tip.z()-vp.z()));
+            float t = dist / mid_length;
+            vec3 midpoint = vp*(1-t) + tip*t;
+
+            cell_boundary.push_back(midpoint);
+            cell_boundary.push_back(b);
+            
+            he = he.twin().next();
+        } while (he != start);
+        if (cell_boundary.size() > 1) {
+            cell_boundary.push_back(cell_boundary[0]);
+            cell_boundary.push_back(cell_boundary[1]);
+        }
+
+        // push it up a little bit
+        for (int i = 0; i < cell_boundary.size(); i++) {
+            cell_boundary[i].y() += 0.001;
+        }
+        // world.graphics.paint.chain(cell_boundary, 15, vec4(1,0.6,0.6,1));
+        world.graphics.paint.chain(cell_boundary, 0.005, vec4(1,0,0,1));
+    }
 }
 
 void App::window_handler(WindowEvent e)
@@ -167,6 +270,9 @@ void App::keyboard_handler(KeyboardEvent e)
     if (e.action == KEYBOARD_PRESS) {
         if (e.key.code == KEY_Q) {
             exit(EXIT_SUCCESS);
+        }
+        if (e.key.code == KEY_M) {
+            center_mode = (center_mode + 1) % NUM_CENTER_MODES;
         }
     }
 }
