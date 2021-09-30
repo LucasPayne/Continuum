@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  30 SEP 2021 21:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  1 OCT 2021 01:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1663,23 +1663,72 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@everytoks=\toks31
 \@floatcapt=\box48
 )
+(/usr/share/texlive/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
+Package: algorithm2e 2017/07/18 v5.2 algorithms environments
+\c@AlgoLine=\count324
+\algocf@hangindent=\skip260
+
+(/usr/share/texlive/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
+Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
+\c@checkoddpage=\count325
+LaTeX Info: Redefining \checkoddpage on input line 45.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/xspace.sty
+Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
+)
+\skiptotal=\skip261
+\skiplinenumber=\skip262
+\skiprule=\skip263
+\skiphlne=\skip264
+\skiptext=\skip265
+\skiplength=\skip266
+\algomargin=\skip267
+\skipalgocfslide=\skip268
+\algowidth=\dimen258
+\inoutsize=\dimen259
+\inoutindent=\dimen260
+\interspacetitleruled=\dimen261
+\interspacealgoruled=\dimen262
+\interspacetitleboxruled=\dimen263
+\algocf@ruledwidth=\skip269
+\algocf@inoutbox=\box49
+\algocf@inputbox=\box50
+\AlCapSkip=\skip270
+\AlCapHSkip=\skip271
+\algoskipindent=\skip272
+\algocf@nlbox=\box51
+\algocf@hangingbox=\box52
+\algocf@untilbox=\box53
+\algocf@skipuntil=\skip273
+\algocf@capbox=\box54
+\algocf@lcaptionbox=\skip274
+\algoheightruledefault=\skip275
+\algoheightrule=\skip276
+\algotitleheightruledefault=\skip277
+\algotitleheightrule=\skip278
+\c@algocfline=\count326
+\c@algocfproc=\count327
+\c@algocf=\count328
+\algocf@algoframe=\box55
+\algocf@algobox=\box56
+)
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... none found.
  (./document.aux)
 \openout1 = `document.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
@@ -1700,16 +1749,16 @@ File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count324
-\scratchdimen=\dimen258
-\scratchbox=\box49
-\nofMPsegments=\count325
-\nofMParguments=\count326
+\scratchcounter=\count329
+\scratchdimen=\dimen264
+\scratchbox=\box57
+\nofMPsegments=\count330
+\nofMParguments=\count331
 \everyMPshowfont=\toks32
-\MPscratchCnt=\count327
-\MPscratchDim=\dimen259
-\MPnumerator=\count328
-\makeMPintoPDFobject=\count329
+\MPscratchCnt=\count332
+\MPscratchDim=\dimen265
+\MPnumerator=\count333
+\makeMPintoPDFobject=\count334
 \everyMPtoPDFconversion=\toks33
 ))) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -1739,10 +1788,10 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\Gin@req@height=\dimen260
-\Gin@req@width=\dimen261
+\Gin@req@height=\dimen266
+\Gin@req@width=\dimen267
 )
-LaTeX Info: Redefining \microtypecontext on input line 55.
+LaTeX Info: Redefining \microtypecontext on input line 56.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1757,7 +1806,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 59.
+LaTeX Font Info:    Try loading font information for U+msa on input line 60.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -1765,7 +1814,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 59.
+LaTeX Font Info:    Try loading font information for U+msb on input line 60.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1874,85 +1923,89 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 <figures/hat.png, id=178, 856.19875pt x 341.275pt>
 File: figures/hat.png Graphic file (type png)
 <use figures/hat.png>
-Package pdftex.def Info: figures/hat.png  used on input line 174.
+Package pdftex.def Info: figures/hat.png  used on input line 179.
 (pdftex.def)             Requested size: 225.77948pt x 89.9948pt.
 <figures/cell.png, id=180, 1224.575pt x 456.70625pt>
 File: figures/cell.png Graphic file (type png)
 <use figures/cell.png>
-Package pdftex.def Info: figures/cell.png  used on input line 194.
+Package pdftex.def Info: figures/cell.png  used on input line 201.
 (pdftex.def)             Requested size: 298.1987pt x 111.20758pt.
-
-Underfull \vbox (badness 1418) has occurred while \output is active []
-
  [28 <./figures/hat.png> <./figures/cell.png>] [29] [30]
 <figures/sparsity_pattern_no_text.png, id=193, 563.10374pt x 560.0925pt>
 File: figures/sparsity_pattern_no_text.png Graphic file (type png)
 <use figures/sparsity_pattern_no_text.png>
 Package pdftex.def Info: figures/sparsity_pattern_no_text.png  used on input li
-ne 424.
+ne 431.
 (pdftex.def)             Requested size: 110.75766pt x 110.16196pt.
 
 Underfull \vbox (badness 1783) has occurred while \output is active []
 
  [31]
-<figures/laplace/laplace.png, id=198, 2055.68pt x 652.4375pt>
+[32 <./figures/sparsity_pattern_no_text.png>]
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+<figures/laplace/laplace.png, id=202, 2055.68pt x 652.4375pt>
 File: figures/laplace/laplace.png Graphic file (type png)
 <use figures/laplace/laplace.png>
-Package pdftex.def Info: figures/laplace/laplace.png  used on input line 462.
+Package pdftex.def Info: figures/laplace/laplace.png  used on input line 517.
 (pdftex.def)             Requested size: 426.0pt x 135.20403pt.
-
-[32 <./figures/sparsity_pattern_no_text.png> <./figures/laplace/laplace.png>]
-[33]
-Overfull \hbox (9.49695pt too wide) detected at line 622
+ [33 <./figures/laplace/laplace.png>] [34]
+Overfull \hbox (9.49695pt too wide) detected at line 677
 []
  []
 
-[34] [35]) [36] [37] [38
+[35] [36]) [37] [38] [39
 
-] [39] [40
+] [40
 
 ] [41] [42
 
 ]
 bibitemlist
-[43] [44]
+[43]
+Underfull \hbox (badness 1622) in paragraph at lines 257--261
+[]\OT1/cmr/m/n/10.95 (+20) Leif Kobbelt, Open-Mesh (sur-face mesh li-brary), ht
+tps://www.graphics.rwth-
+ []
+
+[44]
 \tf@toc=\write4
 \openout4 = `document.toc'.
 
- (./document.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+ (./document.aux) ) 
 Here is how much of TeX's memory you used:
- 18245 strings out of 494847
- 316041 string characters out of 6179081
- 436278 words of memory out of 5000000
- 21277 multiletter control sequences out of 15000+600000
- 549012 words of font info for 135 fonts, out of 8000000 for 9000
+ 19155 strings out of 494847
+ 331044 string characters out of 6179081
+ 460264 words of memory out of 5000000
+ 22171 multiletter control sequences out of 15000+600000
+ 549564 words of font info for 139 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 53i,24n,41p,10403b,343s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
-8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on document.pdf (44 pages, 4127049 bytes).
+ 53i,24n,41p,10403b,361s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx
+12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
+0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on document.pdf (44 pages, 4142090 bytes).
 PDF statistics:
- 302 PDF objects out of 1000 (max. 8388607)
- 184 compressed objects within 2 object streams
+ 310 PDF objects out of 1000 (max. 8388607)
+ 190 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 15948 words of extra memory for PDF output out of 17280 (max. 10000000)
+ 16972 words of extra memory for PDF output out of 17280 (max. 10000000)
 

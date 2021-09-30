@@ -4,6 +4,10 @@
 % <<<
 
 --- Finite element method.
+--- Galerkin methods.
+
+---NOTE: Mistake in $n$ numbering. Need to talk about Dirichlet condition earlier.
+---NOTE: Mistake in the form of the linear systems. They need to incorporate the boundary conditions.
 
 % --- Change: Introduce Poisson's equation first, then give the FDM example for the Poisson equation. Then solve Poisson by FEM.
 
@@ -22,7 +26,7 @@ The focus here is on the Dirichlet problem
 \begin{equation}\label{poisson_dirichlet_problem}
     -\Delta h = g, \quad \left.h\right|_{\Gamma} = h_\Gamma,
 \end{equation}
-where $\Gamma$ is the boundary of the domain.
+where $\Gamma$ is the boundary of the domain, and the domain is 2D.
 
 \subsection{Discretizing the differential versus integral form}
 \subsubsection{Discretizing the differential form of the PDE}
@@ -36,14 +40,14 @@ and we get \eqref{poisson_compact} in the form
            +\frac{\partial^2 h}{\partial y^2}
            +\frac{\partial^2 h}{\partial z^2}\right) = g.
 \end{equation}
-Thinking about \eqref{poisson_differential_intro} leads to the finite difference method, historically the first and
-still very important in applications.
 This form immediately indicates an effective method
 of discretization, by forming secant approximations of the derivatives over a regular grid. The approximate solution is then
 represented as a function of this grid.
+Thinking about \eqref{poisson_differential_intro} leads to the finite difference method, historically the first and
+still very important in applications.
 However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
 They could be a coefficients of, for example, hat basis functions.
-Yet a finite difference discretization of \eqref{continuity_equation_differential} may not take this into account at all. One might feel that
+Yet a finite difference discretization of the Poisson equation \eqref{poisson_compact} may not take this into account at all. One might feel that
 limits have been taken too soon.
 
 % Consider a single conservation law as described in section \ref{conservation_laws}. This law
@@ -67,8 +71,8 @@ For example, the general integral conservation law \eqref{continuity_equation},
 \end{align*}
 is a geometric statement about fluxes
 of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
-We have an infinite number of control volumes, and therefore an infinite number of equations which must hold, and an infinite-dimensional
-space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite-dimensional subspace of possible solutions.
+There are an infinite number of control volumes, and therefore an infinite number of equations which must hold, and there is an infinite-dimensional
+space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite-dimensional subspace of possible approximate solutions.
 A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
 
 \vskip 0.2in
@@ -83,8 +87,9 @@ To continue with this idea, we must write the Poisson equation \eqref{poisson_co
 % <<<
 The Poisson equation \eqref{poisson_compact} can be thought of as the steady state of some diffusion process with a source term $g$,
 although this need not be its literal physical interpretation.
-A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration. We can intuitively think of a diffusion as a
-progressive ``blurring''
+A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration.
+A diffusion could intuitively be thought of as a
+progressive ``blurring'',
 such as in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics \cite{tum}. We will stick with
 the notion of ``temperature'' $h$ as the diffused quantity.
 \textit{Fick's law of diffusion} is a constitutive relation giving the bulk flux of temperature $h$ as proportional to the negative gradient:
@@ -117,7 +122,7 @@ In integral form, ``undoing'' the application of Stokes' theorem above, the Pois
 \end{equation}
 Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
 as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount introduced into $\Omega_0$ by the source function.
-This form will be the most convenient for our numerical methods.
+The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
 % >>>
 
 \subsection{Discretizing the Poisson equation by finite volumes}\label{discretizing_poisson}
@@ -128,7 +133,7 @@ We will then have $n$ equations on $h$. As this system will be underdetermined (
 restrict $h$ to what we will call a ``test space'',
     $$\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.$$
 The basis functions $\phi_i$ should generate a ``good'' space of approximations,
-such that our linear system is non-singular.
+such that the resulting linear system is non-singular.
 We then have a discrete system of equations
 \begin{align*}
     \int_{\pom_j} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right)\cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
@@ -138,9 +143,9 @@ By linearity, to emphasize the separate integrals that need to be computed, the 
     \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
 \end{equation}
 We see here that there must be some restrictions on the $\phi_i$.
-Formally, our basis functions must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
+Formally, the basis functions must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
-the integral. Since the source $f$, our domain partition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
+the integral. Since the source $g$, the domain partition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
 the majority of \eqref{poisson_equation_integral_discretized} to give a matrix system
 
 \newcommand{\integralentry}[2]{\int_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
@@ -157,7 +162,7 @@ the majority of \eqref{poisson_equation_integral_discretized} to give a matrix s
 \end{equation}
 This system is solved for the coefficients of combination for the test functions, $\hat{h} = (h_1 \cdots h_n)^T$.
 The solution is then denoted $\Phi\cdot\hat{h} = h_1\Phi_1 + \cdots + h_n\Phi_n$.
-If our domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+If the domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
 In all cases we have a conservative system of balanced fluxes, but it is another question whether our approximation
 $\Phi\cdot\hat{h}$ is good.
@@ -182,11 +187,13 @@ $0$ at its neighbours. An example decomposition for an ellipse-shaped domain is 
 
 
 
-As we typically have more triangles than vertices, we cannot use the $T_i$ as our domain partition.
+As there are typically more triangles than vertices, we cannot use the $T_i$ as the domain partition.
 However, if we choose some characteristic ``triangle centre'' for each triangle, then we may associate to each
 $p_i$ a domain $\Omega_i$ defined by the polygon which joins the centres of the adjacent triangles.
 Two common choices for the triangle centre are the barycentre, which is the average position of the three vertices, and the circumcentre,
-which is the centre of the unique circle passing through the three vertices. The resulting cell decompositions are displayed in figure
+which is the centre of the unique circle passing through the three vertices. The circumcentre scheme gives what are called
+``Voronoi cells'' due to their relation to Voronoi diagrams in computational geometry \cite{orourke}.
+The resulting cell decompositions are displayed in figure
 \ref{cell_decompositions}.
 
 \begin{figure}[H]
@@ -194,8 +201,8 @@ which is the centre of the unique circle passing through the three vertices. The
         \includegraphics[width=0.7\linewidth]{figures/cell.png}
     \end{center}
     \caption{\scriptsize
-        The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$. One example of a hat basis function $\phi_i$ is shown, where
-        the vertical axis is the basis function value.
+        The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$.
+        Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters.
     }
     \label{cell_decompositions}
 \end{figure}
@@ -385,7 +392,7 @@ Equation \eqref{poisson_galerkin} gives a discrete linear system
 \end{equation}
 This has quite a similar form to \eqref{poisson_matrix_equation}, but with boundary and cell integrals replaced by integrals over the entire
 domain.
-Again, if our domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+Again, if the domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
 
 \subsubsection{Choosing a test and a trial space}
@@ -451,12 +458,60 @@ to a well-formed linear system.
 % However, there is a vast array of possible Galerkin ``decompositions'' of the domain.
 % A ``finite element method'', in particular, uses test and trial basis functions of \textit{compact support}.
 
-% We have so far worked up to an instance of a \textit{finite element method}.
-% Finite element methods are characterised by a test space $\Phi$ and trial space
-% $\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
-% some Sobolev space, constructed over a domain tessellation.
+We have so far worked up to an instance of a \textit{finite element method}.
+Finite element methods are characterised by a test space $\Phi$ and trial space
+$\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
+some Sobolev space, constructed over a domain tessellation.
 
 \subsection{Implementing the finite element method for Poisson's equation}
+We now have an effective algorithm for approximating the Poisson equation:
+\begin{enumerate}
+    \item Partition the 2D domain $\Omega$ into triangles $T_i$. This implicitly defines the hat basis functions $\phi_i = \psi_i$.
+    \item Form the matrix and right-hand-side in \eqref{poisson_fem_matrix_equation}, by analytical or numerical integration.
+    \item Solve the resulting linear system for $\hat{h}$, and construct the solution as $\Phi\cdot\hat{h}$.
+\end{enumerate}
+Each of these steps is conceptually well-separated into the domains of
+mesh generation, matrix assembly, and numerical linear algebra.
+
+\subsubsection{Mesh generation}
+Mesh generation is itself a huge field. However, there are only two essentials for the handling of 2D meshes and piecewise-linear finite elements
+--- a mesh data structure and a triangulator. Typically a mesh data structure will be provided by a separate library,
+and the data organization (e.g., vertex, triangle, and adjacency information) will be designed to facilitate the kinds
+of mesh traversals performed during matrix assembly. This is typically some variant of a ``halfedge'' data structure \cite{polygon_mesh_processing},
+implemented in libraries such as Geometry Central \cite{geometry_central},
+the Polygon Mesh Processing library \cite{polygon_mesh_processing_library}, and OpenMesh \cite{openmesh}.
+A mesh data structure is a foundational component of \textit{mesh generation} systems. For 2D domains, a somewhat regular sampling of points on the boundary
+and interior, followed by triangulation of these points, can suffice for a piecewise-linear finite element mesh.
+The Triangle \cite{triangle} library, for example, contains a single very efficient and robust C routine (consisting of 16k lines of highly optimized code)
+for performing Delaunay triangulations \cite{orourke}
+on 2D domains,
+with the specific goal of creating robust finite element meshes.
+
+
+\subsubsection{Matrix assembly}
+The matrix assembly stage is the core of a finite element implementation. The simplest idea is to iterate over all pairs $\phi_i$ and $\psi_j$,
+letting $i=1,\cdots,n$, $j = 1,\cdots,n$, and approximate the integral $\int_\Omega \nabla\phi_i\cdot \nabla\cdot \psi_j\,dx$,
+and store the value as entry $(i,j)$ of the matrix.
+\begin{algorithm}
+
+    \SetAlgoLined
+    % \KwData{this text}
+    % \KwResult{HOW}
+    % initialization\;
+    $M \leftarrow \text{zero matrix}$\;
+    \For{$i=1,\cdots,n$}{
+        \For{$j=1,\cdots,n$}{
+            $M[i,j] \leftarrow \int_\Omega \nabla\phi_i\cdot \nabla\cdot \psi_j\,dx.$
+        }
+    }
+\end{algorithm}
+
+\subsubsection{Numerical linear algebra}
+The solution of large linear systems is a vast topic in itself. Finite element solvers are typically clients
+of standard, robust linear and non-linear solver libraries, such as Argonne National Laboratory's PETSc libraries \cite{petsc}
+and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eigen \cite{eigen}.
+A finite element solver will typically pass either a full matrix to the linear solver (dense or sparse),
+or provide the linear solver with callback routines that give the linear solver access to the linear system coefficients when they are needed.
 
 \begin{center}
 \includegraphics[width=\linewidth]{figures/laplace/laplace.png}
