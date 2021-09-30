@@ -164,8 +164,8 @@ $\Phi\cdot\hat{h}$ is good.
 
 \subsubsection{Choosing a domain partition and test space}
 Possibly the simplest scheme is to triangulate $\Omega$ as
-    $\bigcup T_i,$
-such that we have $n$ nodal points. The boundary of $\Omega$ is approximated as piecewise linear.
+    $\bigcup_i T_i,$
+such that we have $n$ nodal points and $n_T$ triangles. The boundary of $\Omega$ is approximated as piecewise linear.
 Each nodal point $p_i$ will be associated with a piecewise ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
 $0$ at its neighbours. An example decomposition for an ellipse-shaped domain is shown in figure \ref{ellipse_partition}.
 
@@ -174,8 +174,8 @@ $0$ at its neighbours. An example decomposition for an ellipse-shaped domain is 
         \includegraphics[width=0.53\linewidth]{figures/hat.png}
     \end{center}
     \caption{\scriptsize
-        The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
-        The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$.
+        The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$. One example of a hat basis function $\phi_i$ is shown, where
+        the vertical axis is the basis function value.
     }
     \label{ellipse_partition}
 \end{figure}
@@ -422,8 +422,8 @@ A typical sparsity pattern for a finite element problem is shown in figure \ref{
 
 Similar to the hat-functions-and-Voronoi-cells decomposition described for finite volumes,
 the simplest scheme for the finite element Poisson equation is to triangulate $\Omega$ as
-    $\bigcup T_i$
-such that we have $n$ nodal points.
+    $\bigcup_i T_i$
+such that we have $n$ nodal points and $n_T$ triangles.
 Each nodal point $p_i$ will be associated with a piecewise ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
 $0$ at its neighbours. Now, diverging from the previous finite volume method, the simplest thing we could do is let the trial functions be the same
 as the test functions, $\psi_i = \phi_i$. This trivially gives a one-to-one correspondence between the $\phi_i$ and the $\psi_i$, which will lead
