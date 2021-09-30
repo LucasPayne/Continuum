@@ -60,19 +60,19 @@
 \contentsline {subsubsection}{Mesh generation}{32}
 \contentsline {subsubsection}{Matrix assembly}{33}
 \contentsline {subsubsection}{Numerical linear algebra}{33}
-\contentsline {section}{\numberline {4.2}Solving the Stokes equations}{33}
+\contentsline {section}{\numberline {4.2}Solving the Stokes equations}{34}
 \contentsline {subsection}{\numberline {4.2.1}Discretizing the vector Poisson equation}{34}
-\contentsline {subsection}{\numberline {4.2.2}Discretizing the steady Stokes equations}{34}
-\contentsline {subsubsection}{Is this method reasonable?}{35}
-\contentsline {subsubsection}{Results and visualisation}{36}
-\contentsline {subsection}{\numberline {4.2.3}Discretizing the unsteady Stokes equations}{36}
-\contentsline {subsubsection}{Discretizing the initial condition}{37}
-\contentsline {section}{\numberline {4.3}Solving non-linear equations}{37}
-\contentsline {subsection}{\numberline {4.3.1}A non-linear Poisson equation}{37}
-\contentsline {subsection}{\numberline {4.3.2}A non-linear heat equation}{37}
-\contentsline {subsection}{\numberline {4.3.3}The Burgers equation}{37}
-\contentsline {section}{\numberline {4.4}Implementing finite element methods}{37}
-\contentsline {subsection}{\numberline {4.4.1}The Ciarlet definition of a finite element space}{37}
-\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{39}
-\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{41}
-\contentsline {chapter}{Bibliography}{43}
+\contentsline {subsection}{\numberline {4.2.2}Discretizing the steady Stokes equations}{35}
+\contentsline {subsubsection}{Is this method reasonable?}{36}
+\contentsline {subsubsection}{Results and visualisation}{37}
+\contentsline {subsection}{\numberline {4.2.3}Discretizing the unsteady Stokes equations}{37}
+\contentsline {subsubsection}{Discretizing the initial condition}{38}
+\contentsline {section}{\numberline {4.3}Solving non-linear equations}{38}
+\contentsline {subsection}{\numberline {4.3.1}A non-linear Poisson equation}{38}
+\contentsline {subsection}{\numberline {4.3.2}A non-linear heat equation}{38}
+\contentsline {subsection}{\numberline {4.3.3}The Burgers equation}{38}
+\contentsline {section}{\numberline {4.4}Implementing finite element methods}{38}
+\contentsline {subsection}{\numberline {4.4.1}The Ciarlet definition of a finite element space}{38}
+\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}
+\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{43}
+\contentsline {chapter}{Bibliography}{45}

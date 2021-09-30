@@ -344,8 +344,7 @@ App::App(World &_world) : world{_world}
     controller->angle = -2;
     
     source_force = 0;
-    // mesh_N = 5;
-    mesh_N = 8;
+    mesh_N = 5;
     solving_mesh = new SolvingMesh(mesh_N);
 }
 

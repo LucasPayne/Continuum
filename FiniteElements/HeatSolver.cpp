@@ -275,7 +275,7 @@ void HeatDemo::post_render_update()
         lifted_boundary_positions.push_back(pp);
     }
     lifted_boundary_positions.push_back(lifted_boundary_positions[0]);
-    world->graphics.paint.chain(lifted_boundary_positions, 4, color);
+    world->graphics.paint.chain(lifted_boundary_positions, 0.004, color);
 }
 
 

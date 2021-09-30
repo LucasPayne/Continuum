@@ -493,7 +493,6 @@ The matrix assembly stage is the core of a finite element implementation. The si
 letting $i=1,\cdots,n$, $j = 1,\cdots,n$, and approximate the integral $\int_\Omega \nabla\phi_i\cdot \nabla\cdot \psi_j\,dx$,
 and store the value as entry $(i,j)$ of the matrix.
 \begin{algorithm}
-
     \SetAlgoLined
     % \KwData{this text}
     % \KwResult{HOW}
@@ -506,6 +505,131 @@ and store the value as entry $(i,j)$ of the matrix.
     }
 \end{algorithm}
 
+\begin{algorithm}
+    % rhs computation
+    \SetAlgoLined
+    \For{$i=1,\cdots,n$}{
+        $A \leftarrow 0$ \tcc*[l]{For computing total adjacent triangle areas.}
+        \For{each triangle $T_j$ adjacent to $p_i$}{
+            $A \leftarrow A + \text{Area}(T_j)$\;
+        }
+        $c \leftarrow g(p_i)$ \tcc*[l]{The source function is evaluated at the point $p_i$.}
+        $\hat{b}[i] \leftarrow A\cdot c/3$\;
+    }
+\end{algorithm}
+
+\begin{algorithm}
+    % stiffness matrix computation and RHS boundary conditions.
+    \SetAlgoLined
+
+    $\text{Coefficients} \leftarrow \{\}$\;\tcc*[l]{This will contain triples $(i,j,\text{value})$ used to create the sparse matrix.}
+
+    \For{Triangle $T_k$ in the domain partition}{
+        $A \leftarrow \text{Area}(T_k)$\;
+        $L \leftarrow \text{zero matrix}$ \tcc*[l]{The local stiffness matrix.}
+        $P,Q,R \coloneqq \text{The vertices of $T_k$}$\;
+        $J \leftarrow \begin{bmatrix} Q_x-P_x & R_x-P_x \\ Q_y-P_y & R_y - P_y \end{bmatrix}$ \tcc*[l]{Jacobian of the reference transform.}
+        $\text{Gradients} \leftarrow \left\{\begin{bmatrix} -1 & -1 \end{bmatrix},
+                                            \begin{bmatrix} 1 & 0 \end{bmatrix},
+                                            \begin{bmatrix} 0 & 1 \end{bmatrix}\right\}$\;
+        \For{$l,m=1,\cdots,3$}{
+	    $L[l,m] \leftarrow A\left(\text{Gradients}[l] J^{-1}\right)\cdot\left(\text{Gradients}[m]J^{-1}\right)$\;
+        }
+        \For{$l,m=1,\cdots,3$}{
+            \If{$p_{I(l)}$ is on the boundary}{skip\;}
+            \If{$p_{I(m)}$ is on the boundary}{
+                $\hat{b} \leftarrow \hat{b} - u_\Gamma(p_{I(m)})L(I(l), I(m))$\;
+            }
+            \Else{
+                $\text{Coefficients} \leftarrow \text{Coefficients} \cup \left\{(I(l),I(m),L(l,m))\right\}$\;
+            }
+        }
+    }
+\end{algorithm}
+    %     for (int i = 0; i < 3; i++) {
+    %         for (int j = 0; j < 3; j++) {
+    %             bool b1 = verts[i].on_boundary();
+    %             bool b2 = verts[j].on_boundary();
+    %             if (b1) {
+    %                 continue; // The trial function can't be centered on the boundary.
+    %             } else if (b2) {
+    %                 auto p = geom.position[verts[j]];
+    %                 double boundary_val = dirichlet_boundary_function(p.x(), p.z());
+    %                 rhs[vertex_indices[verts[i]]] -= boundary_val*local_stiffness_matrix(i,j);
+    %             } else {
+    %                 coefficients.push_back(EigenTriplet(vertex_indices[verts[i]], vertex_indices[verts[j]], local_stiffness_matrix(i,j)));
+    %             }
+    %         }
+    %     }
+
+    % for (auto tri : geom.mesh.faces()) {
+    %     Vertex verts[3];
+    %     int vertex_index = 0;
+    %     auto he = tri.halfedge();
+    %     do {
+    %         he = he.next();
+    %         verts[vertex_index] = he.vertex();
+    %     } while (++vertex_index < 3);
+
+    %     auto A = geom.position[verts[0]];
+    %     auto B = geom.position[verts[1]];
+    %     auto C = geom.position[verts[2]];
+    %     double triangle_area = 0.5*(B-A).cross(C-A).norm();
+
+    %     // Compute the local stiffness matrix.
+    %     Eigen::Matrix<double, 2,2> jacobian_matrix;
+    %     jacobian_matrix <<
+    %         B.x() - A.x(),  C.x() - A.x(),
+    %         B.z() - A.z(),  C.z() - A.z();
+    %     auto grad_transform = jacobian_matrix.inverse().transpose();
+    %     Eigen::Matrix<double, 3,2> gradients;
+    %     gradients <<
+    %         -1,-1,
+    %         1,0,
+    %         0,1;
+    %     Eigen::Matrix<double, 3,3> local_stiffness_matrix;
+    %     for (int i = 0; i < 3; i++) {
+    %         auto grad_i = grad_transform * gradients.row(i).transpose();
+    %         for (int j = 0; j < 3; j++) {
+    %             auto grad_j = grad_transform * gradients.row(j).transpose();
+    %             local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j); //*triangle_area ??????????????????????????????????????
+    %         }
+    %     }
+
+    %     
+    %     // Eigen::Matrix<double, 3,3> local_stiffness_matrix;
+    %     // local_stiffness_matrix << 
+    %     //     1, -0.5, -0.5,
+    %     //     -0.5, 0.5, 0,
+    %     //     -0.5, 0, 0.5;
+    %     // local_stiffness_matrix *= 2*triangle_area;
+
+    %     // i: Row, trial function.
+    %     // j: Column, test function.
+
+    %     for (int i = 0; i < 3; i++) {
+    %         for (int j = 0; j < 3; j++) {
+    %             bool b1 = verts[i].on_boundary();
+    %             bool b2 = verts[j].on_boundary();
+    %             if (b1) {
+    %                 continue; // The trial function can't be centered on the boundary.
+    %             } else if (b2) {
+    %                 auto p = geom.position[verts[j]];
+    %                 double boundary_val = dirichlet_boundary_function(p.x(), p.z());
+    %                 rhs[vertex_indices[verts[i]]] -= boundary_val*local_stiffness_matrix(i,j);
+    %             } else {
+    %                 coefficients.push_back(EigenTriplet(vertex_indices[verts[i]], vertex_indices[verts[j]], local_stiffness_matrix(i,j)));
+    %             }
+    %         }
+    %     }
+
+    %     // std::cout << local_stiffness_matrix << "\n";
+    %     // for (int i = 0; i < 3; i++) std::cout << (verts[i].on_boundary() ? "b " : "_ ");
+    %     // std::cout << "\n";
+    %     // std::cout << rhs << "\n";
+    %     // getchar();
+    % }
+
 \subsubsection{Numerical linear algebra}
 The solution of large linear systems is a vast topic in itself. Finite element solvers are typically clients
 of standard, robust linear and non-linear solver libraries, such as Argonne National Laboratory's PETSc libraries \cite{petsc}
@@ -513,9 +637,15 @@ and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eige
 A finite element solver will typically pass either a full matrix to the linear solver (dense or sparse),
 or provide the linear solver with callback routines that give the linear solver access to the linear system coefficients when they are needed.
 
-\begin{center}
-\includegraphics[width=\linewidth]{figures/laplace/laplace.png}
-\end{center}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\linewidth]{figures/laplace/laplacev2.png}
+    \end{center}
+    \caption{\scriptsize
+        Text
+    }
+    \label{laplace_solution}
+\end{figure}
 
 
 \section{Solving the Stokes equations}
