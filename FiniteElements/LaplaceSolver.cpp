@@ -396,8 +396,8 @@ void App::loop()
     }
     lifted_boundary_positions.push_back(lifted_boundary_positions[0]);
     boundary_positions.push_back(boundary_positions[0]);
-    world.graphics.paint.chain(lifted_boundary_positions, 5, vec4(0,0,0,1));
-    world.graphics.paint.chain(boundary_positions, 5, vec4(0,0,0,1));
+    world.graphics.paint.chain(lifted_boundary_positions, 0.005, vec4(0,0,0,1));
+    world.graphics.paint.chain(boundary_positions, 0.005, vec4(0,0,0,1));
     // for (int i = 0; i < boundary_positions.size()-1; i++) {
     //     world.graphics.paint.line(boundary_positions[i], lifted_boundary_positions[i], 3, vec4(0.5,0.5,0.5,1));
     // }
@@ -413,7 +413,7 @@ void App::loop()
             boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
         }
         // world.graphics.paint.chain(boundary_condition_loop, 4, vec4(0.65,0.65,0.65,1));
-        world.graphics.paint.chain(boundary_condition_loop, 4, vec4(1,0.6,0.6,1));
+        world.graphics.paint.chain(boundary_condition_loop, 0.004, vec4(1,0.6,0.6,1));
     }
 
     float source_force_change_speed = 20.f;
