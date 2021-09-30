@@ -44,3 +44,6 @@ target_link_libraries(LaplaceSolver PRIVATE common)
 
 add_executable(HeatSolver HeatSolver.cpp)
 target_link_libraries(HeatSolver PRIVATE common)
+
+add_executable(discretization_figure discretization_figure.cpp)
+target_link_libraries(discretization_figure PRIVATE common)

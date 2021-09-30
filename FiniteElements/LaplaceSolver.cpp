@@ -118,8 +118,7 @@ VertexAttachment<double> LaplaceSolver::solve()
             auto grad_i = grad_transform * gradients.row(i).transpose();
             for (int j = 0; j < 3; j++) {
                 auto grad_j = grad_transform * gradients.row(j).transpose();
-                local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j); //??????????????????????????????????????
-                // local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j);
+                local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j); //*triangle_area ??????????????????????????????????????
             }
         }
 
@@ -158,6 +157,45 @@ VertexAttachment<double> LaplaceSolver::solve()
     }
     auto mass_matrix = SparseMatrix(num_interior_vertices, num_interior_vertices);
     mass_matrix.setFromTriplets(coefficients.begin(), coefficients.end());
+    
+    // (figure creation)
+    // Write the sparsity pattern to a PPM file.
+    #if 0
+    int num_nonzeros = 0;
+    for (int i = 0; i < num_interior_vertices; i++) {
+        for (int j = 0; j < num_interior_vertices; j++) {
+            if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
+                num_nonzeros += 1;
+            }
+        }
+    }
+
+    FILE *ppm_file = fopen(DATA "sparsity_pattern.ppm", "w+");
+    fprintf(ppm_file, "P3\n");
+    fprintf(ppm_file, "# %d vertices, %d triangles, %dx%d system with %d entries, %d non-zeros, fill %.4f\n",
+        geom.mesh.num_vertices(),
+        geom.mesh.num_faces(),
+        num_interior_vertices, num_interior_vertices,
+        num_interior_vertices * num_interior_vertices,
+        num_nonzeros,
+        num_nonzeros * 1.f/(num_interior_vertices * num_interior_vertices)
+    );
+    fprintf(ppm_file, "%d %d\n", num_interior_vertices, num_interior_vertices);
+    fprintf(ppm_file, "1\n");
+    for (int i = 0; i < num_interior_vertices; i++) {
+        for (int j = 0; j < num_interior_vertices; j++) {
+            if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
+                fprintf(ppm_file, "0 0 0 ");
+            } else {
+                fprintf(ppm_file, "1 1 1 ");
+            }
+        }
+	fprintf(ppm_file, "\n");
+    }
+    fclose(ppm_file);
+    exit(EXIT_SUCCESS);
+    #endif
+
     mass_matrix.makeCompressed();
     // std::cout << Eigen::MatrixXd(mass_matrix) << "\n";
     // std::cout << rhs << "\n";
@@ -171,6 +209,7 @@ VertexAttachment<double> LaplaceSolver::solve()
     solver.factorize(mass_matrix);
     // Use the factors to solve the linear system 
     Eigen::VectorXd u = solver.solve(rhs);
+
 
     auto mesh_u = VertexAttachment<double>(geom.mesh);
     // Reassociate each coefficient (or boundary value) with the corresponding vertex of the mesh.
@@ -305,7 +344,8 @@ App::App(World &_world) : world{_world}
     controller->angle = -2;
     
     source_force = 0;
-    mesh_N = 5;
+    // mesh_N = 5;
+    mesh_N = 8;
     solving_mesh = new SolvingMesh(mesh_N);
 }
 
@@ -326,7 +366,12 @@ void App::loop()
         // return 0.0;
     });
     solver.set_source([&](double x, double y)->double {
-        return source_force*exp(-5*(x*x+y*y));
+        //return source_force*exp(-5*(x*x+y*y));
+        float r = 0.3;
+        if (x*x + y*y <= r*r) {
+            return source_force;
+        }
+        return 0.0;
     });
     VertexAttachment<double> mesh_u = solver.solve();
     auto lifted_geom = SurfaceGeometry(solving_mesh->geom.mesh);

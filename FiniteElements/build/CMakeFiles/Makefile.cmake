@@ -104,6 +104,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/LaplaceSolver.dir/DependInfo.cmake"
   "CMakeFiles/HeatSolver.dir/DependInfo.cmake"
+  "CMakeFiles/discretization_figure.dir/DependInfo.cmake"
   "/home/lucas/computer_graphics/cg_sandbox/build/CMakeFiles/basic_application.dir/DependInfo.cmake"
   "/home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/CMakeFiles/uninstall.dir/DependInfo.cmake"
   "/home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/src/CMakeFiles/glfw.dir/DependInfo.cmake"

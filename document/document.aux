@@ -111,70 +111,75 @@
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {4}The finite element method}{25}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Introduction}{25}}
-\newlabel{poisson_compact}{{\M@TitleReference {4.1}{Introduction}}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Ideas for discretization}{25}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Introduction: Solving Poisson's equation}{25}}
+\newlabel{poisson_compact}{{\M@TitleReference {4.1}{Introduction: Solving Poisson's equation}}{25}}
+\newlabel{poisson_dirichlet_problem}{{\M@TitleReference {4.2}{Introduction: Solving Poisson's equation}}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Discretizing the differential versus integral form}{25}}
 \@writefile{toc}{\contentsline {subsubsection}{Discretizing the differential form of the PDE}{25}}
-\newlabel{gauss_euclidean_divergence}{{\M@TitleReference {4.2}{Discretizing the differential form of the PDE}}{25}}
-\newlabel{poisson_differential_intro}{{\M@TitleReference {4.3}{Discretizing the differential form of the PDE}}{25}}
-\@writefile{toc}{\contentsline {subsubsection}{Discretizing the integral form of the PDE}{25}}
+\newlabel{gauss_euclidean_divergence}{{\M@TitleReference {4.3}{Discretizing the differential form of the PDE}}{25}}
+\newlabel{poisson_differential_intro}{{\M@TitleReference {4.4}{Discretizing the differential form of the PDE}}{25}}
 \citation{tum}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Deriving the Poisson equation through diffusion processes}{26}}
-\newlabel{heat_equation_integral}{{\M@TitleReference {4.4}{Deriving the Poisson equation through diffusion processes}}{26}}
-\newlabel{heat_equation_differential}{{\M@TitleReference {4.5}{Deriving the Poisson equation through diffusion processes}}{26}}
-\newlabel{heat_equation_differential_constant}{{\M@TitleReference {4.6}{Deriving the Poisson equation through diffusion processes}}{26}}
-\newlabel{poisson_equation}{{\M@TitleReference {4.7}{Deriving the Poisson equation through diffusion processes}}{26}}
-\newlabel{poisson_equation_integral}{{\M@TitleReference {4.8}{Deriving the Poisson equation through diffusion processes}}{26}}
+\@writefile{toc}{\contentsline {subsubsection}{Discretizing the integral form of the PDE}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Deriving the heat and Poisson equation through diffusion processes}{26}}
+\newlabel{heat_equation_integral}{{\M@TitleReference {4.5}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
+\newlabel{heat_equation_differential}{{\M@TitleReference {4.6}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
+\newlabel{heat_equation_differential_constant}{{\M@TitleReference {4.7}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
+\newlabel{poisson_equation}{{\M@TitleReference {4.8}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
+\newlabel{poisson_equation_integral}{{\M@TitleReference {4.9}{Deriving the heat and Poisson equation through diffusion processes}}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}Discretizing the Poisson equation by finite volumes}{27}}
+\newlabel{discretizing_poisson}{{\M@TitleReference {4.1.3}{Discretizing the Poisson equation by finite volumes}}{27}}
+\newlabel{poisson_equation_integral_discretized}{{\M@TitleReference {4.10}{Discretizing the Poisson equation by finite volumes}}{27}}
+\newlabel{poisson_matrix_equation}{{\M@TitleReference {4.11}{Discretizing the Poisson equation by finite volumes}}{27}}
 \citation{polygon_mesh_processing}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}Discretizing the Poisson equation}{27}}
-\newlabel{discretizing_poisson}{{\M@TitleReference {4.1.3}{Discretizing the Poisson equation}}{27}}
-\newlabel{poisson_equation_integral_discretized}{{\M@TitleReference {4.9}{Discretizing the Poisson equation}}{27}}
-\newlabel{poisson_matrix_equation}{{\M@TitleReference {4.10}{Discretizing the Poisson equation}}{27}}
-\@writefile{toc}{\contentsline {subsubsection}{Choosing a domain partition and test space}{27}}
 \citation{polygon_mesh_processing}
 \citation{pde_larsson}
+\@writefile{toc}{\contentsline {subsubsection}{Choosing a domain partition and test space}{28}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{28}}
+\newlabel{ellipse_partition}{{\M@TitleReference {4.1}{\relax \fontsize  {8}{9.5}\selectfont  The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{28}}
 \@writefile{toc}{\contentsline {subsubsection}{Results and visualisation}{28}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.4}The notion of a trial function}{28}}
-\newlabel{trial_function}{{\M@TitleReference {4.1.4}{The notion of a trial function}}{28}}
-\newlabel{example_trial_sum}{{\M@TitleReference {4.11}{The notion of a trial function}}{28}}
-\newlabel{poisson_galerkin}{{\M@TitleReference {4.13}{The notion of a trial function}}{29}}
-\citation{ciarlet}
-\@writefile{toc}{\contentsline {subsubsection}{Integrating over trial functions versus integrating over domains}{30}}
-\newlabel{flux_convolution}{{\M@TitleReference {4.14}{Integrating over trial functions versus integrating over domains}}{30}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.5}Implementing FEM for Poisson's equation}{30}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Solving the Stokes equations}{31}}
-\newlabel{steady_stokes_unconstrained}{{\M@TitleReference {4.15}{Solving the Stokes equations}}{31}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Discretizing the vector Poisson equation}{31}}
-\newlabel{discretizing_vector_poisson}{{\M@TitleReference {4.2.1}{Discretizing the vector Poisson equation}}{31}}
-\newlabel{steady_stokes_unconstrained_weak}{{\M@TitleReference {4.16}{Discretizing the vector Poisson equation}}{31}}
-\newlabel{elliptic_bilinear_form}{{\M@TitleReference {4.18}{Discretizing the vector Poisson equation}}{31}}
-\newlabel{elliptic_bilinear_form_matrix}{{\M@TitleReference {4.19}{Discretizing the vector Poisson equation}}{31}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Discretizing the steady Stokes equations}{32}}
-\newlabel{discretizing_steady_stokes}{{\M@TitleReference {4.2.2}{Discretizing the steady Stokes equations}}{32}}
-\newlabel{steady_stokes_weak}{{\M@TitleReference {4.20}{Discretizing the steady Stokes equations}}{32}}
-\newlabel{steady_stokes_weak_notation}{{\M@TitleReference {4.22}{Discretizing the steady Stokes equations}}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.4}From finite volumes to finite elements}{28}}
+\newlabel{trial_function}{{\M@TitleReference {4.1.4}{From finite volumes to finite elements}}{28}}
+\newlabel{example_trial_sum}{{\M@TitleReference {4.12}{From finite volumes to finite elements}}{29}}
+\newlabel{poisson_galerkin}{{\M@TitleReference {4.14}{From finite volumes to finite elements}}{30}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.5}Discretizing Poisson's equation by finite elements}{30}}
+\newlabel{poisson_fem_matrix_equation}{{\M@TitleReference {4.15}{Discretizing Poisson's equation by finite elements}}{30}}
+\@writefile{toc}{\contentsline {subsubsection}{Choosing a test and a trial space}{31}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{31}}
+\newlabel{sparsity_pattern}{{\M@TitleReference {4.2}{\relax \fontsize  {8}{9.5}\selectfont  The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{31}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.6}Implementing the finite element method for Poisson's equation}{32}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Solving the Stokes equations}{32}}
+\newlabel{steady_stokes_unconstrained}{{\M@TitleReference {4.16}{Solving the Stokes equations}}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Discretizing the vector Poisson equation}{32}}
+\newlabel{discretizing_vector_poisson}{{\M@TitleReference {4.2.1}{Discretizing the vector Poisson equation}}{32}}
+\newlabel{steady_stokes_unconstrained_weak}{{\M@TitleReference {4.17}{Discretizing the vector Poisson equation}}{32}}
+\newlabel{elliptic_bilinear_form}{{\M@TitleReference {4.19}{Discretizing the vector Poisson equation}}{32}}
+\newlabel{elliptic_bilinear_form_matrix}{{\M@TitleReference {4.20}{Discretizing the vector Poisson equation}}{33}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Discretizing the steady Stokes equations}{33}}
+\newlabel{discretizing_steady_stokes}{{\M@TitleReference {4.2.2}{Discretizing the steady Stokes equations}}{33}}
+\newlabel{steady_stokes_weak}{{\M@TitleReference {4.21}{Discretizing the steady Stokes equations}}{33}}
+\newlabel{steady_stokes_weak_notation}{{\M@TitleReference {4.23}{Discretizing the steady Stokes equations}}{33}}
 \citation{ham_fem}
-\newlabel{steady_stokes_matrix}{{\M@TitleReference {4.24}{Discretizing the steady Stokes equations}}{33}}
-\@writefile{toc}{\contentsline {subsubsection}{Is this method reasonable?}{33}}
-\@writefile{toc}{\contentsline {subsubsection}{Results and visualisation}{33}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Discretizing the unsteady Stokes equations}{33}}
-\newlabel{discretizing_unsteady_stokes}{{\M@TitleReference {4.2.3}{Discretizing the unsteady Stokes equations}}{33}}
-\newlabel{unsteady_stokes_implicit_euler}{{\M@TitleReference {4.25}{Discretizing the unsteady Stokes equations}}{33}}
+\newlabel{steady_stokes_matrix}{{\M@TitleReference {4.25}{Discretizing the steady Stokes equations}}{34}}
+\@writefile{toc}{\contentsline {subsubsection}{Is this method reasonable?}{34}}
+\@writefile{toc}{\contentsline {subsubsection}{Results and visualisation}{34}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Discretizing the unsteady Stokes equations}{34}}
+\newlabel{discretizing_unsteady_stokes}{{\M@TitleReference {4.2.3}{Discretizing the unsteady Stokes equations}}{34}}
 \citation{approximation_theory}
 \citation{ciarlet}
 \citation{ham_fem}
 \citation{fenics_book}
-\newlabel{unsteady_stokes_implicit_euler_weak}{{\M@TitleReference {4.26}{Discretizing the unsteady Stokes equations}}{34}}
-\@writefile{toc}{\contentsline {subsubsection}{Discretizing the initial condition}{34}}
-\newlabel{initial_velocity_projection}{{\M@TitleReference {4.29}{Discretizing the initial condition}}{34}}
-\newlabel{initial_velocity_projection_linear_system}{{\M@TitleReference {4.30}{Discretizing the initial condition}}{34}}
+\newlabel{unsteady_stokes_implicit_euler}{{\M@TitleReference {4.26}{Discretizing the unsteady Stokes equations}}{35}}
+\newlabel{unsteady_stokes_implicit_euler_weak}{{\M@TitleReference {4.27}{Discretizing the unsteady Stokes equations}}{35}}
+\@writefile{toc}{\contentsline {subsubsection}{Discretizing the initial condition}{35}}
+\newlabel{initial_velocity_projection}{{\M@TitleReference {4.30}{Discretizing the initial condition}}{35}}
+\newlabel{initial_velocity_projection_linear_system}{{\M@TitleReference {4.31}{Discretizing the initial condition}}{35}}
 \citation{tetgen}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Solving non-linear equations}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}A non-linear Poisson equation}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}A non-linear heat equation}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}The Burgers equation}{35}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Implementing finite element methods}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}The Ciarlet definition of a finite element space}{35}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Solving non-linear equations}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}A non-linear Poisson equation}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}A non-linear heat equation}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}The Burgers equation}{36}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Implementing finite element methods}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}The Ciarlet definition of a finite element space}{36}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{37}}

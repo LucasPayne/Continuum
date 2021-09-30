@@ -1,23 +1,30 @@
 % The Finite Element Method
 
-\section{Introduction}
+\section{Introduction: Solving Poisson's equation}
 % <<<
+
+--- Finite element method.
 
 % --- Change: Introduce Poisson's equation first, then give the FDM example for the Poisson equation. Then solve Poisson by FEM.
 
 Among the fundamental PDEs
 are the heat equation
-    $$\Part{u}{t} = \Delta u + g$$
+    $$\Part{h}{t} = \Delta h + g$$
 and the Poisson equation
 \begin{equation}\label{poisson_compact}
-    -\Delta u = g.
+    -\Delta h = g.
 \end{equation}
 The latter can be thought of as the steady-state version of the former. The solution of a Poisson problem will be a crucial component
-for the solution of the Stokes equations, and since Poisson's equation is likely the simplest non-trivial PDE, it seems ideal to start by discussing
-discretization methods for the Poisson equation \eqref{poisson_compact} in particular.
+of the solution of the Stokes equations. It seems ideal to start by discussing
+discretization methods for the Poisson equation \eqref{poisson_compact} in particular,
+as it is likely the simplest non-trivial PDE.
+The focus here is on the Dirichlet problem
+\begin{equation}\label{poisson_dirichlet_problem}
+    -\Delta h = g, \quad \left.h\right|_{\Gamma} = h_\Gamma,
+\end{equation}
+where $\Gamma$ is the boundary of the domain.
 
-
-\subsection{Ideas for discretization}
+\subsection{Discretizing the differential versus integral form}
 \subsubsection{Discretizing the differential form of the PDE}
 It is a theorem of Gauss that in Euclidean space $\mathbb{R}^3$ we have
 \begin{equation}\label{gauss_euclidean_divergence}
@@ -25,9 +32,9 @@ It is a theorem of Gauss that in Euclidean space $\mathbb{R}^3$ we have
 \end{equation}
 and we get \eqref{poisson_compact} in the form
 \begin{equation}\label{poisson_differential_intro}
-    -\left(\frac{\partial^2 u}{\partial x^2}
-           +\frac{\partial^2 u}{\partial y^2}
-           +\frac{\partial^2 u}{\partial z^2}\right) = g.
+    -\left(\frac{\partial^2 h}{\partial x^2}
+           +\frac{\partial^2 h}{\partial y^2}
+           +\frac{\partial^2 h}{\partial z^2}\right) = g.
 \end{equation}
 Thinking about \eqref{poisson_differential_intro} leads to the finite difference method, historically the first and
 still very important in applications.
@@ -72,12 +79,14 @@ Finite element methods, and more generally Galerkin methods, live comfortably in
 and the calculus of variations.
 To continue with this idea, we must write the Poisson equation \eqref{poisson_compact} in integral form.
 
-\subsection{Deriving the Poisson equation through diffusion processes}
+\subsection{Deriving the heat and Poisson equation through diffusion processes}
 % <<<
+The Poisson equation \eqref{poisson_compact} can be thought of as the steady state of some diffusion process with a source term $g$,
+although this need not be its literal physical interpretation.
 A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration. We can intuitively think of a diffusion as a
 progressive ``blurring''
 such as in a camera defocus, and in fact many common image processing techniques use diffusion PDEs from physics \cite{tum}. We will stick with
-the notion of temperature $h$ as the diffused quantity.
+the notion of ``temperature'' $h$ as the diffused quantity.
 \textit{Fick's law of diffusion} is a constitutive relation giving the bulk flux of temperature $h$ as proportional to the negative gradient:
     $$hj = -\mu\nabla h,$$
 where $\mu$ is called the diffusion coefficient.
@@ -97,23 +106,24 @@ If we further assume that the diffusion coefficient $\mu$ is constant, we get
 which is the standard heat equation.
 The steady-state heat equation is then
 \begin{equation}\label{poisson_equation}
-    -\Delta h = f,
+    -\Delta h = g,
 \end{equation}
-where we let $f = s/\mu$ in the above. Equation \eqref{poisson_equation} is called the Poisson equation,
-which models steady-state diffusion processes and can be used to calculate gravitational or electrostatic potential fields.
+where we let $g = s/\mu$ in the above.
+This completes the derivation of the Poisson equation \eqref{poisson_compact}.
+% which models steady-state diffusion processes and can be used to calculate gravitational or electrostatic potential fields.
 In integral form, ``undoing'' the application of Stokes' theorem above, the Poisson equation is
 \begin{equation}\label{poisson_equation_integral}
-    \int_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} f\,dx.
+    \int_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} g\,dx \quad \text{for all control volumes $\Omega_0$.}
 \end{equation}
 Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
-as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount created by the source function.
+as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount introduced into $\Omega_0$ by the source function.
 This form will be the most convenient for our numerical methods.
 % >>>
 
-\subsection{Discretizing the Poisson equation}\label{discretizing_poisson}
+\subsection{Discretizing the Poisson equation by finite volumes}\label{discretizing_poisson}
 % <<<
 Equation \eqref{poisson_equation_integral} is quantified over arbitrary control volumes $\Omega_0$.
-A simple idea is to break the domain $\Omega$ up into small cells $\Omega_1,\cdots,\Omega_n$, and check that the flux integral holds over each of these.
+A simple idea is to break the domain $\Omega$ up into small cells $\Omega_1,\cdots,\Omega_n$ (hence ``finite volumes''), and check that the flux integral holds over each of these.
 We will then have $n$ equations on $h$. As this system will be underdetermined ($h$ has infinite degrees of freedom), we must
 restrict $h$ to what we will call a ``test space'',
     $$\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.$$
@@ -121,11 +131,11 @@ The basis functions $\phi_i$ should generate a ``good'' space of approximations,
 such that our linear system is non-singular.
 We then have a discrete system of equations
 \begin{align*}
-    \int_{\pom_j} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right)\cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
+    \int_{\pom_j} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right)\cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
 \end{align*}
 By linearity, to emphasize the separate integrals that need to be computed, the above equation can be written as
 \begin{equation}\label{poisson_equation_integral_discretized}
-    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
+    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
 \end{equation}
 We see here that there must be some restrictions on the $\phi_i$.
 Formally, our basis functions must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
@@ -142,24 +152,35 @@ the majority of \eqref{poisson_equation_integral_discretized} to give a matrix s
             \end{bmatrix}
     \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
     =
-    \begin{bmatrix} \int_{\om_1}f\,dx \\ \int_{\om_2}f\,dx \\ \vdots \\ \int_{\om_{n-1}}f\,dx \\ \int_{\om_n}f\,dx \end{bmatrix}
-    = \hat{f}.
+    \begin{bmatrix} \int_{\om_1}g\,dx \\ \int_{\om_2}g\,dx \\ \vdots \\ \int_{\om_{n-1}}g\,dx \\ \int_{\om_n}g\,dx \end{bmatrix}
+    = \hat{g}.
 \end{equation}
+This system is solved for the coefficients of combination for the test functions, $\hat{h} = (h_1 \cdots h_n)^T$.
+The solution is then denoted $\Phi\cdot\hat{h} = h_1\Phi_1 + \cdots + h_n\Phi_n$.
 If our domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
 In all cases we have a conservative system of balanced fluxes, but it is another question whether our approximation
-$\Phi\hat{h}$ is good.
+$\Phi\cdot\hat{h}$ is good.
 
 \subsubsection{Choosing a domain partition and test space}
 Possibly the simplest scheme is to triangulate $\Omega$ as
-    $\Omega = \biguplus T_i$
-such that we have $n$ nodal points.
+    $\bigcup T_i,$
+such that we have $n$ nodal points. The boundary of $\Omega$ is approximated as piecewise linear.
 Each nodal point $p_i$ will be associated with a piecewise ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
-$0$ at its neighbours.
+$0$ at its neighbours. An example decomposition for an ellipse-shaped domain is shown in figure \ref{ellipse_partition}.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.53\linewidth]{figures/hat.png}
+    \end{center}
+    \caption{\scriptsize
+        The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
+        The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$.
+    }
+    \label{ellipse_partition}
+\end{figure}
+
+
 
 As we typically have more triangles than vertices, we cannot use the $T_i$ as our domain partition. However, we may
 associate to each $p_i$ a domain $\Omega_i$ called the \textit{Voronoi cell}.
@@ -170,7 +191,9 @@ associate to each $p_i$ a domain $\Omega_i$ called the \textit{Voronoi cell}.
 
 This scheme has found some success, especially in the domain of geometry processing \cite{polygon_mesh_processing}.
 By Stokes' theorem, the matrix $A$ in \eqref{poisson_matrix_equation} can be thought of as a negative discrete Laplacian.
-If we compute these integrals, we will find a very simple closed form for the entries of $A$.
+If we compute these integrals, we will find a very simple closed form for the entries of $A$:
+
+$$\text{cotan formula.}$$
 
 In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
 applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
@@ -183,13 +206,15 @@ We have worked through an instance of a \textit{finite volume method} \cite{pde_
 Finite volume methods are characterised by an exact domain partition and computation of flux integrals.
 Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
 % >>>
-\subsection{The notion of a trial function}\label{trial_function}
-% <<<
+\subsection{From finite volumes to finite elements}\label{trial_function}
+The alternative ``finite element'' approach is directly related to the ``finite volumes'' described above. While each finite volume
+had a direct geometric meaning (as a small cell in which a certain test flux integral is taken), the geometric meaning of a ``finite element''
+requires slightly more thought, although it will be seen to be the same idea in disguise.
 The matrix equation \eqref{poisson_matrix_equation} consists of linear equations
 \begin{align*}
     \int_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
     =
-    \int_{\om_1}f\,dx,
+    \int_{\om_1}g\,dx\quad\text{(for $j=1$)},
 \end{align*}
 and so on. We cannot compute flux integrals
 over all arbitrary control volumes, but we can take a number of ``trial'' flux integrals over the finite number of cells $\Omega_i$.
@@ -200,9 +225,9 @@ For example,
     +
     \int_{\pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
     =
-    \int_{\om_1}f\,dx
+    \int_{\om_1}g\,dx
     +
-    \int_{\om_2}f\,dx
+    \int_{\om_2}g\,dx
 \end{equation}
 must hold. At first sight, \eqref{example_trial_sum} cannot directly be interpreted as a statement about a ``flux integral'', but rather about a sum
 of flux integrals. However, a key idea is to regard \eqref{example_trial_sum} as a flux integral over a \textit{formal sum} of domains,
@@ -211,9 +236,9 @@ We now have the equation
 \begin{equation}
     \int_{\pom_1 + \pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
     =
-    \int_{\om_1 + \om_2}f\,dx.
+    \int_{\om_1 + \om_2}g\,dx.
 \end{equation}
-Formally $\Omega_1 + \Omega_2$ is called a \textit{chain}. For example, we may visualise $\Omega_1 + 2\Omega_2 + 0.5\Omega_4$ as:
+In differential geometry $\Omega_1 + \Omega_2$ is called a \textit{chain}. For example, we may visualise $\Omega_1 + 2\Omega_2 + 0.5\Omega_4$ as:
 
 \vskip 0.2in
 (draw this)
@@ -242,15 +267,15 @@ Notably, we do not need $\Psi$ to be a space of formal sums of domains.
 The Poisson equation is discretised over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
 which we repeat here:
 \begin{align*}
-    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
+    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
 \end{align*}
 Applying Stokes' theorem, we get
 \begin{align*}
-    \sum_{i=1}^n h_i\int_{\om_j} -\Delta \phi_i \,dx = \int_{\om_j} f\,dx,\quad j=1,\cdots,n.
+    \sum_{i=1}^n h_i\int_{\om_j} -\Delta \phi_i \,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
 \end{align*}
 We can think of these integrals as over the \textit{entire domain} $\Omega$, giving the form
 \begin{align*}
-    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i\cdot \chi(\om_j)\,dx = \int_{\om} f\cdot\chi(\om_j)\,dx,\quad j=1,\cdots,n.
+    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i\cdot \chi(\om_j)\,dx = \int_{\om} g\cdot\chi(\om_j)\,dx,\quad j=1,\cdots,n.
 \end{align*}
 where $\chi(\om_j)$ is the indicator function of $\om_j$,
 \begin{align*}
@@ -259,136 +284,177 @@ where $\chi(\om_j)$ is the indicator function of $\om_j$,
         1 &\text{if $x \notin \om_j$.}\\
         \end{array}\right.
 \end{align*}
-Note that we can now think of our trial space $\Psi$ as a span of functions, instead of a span of domains:
+We can now think of our trial space $\Psi$ as a span of functions, instead of a span of domains:
     $$\Psi = \text{span}\left\{\chi(\Omega_1),\cdots,\chi(\Omega_n)\right\}.$$
-Now we can instead let
+Now, as the trial space is just a regular function space, we could instead let
     $$\Psi = \text{span}\left\{\psi_1,\cdots,\psi_n\right\}$$
 where the $\psi_j$
 need not be the indicator functions of a domain partition. We now have the system of equations
 \begin{align*}
-    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i \psi_j\,dx = \int_{\om} f\psi_j\,dx,\quad j=1,\cdots,n.
+    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i \psi_j\,dx = \int_{\om} g\psi_j\,dx,\quad j=1,\cdots,n.
 \end{align*}
-By integration by parts we have
+By integration by parts we have the system of equations
 \begin{equation}\label{poisson_galerkin}
-    \sum_{i=1}^n h_i\int_{\om} -\nabla \phi_i \cdot \nabla \psi_j\,dx = \int_{\om} f\psi_j\,dx,\quad j=1,\cdots,n,
+    \sum_{i=1}^n h_i\int_{\om} \nabla \phi_i \cdot \nabla \psi_j\,dx = \int_{\om} g\psi_j\,dx,\quad j=1,\cdots,n,
 \end{equation}
 and we see that we still only require the $\phi_i$ to be in $H^1(\Omega)$.
-We can see that equation \eqref{poisson_galerkin} is very similar to the exact fluxes in \eqref{poisson_equation_integral_discretized}.
+We can see that equation \eqref{poisson_galerkin} is very similar to the exact fluxes in \eqref{poisson_equation_integral_discretized},
+and indeed \eqref{poisson_galerkin} gives a discrete linear system in much the same way.
 There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred convolution'' of flux integrals.
 
-\subsubsection{Integrating over trial functions versus integrating over domains}
-The reasoning here is in the spirit of Green's functions.
-While this is more readily formalised with the notion of a distribution, or generalised function, we will work with the Dirac delta function,
-defined by
-\begin{align*}
-    \int_{\omn} \delta_y\,dx = 
-    \left\{\begin{array}{lr}
-        1 &\text{if $y \in \omn$}\\
-        0 &\text{otherwise}.\\
-        \end{array}\right.
-\end{align*}
-For example, possibly under some regularity assumptions, we may represent a trial function $\psi_j$ on $\Omega$ as
-    $$f = \int_\Omega \delta_x f(x)\,dx,$$
-which we may call ``Riemann-integral-like''.
-We may instead represent $\psi_j$ in a ``Lebesgue-integral-like'' way by defining
-    $$L_y(\psi_j) \coloneqq \left\{z \in \Omega \mid \psi_j(z) = y\right\}$$
-to be a level set of $\psi_j$, the points of $\Omega$ for which $\psi_j = y$. We can then express $\psi_j$ as
-    $$\psi_j = \int_{-\infty}^\infty \left[\int_{L_y(\psi_j)} y\delta_x \,dx\right]\,dy.$$
-This gives $\psi_j$ as the totality of its level sets.
-For example, if we let $\Psi$ be spanned by the hat functions on some triangulation, each hat function $\psi_j$
-can be thought of as a totality of level sets culminating in the point-set of $\psi_j(p_j) = 1$.
+--- Mention the weak form, the above is an alternative motivation using the discrete equations rather than
+variational methods with the original PDE.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+% \subsubsection{Integrating over trial functions versus integrating over domains}
+% % <<<
+% The above construction (generalising a finite-volume flux integral to a finite-element ``blurred flux'' integral) is further investigated
+% below.
+% We will work with the Dirac delta ``function'' (which is rather a distribution, or generalised function),
+% defined by
+% \begin{align*}
+%     \int_{\omn} \delta_y\,dx = 
+%     \left\{\begin{array}{lr}
+%         1 &\text{if $y \in \omn$}\\
+%         0 &\text{otherwise}.\\
+%         \end{array}\right.
+% \end{align*}
+% For example, possibly under some regularity assumptions, we may represent a trial function $\psi_j$ on $\Omega$ as
+%     $$f = \int_\Omega \delta_x f(x)\,dx,$$
+% which could be called ``Riemann-integral-like''.
+% We may instead represent $\psi_j$ in a ``Lebesgue-integral-like'' way by defining
+%     $$L_y(\psi_j) \coloneqq \left\{z \in \Omega \mid \psi_j(z) = y\right\}$$
+% to be a level set of $\psi_j$, the points of $\Omega$ for which $\psi_j = y$. We can then express $\psi_j$ as
+%     $$\psi_j = \int_{-\infty}^\infty \left[\int_{L_y(\psi_j)} y\delta_x \,dx\right]\,dy.$$
+% This gives $\psi_j$ as the totality of its level sets.
+% For example, if we let $\Psi$ be spanned by the hat functions on some triangulation, each hat function $\psi_j$
+% can be thought of as a totality of level sets culminating in the point-set of $\psi_j(p_j) = 1$.
+% 
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+% 
+% The discretised Poisson equation \eqref{poisson_galerkin} involves an integral over $\nabla \phi_i \cdot \nabla \psi_j$,
+% and we can compute this as
+% \begin{equation}\label{flux_convolution}
+% \begin{split}
+%     \int_{\om} \nabla \phi_i \cdot \nabla \psi_j\,dx
+%         &= \int_{-\infty}^\infty \int_{\om} \nabla\phi_i \cdot \nabla\left[\int_{L_y(\psi_j)} y\delta_z \,dz\right]\,dx\,dy\\
+%         &= \int_{-\infty}^\infty y \int_{L_y(\psi_j)} \nabla\phi_i \cdot \hat{n}\,dx\,dy.
+% \end{split}
+% \end{equation}
+% We have this final equality by noting that the gradient of $\psi_j$ at $x$, where $\psi_j(x) = y$, is orthogonal to the level set $L_y{(\psi_j)}$,
+% and has length $y$:
+% 
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+% 
+% We can think of the ``flux trial'' \eqref{poisson_galerkin} as involving ``blurred fluxes'' as in \eqref{flux_convolution}.
+% For example, if we let $\Phi = \Psi$ be the set of hat functions on some triangulation
+% of $\Omega$, then form and solve the matrix system, we get a generally non-conservative system of fluxes. We have lost conservativeness
+% by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence: in this case,
+% the linear system will be symmetric-positive-definite, and stably solvable by, for example, conjugate gradients.
+% %>>>
 
-The discretised Poisson equation \eqref{poisson_galerkin} involves an integral over $\nabla \phi_i \cdot \nabla \psi_j$,
-and we can compute this as
-\begin{equation}\label{flux_convolution}
-\begin{split}
-    \int_{\om} \nabla \phi_i \cdot \nabla \psi_j\,dx
-        &= \int_{-\infty}^\infty \int_{\om} \nabla\phi_i \cdot \nabla\left[\int_{L_y(\psi_j)} y\delta_z \,dz\right]\,dx\,dy\\
-        &= \int_{-\infty}^\infty y \int_{L_y(\psi_j)} \nabla\phi_i \cdot \hat{n}\,dx\,dy.
-\end{split}
+% >>>
+\subsection{Discretizing Poisson's equation by finite elements}
+
+Equation \eqref{poisson_galerkin} gives a discrete linear system
+\renewcommand{\integralentry}[2]{\int_{\Omega}\nabla\phi_{#2} \cdot \nabla\psi_{#1}\,dx}
+\begin{equation}\label{poisson_fem_matrix_equation}
+    A\hat{h} = \begin{bmatrix}
+            \integralentry{1}{1} & \cdots & \integralentry{1}{n} \\
+            \vdots & & \vdots \\
+            \integralentry{n}{1} & \cdots & \integralentry{n}{n}
+            \end{bmatrix}
+    \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
+    =
+    \begin{bmatrix} \int_{\om}g\psi_1\,dx \\ \int_{\om}g\psi_2\,dx \\ \vdots \\ \int_{\om}g\psi_{n-1}\,dx \\ \int_{\om}g\psi_{n}\,dx \end{bmatrix}
+    = \hat{g}.
 \end{equation}
-We have this final equality by noting that the gradient of $\psi_j$ at $x$, where $\psi_j(x) = y$, is orthogonal to the level set $L_y{(\psi_j)}$,
-and has length $y$:
+This has quite a similar form to \eqref{poisson_matrix_equation}, but with boundary and cell integrals replaced by integrals over the entire
+domain.
+Again, if our domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+are chosen well, this linear system will be non-singular and hopefully well-conditioned.
 
-\vskip 0.2in
+\subsubsection{Choosing a test and a trial space}
+Notice that the integrals in \eqref{poisson_fem_matrix_equation}, in contrast to \eqref{poisson_matrix_equation},
+are over the \textit{entire domain}. It may be very costly in general to construct such a matrix, requiring
+the computation of many large integrals. The finite element method, in particular, solves this problem
+by ``localising'' basis functions of the test and trial spaces. Each basis test function $\phi_i$
+has \textit{compact support}, meaning that there is some compact subdomain $D^\phi_i$ such that
+\begin{align*}
+    \phi_i(x) =
+    \left\{\begin{array}{lr}
+        \phi_i(x) &\text{if $x \in D^\phi_i$}\\
+        0 &\text{otherwise},\\
+    \end{array}\right.
+\end{align*}
+and similarly each basis trial function $\psi_i$ has some corresponding compact subdomain $D^\psi_i$ such that
+\begin{align*}
+    \psi_i(x) =
+    \left\{\begin{array}{lr}
+        \psi_i(x) &\text{if $x \in D^\psi_i$}\\
+        0 &\text{otherwise}.\\
+    \end{array}\right.
+\end{align*}
+This has the effect of reducing the domain of each integral in \eqref{poisson_fem_matrix_equation}, as
+    $$\int_\Omega \nabla\phi_i \cdot \nabla\psi_j\,dx = \int_{D_i^\phi \cap D_j^\psi} \nabla\phi_i \cdot \nabla\psi_j\,dx. $$
+With well-localised basis functions, the intersection will be
+    $$D_i^\phi \cap D_j^\psi = \emptyset$$
+for most indices $i,j$, implying the matrix \eqref{poisson_fem_matrix_equation} will be \textit{sparse}. In practice this allows
+the use of iterative or graph-based sparse matrix algorithms which can be hugely more efficient than dense matrix computations of the same size.
+The size of the matrix will increase quadratically with the number of nodes in the discretization, while the number of nonzeros
+typically increases linearly.
+A typical sparsity pattern for a finite element problem is shown in figure \ref{sparsity_pattern}.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.26\linewidth]{figures/sparsity_pattern_no_text.png}
+    \end{center}
+    \caption{\scriptsize
+        The sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
+        The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$.
+    }
+    \label{sparsity_pattern}
+\end{figure}
+
+
+Similar to the hat-functions-and-Voronoi-cells decomposition described for finite volumes,
+the simplest scheme for the finite element Poisson equation is to triangulate $\Omega$ as
+    $\bigcup T_i$
+such that we have $n$ nodal points.
+Each nodal point $p_i$ will be associated with a piecewise ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
+$0$ at its neighbours. Now, diverging from the previous finite volume method, the simplest thing we could do is let the trial functions be the same
+as the test functions, $\psi_i = \phi_i$. This trivially gives a one-to-one correspondence between the $\phi_i$ and the $\psi_i$, which will lead
+to a well-formed linear system.
+
+\vskip 0.1in
 (draw this)
-\vskip 0.2in
+\vskip 0.1in
 
-We can think of the ``flux trial'' \eqref{poisson_galerkin} as involving ``blurred fluxes'' as in \eqref{flux_convolution}.
-For example, if we let $\Phi = \Psi$ be the set of hat functions on some triangulation
-of $\Omega$, then form and solve the matrix system, we get a generally non-conservative system of fluxes. We have lost conservativeness
-by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence: in this case,
-the linear system will be symmetric-positive-definite, and stably solvable by, for example, conjugate gradients.
+% It is at this stage that, in a finite volume method, we would choose a test space and a cell decomposition in one-to-one correspondence
+% with a basis of the test space.
+% In that case,
+% there was the obvious candidate of a polygonal cell per-vertex.
+% However, there is a vast array of possible Galerkin ``decompositions'' of the domain.
+% A ``finite element method'', in particular, uses test and trial basis functions of \textit{compact support}.
 
-\subsection{Implementing FEM for Poisson's equation}
+% We have so far worked up to an instance of a \textit{finite element method}.
+% Finite element methods are characterised by a test space $\Phi$ and trial space
+% $\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
+% some Sobolev space, constructed over a domain tessellation.
 
-We have so far worked up to an instance of a \textit{finite element method}.
-Finite element methods are characterised by a test space $\Phi$ and trial space
-$\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
-some Sobolev space, constructed over a domain tessellation. We will formally define a ``finite element method'', following Ciarlet \cite{ciarlet},
-after one more example, the steady Stokes equations.
+\subsection{Implementing the finite element method for Poisson's equation}
 
 \begin{center}
 \includegraphics[width=\linewidth]{figures/laplace/laplace.png}
 \end{center}
 
 
-% \subsubsection{Duality and differential geometry}
-% Again, the trial space $\Psi$ needs not be formed by indicator functions of domains.
-% To see this more clearly, we can emphasize the duality between chains and the functions integrated over them by using inner product notation, or ``duality pairing'':
-% \begin{equation}
-%     \inner{-\nabla \left(\sum_{i=1}^n h_i\phi_i\right), \partial\left(\sum_{i=1}^n \omega_i \Omega_i\right)^\perp}
-%     =
-%     \inner{f, \sum_{i=1}^n \omega_i \Omega_i}.
-% \end{equation}
-% The duality pairing is an integral over the whole domain, where pieces of chains (such as the ``surface elements'' in a flux integral) are
-% paired with pieces of function data of the same dimension (such as the heat gradient, or the source function).
-% We can write our original (weak) Poisson problem \eqref{poisson_equation_integral} in this notation as
-% \begin{align*}
-%     \inner{-\nabla h, \pomn^\perp}
-%     =
-%     \inner{f, \omn}.
-% \end{align*}
-% for arbitrary control volumes $\Omega_0$. The $\perp$ symbol denotes an orthogonal complement, as
-% we would like to pair gradient vectors with \textit{normals} to the boundary rather than the boundary elements themselves,
-% as we are calculating total fluxes. More formally, in differential
-% geometry, this should be denoted by the ``Hodge star'' operator $\star$, which we will use from now on, as
-% it will be convenient to think of the orthogonal complement as an operator acting by multiplication:
-% \begin{equation}\label{poisson_duality}
-%     \inner{-\nabla h, \star\pomn}
-%     =
-%     \inner{f, \omn}.
-% \end{equation}
-% By Stokes' theorem we have the form
-% \begin{align*}
-%     \inner{-\nabla \cdot \nabla h, \omn}
-%     =
-%     \inner{f, \omn}.
-% \end{align*}
-% The duality pairing is in fact an inner product, so we see that operator
-% $\star\partial$ is \textit{adjoint} to $\nabla\cdot$.
-% This is exactly what Stokes' theorem was created to say, albeit expressed in a more abstract language.
-% We may ask why we must restrict the chain to be an indicator function. Why not ``integrate against'' some other function,
-% \begin{align*}
-%     \inner{-\nabla \cdot \nabla h, \psi}
-%     =
-%     \inner{f, \psi}?
-% \end{align*}
-% Yet does the form
-% \begin{align*}
-%     \inner{-\nabla h, \star\partial \psi}
-%     =
-%     \inner{f, \psi}
-% \end{align*}
-% make sense?
-% >>>
-% >>>
-
 \section{Solving the Stokes equations}
+--- Lid-driven cavity flow.
+
 % <<<
 % Introduction 
 % <<<

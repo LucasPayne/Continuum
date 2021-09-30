@@ -1,0 +1,51 @@
+
+% \subsubsection{Duality and differential geometry}
+% Again, the trial space $\Psi$ needs not be formed by indicator functions of domains.
+% To see this more clearly, we can emphasize the duality between chains and the functions integrated over them by using inner product notation, or ``duality pairing'':
+% \begin{equation}
+%     \inner{-\nabla \left(\sum_{i=1}^n h_i\phi_i\right), \partial\left(\sum_{i=1}^n \omega_i \Omega_i\right)^\perp}
+%     =
+%     \inner{f, \sum_{i=1}^n \omega_i \Omega_i}.
+% \end{equation}
+% The duality pairing is an integral over the whole domain, where pieces of chains (such as the ``surface elements'' in a flux integral) are
+% paired with pieces of function data of the same dimension (such as the heat gradient, or the source function).
+% We can write our original (weak) Poisson problem \eqref{poisson_equation_integral} in this notation as
+% \begin{align*}
+%     \inner{-\nabla h, \pomn^\perp}
+%     =
+%     \inner{f, \omn}.
+% \end{align*}
+% for arbitrary control volumes $\Omega_0$. The $\perp$ symbol denotes an orthogonal complement, as
+% we would like to pair gradient vectors with \textit{normals} to the boundary rather than the boundary elements themselves,
+% as we are calculating total fluxes. More formally, in differential
+% geometry, this should be denoted by the ``Hodge star'' operator $\star$, which we will use from now on, as
+% it will be convenient to think of the orthogonal complement as an operator acting by multiplication:
+% \begin{equation}\label{poisson_duality}
+%     \inner{-\nabla h, \star\pomn}
+%     =
+%     \inner{f, \omn}.
+% \end{equation}
+% By Stokes' theorem we have the form
+% \begin{align*}
+%     \inner{-\nabla \cdot \nabla h, \omn}
+%     =
+%     \inner{f, \omn}.
+% \end{align*}
+% The duality pairing is in fact an inner product, so we see that operator
+% $\star\partial$ is \textit{adjoint} to $\nabla\cdot$.
+% This is exactly what Stokes' theorem was created to say, albeit expressed in a more abstract language.
+% We may ask why we must restrict the chain to be an indicator function. Why not ``integrate against'' some other function,
+% \begin{align*}
+%     \inner{-\nabla \cdot \nabla h, \psi}
+%     =
+%     \inner{f, \psi}?
+% \end{align*}
+% Yet does the form
+% \begin{align*}
+%     \inner{-\nabla h, \star\partial \psi}
+%     =
+%     \inner{f, \psi}
+% \end{align*}
+% make sense?
+% >>>
+% >>>

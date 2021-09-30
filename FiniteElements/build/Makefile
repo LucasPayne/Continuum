@@ -77,17 +77,14 @@ install/local/fast: preinstall/fast
 	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local/fast
 
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/local/bin/cmake -P cmake_install.cmake
-.PHONY : install
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
 
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/local/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
 
 # Special rule for the target install/strip
 install/strip: preinstall
@@ -101,15 +98,6 @@ install/strip/fast: preinstall/fast
 	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
@@ -119,6 +107,18 @@ edit_cache:
 # Special rule for the target edit_cache
 edit_cache/fast: edit_cache
 .PHONY : edit_cache/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
@@ -186,6 +186,19 @@ HeatSolver: cmake_check_build_system
 HeatSolver/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
 .PHONY : HeatSolver/fast
+
+#=============================================================================
+# Target rules for targets named discretization_figure
+
+# Build rule for target.
+discretization_figure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 discretization_figure
+.PHONY : discretization_figure
+
+# fast build rule for target.
+discretization_figure/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/build
+.PHONY : discretization_figure/fast
 
 #=============================================================================
 # Target rules for targets named basic_application
@@ -391,6 +404,30 @@ LaplaceSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/LaplaceSolver.cpp.s
 .PHONY : LaplaceSolver.cpp.s
 
+discretization_figure.o: discretization_figure.cpp.o
+.PHONY : discretization_figure.o
+
+# target to build an object file
+discretization_figure.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/discretization_figure.cpp.o
+.PHONY : discretization_figure.cpp.o
+
+discretization_figure.i: discretization_figure.cpp.i
+.PHONY : discretization_figure.i
+
+# target to preprocess a source file
+discretization_figure.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/discretization_figure.cpp.i
+.PHONY : discretization_figure.cpp.i
+
+discretization_figure.s: discretization_figure.cpp.s
+.PHONY : discretization_figure.s
+
+# target to generate assembly for a file
+discretization_figure.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/discretization_figure.cpp.s
+.PHONY : discretization_figure.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -409,6 +446,7 @@ help:
 	@echo "... LaplaceSolver"
 	@echo "... basic_application"
 	@echo "... cg_sandbox"
+	@echo "... discretization_figure"
 	@echo "... glfw"
 	@echo "... interactive_graphics_context"
 	@echo "... mathematics"
@@ -423,6 +461,9 @@ help:
 	@echo "... LaplaceSolver.o"
 	@echo "... LaplaceSolver.i"
 	@echo "... LaplaceSolver.s"
+	@echo "... discretization_figure.o"
+	@echo "... discretization_figure.i"
+	@echo "... discretization_figure.s"
 .PHONY : help
 
 
