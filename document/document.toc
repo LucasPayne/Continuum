@@ -51,28 +51,29 @@
 \contentsline {subsubsection}{Discretizing the integral form of the PDE}{26}
 \contentsline {subsection}{\numberline {4.1.2}Deriving the heat and Poisson equation through diffusion processes}{26}
 \contentsline {subsection}{\numberline {4.1.3}Discretizing the Poisson equation by finite volumes}{27}
+\contentsline {subsubsection}{The Dirichlet boundary condition}{27}
 \contentsline {subsubsection}{Choosing a domain partition and test space}{28}
 \contentsline {subsubsection}{Results and visualisation}{29}
 \contentsline {subsection}{\numberline {4.1.4}From finite volumes to finite elements}{29}
 \contentsline {subsection}{\numberline {4.1.5}Discretizing Poisson's equation by finite elements}{31}
 \contentsline {subsubsection}{Choosing a test and a trial space}{31}
 \contentsline {subsection}{\numberline {4.1.6}Implementing the finite element method for Poisson's equation}{32}
-\contentsline {subsubsection}{Mesh generation}{32}
+\contentsline {subsubsection}{Mesh generation}{33}
 \contentsline {subsubsection}{Matrix assembly}{33}
 \contentsline {subsubsection}{Numerical linear algebra}{33}
 \contentsline {section}{\numberline {4.2}Solving the Stokes equations}{34}
-\contentsline {subsection}{\numberline {4.2.1}Discretizing the vector Poisson equation}{34}
+\contentsline {subsection}{\numberline {4.2.1}Discretizing the vector Poisson equation}{35}
 \contentsline {subsection}{\numberline {4.2.2}Discretizing the steady Stokes equations}{35}
-\contentsline {subsubsection}{Is this method reasonable?}{36}
+\contentsline {subsubsection}{Is this method reasonable?}{37}
 \contentsline {subsubsection}{Results and visualisation}{37}
 \contentsline {subsection}{\numberline {4.2.3}Discretizing the unsteady Stokes equations}{37}
 \contentsline {subsubsection}{Discretizing the initial condition}{38}
-\contentsline {section}{\numberline {4.3}Solving non-linear equations}{38}
-\contentsline {subsection}{\numberline {4.3.1}A non-linear Poisson equation}{38}
-\contentsline {subsection}{\numberline {4.3.2}A non-linear heat equation}{38}
-\contentsline {subsection}{\numberline {4.3.3}The Burgers equation}{38}
-\contentsline {section}{\numberline {4.4}Implementing finite element methods}{38}
-\contentsline {subsection}{\numberline {4.4.1}The Ciarlet definition of a finite element space}{38}
+\contentsline {section}{\numberline {4.3}Solving non-linear equations}{39}
+\contentsline {subsection}{\numberline {4.3.1}A non-linear Poisson equation}{39}
+\contentsline {subsection}{\numberline {4.3.2}A non-linear heat equation}{39}
+\contentsline {subsection}{\numberline {4.3.3}The Burgers equation}{39}
+\contentsline {section}{\numberline {4.4}Implementing finite element methods}{39}
+\contentsline {subsection}{\numberline {4.4.1}The Ciarlet definition of a finite element space}{39}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}
 \contentsline {chapter}{\chapternumberline {6}Some functional analysis}{43}
 \contentsline {chapter}{Bibliography}{45}

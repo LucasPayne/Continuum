@@ -127,11 +127,32 @@ The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact},
 
 \subsection{Discretizing the Poisson equation by finite volumes}\label{discretizing_poisson}
 % <<<
-Equation \eqref{poisson_equation_integral} is quantified over arbitrary control volumes $\Omega_0$.
-A simple idea is to break the domain $\Omega$ up into small cells $\Omega_1,\cdots,\Omega_n$ (hence ``finite volumes''), and check that the flux integral holds over each of these.
+
+Equation \eqref{poisson_equation_integral} is quantified over control volumes $\Omega_0$.
+These control volumes are in the interior of $\Omega$, as the solution at the boundary $\Gamma$ is specified by the Dirichlet boundary condition
+$\left.h\right|_\Gamma = h_\Gamma$, and there is no flux information across $\Gamma$.
+A simple idea is to choose a finite number of control volumes $\Omega_1,\cdots,\Omega_n$ (hence ``finite volumes''), and check that the flux integral holds over each of these.
 We will then have $n$ equations on $h$. As this system will be underdetermined ($h$ has infinite degrees of freedom), we must
-restrict $h$ to what we will call a ``test space'',
-    $$\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.$$
+restrict $h$ to a finite-dimensional space of approximations $\Phi^*$.
+
+
+\subsubsection{The Dirichlet boundary condition}
+The solution is completely known on $\Gamma$ by the Dirichlet boundary condition $\left.h\right|_\Gamma = h_\Gamma$.
+However, the finite dimensional space $\Phi^*$ may not be able to exactly represent this boundary function $h_\Gamma$,
+and therefore the first step is to approximate $h_\Gamma$. Choosing some $\phi_\Gamma \in \Phi^*$ with
+    $$\left.\phi_\Gamma\right|_\Gamma \approx h_\Gamma,$$
+we can define an ``interior'' function space
+$$
+    \Phi = \left\{h^* \in \Phi^* \mid \left.h\right|_\Gamma = 0 \right\},
+$$
+and the approximate solution $\tilde{h}$ will then be
+$$
+    \tilde{h} = \phi + \phi_\Gamma
+$$
+for some $\phi \in \Phi$.
+In the finite element literature the space $\Phi$ is called the test space.
+
+
 The basis functions $\phi_i$ should generate a ``good'' space of approximations,
 such that the resulting linear system is non-singular.
 We then have a discrete system of equations
@@ -161,6 +182,8 @@ the majority of \eqref{poisson_equation_integral_discretized} to give a matrix s
     = \hat{g}.
 \end{equation}
 This system is solved for the coefficients of combination for the test functions, $\hat{h} = (h_1 \cdots h_n)^T$.
+
+
 The solution is then denoted $\Phi\cdot\hat{h} = h_1\Phi_1 + \cdots + h_n\Phi_n$.
 If the domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
@@ -524,21 +547,21 @@ and store the value as entry $(i,j)$ of the matrix.
 
     $\text{Coefficients} \leftarrow \{\}$\;\tcc*[l]{This will contain triples $(i,j,\text{value})$ used to create the sparse matrix.}
 
-    \For{Triangle $T_k$ in the domain partition}{
+    \For{each triangle $T_k$ in the domain partition}{
         $A \leftarrow \text{Area}(T_k)$\;
-        $L \leftarrow \text{zero matrix}$ \tcc*[l]{The local stiffness matrix.}
         $P,Q,R \coloneqq \text{The vertices of $T_k$}$\;
         $J \leftarrow \begin{bmatrix} Q_x-P_x & R_x-P_x \\ Q_y-P_y & R_y - P_y \end{bmatrix}$ \tcc*[l]{Jacobian of the reference transform.}
         $\text{Gradients} \leftarrow \left\{\begin{bmatrix} -1 & -1 \end{bmatrix},
                                             \begin{bmatrix} 1 & 0 \end{bmatrix},
                                             \begin{bmatrix} 0 & 1 \end{bmatrix}\right\}$\;
+        $L \leftarrow \text{zero matrix}$ \tcc*[l]{The local stiffness matrix.}
         \For{$l,m=1,\cdots,3$}{
 	    $L[l,m] \leftarrow A\left(\text{Gradients}[l] J^{-1}\right)\cdot\left(\text{Gradients}[m]J^{-1}\right)$\;
         }
         \For{$l,m=1,\cdots,3$}{
             \If{$p_{I(l)}$ is on the boundary}{skip\;}
             \If{$p_{I(m)}$ is on the boundary}{
-                $\hat{b} \leftarrow \hat{b} - u_\Gamma(p_{I(m)})L(I(l), I(m))$\;
+                $\hat{b}[I(l)] \leftarrow \hat{b}[I(l)] - u_\Gamma(p_{I(m)})L(l, m)$\;
             }
             \Else{
                 $\text{Coefficients} \leftarrow \text{Coefficients} \cup \left\{(I(l),I(m),L(l,m))\right\}$\;
