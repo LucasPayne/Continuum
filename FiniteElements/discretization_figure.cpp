@@ -16,8 +16,7 @@ using EigenTriplet = Eigen::Triplet<double>;
 
 vec2 curve(float t)
 {
-    // return vec2(0.5+0.2*cos(t)+0.1*t*(2*M_PI-t), 0.5+0.4*sin(t));
-    return vec2(0.5+0.2*cos(t) + 0.1*sin(t), 0.5+0.2*sin(t));
+    return vec2(0.5+0.2*cos(t)+0.1*t*(2*M_PI-t), 0.5+0.4*sin(t));
 }
 
 enum CenterModes {

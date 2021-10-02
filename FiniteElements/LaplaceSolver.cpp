@@ -4,6 +4,10 @@
 #include <Eigen/SparseCore>
 #include <Eigen/SparseLU>
 
+#define BOUNDARY_FIGURE_MODE 1
+
+// float wireframe_thickness = 0.003f;
+float wireframe_thickness = 0.006f;
 
 
 class LaplaceSolver {
@@ -344,7 +348,11 @@ App::App(World &_world) : world{_world}
     controller->angle = -2;
     
     source_force = 0;
+    #if BOUNDARY_FIGURE_MODE == 1
+    mesh_N = 6;
+    #else
     mesh_N = 5;
+    #endif
     solving_mesh = new SolvingMesh(mesh_N);
 }
 
@@ -354,9 +362,18 @@ void App::close()
 
 void App::loop()
 {
-    world.graphics.paint.wireframe(solving_mesh->geom, mat4x4::identity(), 0.003);
+    world.graphics.paint.wireframe(solving_mesh->geom, mat4x4::identity(), wireframe_thickness);
+    #if BOUNDARY_FIGURE_MODE == 1
+    vec3 translate_mesh_duplicate = vec3(0,0,-2.6);
+    world.graphics.paint.wireframe(solving_mesh->geom, mat4x4::translation(translate_mesh_duplicate), wireframe_thickness);
+    #endif
 
     auto solver = LaplaceSolver(solving_mesh->geom);
+    #if BOUNDARY_FIGURE_MODE == 1
+    solver.set_dirichlet_boundary([](double x, double y)->double {
+        return 0.15+exp(-1.6*x*x - 0.3*(y-1)*(y-1));
+    });
+    #else
     solver.set_dirichlet_boundary([](double x, double y)->double {
         // return 1+0.4*sin(8*x + total_time);
         return 1+0.4*sin(8*x);
@@ -364,6 +381,7 @@ void App::loop()
         // return x < 0 ? 1.5 : 0.5;
         // return 0.0;
     });
+    #endif
     solver.set_source([&](double x, double y)->double {
         //return source_force*exp(-5*(x*x+y*y));
         float r = 0.3;
@@ -377,9 +395,16 @@ void App::loop()
     for (auto v : solving_mesh->geom.mesh.vertices()) {
         double u_val = mesh_u[v];
         auto geom_pos = solving_mesh->geom.position[v];
+        #if BOUNDARY_FIGURE_MODE == 1
+        // Don't lift the mesh in the interior (to visualize the boundary approximation).
+        if (v.on_boundary())
+            lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
+        else lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), 0, geom_pos.z());
+        #else
         lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
+        #endif
     }
-    world.graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.003);
+    world.graphics.paint.wireframe(lifted_geom, mat4x4::identity(), wireframe_thickness);
 
     auto lifted_boundary_positions = std::vector<vec3>();
     auto boundary_positions = std::vector<vec3>();
@@ -395,14 +420,34 @@ void App::loop()
     }
     lifted_boundary_positions.push_back(lifted_boundary_positions[0]);
     boundary_positions.push_back(boundary_positions[0]);
+    #if BOUNDARY_FIGURE_MODE == 1
+    auto boundary_positions_shifted = std::vector<vec3>();
+    for (auto p : boundary_positions) boundary_positions_shifted.push_back(p + translate_mesh_duplicate);
+    world.graphics.paint.chain(boundary_positions_shifted, 0.005, vec4(0,0,0,1));
+    #else
     world.graphics.paint.chain(lifted_boundary_positions, 0.005, vec4(0,0,0,1));
     world.graphics.paint.chain(boundary_positions, 0.005, vec4(0,0,0,1));
+    #endif
     // for (int i = 0; i < boundary_positions.size()-1; i++) {
     //     world.graphics.paint.line(boundary_positions[i], lifted_boundary_positions[i], 3, vec4(0.5,0.5,0.5,1));
     // }
     
     if (1) {
         // Draw the exact boundary condition.
+        #if BOUNDARY_FIGURE_MODE == 1
+        int num = 300;
+        auto boundary_condition_loop = std::vector<vec3>(num+1);
+        auto boundary_condition_loop_shifted = std::vector<vec3>(num+1);
+        for (int i = 0; i <= num; i++) {
+            float theta = 2*i*M_PI/num;
+            float c = cos(theta);
+            float s = sin(theta);
+            boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
+            boundary_condition_loop_shifted[i] = vec3(c, 0, s) + translate_mesh_duplicate;
+        }
+        world.graphics.paint.chain(boundary_condition_loop, 0.015, vec4(1,0.6,0.6,1));
+        world.graphics.paint.chain(boundary_condition_loop_shifted, 0.015, vec4(1,0.6,0.6,1));
+        #else
         int num = 300;
         auto boundary_condition_loop = std::vector<vec3>(num+1);
         for (int i = 0; i <= num; i++) {
@@ -411,8 +456,8 @@ void App::loop()
             float s = sin(theta);
             boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
         }
-        // world.graphics.paint.chain(boundary_condition_loop, 4, vec4(0.65,0.65,0.65,1));
         world.graphics.paint.chain(boundary_condition_loop, 0.004, vec4(1,0.6,0.6,1));
+        #endif
     }
 
     float source_force_change_speed = 20.f;
