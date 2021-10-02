@@ -119,101 +119,73 @@
 \@writefile{toc}{\contentsline {section}{\numberline {4.1}Introduction: Solving Poisson's equation}{25}}
 \newlabel{poisson_compact}{{\M@TitleReference {4.1}{Introduction: Solving Poisson's equation}}{25}}
 \newlabel{poisson_dirichlet_problem}{{\M@TitleReference {4.2}{Introduction: Solving Poisson's equation}}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Discretizing the differential versus integral form}{25}}
-\@writefile{toc}{\contentsline {subsubsection}{Discretizing the differential form of the PDE}{25}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Discretizing the differential versus integral form}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Discretizing the differential form of the PDE}{25}}
 \newlabel{gauss_euclidean_divergence}{{\M@TitleReference {4.3}{Discretizing the differential form of the PDE}}{25}}
 \newlabel{poisson_differential_intro}{{\M@TitleReference {4.4}{Discretizing the differential form of the PDE}}{25}}
 \citation{tum}
-\@writefile{toc}{\contentsline {subsubsection}{Discretizing the integral form of the PDE}{26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Deriving the heat and Poisson equation through diffusion processes}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{26}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Deriving the heat and Poisson equation through diffusion processes}{26}}
 \newlabel{heat_equation_integral}{{\M@TitleReference {4.5}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
 \newlabel{heat_equation_differential}{{\M@TitleReference {4.6}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
 \newlabel{heat_equation_differential_constant}{{\M@TitleReference {4.7}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
 \newlabel{poisson_equation}{{\M@TitleReference {4.8}{Deriving the heat and Poisson equation through diffusion processes}}{26}}
 \citation{approximation_theory}
 \newlabel{poisson_equation_integral}{{\M@TitleReference {4.9}{Deriving the heat and Poisson equation through diffusion processes}}{27}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}Discretizing Poisson's equation by finite volumes}{27}}
-\newlabel{discretizing_poisson}{{\M@TitleReference {4.1.3}{Discretizing Poisson's equation by finite volumes}}{27}}
-\@writefile{toc}{\contentsline {subsubsection}{The Dirichlet boundary condition and the test space}{27}}
-\@writefile{toc}{\contentsline {subsubsection}{Forming a linear system}{28}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Discretizing Poisson's equation by finite volumes}{27}}
+\newlabel{discretizing_poisson}{{\M@TitleReference {4.4}{Discretizing Poisson's equation by finite volumes}}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}The Dirichlet boundary condition and the test space}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Forming a linear system}{28}}
 \newlabel{poisson_equation_integral_fvm}{{\M@TitleReference {4.10}{Forming a linear system}}{28}}
 \newlabel{poisson_equation_integral_fvm_knowns_unknowns}{{\M@TitleReference {4.11}{Forming a linear system}}{28}}
 \newlabel{poisson_equation_integral_discretized}{{\M@TitleReference {4.12}{Forming a linear system}}{28}}
 \newlabel{poisson_matrix_equation}{{\M@TitleReference {4.13}{Forming a linear system}}{28}}
-\@writefile{toc}{\contentsline {subsubsection}{Choosing the control volumes and the test space}{28}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}Choosing the test space, boundary approximation, and control volumes}{28}}
+\@writefile{toc}{\contentsline {subsubsection}{The test space}{28}}
 \citation{orourke}
-\citation{polygon_mesh_processing}
-\citation{polygon_mesh_processing}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. }}{29}}
 \newlabel{ellipse_partition}{{\M@TitleReference {4.1}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. }}{29}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. }}{29}}
-\newlabel{cell_decompositions}{{\M@TitleReference {4.2}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. }}{29}}
+\@writefile{toc}{\contentsline {subsubsection}{Approximating the boundary values}{29}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. }}{29}}
+\newlabel{boundary}{{\M@TitleReference {4.2}{\relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. }}{29}}
+\@writefile{toc}{\contentsline {subsubsection}{Choosing a finite number of control volumes}{29}}
+\citation{polygon_mesh_processing}
+\citation{polygon_mesh_processing}
 \citation{pde_larsson}
-\@writefile{toc}{\contentsline {subsubsection}{Results and visualisation}{30}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.4}From finite volumes to finite elements}{30}}
-\newlabel{trial_function}{{\M@TitleReference {4.1.4}{From finite volumes to finite elements}}{30}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. }}{30}}
+\newlabel{cell_decompositions}{{\M@TitleReference {4.3}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. }}{30}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.4}Results and visualisation}{30}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}From finite volumes to finite elements}{30}}
+\newlabel{trial_function}{{\M@TitleReference {4.5}{From finite volumes to finite elements}}{30}}
 \newlabel{example_trial_sum}{{\M@TitleReference {4.14}{From finite volumes to finite elements}}{30}}
-\newlabel{poisson_galerkin}{{\M@TitleReference {4.16}{From finite volumes to finite elements}}{31}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.5}Discretizing Poisson's equation by finite elements}{32}}
+\newlabel{poisson_galerkin}{{\M@TitleReference {4.16}{From finite volumes to finite elements}}{32}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Discretizing Poisson's equation by finite elements}{32}}
 \newlabel{poisson_fem_matrix_equation}{{\M@TitleReference {4.17}{Discretizing Poisson's equation by finite elements}}{32}}
-\@writefile{toc}{\contentsline {subsubsection}{Choosing a test and a trial space}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Choosing a test and a trial space}{32}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{33}}
+\newlabel{sparsity_pattern}{{\M@TitleReference {4.4}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{33}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.7}Implementing the finite element method for Poisson's equation}{33}}
 \citation{polygon_mesh_processing}
 \citation{geometry_central}
 \citation{polygon_mesh_processing_library}
 \citation{openmesh}
 \citation{triangle}
 \citation{orourke}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{33}}
-\newlabel{sparsity_pattern}{{\M@TitleReference {4.3}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. }}{33}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.6}Implementing the finite element method for Poisson's equation}{33}}
-\@writefile{toc}{\contentsline {subsubsection}{Mesh generation}{33}}
 \citation{petsc}
 \citation{armadillo}
 \citation{eigen}
-\@writefile{toc}{\contentsline {subsubsection}{Matrix assembly}{34}}
-\@writefile{toc}{\contentsline {subsubsection}{Numerical linear algebra}{34}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text }}{34}}
-\newlabel{laplace_solution}{{\M@TitleReference {4.4}{\relax \fontsize  {8}{9.5}\selectfont  Text }}{34}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Solving the Stokes equations}{35}}
-\newlabel{steady_stokes_unconstrained}{{\M@TitleReference {4.18}{Solving the Stokes equations}}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Discretizing the vector Poisson equation}{35}}
-\newlabel{discretizing_vector_poisson}{{\M@TitleReference {4.2.1}{Discretizing the vector Poisson equation}}{35}}
-\newlabel{steady_stokes_unconstrained_weak}{{\M@TitleReference {4.19}{Discretizing the vector Poisson equation}}{35}}
-\newlabel{elliptic_bilinear_form}{{\M@TitleReference {4.21}{Discretizing the vector Poisson equation}}{36}}
-\newlabel{elliptic_bilinear_form_matrix}{{\M@TitleReference {4.22}{Discretizing the vector Poisson equation}}{36}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Discretizing the steady Stokes equations}{36}}
-\newlabel{discretizing_steady_stokes}{{\M@TitleReference {4.2.2}{Discretizing the steady Stokes equations}}{36}}
-\newlabel{steady_stokes_weak}{{\M@TitleReference {4.23}{Discretizing the steady Stokes equations}}{36}}
-\newlabel{steady_stokes_weak_notation}{{\M@TitleReference {4.25}{Discretizing the steady Stokes equations}}{37}}
-\newlabel{steady_stokes_matrix}{{\M@TitleReference {4.27}{Discretizing the steady Stokes equations}}{37}}
-\@writefile{toc}{\contentsline {subsubsection}{Is this method reasonable?}{37}}
-\citation{ham_fem}
-\@writefile{toc}{\contentsline {subsubsection}{Results and visualisation}{38}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Discretizing the unsteady Stokes equations}{38}}
-\newlabel{discretizing_unsteady_stokes}{{\M@TitleReference {4.2.3}{Discretizing the unsteady Stokes equations}}{38}}
-\newlabel{unsteady_stokes_implicit_euler}{{\M@TitleReference {4.28}{Discretizing the unsteady Stokes equations}}{38}}
-\newlabel{unsteady_stokes_implicit_euler_weak}{{\M@TitleReference {4.29}{Discretizing the unsteady Stokes equations}}{38}}
-\citation{approximation_theory}
-\citation{ciarlet}
-\citation{ham_fem}
-\citation{fenics_book}
-\citation{tetgen}
-\@writefile{toc}{\contentsline {subsubsection}{Discretizing the initial condition}{39}}
-\newlabel{initial_velocity_projection}{{\M@TitleReference {4.32}{Discretizing the initial condition}}{39}}
-\newlabel{initial_velocity_projection_linear_system}{{\M@TitleReference {4.33}{Discretizing the initial condition}}{39}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Solving non-linear equations}{39}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}A non-linear Poisson equation}{39}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}A non-linear heat equation}{39}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}The Burgers equation}{39}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Implementing finite element methods}{39}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}The Ciarlet definition of a finite element space}{39}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7.1}Mesh generation}{34}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7.2}Matrix assembly}{34}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7.3}Numerical linear algebra}{35}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text }}{35}}
+\newlabel{laplace_solution}{{\M@TitleReference {4.5}{\relax \fontsize  {8}{9.5}\selectfont  Text }}{35}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{37}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{43}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{39}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \bibcite{newton}{1}
 \bibcite{johann_bernoulli}{2}
@@ -237,7 +209,7 @@
 \bibcite{approximation_theory}{20}
 \bibcite{stam}{21}
 \bibcite{ham_fem}{22}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{45}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{41}}
 \bibcite{fem_incompressible}{23}
 \bibcite{strang_equilibrium}{24}
 \bibcite{brenner_scott}{25}
@@ -251,5 +223,5 @@
 \bibcite{geometry_central}{33}
 \bibcite{polygon_mesh_processing_library}{34}
 \bibcite{openmesh}{35}
-\memsetcounter{lastsheet}{46}
-\memsetcounter{lastpage}{46}
+\memsetcounter{lastsheet}{42}
+\memsetcounter{lastpage}{42}

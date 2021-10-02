@@ -1,13 +1,12 @@
 % The Finite Element Method
 
 \section{Introduction: Solving Poisson's equation}
-% <<<
 
 --- Finite element method.
 --- Galerkin methods.
 
----NOTE: Mistake in $n$ numbering. Need to talk about Dirichlet condition earlier.
----NOTE: Mistake in the form of the linear systems. They need to incorporate the boundary conditions.
+% ---NOTE: Mistake in $n$ numbering. Need to talk about Dirichlet condition earlier.
+% ---NOTE: Mistake in the form of the linear systems. They need to incorporate the boundary conditions.
 
 % --- Change: Introduce Poisson's equation first, then give the FDM example for the Poisson equation. Then solve Poisson by FEM.
 
@@ -28,8 +27,8 @@ The focus here is on the Dirichlet problem
 \end{equation}
 where $\Gamma$ is the boundary of the domain, and the domain is 2D.
 
-\subsection{Discretizing the differential versus integral form}
-\subsubsection{Discretizing the differential form of the PDE}
+\section{Discretizing the differential versus integral form}
+\subsection{Discretizing the differential form of the PDE}
 It is a theorem of Gauss that in Euclidean space $\mathbb{R}^3$ we have
 \begin{equation}\label{gauss_euclidean_divergence}
     \nabla \cdot v = \Part{v_x}{x} + \Part{v_y}{y} + \Part{v_z}{z},
@@ -40,13 +39,12 @@ and we get \eqref{poisson_compact} in the form
            +\frac{\partial^2 h}{\partial y^2}
            +\frac{\partial^2 h}{\partial z^2}\right) = g.
 \end{equation}
-This form immediately indicates an effective method
-of discretization, by forming secant approximations of the derivatives over a regular grid. The approximate solution is then
-represented as a function of this grid.
 Thinking about \eqref{poisson_differential_intro} leads to the finite difference method, historically the first and
 still very important in applications.
+By forming secant approximations of the derivatives over a regular grid, a linear system is formed, and the approximate solution is solved
+for as a function of this grid.
 However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
-They could be a coefficients of, for example, hat basis functions.
+They could be coefficients of, for example, hat basis functions.
 Yet a finite difference discretization of the Poisson equation \eqref{poisson_compact} may not take this into account at all. One might feel that
 limits have been taken too soon.
 
@@ -60,7 +58,7 @@ limits have been taken too soon.
 %     \Part{\phi}{t} = s - \nabla\cdot (\phi j).
 % \end{equation*}
 
-\subsubsection{Discretizing the integral form of the PDE}
+\subsection{Discretizing the integral form of the PDE}
 In physics, Poisson's equation is an equilibrium conservation law, and therefore has an integral form.
 This form will give clearer routes to discretizations which
 have geometric meaning.
@@ -83,8 +81,7 @@ Finite element methods, and more generally Galerkin methods, live comfortably in
 and the calculus of variations.
 To continue with this idea, we must write the Poisson equation \eqref{poisson_compact} in integral form.
 
-\subsection{Deriving the heat and Poisson equation through diffusion processes}
-% <<<
+\section{Deriving the heat and Poisson equation through diffusion processes}
 The Poisson equation \eqref{poisson_compact} can be thought of as the steady state of some diffusion process with a source term $g$,
 although this need not be its literal physical interpretation.
 A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration.
@@ -123,10 +120,8 @@ In integral form, ``undoing'' the application of Stokes' theorem above, the Pois
 Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
 as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount introduced into $\Omega_0$ by the source function.
 The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
-% >>>
 
-\subsection{Discretizing Poisson's equation by finite volumes}\label{discretizing_poisson}
-% <<<
+\section{Discretizing Poisson's equation by finite volumes}\label{discretizing_poisson}
 
 Equation \eqref{poisson_equation_integral} is quantified over an infinite number of control volumes $\Omega_0$.
 These control volumes are in the interior of $\Omega$, as the solution at the boundary $\Gamma$ is specified by the Dirichlet boundary condition
@@ -136,7 +131,7 @@ We will then have $n$ equations on $h$. As this system will be underdetermined (
 restrict $h$ to a finite-dimensional space of approximations $\Phi^*$.
 
 
-\subsubsection{The Dirichlet boundary condition and the test space}
+\subsection{The Dirichlet boundary condition and the test space}
 The solution is completely known on $\Gamma$ by the Dirichlet boundary condition $\left.h\right|_\Gamma = h_\Gamma$.
 However, the finite dimensional space $\Phi^*$ may not be able to exactly represent the boundary function $h_\Gamma$,
 and therefore the first step is to approximate $h_\Gamma$ (for which there are many options, for example
@@ -162,7 +157,7 @@ and reconstruct the solution as
 where $\phi$ is the ``interior variation''
     $$\phi = \Phi\cdot \hat{h} \coloneqq h_1\phi_1 + \cdots + h_n\phi_n.$$
 
-\subsubsection{Forming a linear system}
+\subsection{Forming a linear system}
 The integral-conservation-law form \eqref{poisson_equation_integral} of the Poisson equation \eqref{poisson_compact}
 now directly indicates a method of approximation. Letting $h$ be approximated by $\tilde{h} = \phi + \phi_\Gamma$ (where $\phi \in \Phi$ is unknown and $\phi_\Gamma \in \Phi^*$ is known),
 and restricting the flux integrals to the control volumes $\Omega_1,\cdots,\Omega_n$, the conservation law \eqref{poisson_equation_integral} becomes
@@ -211,12 +206,14 @@ are chosen well, this linear system will be non-singular and hopefully well-cond
 In all cases we have a conservative system of balanced fluxes, but it is another question whether the approximation
 $\tilde{h}$ is good.
 
-\subsubsection{Choosing the control volumes and the test space}
+\subsection{Choosing the test space, boundary approximation, and control volumes}
 Possibly the simplest scheme is to triangulate $\Omega$ as
     $\bigcup_i T_i,$
 such that we have $n$ interior vertices $p_1,\cdots,p_n$, and $n_\Gamma$ boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$, and $n_T$ triangles
 $T_1,\cdots,T_{n_T}$.
-Firstly, there is a clear choice of function space $\Phi^*$, consisting of piecewise linear ``hat'' basis functions
+
+\subsubsection{The test space}
+Firstly, there is a clear choice of function space $\Phi^*$, which satisfies the $H^1$ condition, consisting of piecewise linear ``hat'' basis functions
 at each interior or boundary vertex,
 \newcommand{\hatfun}[1]{\text{Hat}(#1)}
 $$
@@ -226,13 +223,12 @@ $$
     \right\}.
 $$
 The hat function at a vertex has value $1$ at that vertex and value $0$ at its neighbours.
-The test space (zero on the boundary $\Gamma$) is then
+The test space (which is zero on the boundary $\Gamma$) is then
 $$
     \Phi = \text{span}\left\{
-        \hatfun{p_1},\cdots,\hatfun{p_n},
+        \hatfun{p_1},\cdots,\hatfun{p_n}
     \right\} = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.
 $$
-
 An example decomposition for an ellipse-shaped domain is shown in figure \ref{ellipse_partition}.
 \begin{figure}[H]
     \begin{center}
@@ -244,21 +240,31 @@ An example decomposition for an ellipse-shaped domain is shown in figure \ref{el
     }
     \label{ellipse_partition}
 \end{figure}
-One simple approximation of $\left.h\right|_\Gamma = h_\Gamma$ is then
+
+\subsubsection{Approximating the boundary values}
+One simple approximation of $\left.h\right|_\Gamma = h_\Gamma$ is
 $$
     \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
                 + \cdots
                 + h_\Gamma(p^\Gamma_{n_\Gamma})\hatfun{p^\Gamma_{n_\Gamma}},
 $$
-which is a piecewise-linear interpolation when restricted to the boundary $\Gamma$. The approximation $\phi_\Gamma$ for some boundary
-function $h_\Gamma$ is shown in figure (ref).
+which is a piecewise linear interpolation when restricted to the boundary $\Gamma$. The approximation $\phi_\Gamma$ for some boundary
+function $h_\Gamma$ is shown in figure \ref{boundary}.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.9\linewidth]{figures/boundary/boundary.png}
+    \end{center}
+    \caption{\scriptsize
+        A circle domain $\Omega$ with boundary $\Gamma$ is tessellated by triangles $T_1,\cdots,T_{n_T}$.
+        The boundary function $h_\Gamma$ is approximated by $\phi_\Gamma$, a linear combination of hat functions centred at the boundary vertices.
+    }
+    \label{boundary}
+\end{figure}
 
-\vskip 0.2in
-    Figure of just the boundary hat functions rising to a drawn boundary curve.
-\vskip 0.2in
-
-If we choose some characteristic ``triangle centre'' for each triangle, then we may associate to each
-$p_i$ a domain $\Omega_i$ defined by the polygon which joins the centres of the adjacent triangles.
+\subsubsection{Choosing a finite number of control volumes}
+If we choose some characteristic ``triangle centre'' for each triangle, then we can associate to the interior vertices
+$p_1,\cdots,p_n$ a set of domains $\Omega_1,\cdots,\Omega_n$. Each $\Omega_i$ is defined by the polygon which joins the centres of the triangles
+incident to $p_i$.
 Two common choices for the triangle centre are the barycentre, which is the average position of the three vertices, and the circumcentre,
 which is the centre of the unique circle passing through the three vertices. The circumcentre scheme gives what are called
 ``Voronoi cells'' due to their relation to Voronoi diagrams in computational geometry \cite{orourke}.
@@ -285,15 +291,14 @@ $$\text{cotan formula.}$$
 In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
 applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
 
-\subsubsection{Results and visualisation}
+\subsection{Results and visualisation}
 \vskip 0.2in
 (results and visualisation)
 \vskip 0.2in
 We have worked through an instance of a \textit{finite volume method} \cite{pde_larsson}.
 Finite volume methods are characterised by an exact domain partition and computation of flux integrals.
 Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
-% >>>
-\subsection{From finite volumes to finite elements}\label{trial_function}
+\section{From finite volumes to finite elements}\label{trial_function}
 The alternative ``finite element'' approach is directly related to the ``finite volumes'' described above. While each finite volume
 had a direct geometric meaning (as a small cell in which a certain test flux integral is taken), the geometric meaning of a ``finite element''
 requires slightly more thought, although it will be seen to be the same idea in disguise.
@@ -393,7 +398,6 @@ There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred
 variational methods with the original PDE.
 
 % \subsubsection{Integrating over trial functions versus integrating over domains}
-% % <<<
 % The above construction (generalising a finite-volume flux integral to a finite-element ``blurred flux'' integral) is further investigated
 % below.
 % We will work with the Dirac delta ``function'' (which is rather a distribution, or generalised function),
@@ -441,10 +445,8 @@ variational methods with the original PDE.
 % of $\Omega$, then form and solve the matrix system, we get a generally non-conservative system of fluxes. We have lost conservativeness
 % by the ``blurring'' of the flux integrals, but we may have gained advantages in terms of stability and convergence: in this case,
 % the linear system will be symmetric-positive-definite, and stably solvable by, for example, conjugate gradients.
-% %>>>
 
-% >>>
-\subsection{Discretizing Poisson's equation by finite elements}
+\section{Discretizing Poisson's equation by finite elements}
 
 Equation \eqref{poisson_galerkin} gives a discrete linear system
 \renewcommand{\integralentry}[2]{\int_{\Omega}\nabla\phi_{#2} \cdot \nabla\psi_{#1}\,dx}
@@ -464,7 +466,7 @@ domain.
 Again, if the domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
 
-\subsubsection{Choosing a test and a trial space}
+\subsection{Choosing a test and a trial space}
 Notice that the integrals in \eqref{poisson_fem_matrix_equation}, in contrast to \eqref{poisson_matrix_equation},
 are over the \textit{entire domain}. It may be very costly in general to construct such a matrix, requiring
 the computation of many large integrals. The finite element method, in particular, solves this problem
@@ -532,7 +534,7 @@ Finite element methods are characterised by a test space $\Phi$ and trial space
 $\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
 some Sobolev space, constructed over a domain tessellation.
 
-\subsection{Implementing the finite element method for Poisson's equation}
+\section{Implementing the finite element method for Poisson's equation}
 We now have an effective algorithm for approximating the Poisson equation:
 \begin{enumerate}
     \item Partition the 2D domain $\Omega$ into triangles $T_i$. This implicitly defines the hat basis functions $\phi_i = \psi_i$.
@@ -542,7 +544,7 @@ We now have an effective algorithm for approximating the Poisson equation:
 Each of these steps is conceptually well-separated into the domains of
 mesh generation, matrix assembly, and numerical linear algebra.
 
-\subsubsection{Mesh generation}
+\subsection{Mesh generation}
 Mesh generation is itself a huge field. However, there are only two essentials for the handling of 2D meshes and piecewise-linear finite elements
 --- a mesh data structure and a triangulator. Typically a mesh data structure will be provided by a separate library,
 and the data organization (e.g., vertex, triangle, and adjacency information) will be designed to facilitate the kinds
@@ -557,7 +559,7 @@ on 2D domains,
 with the specific goal of creating robust finite element meshes.
 
 
-\subsubsection{Matrix assembly}
+\subsection{Matrix assembly}
 The matrix assembly stage is the core of a finite element implementation. The simplest idea is to iterate over all pairs $\phi_i$ and $\psi_j$,
 letting $i=1,\cdots,n$, $j = 1,\cdots,n$, and approximate the integral $\int_\Omega \nabla\phi_i\cdot \nabla\cdot \psi_j\,dx$,
 and store the value as entry $(i,j)$ of the matrix.
@@ -699,7 +701,7 @@ and store the value as entry $(i,j)$ of the matrix.
     %     // getchar();
     % }
 
-\subsubsection{Numerical linear algebra}
+\subsection{Numerical linear algebra}
 The solution of large linear systems is a vast topic in itself. Finite element solvers are typically clients
 of standard, robust linear and non-linear solver libraries, such as Argonne National Laboratory's PETSc libraries \cite{petsc}
 and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eigen \cite{eigen}.
@@ -717,285 +719,15 @@ or provide the linear solver with callback routines that give the linear solver 
 \end{figure}
 
 
-\section{Solving the Stokes equations}
---- Lid-driven cavity flow.
-
-% <<<
-% Introduction 
-% <<<
-The Stokes equations \eqref{unsteady_stokes}, which are solved for a stable incompressible Navier-Stokes flow,
-assume the Reynolds number is $Re \ll 1$ and thus convective processes are neglible in comparison to viscous processes.
-We will begin with the steady-state form \eqref{steady_stokes}.
-Due to this simplification, the Steady stokes equations \eqref{steady_stokes}, repeated here:
-\begin{align*}
-    \mu\Delta u + \rho g - \nabla p = 0,\quad \nabla\cdot u = 0,
-\end{align*}
-form a constrained linear equation. As we saw in section \ref{pressure_derivation}, the pressure term $p$ is a Lagrange multiplier introduced
-with the constraint $\nabla\cdot u = 0$. We will begin by discretizing the \textit{unconstrained} steady Stokes equations,
-which are a vector Poisson equation:
-\begin{equation}\label{steady_stokes_unconstrained}
-    -\mu\Delta u = \rho g.
-\end{equation}
-% >>>
-\subsection{Discretizing the vector Poisson equation}\label{discretizing_vector_poisson}
-% <<<
-In principle we should keep the Stokes equation
-in integral form (using the conservative-form Cauchy momentum equation \eqref{cauchy_continuity_eulerian}), and continue as we did
-in section \ref{trial_function}. However,
-we will take a formal step to skip the reasoning of section \ref{trial_function}, typical of finite element method derivations.
-As we start with the \textit{differential} equation \eqref{steady_stokes_unconstrained}, we can introduce a trial space $\Psi$ and then ``weaken''
-the equation by integrating against $v \in \Psi$, and removing the Laplacian by integration by parts:
-\begin{equation}\label{steady_stokes_unconstrained_weak}
-    \int_\Omega -\mu\Delta u\cdot v\,dx = \int_\Omega \rho g\cdot v\,dx
-    \quad\equiv\quad
-    \int_\Omega -\mu\nabla u : \nabla v\,dx = \int_\Omega \rho g\cdot v\,dx.
-\end{equation}
-
-Noting that the left-hand-side of \eqref{steady_stokes_unconstrained_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
-is a linear functional in $\psi$, it is standard practice (ref) to write this kind of equation as
-\begin{equation}
-    a(u, v) = f(v).
-\end{equation}
-Our subsequent derivations are much the same as in \ref{discretizing_poisson}, simplified by our new notation.
-We can now approximate $u$ in the test space $\Phi$ as $\hat{u} = \sum_{i=1}^nu_i\phi_i$. By linearity we only need to compute
-trials over the basis trial functions $\psi_j$.
-We then have the linear system of equations
-\begin{equation}\label{elliptic_bilinear_form}
-    \sum_{i=1}^n u_i a\left(\phi_i, \psi_j\right) = f(\psi_j),\quad j=1,\cdots,n,
-\end{equation}
-which can be written in matrix form as
-\begin{equation}\label{elliptic_bilinear_form_matrix}
-    A\hat{u} = \begin{bmatrix}
-            a(\phi_1, \psi_1) & \cdots & a(\phi_1, \psi_n) \\
-            \vdots & & \vdots \\
-            a(\phi_n, \psi_1) & \cdots & a(\phi_n, \psi_n)
-            \end{bmatrix}
-    \begin{bmatrix} u_1 \\ u_2 \\ \vdots \\ u_{n-1} \\ u_n \end{bmatrix}
-    =
-    \begin{bmatrix} f(\psi_1) \\ f(\psi_2) \\ \vdots \\ f(\psi_{n-1}) \\ f(\psi_{n}) \end{bmatrix}
-    = \hat{f}.
-\end{equation}
-% The matrix $A$ is symmetric positive-definite, and we can therefore think of a solution to \eqref{elliptic_bilinear_form_matrix}
-% as as a minimizer of the scalar quadratic form
-% \begin{equation}\label{elliptic_quadratic_form}
-%     \hat{E}(\hat{u}) \coloneqq \frac{1}{2} \inner{\hat{u}, A\hat{u}} - \inner{\hat{u}, \hat{f}}.
-% \end{equation}
-% This is simply a discrete realisation of the fact that we can, as described in section \ref{pressure_derivation}, think
-% of a solution to the vector Poisson equation as a minimizer of the Dirichlet energy \eqref{steady_stokes_dirichlet_energy},
-% \begin{align*}
-%     E(u) \coloneqq \int_{\Omega} \frac{\mu}{2} \inner{\nabla u, \nabla u} - \rho g\cdot u \,dx.
-% \end{align*}
-We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $\sum_{i=1}^n u_i\phi_i$, although in general this will not satisfy $\nabla\cdot u = 0$.
-As some preliminary analysis, if $\Phi = \Psi$ and have the same basis functions, we have a symmetric-positive-definite system. This form of linear system is known to be stably solvable,
-for example by the conjugate gradient method.
-% >>>
-\subsection{Discretizing the steady Stokes equations}\label{discretizing_steady_stokes}
-% <<<
-As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
-when solving the optimization problem \eqref{stokes_flow_optimization}:
-\begin{equation*}
-\begin{aligned}
-& \underset{u}{\text{minimize}}
-& & E(u) =  \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g}\\
-& \text{subject to}
-& & \nabla\cdot u = 0.
-\end{aligned}
-\end{equation*}
-
-\newcommand{\trialconstraint}{{\Psi_{\text{constraint}}}}
-\newcommand{\testpressure}{{\Phi_{\text{pressure}}}}
-As a first idea, we can introduce $p$ as a variable to solve for. Solving for the pressure (the ``dual variable'') simultaneously with the velocity
-(the ``primal variable'')
-is called a primal-dual method for the optimization \eqref{stokes_flow_optimization}, and the resulting finite element method is called \textit{mixed}.
-Pressure then needs to be discretized, so we introduce another test space $\testpressure$.
-To get a weak form of the steady Stokes equations \eqref{steady_stokes}, which are two equations including the constraint $\nabla\cdot u = 0$, we introduce
-another trial space $\trialconstraint$, whose functions will be integrated against $\nabla\cdot u$. The weak form is then
-\begin{equation*}
-\begin{split}
-    &\int_\om \left(\mu\Delta u + \rho g - \nabla p\right)\cdot v\,dx = 0,\\
-    &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$},
-\end{split}
-\end{equation*}
-which by integration by parts can be written as
-\begin{equation}\label{steady_stokes_weak}
-\begin{split}
-    &\int_\om -\mu\nabla u : \nabla v - \left(\nabla\cdot v\right)p\,dx = \int_\om \rho g\cdot v\,dx,\\
-    &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
-\end{split}
-\end{equation}
-As in section \ref{discretizing_vector_poisson}, we introduce notation for the bilinear and linear forms in \eqref{steady_stokes_weak}:
-\begin{equation}
-\begin{split}
-    a(u, v) &\coloneqq \int_\om-\mu\nabla u : \nabla v\,dx,\quad\text{for $u \in \Phi, v \in \Psi$},\\
-    \hat{b}(p, v) &\coloneqq \int_\om-\left(\nabla\cdot v\right)p\,dx,\quad\text{for $p \in \testpressure, v \in \Psi$},\\
-    b(u, q) &\coloneqq \int_\om-\left(\nabla\cdot u\right)q\,dx,\quad\text{for $u \in \Phi, q \in \trialconstraint$},\\
-    f(v) &\coloneqq \int_\om \rho g\cdot v\,dx\quad\text{for $v \in \Psi$}.
-\end{split}
-\end{equation}
-Although they have the same form, $b$ and $\hat{b}$ are distinguished as they take inputs in different function spaces.
-We now have a simplified notation for the weak form \eqref{steady_stokes_weak},
-\begin{equation}\label{steady_stokes_weak_notation}
-\begin{split}
-    &a(u, v) + \hat{b}(p, v) = f(v),\\
-    &b(u, q) = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
-\end{split}
-\end{equation}
-% Solving for $u^*$ in the equation $a(u^*, v) = f(v)$ is the standard vector Poisson equation, resulting in a symmetric-positive-definite
-% system when the test and trials spaces are discretized. We can imagine letting $p = 0$ and solving for $u^*$.
-% The first condition of \eqref{steady_stokes_weak_notation} will hold, but the second condition (does $b(u^*, q) = 0$?) generally will not.
-Working with discrete function spaces, we get a $2n\times 2n$ linear system in the unknowns $u_1,\cdots,u_n$ and $p_1,\cdots,p_n$,
-\begin{equation}
-\begin{split}
-    &\sum_{i=1}^n u_i a\left(\phi_i, \psi_j\right) + \sum_{i=1}^np_i\hat{b}\left(\phi^C_i, \psi_j\right) = f(\psi_j),\\
-    &\sum_{i=1}^nu_ib\left(\phi_i, \psi^C_j\right) = 0,\quad j=1,\cdots.n.
-\end{split}
-\end{equation}
-To emphasize the linear system structure of \eqref{steady_stokes_weak_notation}, the block matrix form is:
-\begin{equation}\label{steady_stokes_matrix}
-\def\arraystretch{1.5}
-\begin{split}
-    M\hat{x}
-    &= \begin{bmatrix}
-            A & \hat{B} \\
-            B & 0
-    \end{bmatrix}\hat{x} \\
-    &= \left[\begin{array}{@{}ccc|ccc@{}}
-            a(\phi_1, \psi_1) & \cdots & a(\phi_1, \psi_n)     & \hat{b}(\phi^C_1, \psi_1) & \cdots & \hat{b}(\phi^C_1, \psi_n) \\
-            \vdots & & \vdots                                  & \vdots & & \vdots \\
-            a(\phi_n, \psi_1) & \cdots & a(\phi_n, \psi_n)     & \hat{b}(\phi^Cn, \psi_1) & \cdots & \hat{b}(\phi^C_n, \psi_n) \\
-            \hline
-            b(\phi_1, \psi^C_1) & \cdots & b(\phi_1, \psi^C_n) & 0 &\cdots& 0      \\
-            \vdots & & \vdots \\                               & \vdots & & \vdots \\
-            b(\phi_n, \psi^C_1) & \cdots & b(\phi_n, \psi^C_n) & 0 &\cdots& 0       
-    \end{array}\right]
-    \left[\begin{array}{c} u_1 \\ \vdots \\ u_n \\ \hline p_1 \\ \vdots \\ p_n \end{array}\right]
-    =
-    \left[\begin{array}{c} f(\psi_1) \\ \vdots \\ f(\psi_{n}) \\ \hline 0 \\ \vdots \\ 0 \end{array}\right]
-    = \hat{b}.
-\end{split}
-\end{equation}
-\subsubsection{Is this method reasonable?}
-For the vector Poisson equation, letting $\Phi = \Psi$, we ended up with a symmetric-positive-definite system \eqref{elliptic_bilinear_form_matrix}, which is known to be stably solvable.
-We can ask how reasonable it is to solve \eqref{steady_stokes_matrix}, and what trial and test spaces we should use.
-In fact, in the problem \eqref{steady_stokes_weak_notation}, and more generally in a ``saddle point problem'', arising
-in Lagrange-multiplier methods for constrained PDEs, we should not choose just any test and trial spaces.
-The Ladyzhenskaya--Babu\v{s}ka--Brezzi condition, discussed later, enforces restrictions on choices that result in a stable method.
-We will until then continue with computations.
-
-\subsubsection{Results and visualisation}
-\vskip 0.2in
-(results and visualisation)
-\vskip 0.2in
-% >>>
-\subsection{Discretizing the unsteady Stokes equations}\label{discretizing_unsteady_stokes}
-% <<<
-\newcommand{\uprev}{{u_{\text{prev}}}}
-The steady Stokes above are the stable state of the time-dependent Stokes flow,
-after the transient flow behaviour settles down. The unsteady Stokes equations \eqref{unsteady_stokes} are
-\begin{equation*}
-    \rho\Part{u}{t} = \mu\Delta u + \rho g - \nabla p, \quad \nabla\cdot u = 0.
-\end{equation*}
-These form an initial-boundary-value problem, and this will be our first attempt at discretizing a PDE in time.
-We could think of solving with the test and trial spaces over the domain $\Omega \times [0, T)$, but this is typically not done due to the memory costs,
-and different qualitative meaning of the time variable \cite{ham_fem}. Instead, we will use an implicit-Euler finite difference in time: 
-\begin{equation}\label{unsteady_stokes_implicit_euler}
-    \frac{\rho}{\Delta t} \left(u^{(n)} - u^{(n-1)}\right) = \mu\Delta u^{(n)} + \rho g - \nabla p^{(n)}, \quad \nabla\cdot u^{(n)} = 0,
-\end{equation}
-where $\Delta t$ is a fixed time step, and $u^{(n)}$ and $p^{(n)}$ is the solution at time $t_n = n\Delta t$. We can weaken each step
-\eqref{unsteady_stokes_implicit_euler}
-by integrating against trial functions $v \in \Psi$ and $q \in \trialconstraint$, performing integration by parts as in section \ref{discretizing_steady_stokes},
-and rearranging the knowns and unknowns. We can also let $u$ be $u^{(n)}$, $p$ be $p^{(n)}$, and $\uprev$ be $u^{(n-1)}$ in the above to simplify
-subsequent notation. The weak form of \eqref{unsteady_stokes_implicit_euler} is then:
-% \begin{equation}\label{unsteady_stokes_implicit_euler_weak}
-% \begin{split}
-%     \frac{\rho}{\Delta t} \int_\om \left(u^{(n)} - u^{(n-1)}\right)\cdot v\,dx
-%         &= \int_\om \mu\nabla u^{(n)}:\nabla v + \rho g\cdot v + \left(\nabla\cdot v\right) p^{(n)}\,dx,\\
-%     \quad \int_\om \left(\nabla\cdot u^{(n)}\right) q\,dx &= 0.
-% \end{split}
-% \end{equation}
-\begin{equation}\label{unsteady_stokes_implicit_euler_weak}
-\begin{split}
-    \int_\om \frac{\rho}{\Delta t} u\cdot v - \mu\nabla u:\nabla v - \left(\nabla\cdot v\right)p\,dx
-        &= \int_\om \frac{\rho}{\Delta t}\uprev\cdot v + \rho g \cdot v\,dx,\\
-    \quad \int_\om \left(\nabla\cdot u\right) q\,dx &= 0,
-\end{split}
-\end{equation}
-% and with the linear form definitions in section \ref{discretizing_steady_stokes} this is
-% \begin{equation}\label{unsteady_stokes_implicit_euler_weak_notation}
-% \begin{split}
-%     &\int_\om \frac{\rho}{\Delta t} u\cdot v \,dx + a(u, v) + \hat{b}(p, v) = \int_\om \frac{\rho}{\Delta t} \uprev\cdot v \,dx + f(v),\\
-%     &b(u, q) = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
-% \end{split}
-% \end{equation}
-We can define the linear forms as
-\begin{equation}
-\begin{split}
-    a(u, v) &\coloneqq \int_\om\frac{\rho}{\Delta t}u\cdot v -\mu\nabla u : \nabla v\,dx,\quad\text{for $u \in \Phi, v \in \Psi$},\\
-    \hat{b}(p, v) &\coloneqq \int_\om-\left(\nabla\cdot v\right)p\,dx,\quad\text{for $p \in \testpressure, v \in \Psi$},\\
-    b(u, q) &\coloneqq \int_\om-\left(\nabla\cdot u\right)q\,dx,\quad\text{for $u \in \Phi, q \in \trialconstraint$},\\
-    f(v) &\coloneqq \int_\om \frac{\rho}{\Delta t}\uprev\cdot v + g\cdot v\,dx\quad\text{for $v \in \Psi$}
-\end{split}
-\end{equation}
-to reexpress \eqref{unsteady_stokes_implicit_euler_weak} in the notation
-\begin{equation}
-\begin{split}
-    &a(u, v) + \hat{b}(p, v) = f(v),\\
-    &b(u, q) = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
-\end{split}
-\end{equation}
-This is the same structure as in the steady Stokes system \eqref{steady_stokes_weak_notation},
-and so the matrix block structure is the same as in \eqref{steady_stokes_matrix}. Therefore, every step we need to solve a linear system
-that is very similar to the steady Stokes problem. In fact this step can be thought of as successively introducing the momentum source $\rho g$
-(ignoring convection), while solving for the updated pressure needed to keep the fluid non-compressed.
-
-\subsubsection{Discretizing the initial condition}
-We may have some analytically determined, or otherwise, initial velocity field $u$ with $\nabla\cdot u = 0$.
-We would like to form $u^{(0)}$ in order to start the iteration. The velocity $u$ should be projected in some way into the test space $\Psi$.
-Enforcing $u^{(0)}$ to give the same ``blurred average'' value when evaluated against a trial function,
-\begin{equation}\label{initial_velocity_projection}
-    \int_\om u^{(0)}\cdot v\,dx = \int_\om u \cdot v\,dx,\quad \forall v \in \Psi,
-\end{equation}
-gives a linear system
-\begin{equation}\label{initial_velocity_projection_linear_system}
-    \sum_{i=1}^n u^{(0)}_i \int_\om \phi_i \cdot \psi_j\,dx = \int_\om u\cdot \psi_j\,dx,
-    \quad j=1,\cdots,n.
-\end{equation}
-Solving this linear system for the $u^{(0)}_i$ gives $u^{(0)} = \sum_{i=1}^n u^{(0)}_i \phi_i$ as a projection of $u$ onto $\Phi$.
-This projection is orthogonal if $\Phi = \Psi$, and therefore could be considered the ``best'' such projection in the Euclidean norm.
-This is the standard Gramian matrix construction for projection in approximation theory \cite{approximation_theory}.
-
-% >>>
-% >>>
-
-\section{Solving non-linear equations}
-% <<<
-\subsection{A non-linear Poisson equation}
-\subsection{A non-linear heat equation}
-\subsection{The Burgers equation}
-% >>>
-
-\section{Implementing finite element methods}
-% <<<
-\subsection{The Ciarlet definition of a finite element space}
-\cite{ciarlet}, \cite{ham_fem}, \cite{fenics_book}
-
-
-% Discuss Ciarlet definition, difference between FEM, spectral etc. FEM uses a domain partition to help in constructing the basis functions.
-
-One great utility of the finite element method is that it is compatible with complex geometric domains and domain partitions.
-Some greater effort is needed to apply finite differences correctly across complex boundaries, and it is non-trivial to implement
-a varying resolution of the discretisation. In the finite element method, however, specifying the test and trial functions over
-a square grid is much the same as specifying them over, for example, a surface mesh of arbitrary topology. For modelling, for example,
-heat transfer in a complex solid, one can construct basis functions over a grid on the interior, and over cut-off boundary cells near the exterior.
-This is all in principle, of course, as one needs to
-\begin{enumerate}
-    \item Break the domain up into small pieces.
-    \item Construct the basis and trial functions over this domain partition (e.g. by finding polynomial coefficients).
-    \item Compute all inner products of test and trial functions, and their relevant derivatives, either numerically or analytically.
-    \item Solve possibly many huge sparse linear systems, while possibly changing the structure of the domain partition (requiring changes to the inner products).
-\end{enumerate}
-
-Step (1) is already a field in itself, as evidenced by the open source tool TetGen \cite{tetgen}.
-TetGen is a small tool whose primary purpose is to perform \textit{constrained Delaunay tetrahedralization}, given a solid boundary and a point cloud on the interior.
-This constructs a valid tetrahedral partition intended for finite element solvers. The partition is efficiently created in a very robust manner in over 36k lines of C code. TetGen is part of the geometric backbone of many FEA tools (references).
-% >>>
+% $$
+%     h_\Gamma
+% $$
+% $$
+%     \phi_\Gamma \in \Phi^*
+% $$
+% $$
+%     \Gamma
+% $$
+% $$
+%     T_1,\cdots,T_{n_T}
+% $$
