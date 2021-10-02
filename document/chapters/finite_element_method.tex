@@ -1,14 +1,69 @@
 % The Finite Element Method
 
-\section{Introduction: Solving Poisson's equation}
+\section{Introduction}
 
---- Finite element method.
---- Galerkin methods.
+\subsubsection{The Galerkin method}
+The Galerkin method was established by engineer and mathematician Boris Galerkin (1871--1945) in a 1915 paper containing
+an approximation method for the biharmonic equation of classical beam theory \cite{boris_galerkin}. Briefly, the principle of Galerkin is to
+choose a space of approximations, today called ``test functions'', and solve for the test function which minimises a residual error with respect
+to some function space norm. This norm is induced by a choice of what are now called the ``trial functions''. If the trial functions are the same as the test functions,
+the residual is minimised with respect to the Euclidean norm.
 
-% ---NOTE: Mistake in $n$ numbering. Need to talk about Dirichlet condition earlier.
-% ---NOTE: Mistake in the form of the linear systems. They need to incorporate the boundary conditions.
+% \renewcommand\thesubfigure{}
+% \begin{figure}[H]
+%     \centering
+%     \footnotesize
+%     \stackunder[5pt]{\includegraphics[width=2.5cm]{figures/mathematicians/Peter_Dirichlet}}{Peter Gustav Lejeune Dirichlet (1805--1859)}
+% 
+%     \footnotesize
+%     \stackunder[5pt]{\includegraphics[width=2.5cm]{figures/mathematicians/David_Hilbert.jpeg}}{David Hilbert (1862--1943)}
+% 
+%     \footnotesize
+%     \stackunder[5pt]{\includegraphics[width=2.5cm]{figures/mathematicians/Walther_Ritz.jpg}}{Walther Ritz (1878--1909)}
+% 
+%     \footnotesize
+%     \stackunder[5pt]{\includegraphics[width=2.5cm]{figures/mathematicians/Boris_Galerkin.jpeg}}{Boris Galerkin (1871--1945)}
+% 
+%     \footnotesize
+%     \stackunder[5pt]{\includegraphics[width=2.5cm]{figures/mathematicians/Sergei_Sobolev.jpg}}{Sergei L. Sobolev (1908--1989)}
+% 
+%     \footnotesize
+%     \stackunder[5pt]{\includegraphics[width=2.5cm]{figures/mathematicians/Laurent_Schwartz.jpeg}}{Laurent Schwartz (1915--2002)}
+% 
+%     \label{fig:example}
+% \end{figure}
 
-% --- Change: Introduce Poisson's equation first, then give the FDM example for the Poisson equation. Then solve Poisson by FEM.
+\captionsetup[subfigure]{labelformat=empty}
+\begin{figure}[H]
+    \centering
+    \subfloat[][\centering Peter Dirichlet (1805--1859)]{{\includegraphics[height=3cm]{figures/mathematicians/Peter_Dirichlet.jpg} }}
+    \qquad
+    \subfloat[][\centering David Hilbert (1862--1943)]{{\includegraphics[height=3cm]{figures/mathematicians/David_Hilbert.jpeg} }}
+    \qquad
+    \subfloat[][\centering Walther Ritz (1878--1909)]{{\includegraphics[height=3cm]{figures/mathematicians/Walther_Ritz.jpg} }}
+    \qquad
+    \subfloat[][\centering Boris Galerkin (1871--1945)]{{\includegraphics[height=3cm]{figures/mathematicians/Boris_Galerkin.jpeg} }}
+    \qquad
+    \subfloat[][\centering Sergei Sobolev (1908--1989)]{{\includegraphics[height=3.5cm]{figures/mathematicians/Sergei_Sobolev.jpg} }}
+    \qquad
+    \subfloat[][\centering Laurent Schwartz (1915--2002)]{{\includegraphics[height=3.5cm]{figures/mathematicians/Laurent_Schwartz.jpeg} }}
+    \caption{Text}
+    \label{fig:example}
+\end{figure}
+
+As well as proving highly useful
+in numerical applications, the numerical methods of Galerkin (and contemporary mathematicians such as Walther Ritz) precede important developments
+in the mathematical theory of PDEs. In a 1934 talk named ``Generalized Solutions to the Wave Equation'', mathematician Sergei L. Sobolev (1908--1989)
+precipitated the development
+of generalised functions by Laurent Schwartz (1915-2002), integral to the modern study of PDEs
+(\cite{sobolev_web_page}, \cite{one_hundred_years_galerkin}).
+These developments are clarifications on the concept of a PDE. What do we mean when we speak of a solution of a PDE from physics. Galerkin's method
+is much closer to the answer than, for example, the finite difference method.
+
+
+\subsubsection{The finite element method}
+
+\subsubsection{The Poisson equation}
 
 Among the fundamental PDEs
 are the heat equation
@@ -135,7 +190,7 @@ restrict $h$ to a finite-dimensional space of approximations $\Phi^*$.
 The solution is completely known on $\Gamma$ by the Dirichlet boundary condition $\left.h\right|_\Gamma = h_\Gamma$.
 However, the finite dimensional space $\Phi^*$ may not be able to exactly represent the boundary function $h_\Gamma$,
 and therefore the first step is to approximate $h_\Gamma$ (for which there are many options, for example
-projection in the $L^2$ norm or interpolation across a finite sampling of boundary points \cite{approximation_theory}). Choosing some $\phi_\Gamma \in \Phi^*$ with
+projection in the $L^2$-norm or interpolation across a finite sampling of boundary points \cite{approximation_theory}). Choosing some $\phi_\Gamma \in \Phi^*$ with
     $$\left.\phi_\Gamma\right|_\Gamma \approx h_\Gamma,$$
 we can define an ``interior'' function space
 $$
@@ -706,7 +761,7 @@ The solution of large linear systems is a vast topic in itself. Finite element s
 of standard, robust linear and non-linear solver libraries, such as Argonne National Laboratory's PETSc libraries \cite{petsc}
 and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eigen \cite{eigen}.
 A finite element solver will typically pass either a full matrix to the linear solver (dense or sparse),
-or provide the linear solver with callback routines that give the linear solver access to the linear system coefficients when they are needed.
+or provide the linear solver with callback routines that give the solver access to the system coefficients when they are needed.
 
 \begin{figure}[H]
     \begin{center}

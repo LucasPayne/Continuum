@@ -1,70 +1,73 @@
-\contentsline {chapter}{Contents}{1}
-\contentsline {chapter}{\chapternumberline {1}Mechanics}{3}
-\contentsline {chapter}{\chapternumberline {2}Continuum mechanics}{5}
-\contentsline {section}{\numberline {2.1}Introduction}{5}
-\contentsline {section}{\numberline {2.2}Transport}{5}
-\contentsline {subsection}{\numberline {2.2.1}Continuity equations and conservation laws}{6}
-\contentsline {subsubsection}{The integral form of a continuity equation}{6}
-\contentsline {subsubsection}{The differential form of a continuity equation}{6}
-\contentsline {subsection}{\numberline {2.2.2}The Reynolds transport theorem}{7}
-\contentsline {subsubsection}{The integral form of Reynolds transport}{7}
-\contentsline {subsubsection}{The differential form of Reynolds transport}{7}
-\contentsline {subsubsection}{Reynolds transport applied to a continuity equation}{7}
-\contentsline {subsection}{\numberline {2.2.3}Incompressible and compressible transport}{8}
-\contentsline {subsubsection}{Incompressibility}{8}
-\contentsline {subsection}{\numberline {2.2.4}Transport of vector and tensor quantities}{9}
-\contentsline {subsubsection}{Reynolds transport of vector and tensor quantities}{9}
-\contentsline {subsubsection}{Conservation equations for vector and tensor quantities}{9}
-\contentsline {section}{\numberline {2.3}The kinematics of the continuum}{10}
-\contentsline {subsection}{\numberline {2.3.1}Position maps}{10}
-\contentsline {subsection}{\numberline {2.3.2}Velocity}{11}
-\contentsline {subsection}{\numberline {2.3.3}The deformation and velocity gradients}{12}
-\contentsline {subsubsection}{The deformation gradient}{12}
-\contentsline {subsubsection}{The velocity gradient}{13}
-\contentsline {subsection}{\numberline {2.3.4}Material points and material derivatives}{14}
-\contentsline {subsubsection}{The material derivative}{14}
-\contentsline {subsubsection}{Pieces of the continuum}{14}
-\contentsline {section}{\numberline {2.4}The dynamics of the continuum}{15}
-\contentsline {subsection}{\numberline {2.4.1}Conservation of mass}{15}
-\contentsline {subsubsection}{The Lagrangian form of mass conservation}{15}
-\contentsline {subsubsection}{The Eulerian form of mass conservation}{15}
-\contentsline {subsection}{\numberline {2.4.2}Conservation of linear momentum}{16}
-\contentsline {subsubsection}{The Euler-Cauchy stress principle}{16}
-\contentsline {subsubsection}{Differentializing the Cauchy momentum equation}{16}
-\contentsline {subsection}{\numberline {2.4.3}Constitutive relations}{17}
-\contentsline {subsubsection}{Constitutive relations}{18}
-\contentsline {subsubsection}{Completing the equations}{18}
-\contentsline {chapter}{\chapternumberline {3}The Navier-Stokes equations}{19}
-\contentsline {section}{\numberline {3.1}Introduction}{19}
-\contentsline {section}{\numberline {3.2}The equations of fluid motion}{19}
-\contentsline {subsection}{\numberline {3.2.1}Conservation of angular momentum}{20}
-\contentsline {subsection}{\numberline {3.2.2}Conservation of energy}{22}
-\contentsline {section}{\numberline {3.3}Scaling and dimension}{22}
-\contentsline {subsection}{\numberline {3.3.1}The Reynolds number}{22}
-\contentsline {section}{\numberline {3.4}Stokes flow and the meaning of pressure}{22}
-\contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{23}
-\contentsline {subsection}{\numberline {3.4.1}Application to hydrostatics}{23}
-\contentsline {chapter}{\chapternumberline {4}The finite element method}{25}
-\contentsline {section}{\numberline {4.1}Introduction: Solving Poisson's equation}{25}
-\contentsline {section}{\numberline {4.2}Discretizing the differential versus integral form}{25}
-\contentsline {subsection}{\numberline {4.2.1}Discretizing the differential form of the PDE}{25}
-\contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{26}
-\contentsline {section}{\numberline {4.3}Deriving the heat and Poisson equation through diffusion processes}{26}
-\contentsline {section}{\numberline {4.4}Discretizing Poisson's equation by finite volumes}{27}
-\contentsline {subsection}{\numberline {4.4.1}The Dirichlet boundary condition and the test space}{27}
-\contentsline {subsection}{\numberline {4.4.2}Forming a linear system}{28}
-\contentsline {subsection}{\numberline {4.4.3}Choosing the test space, boundary approximation, and control volumes}{28}
-\contentsline {subsubsection}{The test space}{28}
-\contentsline {subsubsection}{Approximating the boundary values}{29}
-\contentsline {subsubsection}{Choosing a finite number of control volumes}{29}
-\contentsline {subsection}{\numberline {4.4.4}Results and visualisation}{30}
-\contentsline {section}{\numberline {4.5}From finite volumes to finite elements}{30}
-\contentsline {section}{\numberline {4.6}Discretizing Poisson's equation by finite elements}{32}
-\contentsline {subsection}{\numberline {4.6.1}Choosing a test and a trial space}{32}
-\contentsline {section}{\numberline {4.7}Implementing the finite element method for Poisson's equation}{33}
-\contentsline {subsection}{\numberline {4.7.1}Mesh generation}{34}
-\contentsline {subsection}{\numberline {4.7.2}Matrix assembly}{34}
-\contentsline {subsection}{\numberline {4.7.3}Numerical linear algebra}{35}
-\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{37}
-\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{39}
-\contentsline {chapter}{Bibliography}{41}
+\contentsline {chapter}{Contents}{1}{section*.1}
+\contentsline {chapter}{\chapternumberline {1}Mechanics}{3}{chapter.1}
+\contentsline {chapter}{\chapternumberline {2}Continuum mechanics}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Introduction}{5}{section.2.1}
+\contentsline {section}{\numberline {2.2}Transport}{5}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Continuity equations and conservation laws}{6}{subsection.2.2.1}
+\contentsline {subsubsection}{The integral form of a continuity equation}{6}{section*.2}
+\contentsline {subsubsection}{The differential form of a continuity equation}{6}{section*.3}
+\contentsline {subsection}{\numberline {2.2.2}The Reynolds transport theorem}{7}{subsection.2.2.2}
+\contentsline {subsubsection}{The integral form of Reynolds transport}{7}{section*.4}
+\contentsline {subsubsection}{The differential form of Reynolds transport}{7}{section*.5}
+\contentsline {subsubsection}{Reynolds transport applied to a continuity equation}{7}{section*.6}
+\contentsline {subsection}{\numberline {2.2.3}Incompressible and compressible transport}{8}{subsection.2.2.3}
+\contentsline {subsubsection}{Incompressibility}{8}{section*.7}
+\contentsline {subsection}{\numberline {2.2.4}Transport of vector and tensor quantities}{9}{subsection.2.2.4}
+\contentsline {subsubsection}{Reynolds transport of vector and tensor quantities}{9}{section*.8}
+\contentsline {subsubsection}{Conservation equations for vector and tensor quantities}{9}{section*.9}
+\contentsline {section}{\numberline {2.3}The kinematics of the continuum}{10}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Position maps}{10}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Velocity}{11}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}The deformation and velocity gradients}{12}{subsection.2.3.3}
+\contentsline {subsubsection}{The deformation gradient}{12}{section*.10}
+\contentsline {subsubsection}{The velocity gradient}{13}{section*.11}
+\contentsline {subsection}{\numberline {2.3.4}Material points and material derivatives}{14}{subsection.2.3.4}
+\contentsline {subsubsection}{The material derivative}{14}{section*.12}
+\contentsline {subsubsection}{Pieces of the continuum}{14}{section*.13}
+\contentsline {section}{\numberline {2.4}The dynamics of the continuum}{15}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Conservation of mass}{15}{subsection.2.4.1}
+\contentsline {subsubsection}{The Lagrangian form of mass conservation}{15}{section*.14}
+\contentsline {subsubsection}{The Eulerian form of mass conservation}{15}{section*.15}
+\contentsline {subsection}{\numberline {2.4.2}Conservation of linear momentum}{16}{subsection.2.4.2}
+\contentsline {subsubsection}{The Euler-Cauchy stress principle}{16}{section*.16}
+\contentsline {subsubsection}{Differentializing the Cauchy momentum equation}{16}{section*.17}
+\contentsline {subsection}{\numberline {2.4.3}Constitutive relations}{17}{subsection.2.4.3}
+\contentsline {subsubsection}{Constitutive relations}{18}{section*.18}
+\contentsline {subsubsection}{Completing the equations}{18}{section*.19}
+\contentsline {chapter}{\chapternumberline {3}The Navier-Stokes equations}{19}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduction}{19}{section.3.1}
+\contentsline {section}{\numberline {3.2}The equations of fluid motion}{19}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Conservation of angular momentum}{20}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Conservation of energy}{22}{subsection.3.2.2}
+\contentsline {section}{\numberline {3.3}Scaling and dimension}{22}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}The Reynolds number}{22}{subsection.3.3.1}
+\contentsline {section}{\numberline {3.4}Stokes flow and the meaning of pressure}{22}{section.3.4}
+\contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{23}{section*.20}
+\contentsline {subsection}{\numberline {3.4.1}Application to hydrostatics}{23}{subsection.3.4.1}
+\contentsline {chapter}{\chapternumberline {4}The finite element method}{25}{chapter.4}
+\contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}
+\contentsline {subsubsection}{The Galerkin method}{25}{section*.21}
+\contentsline {subsubsection}{The finite element method}{26}{section*.23}
+\contentsline {subsubsection}{The Poisson equation}{26}{section*.24}
+\contentsline {section}{\numberline {4.2}Discretizing the differential versus integral form}{26}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Discretizing the differential form of the PDE}{26}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{26}{subsection.4.2.2}
+\contentsline {section}{\numberline {4.3}Deriving the heat and Poisson equation through diffusion processes}{27}{section.4.3}
+\contentsline {section}{\numberline {4.4}Discretizing Poisson's equation by finite volumes}{28}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}The Dirichlet boundary condition and the test space}{28}{subsection.4.4.1}
+\contentsline {subsection}{\numberline {4.4.2}Forming a linear system}{28}{subsection.4.4.2}
+\contentsline {subsection}{\numberline {4.4.3}Choosing the test space, boundary approximation, and control volumes}{29}{subsection.4.4.3}
+\contentsline {subsubsection}{The test space}{29}{section*.25}
+\contentsline {subsubsection}{Approximating the boundary values}{30}{section*.27}
+\contentsline {subsubsection}{Choosing a finite number of control volumes}{30}{section*.29}
+\contentsline {subsection}{\numberline {4.4.4}Results and visualisation}{31}{subsection.4.4.4}
+\contentsline {section}{\numberline {4.5}From finite volumes to finite elements}{31}{section.4.5}
+\contentsline {section}{\numberline {4.6}Discretizing Poisson's equation by finite elements}{33}{section.4.6}
+\contentsline {subsection}{\numberline {4.6.1}Choosing a test and a trial space}{33}{subsection.4.6.1}
+\contentsline {section}{\numberline {4.7}Implementing the finite element method for Poisson's equation}{34}{section.4.7}
+\contentsline {subsection}{\numberline {4.7.1}Mesh generation}{34}{subsection.4.7.1}
+\contentsline {subsection}{\numberline {4.7.2}Matrix assembly}{35}{subsection.4.7.2}
+\contentsline {subsection}{\numberline {4.7.3}Numerical linear algebra}{35}{subsection.4.7.3}
+\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{37}{chapter.5}
+\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{39}{chapter.6}
+\contentsline {chapter}{Bibliography}{41}{section*.37}
