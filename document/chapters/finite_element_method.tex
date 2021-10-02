@@ -125,10 +125,10 @@ as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is
 The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
 % >>>
 
-\subsection{Discretizing the Poisson equation by finite volumes}\label{discretizing_poisson}
+\subsection{Discretizing Poisson's equation by finite volumes}\label{discretizing_poisson}
 % <<<
 
-Equation \eqref{poisson_equation_integral} is quantified over control volumes $\Omega_0$.
+Equation \eqref{poisson_equation_integral} is quantified over an infinite number of control volumes $\Omega_0$.
 These control volumes are in the interior of $\Omega$, as the solution at the boundary $\Gamma$ is specified by the Dirichlet boundary condition
 $\left.h\right|_\Gamma = h_\Gamma$, and there is no flux information across $\Gamma$.
 A simple idea is to choose a finite number of control volumes $\Omega_1,\cdots,\Omega_n$ (hence ``finite volumes''), and check that the flux integral holds over each of these.
@@ -136,10 +136,11 @@ We will then have $n$ equations on $h$. As this system will be underdetermined (
 restrict $h$ to a finite-dimensional space of approximations $\Phi^*$.
 
 
-\subsubsection{The Dirichlet boundary condition}
+\subsubsection{The Dirichlet boundary condition and the test space}
 The solution is completely known on $\Gamma$ by the Dirichlet boundary condition $\left.h\right|_\Gamma = h_\Gamma$.
-However, the finite dimensional space $\Phi^*$ may not be able to exactly represent this boundary function $h_\Gamma$,
-and therefore the first step is to approximate $h_\Gamma$. Choosing some $\phi_\Gamma \in \Phi^*$ with
+However, the finite dimensional space $\Phi^*$ may not be able to exactly represent the boundary function $h_\Gamma$,
+and therefore the first step is to approximate $h_\Gamma$ (for which there are many options, for example
+projection in the $L^2$ norm or interpolation across a finite sampling of boundary points \cite{approximation_theory}). Choosing some $\phi_\Gamma \in \Phi^*$ with
     $$\left.\phi_\Gamma\right|_\Gamma \approx h_\Gamma,$$
 we can define an ``interior'' function space
 $$
@@ -150,53 +151,89 @@ $$
     \tilde{h} = \phi + \phi_\Gamma
 $$
 for some $\phi \in \Phi$.
-In the finite element literature the space $\Phi$ is called the test space.
+In the finite volume and finite element literature the space $\Phi$ is called the test space.
+Since we selected $n$ control volumes $\Omega_1,\cdots,\Omega_n$, the approximating space $\Phi^*$ must be chosen such that
+$\Phi$ is $n$-dimensional. We can choose a basis for the test space,
+    $$\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.$$
+The problem is now to find a vector of coefficients of these test functions,
+    $\hat{h} = (h_1, \cdots, h_n)^T,$
+and reconstruct the solution as
+    $$\tilde{h} = \phi + \phi_\Gamma,$$
+where $\phi$ is the ``interior variation''
+    $$\phi = \Phi\cdot \hat{h} \coloneqq h_1\phi_1 + \cdots + h_n\phi_n.$$
 
-
-The basis functions $\phi_i$ should generate a ``good'' space of approximations,
-such that the resulting linear system is non-singular.
-We then have a discrete system of equations
-\begin{align*}
-    \int_{\pom_j} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right)\cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
-\end{align*}
+\subsubsection{Forming a linear system}
+The integral-conservation-law form \eqref{poisson_equation_integral} of the Poisson equation \eqref{poisson_compact}
+now directly indicates a method of approximation. Letting $h$ be approximated by $\tilde{h} = \phi + \phi_\Gamma$ (where $\phi \in \Phi$ is unknown and $\phi_\Gamma \in \Phi^*$ is known),
+and restricting the flux integrals to the control volumes $\Omega_1,\cdots,\Omega_n$, the conservation law \eqref{poisson_equation_integral} becomes
+\begin{equation}\label{poisson_equation_integral_fvm}
+    \int_{\partial\Omega_j} -\nabla \left(\phi + \phi_\Gamma\right) \cdot \hat{n}\,dx = \int_{\Omega_j} g\,dx \quad\quad j=1,\cdots,n.
+\end{equation}
+The ``interior variation'' $\phi = \Phi\cdot \hat{h}$ is the only unknown, so we can move all knowns to the right-hand-side
+and expand $\phi$ in terms of the basis test functions $\phi_1,\cdots,\phi_n$:
+\begin{equation}\label{poisson_equation_integral_fvm_knowns_unknowns}
+    \int_{\partial\Omega_j} -\nabla \left(\sum_{i=1}^nh_i\phi_i\right) \cdot \hat{n}\,dx =
+            \int_{\Omega_j} g\,dx
+            + \int_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
+ \quad\quad j=1,\cdots,n.
+\end{equation}
 By linearity, to emphasize the separate integrals that need to be computed, the above equation can be written as
 \begin{equation}\label{poisson_equation_integral_discretized}
-    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
+    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx =
+            \int_{\Omega_j} g\,dx
+            + \int_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
+ \quad\quad j=1,\cdots,n.
 \end{equation}
-We see here that there must be some restrictions on the $\phi_i$.
-Formally, the basis functions must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
+It is seen here that there must be some restrictions on the $\phi_i$ and $\phi_\Gamma$.
+Formally, they must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
-the integral. Since the source $g$, the domain partition $\Omega_j$, and the basis functions $\phi_i$ are known, we can pre-compute
-the majority of \eqref{poisson_equation_integral_discretized} to give a matrix system
-
+the integral. The system \eqref{poisson_equation_integral_discretized} can be written in matrix form as
 \newcommand{\integralentry}[2]{\int_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
+\newcommand{\integralrhsentry}[1]{\int_{\om_{#1}}g\,dx + \int_{\pom_{#1}}\nabla\phi_\Gamma\cdot\hat{n}\,dx}
 \begin{equation}\label{poisson_matrix_equation}
-    A\hat{h} = \begin{bmatrix}
+\begin{split}
+    A\hat{h}
+    &= \begin{bmatrix}
             \integralentry{1}{1} & \cdots & \integralentry{1}{n} \\
             \vdots & & \vdots \\
             \integralentry{n}{1} & \cdots & \integralentry{n}{n}
-            \end{bmatrix}
-    \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
-    =
-    \begin{bmatrix} \int_{\om_1}g\,dx \\ \int_{\om_2}g\,dx \\ \vdots \\ \int_{\om_{n-1}}g\,dx \\ \int_{\om_n}g\,dx \end{bmatrix}
-    = \hat{g}.
+    \end{bmatrix}
+    \begin{bmatrix} h_1 \\ \vdots \\ h_n \end{bmatrix}
+    \\
+    &= \begin{bmatrix} \integralrhsentry{1} \\ \vdots \\ \integralrhsentry{n}  \end{bmatrix}
+    = \hat{f}.
+\end{split}
 \end{equation}
-This system is solved for the coefficients of combination for the test functions, $\hat{h} = (h_1 \cdots h_n)^T$.
-
-
-The solution is then denoted $\Phi\cdot\hat{h} = h_1\Phi_1 + \cdots + h_n\Phi_n$.
+This system is solved for the coefficients of combination for the test functions, $\hat{h} = h_1 \cdots h_n)^T$, and the approximate
+solution is constructed as $\tilde{h} = \Phi\cdot\hat{h} + \phi_\Gamma$.
 If the domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
-In all cases we have a conservative system of balanced fluxes, but it is another question whether our approximation
-$\Phi\cdot\hat{h}$ is good.
+In all cases we have a conservative system of balanced fluxes, but it is another question whether the approximation
+$\tilde{h}$ is good.
 
-\subsubsection{Choosing a domain partition and test space}
+\subsubsection{Choosing the control volumes and the test space}
 Possibly the simplest scheme is to triangulate $\Omega$ as
     $\bigcup_i T_i,$
-such that we have $n$ nodal points and $n_T$ triangles. The boundary of $\Omega$ is approximated as piecewise linear.
-Each nodal point $p_i$ will be associated with a piecewise ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
-$0$ at its neighbours. An example decomposition for an ellipse-shaped domain is shown in figure \ref{ellipse_partition}.
+such that we have $n$ interior vertices $p_1,\cdots,p_n$, and $n_\Gamma$ boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$, and $n_T$ triangles
+$T_1,\cdots,T_{n_T}$.
+Firstly, there is a clear choice of function space $\Phi^*$, consisting of piecewise linear ``hat'' basis functions
+at each interior or boundary vertex,
+\newcommand{\hatfun}[1]{\text{Hat}(#1)}
+$$
+    \Phi^* = \text{span}\left\{
+        \hatfun{p_1},\cdots,\hatfun{p_n},
+        \hatfun{p^\Gamma_1},\cdots,\hatfun{p^\Gamma_{n_\Gamma}}
+    \right\}.
+$$
+The hat function at a vertex has value $1$ at that vertex and value $0$ at its neighbours.
+The test space (zero on the boundary $\Gamma$) is then
+$$
+    \Phi = \text{span}\left\{
+        \hatfun{p_1},\cdots,\hatfun{p_n},
+    \right\} = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.
+$$
 
+An example decomposition for an ellipse-shaped domain is shown in figure \ref{ellipse_partition}.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.53\linewidth]{figures/hat.png}
@@ -207,11 +244,20 @@ $0$ at its neighbours. An example decomposition for an ellipse-shaped domain is 
     }
     \label{ellipse_partition}
 \end{figure}
+One simple approximation of $\left.h\right|_\Gamma = h_\Gamma$ is then
+$$
+    \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
+                + \cdots
+                + h_\Gamma(p^\Gamma_{n_\Gamma})\hatfun{p^\Gamma_{n_\Gamma}},
+$$
+which is a piecewise-linear interpolation when restricted to the boundary $\Gamma$. The approximation $\phi_\Gamma$ for some boundary
+function $h_\Gamma$ is shown in figure (ref).
 
+\vskip 0.2in
+    Figure of just the boundary hat functions rising to a drawn boundary curve.
+\vskip 0.2in
 
-
-As there are typically more triangles than vertices, we cannot use the $T_i$ as the domain partition.
-However, if we choose some characteristic ``triangle centre'' for each triangle, then we may associate to each
+If we choose some characteristic ``triangle centre'' for each triangle, then we may associate to each
 $p_i$ a domain $\Omega_i$ defined by the polygon which joins the centres of the adjacent triangles.
 Two common choices for the triangle centre are the barycentre, which is the average position of the three vertices, and the circumcentre,
 which is the centre of the unique circle passing through the three vertices. The circumcentre scheme gives what are called
@@ -303,7 +349,7 @@ to be the \textit{trial space}, where the span is taken with respect to formal s
 we may choose from many possible bases. For example,
     $$\Psi = \text{span}\left\{\Omega_1, \Omega_2, \Omega_3\right\} =
     \text{span}\left\{\Omega_1 + \Omega_2, 2\Omega_2, \Omega_3\right\}.$$
-A key idea, leading to Galerkin methods, is to allow freedom in the choice of our trial space $\Psi$.
+A key idea, leading to Galerkin methods, is to allow freedom in the choice of the trial space $\Psi$.
 Notably, we do not need $\Psi$ to be a space of formal sums of domains.
 The Poisson equation is discretised over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
 which we repeat here:
