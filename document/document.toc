@@ -48,26 +48,26 @@
 \contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}
 \contentsline {subsubsection}{The Galerkin method}{26}{section*.22}
 \contentsline {subsubsection}{The finite element method}{26}{section*.23}
-\contentsline {subsubsection}{The Poisson equation}{26}{section*.24}
-\contentsline {section}{\numberline {4.2}Discretizing the differential versus integral form}{26}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Discretizing the differential form of the PDE}{26}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{27}{subsection.4.2.2}
-\contentsline {section}{\numberline {4.3}Deriving the heat and Poisson equation through diffusion processes}{27}{section.4.3}
-\contentsline {section}{\numberline {4.4}Discretizing Poisson's equation by finite volumes}{28}{section.4.4}
-\contentsline {subsection}{\numberline {4.4.1}The Dirichlet boundary condition and the test space}{28}{subsection.4.4.1}
-\contentsline {subsection}{\numberline {4.4.2}Forming a linear system}{29}{subsection.4.4.2}
-\contentsline {subsection}{\numberline {4.4.3}Choosing the test space, boundary approximation, and control volumes}{29}{subsection.4.4.3}
-\contentsline {subsubsection}{The test space}{29}{section*.25}
-\contentsline {subsubsection}{Approximating the boundary values}{30}{section*.27}
-\contentsline {subsubsection}{Choosing a finite number of control volumes}{30}{section*.29}
-\contentsline {subsection}{\numberline {4.4.4}Results and visualisation}{31}{subsection.4.4.4}
-\contentsline {section}{\numberline {4.5}From finite volumes to finite elements}{31}{section.4.5}
-\contentsline {section}{\numberline {4.6}Discretizing Poisson's equation by finite elements}{33}{section.4.6}
-\contentsline {subsection}{\numberline {4.6.1}Choosing a test and a trial space}{33}{subsection.4.6.1}
-\contentsline {section}{\numberline {4.7}Implementing the finite element method for Poisson's equation}{34}{section.4.7}
-\contentsline {subsection}{\numberline {4.7.1}Mesh generation}{35}{subsection.4.7.1}
-\contentsline {subsection}{\numberline {4.7.2}Matrix assembly}{35}{subsection.4.7.2}
-\contentsline {subsection}{\numberline {4.7.3}Numerical linear algebra}{36}{subsection.4.7.3}
-\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{37}{chapter.5}
-\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{39}{chapter.6}
-\contentsline {chapter}{Bibliography}{41}{section*.37}
+\contentsline {section}{\numberline {4.2}The equation to solve: The Poisson equation}{26}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Discretizing the differential versus integral form}{26}{subsection.4.2.1}
+\contentsline {subsubsection}{Discretizing the differential form of the PDE}{26}{section*.24}
+\contentsline {subsubsection}{Discretizing the integral form of the PDE}{27}{section*.25}
+\contentsline {subsection}{\numberline {4.2.2}Deriving the heat and Poisson equation through diffusion processes}{27}{subsection.4.2.2}
+\contentsline {section}{\numberline {4.3}Discretizing Poisson's equation by finite volumes}{28}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}The Dirichlet boundary condition and the test space}{28}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Forming a linear system}{29}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Choosing the test space, boundary approximation, and control volumes}{29}{subsection.4.3.3}
+\contentsline {subsubsection}{The test space}{29}{section*.26}
+\contentsline {subsubsection}{Approximating the boundary values}{30}{section*.28}
+\contentsline {subsubsection}{Choosing a finite number of control volumes}{30}{section*.30}
+\contentsline {subsection}{\numberline {4.3.4}Results and visualisation}{31}{subsection.4.3.4}
+\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{31}{section.4.4}
+\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{33}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{33}{subsection.4.5.1}
+\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{34}{section.4.6}
+\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{35}{subsection.4.6.1}
+\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{35}{subsection.4.6.2}
+\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{36}{subsection.4.6.3}
+\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{39}{chapter.5}
+\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{41}{chapter.6}
+\contentsline {chapter}{Bibliography}{43}{section*.38}
