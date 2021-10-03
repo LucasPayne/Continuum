@@ -377,25 +377,67 @@ The resulting cell decompositions are displayed in figure
 \end{figure}
 
 The scheme as described so far, consisting of a triangle mesh, hat test functions, and barycentric or Voronoi control volumes,
-has found some success, especially in the domain of geometry processing \cite{polygon_mesh_processing}.
+has found some success, especially in the domain of geometry processing (\cite{polygon_mesh_processing}, \cite{ddg_triangulated}).
 We will work with the Voronoi cells.
 
-\subsubsection{Forming the linear system for this scheme}
+\subsubsection{Forming the linear system by closed-form integration}
 Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
 the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
 the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
-
 By fortuitous circumstances, these integrals actually have simple closed forms, equivalent to geometric constructions.
-Firstly, consider one of the matrix coefficient integrals
-\begin{equation}\label{fvm_matrix_coefficient_integral}
-\int_{\pom_j} -\nabla\phi_i\cdot\hat{n}\,dx.
+Firstly, lets consider the trial flux integral
+\begin{equation}\label{fvm_integral}
+\int_{\pom_j} -\nabla \tilde{h}\cdot\hat{n}\,dx.
 \end{equation}
-Let $v$ be a certain interior vertex, and denote by $v_1, \cdots, v_k$ its adjacent vertices (either in the interior
-or on the boundary), and by $T^v_1 \cdots T^v_k$ its adjacent triangles. Triangle $T^v_i$ joins $v,v_i,v_{i+1}$ where addition is taken
-modulo $k$.
-This vertex $v$ corresponds to a single trial flux integral over the surrounding Voronoi cell.
-The Voronoi polygon, by its definition, joins the midpoints $\frac{1}{2}(v + v_1),\cdots,\frac{1}{2}(v + v_k)$.
+By linearity, $\nabla \tilde{h}$ is a combination of gradients of basis functions of $\Phi^*$:
+\begin{align*}
+    \nabla \tilde{h} = \nabla\phi_\Gamma + \nabla\phi
+             = \sum_{i=1}^{n_\Gamma}h_\Gamma(p^\Gamma_i)\nabla\phi^\Gamma_i + \sum_{i=1}^n h_i\nabla\phi_i.
+\end{align*}
+By linearity the integral \eqref{fvm_integral} becomes
+\begin{equation}\label{fvm_integral_linearity_expanded}
+    \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\int_{\Omega_j}-\nabla\phi^\Gamma_i\cdot\hat{n}\,dx\right]
+    + \sum_{i=1}^n\left[h_i\int_{\Omega_j}-\nabla\phi_i\cdot\hat{n}\,dx\right].
+\end{equation}
+% We therefore need only compute the integrals
+% $$
+%     \int_{\Omega_j} \nabla\phi_i \cdot \hat{n}\,dx.
+% $$
+Let $v = p_j$ be the interior vertex corresponding to the control volume $\Omega_j$, and denote by $v_1, \cdots, v_k$ its adjacent vertices (either in the interior
+or on the boundary), and by $T^v_1 \cdots T^v_k$ its adjacent triangles. Triangle $T^v_l$ joins $v,v_l,v_{l+1}$ where addition is taken
+modulo $k$. As it will be necessary to relate these local indices to the global vertex indices, define an index map by
+    $$I(v_i) = \text{the global index $l$ of the $p_l$ corresponding to adjacent vertex $v_i$},$$
+which is valid only when $v_i$ is an interior vertex.
+This vertex $v$ corresponds to a single trial flux integral over the surrounding Voronoi cell $\Omega_j$.
+As the hat functions have compact support, $\Omega_j$ only intersects the domains of the basis function $\phi_j$ and those corresponding
+to the adjacent vertices in the interior. Name these basis functions $\phi_j = \phi_v$ and $\phi_{v_1}, \cdots \phi_{v_k}$.
+Then the integral becomes
+\begin{equation}\label{fvm_integral_vertex}
+    \int_{\Omega_j}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{i=1}^{k}h_{v_i}\int_{\Omega_j}-\nabla\phi^v_i\cdot\hat{n}\,dx,
+\end{equation}
+where $h_{v_i}$ is defined as
+\begin{align*}
+    h_{v_i} =
+    \left\{\begin{array}{lr}
+        h_\Gamma(p^\Gamma_i) &\text{if $v_i$ is a boundary vertex,}\\
+        h_{I(v_i)} &\text{if $v_i$ is an interior vertex}.\\
+        \end{array}\right.
+\end{align*}
 
+\vskip 0.2in
+(figure)
+\vskip 0.2in
+
+\vskip 0.2in
+(figure)
+\vskip 0.2in
+
+% Firstly, we must compute $\nabla \phi_i$. Since we only need to consider
+
+
+
+
+The Voronoi polygon joins the midpoints $\frac{1}{2}(v + v_1),\cdots,\frac{1}{2}(v + v_k)$.
 
 
 
