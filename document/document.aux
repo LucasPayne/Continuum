@@ -158,8 +158,8 @@
 \newlabel{heat_equation_differential}{{4.6}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.6}{}}
 \newlabel{heat_equation_differential_constant}{{4.7}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.7}{}}
 \newlabel{poisson_equation}{{4.8}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
+\newlabel{poisson_equation_integral}{{4.9}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.9}{}}
 \citation{approximation_theory}
-\newlabel{poisson_equation_integral}{{4.9}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.9}{}}
 \@writefile{toc}{\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.25}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.3}Discretizing Poisson's equation by finite volumes}{28}{section.4.3}}
 \newlabel{discretizing_poisson}{{\M@TitleReference {4.3}{Discretizing Poisson's equation by finite volumes}}{28}{Discretizing Poisson's equation by finite volumes}{section.4.3}{}}
@@ -184,36 +184,37 @@
 \@writefile{toc}{\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}}
 \citation{polygon_mesh_processing}
 \citation{ddg_triangulated}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{figure.caption.33}}
-\newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }{figure.caption.33}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{figure.caption.33}}
+\newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }{figure.caption.33}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Forming the linear system by closed-form integration}{32}{section*.34}}
 \newlabel{fvm_integral}{{4.14}{32}{Forming the linear system by closed-form integration}{equation.4.3.14}{}}
 \newlabel{fvm_integral_linearity_expanded}{{4.15}{32}{Forming the linear system by closed-form integration}{equation.4.3.15}{}}
 \newlabel{fvm_integral_vertex}{{4.16}{32}{Forming the linear system by closed-form integration}{equation.4.3.16}{}}
+\newlabel{fvm_integral_vertex_triangles}{{4.17}{33}{Forming the linear system by closed-form integration}{equation.4.3.17}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{33}{section.4.4}}
 \newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{33}{From finite volumes to finite elements}{section.4.4}{}}
-\newlabel{example_trial_sum}{{4.17}{33}{From finite volumes to finite elements}{equation.4.4.17}{}}
-\newlabel{poisson_galerkin}{{4.19}{34}{From finite volumes to finite elements}{equation.4.4.19}{}}
+\newlabel{example_trial_sum}{{4.18}{33}{From finite volumes to finite elements}{equation.4.4.18}{}}
+\newlabel{poisson_galerkin}{{4.20}{35}{From finite volumes to finite elements}{equation.4.4.20}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{35}{section.4.5}}
-\newlabel{poisson_fem_matrix_equation}{{4.20}{35}{Discretizing Poisson's equation by finite elements}{equation.4.5.20}{}}
+\newlabel{poisson_fem_matrix_equation}{{4.21}{35}{Discretizing Poisson's equation by finite elements}{equation.4.5.21}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{35}{subsection.4.5.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{36}{figure.caption.35}}
+\newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{36}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.35}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{36}{section.4.6}}
 \citation{polygon_mesh_processing}
 \citation{geometry_central}
 \citation{polygon_mesh_processing_library}
 \citation{openmesh}
 \citation{triangle}
 \citation{orourke}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{36}{figure.caption.35}}
-\newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{36}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.35}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{36}{section.4.6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{36}{subsection.4.6.1}}
 \citation{petsc}
 \citation{armadillo}
 \citation{eigen}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{37}{subsection.4.6.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{37}{subsection.4.6.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{37}{subsection.4.6.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{37}{figure.caption.39}}
-\newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{37}{\scriptsize Text \relax }{figure.caption.39}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{38}{subsection.4.6.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{38}{figure.caption.39}}
+\newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{38}{\scriptsize Text \relax }{figure.caption.39}{}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{39}{chapter.5}}

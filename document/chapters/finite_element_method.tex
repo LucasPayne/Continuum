@@ -369,8 +369,8 @@ The resulting cell decompositions are displayed in figure
     \end{center}
     \caption{\scriptsize
         The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$.
-        Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters.
-        Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily
+        Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres.
+        Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily
         contained in a single fan of triangles.
     }
     \label{cell_decompositions}
@@ -399,6 +399,7 @@ By linearity the integral \eqref{fvm_integral} becomes
     \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\int_{\Omega_j}-\nabla\phi^\Gamma_i\cdot\hat{n}\,dx\right]
     + \sum_{i=1}^n\left[h_i\int_{\Omega_j}-\nabla\phi_i\cdot\hat{n}\,dx\right].
 \end{equation}
+
 % We therefore need only compute the integrals
 % $$
 %     \int_{\Omega_j} \nabla\phi_i \cdot \hat{n}\,dx.
@@ -423,21 +424,29 @@ where $h_{v_i}$ is defined as
         h_{I(v_i)} &\text{if $v_i$ is an interior vertex}.\\
         \end{array}\right.
 \end{align*}
+The $\phi_v$ and $\phi_{v_1},\cdots,\phi_{v_k}$ are hat functions which are linear when restricted to each triangle
+$T^v_1,\cdots,T^v_k$. Therefore the gradients $\nabla\phi_v$ and $\nabla\phi_{v_1},\cdots,\nabla\phi_{v_k}$ are constant
+on those triangles. We can break the closed flux integrals in \eqref{fvm_integral_vertex} into flux integrals restricted to each triangle adjacent to $v$, giving
+\begin{equation}\label{fvm_integral_vertex_triangles}
+    \sum_{t=1}^k\left[\int_{\Omega_j \cap T^v_t}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{i=1}^{k}h_{v_i}\int_{\Omega_j \cap T^v_t}-\nabla\phi^v_i\cdot\hat{n}\,dx\right].
+\end{equation}
+We now only need to find a closed form for
+$$
+\int_{\Omega_j \cap T_t^v} -\nabla\phi_v\cdot\hat{n}\,dx \text{\quad and \quad} 
+\int_{\Omega_j \cap T_t^v} -\nabla\phi_{v_i}\cdot\hat{n}\,dx,
+$$
+which is simple because the gradients are constant on $\Omega_j \cap T_t^v$. We can simplify matters by focusing on just one adjacent triangle, say
+$T = vv^\pr v^\ppr$
 
 \vskip 0.2in
 (figure)
 \vskip 0.2in
 
-\vskip 0.2in
-(figure)
-\vskip 0.2in
-
-% Firstly, we must compute $\nabla \phi_i$. Since we only need to consider
+The Voronoi polygon joins the midpoints $\frac{1}{2}(v + v^\pr)$ and $\frac{1}{2}(v + v^\ppr)$, taking a detour to the barycentre of $T$.
+However, since the vector field $\nabla\phi_v$ is constant, it is conservative, and we can simplify the domain to the line segment $L$ between
+the midpoints $\frac{1}{2}(v + v^\pr)$ and $\frac{1}{2}(v + v^\ppr)$.
 
 
-
-
-The Voronoi polygon joins the midpoints $\frac{1}{2}(v + v_1),\cdots,\frac{1}{2}(v + v_k)$.
 
 
 
