@@ -6,8 +6,7 @@
 
 #define BOUNDARY_FIGURE_MODE 1
 
-// float wireframe_thickness = 0.003f;
-float wireframe_thickness = 0.006f;
+float wireframe_thickness = 0.003f;
 
 
 class LaplaceSolver {
@@ -349,7 +348,7 @@ App::App(World &_world) : world{_world}
     
     source_force = 0;
     #if BOUNDARY_FIGURE_MODE == 1
-    mesh_N = 6;
+    mesh_N = 8;
     #else
     mesh_N = 5;
     #endif
@@ -371,7 +370,7 @@ void App::loop()
     auto solver = LaplaceSolver(solving_mesh->geom);
     #if BOUNDARY_FIGURE_MODE == 1
     solver.set_dirichlet_boundary([](double x, double y)->double {
-        return 0.15+exp(-1.6*x*x - 0.3*(y-1)*(y-1));
+        return exp(-1.6*x*x - 0.3*(y-1)*(y-1));
     });
     #else
     solver.set_dirichlet_boundary([](double x, double y)->double {
@@ -420,11 +419,7 @@ void App::loop()
     }
     lifted_boundary_positions.push_back(lifted_boundary_positions[0]);
     boundary_positions.push_back(boundary_positions[0]);
-    #if BOUNDARY_FIGURE_MODE == 1
-    auto boundary_positions_shifted = std::vector<vec3>();
-    for (auto p : boundary_positions) boundary_positions_shifted.push_back(p + translate_mesh_duplicate);
-    world.graphics.paint.chain(boundary_positions_shifted, 0.005, vec4(0,0,0,1));
-    #else
+    #if BOUNDARY_FIGURE_MODE == 0
     world.graphics.paint.chain(lifted_boundary_positions, 0.005, vec4(0,0,0,1));
     world.graphics.paint.chain(boundary_positions, 0.005, vec4(0,0,0,1));
     #endif
@@ -434,28 +429,17 @@ void App::loop()
     
     if (1) {
         // Draw the exact boundary condition.
+        int num = 300;
+        auto boundary_condition_loop = std::vector<vec3>(num+1);
+        for (int i = 0; i <= num; i++) {
+            float theta = 2*i*M_PI/num;
+            float c = cos(theta);
+            float s = sin(theta);
+            boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
+        }
         #if BOUNDARY_FIGURE_MODE == 1
-        int num = 300;
-        auto boundary_condition_loop = std::vector<vec3>(num+1);
-        auto boundary_condition_loop_shifted = std::vector<vec3>(num+1);
-        for (int i = 0; i <= num; i++) {
-            float theta = 2*i*M_PI/num;
-            float c = cos(theta);
-            float s = sin(theta);
-            boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
-            boundary_condition_loop_shifted[i] = vec3(c, 0, s) + translate_mesh_duplicate;
-        }
         world.graphics.paint.chain(boundary_condition_loop, 0.015, vec4(1,0.6,0.6,1));
-        world.graphics.paint.chain(boundary_condition_loop_shifted, 0.015, vec4(1,0.6,0.6,1));
         #else
-        int num = 300;
-        auto boundary_condition_loop = std::vector<vec3>(num+1);
-        for (int i = 0; i <= num; i++) {
-            float theta = 2*i*M_PI/num;
-            float c = cos(theta);
-            float s = sin(theta);
-            boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
-        }
         world.graphics.paint.chain(boundary_condition_loop, 0.004, vec4(1,0.6,0.6,1));
         #endif
     }

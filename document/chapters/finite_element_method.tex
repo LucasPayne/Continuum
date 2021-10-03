@@ -25,7 +25,7 @@ On the other side of the coin, fluid models are very often used in modern film, 
     \caption{Some key figures whose work precipitated modern developments in PDEs.}
     \label{fig:galerkin_mathematicians}
 \end{figure}
-The Navier-Stokes equations in applications are primarily
+In applications, the Navier-Stokes equations are primarily
 solved on a computer, and a computer works with both finite data and finite precision. The Galerkin method
 is particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
 residual minimisation, and solution reconstruction, can be automated (\cite{firedrake}, \cite{fenics_book}, \cite{DOLFIN}). We begin by
@@ -571,7 +571,7 @@ Similar to the hat-functions-and-Voronoi-cells decomposition described for finit
 the simplest scheme for the finite element Poisson equation is to triangulate $\Omega$ as
     $\bigcup_i T_i$
 such that we have $n$ nodal points and $n_T$ triangles.
-Each nodal point $p_i$ will be associated with a piecewise ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
+Each nodal point $p_i$ will be associated with a piecewise linear ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
 $0$ at its neighbours. Now, diverging from the previous finite volume method, the simplest thing we could do is let the trial functions be the same
 as the test functions, $\psi_i = \phi_i$. This trivially gives a one-to-one correspondence between the $\phi_i$ and the $\psi_i$, which will lead
 to a well-formed linear system.
@@ -603,7 +603,7 @@ Each of these steps is conceptually well-separated into the domains of
 mesh generation, matrix assembly, and numerical linear algebra.
 
 \subsection{Mesh generation}
-Mesh generation is itself a huge field. However, there are only two essentials for the handling of 2D meshes and piecewise-linear finite elements
+Mesh generation is itself a huge field. However, there are only two essentials for the handling of 2D meshes and piecewise linear finite elements
 --- a mesh data structure and a triangulator. Typically a mesh data structure will be provided by a separate library,
 and the data organization (e.g., vertex, triangle, and adjacency information) will be designed to facilitate the kinds
 of mesh traversals performed during matrix assembly. This is typically some variant of a ``halfedge'' data structure \cite{polygon_mesh_processing},

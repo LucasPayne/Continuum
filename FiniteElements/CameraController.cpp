@@ -72,7 +72,8 @@ void CameraController::init()
     key_view_speed_vertical = 1.5;
     azimuth = 0;
     angle = 0;
-    min_angle = -M_PI/2.0 + 0.15;
+    //min_angle = -M_PI/2.0 + 0.15;
+    min_angle = -M_PI/2.0;
     max_angle = M_PI/2.0 - 0.15;
     view_with_mouse = true;
     mouse_sensitivity = 2;
