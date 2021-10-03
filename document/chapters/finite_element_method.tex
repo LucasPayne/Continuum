@@ -2,6 +2,38 @@
 
 \section{Introduction}
 
+Continuum mechanics provides the foundation for understanding of fluid motion, and the Navier-Stokes equations for
+a Newtonian fluid are the primary model for the prediction of fluid behaviour in engineering.
+The domain and initial/boundary conditions can be arbitrarily complex. For example, fluid motion is often simulated
+through a digital surface model of a real-world object or system created in computer-aided design software.
+On the other side of the coin, fluid models are very often used in modern film, both live-action and animated.
+
+The Navier-Stokes equations in applications are primarily
+solved on a computer, and a computer works with both finite data and finite precision. The Galerkin method
+is particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
+residual minimisation, and solution reconstruction, can be automated (\cite{fenics_book}, \cite{DOLFIN}). We begin by discussing
+possibly the simplest instance of a Galerkin method, performed on an irregular 2D domain to emphasize that the method trivially extends
+to complex geometries. A computer implementation is then presented, which generates visualisations and quality metrics for the results.
+
+\captionsetup[subfigure]{labelformat=empty}
+\begin{figure}[H]
+    \centering
+    \subfloat[][\centering Peter Dirichlet (1805--1859)]{{\includegraphics[height=3cm]{figures/mathematicians/Peter_Dirichlet.jpg} }}
+    \qquad
+    \subfloat[][\centering David Hilbert (1862--1943)]{{\includegraphics[height=3cm]{figures/mathematicians/David_Hilbert.jpeg} }}
+    \qquad
+    \subfloat[][\centering Walther Ritz (1878--1909)]{{\includegraphics[height=3cm]{figures/mathematicians/Walther_Ritz.jpg} }}
+    \qquad
+    \subfloat[][\centering Boris Galerkin (1871--1945)]{{\includegraphics[height=3cm]{figures/mathematicians/Boris_Galerkin.jpeg} }}
+    \qquad
+    \subfloat[][\centering Sergei Sobolev (1908--1989)]{{\includegraphics[height=3.5cm]{figures/mathematicians/Sergei_Sobolev.jpg} }}
+    \qquad
+    \subfloat[][\centering Laurent Schwartz (1915--2002)]{{\includegraphics[height=3.5cm]{figures/mathematicians/Laurent_Schwartz.jpeg} }}
+    \caption{Some key figures whose work precipitated modern developments in PDEs.}
+    \label{fig:galerkin_mathematicians}
+\end{figure}
+
+
 \subsubsection{The Galerkin method}
 The Galerkin method was established by engineer and mathematician Boris Galerkin (1871--1945) in a 1915 paper containing
 an approximation method for the biharmonic equation of classical beam theory \cite{boris_galerkin}. Briefly, the principle of Galerkin is to
@@ -33,31 +65,13 @@ the residual is minimised with respect to the Euclidean norm.
 %     \label{fig:example}
 % \end{figure}
 
-\captionsetup[subfigure]{labelformat=empty}
-\begin{figure}[H]
-    \centering
-    \subfloat[][\centering Peter Dirichlet (1805--1859)]{{\includegraphics[height=3cm]{figures/mathematicians/Peter_Dirichlet.jpg} }}
-    \qquad
-    \subfloat[][\centering David Hilbert (1862--1943)]{{\includegraphics[height=3cm]{figures/mathematicians/David_Hilbert.jpeg} }}
-    \qquad
-    \subfloat[][\centering Walther Ritz (1878--1909)]{{\includegraphics[height=3cm]{figures/mathematicians/Walther_Ritz.jpg} }}
-    \qquad
-    \subfloat[][\centering Boris Galerkin (1871--1945)]{{\includegraphics[height=3cm]{figures/mathematicians/Boris_Galerkin.jpeg} }}
-    \qquad
-    \subfloat[][\centering Sergei Sobolev (1908--1989)]{{\includegraphics[height=3.5cm]{figures/mathematicians/Sergei_Sobolev.jpg} }}
-    \qquad
-    \subfloat[][\centering Laurent Schwartz (1915--2002)]{{\includegraphics[height=3.5cm]{figures/mathematicians/Laurent_Schwartz.jpeg} }}
-    \caption{Text}
-    \label{fig:example}
-\end{figure}
-
 As well as proving highly useful
-in numerical applications, the numerical methods of Galerkin (and contemporary mathematicians such as Walther Ritz) precede important developments
+in numerical applications, the methods of Galerkin (and contemporary mathematicians such as Walther Ritz) precede important developments
 in the mathematical theory of PDEs. In a 1934 talk named ``Generalized Solutions to the Wave Equation'', mathematician Sergei L. Sobolev (1908--1989)
 precipitated the development
 of generalised functions by Laurent Schwartz (1915-2002), integral to the modern study of PDEs
 (\cite{sobolev_web_page}, \cite{one_hundred_years_galerkin}).
-These developments are clarifications on the concept of a PDE. What do we mean when we speak of a solution of a PDE from physics. Galerkin's method
+These developments are clarifications on the question: What do we mean when we speak of a solution of a PDE from physics? Galerkin's method
 is much closer to the answer than, for example, the finite difference method.
 
 
