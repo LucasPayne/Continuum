@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  3 OCT 2021 15:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  3 OCT 2021 15:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2111,4 +2111,168 @@ put line 14.
 <figures/mathematicians/David_Hilbert.jpeg, id=593, 347.2975pt x 501.875pt>
 File: figures/mathematicians/David_Hilbert.jpeg Graphic file (type jpg)
 <use figures/mathematicians/David_Hilbert.jpeg>
-Package 
+Package pdftex.def Info: figures/mathematicians/David_Hilbert.jpeg  used on inp
+ut line 16.
+(pdftex.def)             Requested size: 57.09494pt x 82.51282pt.
+<figures/mathematicians/Walther_Ritz.jpg, id=594, 301.125pt x 311.1625pt>
+File: figures/mathematicians/Walther_Ritz.jpg Graphic file (type jpg)
+<use figures/mathematicians/Walther_Ritz.jpg>
+Package pdftex.def Info: figures/mathematicians/Walther_Ritz.jpg  used on input
+ line 18.
+(pdftex.def)             Requested size: 79.84828pt x 82.51282pt.
+<figures/mathematicians/Boris_Galerkin.jpeg, id=595, 200.75pt x 225.84375pt>
+File: figures/mathematicians/Boris_Galerkin.jpeg Graphic file (type jpg)
+<use figures/mathematicians/Boris_Galerkin.jpeg>
+Package pdftex.def Info: figures/mathematicians/Boris_Galerkin.jpeg  used on in
+put line 20.
+(pdftex.def)             Requested size: 73.34511pt x 82.51282pt.
+<figures/mathematicians/Sergei_Sobolev.jpg, id=596, 401.5pt x 324.21124pt>
+File: figures/mathematicians/Sergei_Sobolev.jpg Graphic file (type jpg)
+<use figures/mathematicians/Sergei_Sobolev.jpg>
+Package pdftex.def Info: figures/mathematicians/Sergei_Sobolev.jpg  used on inp
+ut line 22.
+(pdftex.def)             Requested size: 119.80153pt x 96.73918pt.
+<figures/mathematicians/Laurent_Schwartz.jpeg, id=597, 463.7325pt x 327.2225pt>
+
+File: figures/mathematicians/Laurent_Schwartz.jpeg Graphic file (type jpg)
+<use figures/mathematicians/Laurent_Schwartz.jpeg>
+Package pdftex.def Info: figures/mathematicians/Laurent_Schwartz.jpeg  used on 
+input line 24.
+(pdftex.def)             Requested size: 137.09708pt x 96.73918pt.
+ [25
+
+ <./figures/mathematicians/Peter_Dirichlet.jpg> <./figures/mathematicians/David
+_Hilbert.jpeg> <./figures/mathematicians/Walther_Ritz.jpg> <./figures/mathemati
+cians/Boris_Galerkin.jpeg> <./figures/mathematicians/Sergei_Sobolev.jpg> <./fig
+ures/mathematicians/Laurent_Schwartz.jpeg>] [26] [27] [28] [29]
+<figures/triangulation/triangulation.png, id=678, 1194.4625pt x 586.19pt>
+File: figures/triangulation/triangulation.png Graphic file (type png)
+<use figures/triangulation/triangulation.png>
+Package pdftex.def Info: figures/triangulation/triangulation.png  used on input
+ line 263.
+(pdftex.def)             Requested size: 225.77948pt x 110.79585pt.
+<figures/hat.png, id=681, 856.19875pt x 341.275pt>
+File: figures/hat.png Graphic file (type png)
+<use figures/hat.png>
+Package pdftex.def Info: figures/hat.png  used on input line 293.
+(pdftex.def)             Requested size: 225.77948pt x 89.9948pt.
+<figures/boundary/boundary.png, id=683, 1612.0225pt x 439.6425pt>
+File: figures/boundary/boundary.png Graphic file (type png)
+<use figures/boundary/boundary.png>
+Package pdftex.def Info: figures/boundary/boundary.png  used on input line 313.
+
+(pdftex.def)             Requested size: 383.3974pt x 104.56375pt.
+ [30 <./figures/triangulation/triangulation.png> <./figures/hat.png>]
+<figures/cell.png, id=699, 1224.575pt x 456.70625pt>
+File: figures/cell.png Graphic file (type png)
+<use figures/cell.png>
+Package pdftex.def Info: figures/cell.png  used on input line 334.
+(pdftex.def)             Requested size: 298.1987pt x 111.20758pt.
+ [31 <./figures/boundary/boundary.png> <./figures/cell.png>] [32] [33]
+<figures/sparsity_pattern_no_text.png, id=742, 563.10374pt x 560.0925pt>
+File: figures/sparsity_pattern_no_text.png Graphic file (type png)
+<use figures/sparsity_pattern_no_text.png>
+Package pdftex.def Info: figures/sparsity_pattern_no_text.png  used on input li
+ne 560.
+(pdftex.def)             Requested size: 110.75766pt x 110.16196pt.
+
+Underfull \vbox (badness 1540) has occurred while \output is active []
+
+ [34]
+
+Class memoir Warning: The material used in the headers is too large
+(27.2pt) for the given head height (13.6pt), it is recommended to
+either increase the head height or redesign the header
+(in both cases you will find help in the memoir manual). on input line 618.
+
+
+Overfull \vbox (13.59999pt too high) has occurred while \output is active []
+
+
+[35 <./figures/sparsity_pattern_no_text.png>]
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+<figures/laplace/laplacev2.png, id=770, 2055.68pt x 652.4375pt>
+File: figures/laplace/laplacev2.png Graphic file (type png)
+<use figures/laplace/laplacev2.png>
+Package pdftex.def Info: figures/laplace/laplacev2.png  used on input line 771.
+
+(pdftex.def)             Requested size: 426.0pt x 135.20403pt.
+) [36 <./figures/laplace/laplacev2.png>]
+Overfull \vbox (13.59999pt too high) has occurred while \output is active []
+
+
+[37] [38
+
+] [39] [40
+
+] [41] [42
+
+]
+bibitemlist
+[43]
+Underfull \hbox (badness 1622) in paragraph at lines 260--264
+[]\OT1/cmr/m/n/10.95 (+20) Leif Kobbelt, Open-Mesh (sur-face mesh li-brary), ht
+tps://www.graphics.rwth-
+ []
+
+
+Underfull \hbox (badness 2735) in paragraph at lines 276--279
+[]\OT1/cmr/m/n/10.95 (+20) Sobolev In-sti-tute of Math-e-mat-ics, Sergei Sobole
+v, bi-o-graph-i-cal web page,
+ []
+
+
+Class memoir Warning: The material used in the headers is too large
+(27.2pt) for the given head height (13.6pt), it is recommended to
+either increase the head height or redesign the header
+(in both cases you will find help in the memoir manual). on input line 287.
+
+[44]
+\tf@toc=\write5
+\openout5 = `document.toc'.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 287.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 287.
+ (./document.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 287.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 287.
+Package rerunfilecheck Info: File `document.out' has not changed.
+(rerunfilecheck)             Checksum: 1BF9BAEB32FBB6F0052411524C58F597;3651.
+ ) 
+Here is how much of TeX's memory you used:
+ 24427 strings out of 494847
+ 415452 string characters out of 6179081
+ 569419 words of memory out of 5000000
+ 27117 multiletter control sequences out of 15000+600000
+ 550002 words of font info for 143 fonts, out of 8000000 for 9000
+ 59 hyphenation exceptions out of 8191
+ 47i,24n,49p,10403b,524s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/symbols/msbm10.pfb>
+Output written on document.pdf (44 pages, 4832988 bytes).
+PDF statistics:
+ 965 PDF objects out of 1000 (max. 8388607)
+ 828 compressed objects within 9 object streams
+ 254 named destinations out of 1000 (max. 500000)
+ 20460 words of extra memory for PDF output out of 20736 (max. 10000000)
+

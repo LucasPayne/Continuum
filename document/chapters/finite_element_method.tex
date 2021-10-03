@@ -251,22 +251,23 @@ are chosen well, this linear system will be non-singular and hopefully well-cond
 In all cases we have a conservative system of balanced fluxes, but it is another question whether the approximation
 $\tilde{h}$ is good.
 
-\subsection{Choosing the test space, boundary approximation, and control volumes}
+\newpage
+% \subsection{Choosing the test space, boundary approximation, and control volumes}
+\subsection{A piecewise linear triangulation scheme}
 Possibly the simplest scheme is to triangulate $\Omega$ as
     $\bigcup_i T_i,$
 such that we have $n$ interior vertices $p_1,\cdots,p_n$, and $n_\Gamma$ boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$, and $n_T$ triangles
-$T_1,\cdots,T_{n_T}$. An example triangulation is shown in figure \ref{triangulation}.
+$T_1,\cdots,T_{n_T}$. An example triangulation of an ellipse-shaped domain is shown in figure \ref{triangulation}.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.8\linewidth]{figures/triangulation/triangulation.png}
-    %
+        \includegraphics[width=0.53\linewidth]{figures/triangulation/triangulation.png}
     \end{center}
     \caption{\scriptsize
-        The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$. The boundary is sampled at $n_\Gamma$ points
-        $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$.
-        There are $n = 2$ interior points $p_1$ and $p_2$.
+        The domain $\Omega$ is partitioned into $n_T = 12$ triangular cells $T_1\cdots T_{12}$. The boundary is sampled at $n_\Gamma = 10$ points
+        $p^\Gamma_1,\cdots,p^\Gamma_{10}$.
+        There are $n = 2$ interior points, $p_1$ and $p_2$.
     }
-    \label{ellipse_partition}
+    \label{triangulation}
 \end{figure}
 
 \subsubsection{The test space}
@@ -320,7 +321,7 @@ function $h_\Gamma$ is shown in figure \ref{boundary}.
 
 \subsubsection{Choosing a finite number of control volumes}
 If we choose some characteristic ``triangle centre'' for each triangle, then we can associate to the interior vertices
-$p_1,\cdots,p_n$ a set of domains $\Omega_1,\cdots,\Omega_n$. Each $\Omega_i$ is defined by the polygon which joins the centres of the triangles
+$p_1,\cdots,p_n$ a set of domains $\Omega_1,\cdots,\Omega_n$. Each $\Omega_i$ is determined by the polygon which joins the centres of the triangles
 incident to $p_i$.
 Two common choices for the triangle centre are the barycentre, which is the average position of the three vertices, and the circumcentre,
 which is the centre of the unique circle passing through the three vertices. The circumcentre scheme gives what are called
