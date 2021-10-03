@@ -29,7 +29,7 @@ In applications, the Navier-Stokes equations are primarily
 solved on a computer, and a computer works with both finite data and finite precision. The Galerkin method
 is particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
 residual minimisation, and solution reconstruction, can be automated (\cite{firedrake}, \cite{fenics_book}, \cite{DOLFIN}). We begin by
-deriving a simple instance of a Galerkin method for Poisson's equation, performed on an irregular 2D domain to emphasize that the method trivially extends
+deriving two instances of Galerkin methods for Poisson's equation, performed on an irregular 2D domain to emphasize that the methods trivially extend
 to complex geometries. A computer implementation is then presented, which generates visualisations and quality metrics for the results.
 
 
@@ -58,13 +58,13 @@ is much closer to the answer than, for example, the finite difference method.
 Among the fundamental PDEs
 are the heat equation
     $$\Part{h}{t} = \Delta h + g$$
-and the Poisson equation
+and Poisson's equation
 \begin{equation}\label{poisson_compact}
     -\Delta h = g.
 \end{equation}
 The latter can be thought of as the steady-state version of the former. The solution of a Poisson problem will be a crucial component
 of the solution of the Stokes equations. It seems ideal to start by discussing
-discretization methods for the Poisson equation \eqref{poisson_compact} in particular,
+discretization methods for Poisson's equation \eqref{poisson_compact} in particular,
 as it is likely the simplest non-trivial PDE.
 The focus here is on the Dirichlet problem
 \begin{equation}\label{poisson_dirichlet_problem}
@@ -72,8 +72,7 @@ The focus here is on the Dirichlet problem
 \end{equation}
 where $\Gamma$ is the boundary of the domain, and the domain is 2D.
 
-\subsection{Discretizing the differential versus integral form}
-\subsubsection{Discretizing the differential form of the PDE}
+\subsection{Discretizing the differential form of the PDE}
 It is a theorem of Gauss that in Euclidean space $\mathbb{R}^3$ we have
 \begin{equation}\label{gauss_euclidean_divergence}
     \nabla \cdot v = \Part{v_x}{x} + \Part{v_y}{y} + \Part{v_z}{z},
@@ -90,7 +89,7 @@ By forming secant approximations of the derivatives over a regular grid, a linea
 for as a function of this grid.
 However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
 They could be coefficients of, for example, hat basis functions.
-Yet a finite difference discretization of the Poisson equation \eqref{poisson_compact} may not take this into account at all. One might feel that
+Yet a finite difference discretization of Poisson equation \eqref{poisson_compact} may not take this into account at all. One might feel that
 limits have been taken too soon.
 
 % Consider a single conservation law as described in section \ref{conservation_laws}. This law
@@ -103,7 +102,7 @@ limits have been taken too soon.
 %     \Part{\phi}{t} = s - \nabla\cdot (\phi j).
 % \end{equation*}
 
-\subsubsection{Discretizing the integral form of the PDE}
+\subsection{Discretizing the integral form of the PDE}
 In physics, Poisson's equation is an equilibrium conservation law, and therefore has an integral form.
 This form will give clearer routes to discretizations which
 have geometric meaning.
@@ -117,16 +116,17 @@ of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
 There are an infinite number of control volumes, and therefore an infinite number of equations which must hold, and there is an infinite dimensional
 space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite dimensional subspace of possible approximate solutions.
 A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
+To continue with this idea, we must write Poisson's equation \eqref{poisson_compact} in integral form.
 
-\vskip 0.2in
-(figure)
-\vskip 0.2in
+% \vskip 0.2in
+% (figure)
+% \vskip 0.2in
+% 
+% Finite element methods, and more generally Galerkin methods, live comfortably in the language of weak solutions, integral forms of partial differential equations,
+% and the calculus of variations.
+% To continue with this idea, we must write Poisson's equation \eqref{poisson_compact} in integral form.
 
-Finite element methods, and more generally Galerkin methods, live comfortably in the language of weak solutions, integral forms of partial differential equations,
-and the calculus of variations.
-To continue with this idea, we must write the Poisson equation \eqref{poisson_compact} in integral form.
-
-\subsection{Deriving the heat and Poisson equation through diffusion processes}
+\subsubsection{Deriving the heat and Poisson equation through diffusion processes}
 The Poisson equation \eqref{poisson_compact} can be thought of as the steady state of some diffusion process with a source term $g$,
 although this need not be its literal physical interpretation.
 A diffusion process ``levels out'' some quantity, such as temperature or some chemical concentration.
@@ -156,15 +156,24 @@ The steady-state heat equation is then
     -\Delta h = g,
 \end{equation}
 where we let $g = s/\mu$ in the above.
-This completes the derivation of the Poisson equation \eqref{poisson_compact}.
+This completes the derivation of Poisson's equation \eqref{poisson_compact}.
 % which models steady-state diffusion processes and can be used to calculate gravitational or electrostatic potential fields.
-In integral form, ``undoing'' the application of Stokes' theorem above, the Poisson equation is
+In integral form, ``undoing'' the application of Stokes' theorem above, Poisson's equation is
 \begin{equation}\label{poisson_equation_integral}
     \int_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} g\,dx \quad \text{for all control volumes $\Omega_0$.}
 \end{equation}
 Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
 as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount introduced into $\Omega_0$ by the source function.
 The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
+
+\subsubsection{So how do we discretize Poisson's equation?}
+Even starting with \eqref{poisson_equation_integral}, there are many routes to take to discretization.
+Notice that there are two variables in \eqref{poisson_equation_integral}, although one is bound over universal quantification:
+the control volume $\Omega_0$ and the function $h$.
+The general Galerkin method very naturally appears when the ``space'' $\Omega_0$ resides in and the space $h$ resides in are reduced
+such that the equations are both finite dimensional and well-determined. Firstly, let's derive the conceptually simplest
+discretization method of these spaces, the finite volume method.
+
 
 \section{Discretizing Poisson's equation by finite volumes}\label{discretizing_poisson}
 ---NOTE: $H^1$ May be wrong.
@@ -176,6 +185,9 @@ $\left.h\right|_\Gamma = h_\Gamma$, and there is no flux information across $\Ga
 A simple idea is to choose a finite number of control volumes $\Omega_1,\cdots,\Omega_n$ (hence ``finite volumes''), and check that the flux integral holds over each of these.
 We will then have $n$ equations on $h$. As this system will be underdetermined ($h$ has infinite degrees of freedom), we must
 restrict $h$ to a finite dimensional space of approximations $\Phi^*$.
+
+We begin by discussing the general construction of a finite volume method, but this will soon be made concrete with a simple, specific example of a 
+finite volume discretization.
 
 
 \subsection{The Dirichlet boundary condition and the test space}
@@ -205,7 +217,7 @@ where $\phi$ is the ``interior variation''
     $$\phi = \Phi\cdot \hat{h} \coloneqq h_1\phi_1 + \cdots + h_n\phi_n.$$
 
 \subsection{Forming a linear system}
-The integral-conservation-law form \eqref{poisson_equation_integral} of the Poisson equation \eqref{poisson_compact}
+The integral-conservation-law form \eqref{poisson_equation_integral} of Poisson's equation \eqref{poisson_compact}
 now directly indicates a method of approximation. Letting $h$ be approximated by $\tilde{h} = \phi + \phi_\Gamma$ (where $\phi \in \Phi$ is unknown and $\phi_\Gamma \in \Phi^*$ is known),
 and restricting the flux integrals to the control volumes $\Omega_1,\cdots,\Omega_n$, the conservation law \eqref{poisson_equation_integral} becomes
 \begin{equation}\label{poisson_equation_integral_fvm}
@@ -261,7 +273,7 @@ $\tilde{h}$ is good.
 \subsection{A piecewise linear triangulation scheme}
 Possibly the simplest scheme is to triangulate $\Omega$ as
     $\bigcup_i T_i,$
-such that we have $n$ interior vertices $p_1,\cdots,p_n$, and $n_\Gamma$ boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$, and $n_T$ triangles
+such that there are $n$ interior vertices $p_1,\cdots,p_n$, and $n_\Gamma$ boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$, and $n_T$ triangles
 $T_1,\cdots,T_{n_T}$. An example triangulation of an ellipse-shaped domain is shown in figure \ref{triangulation}.
 \begin{figure}[H]
     \begin{center}
@@ -306,6 +318,7 @@ One of these basis functions for the ellipse-shaped domain is shown in figure \r
     \label{ellipse_partition}
 \end{figure}
 
+\newpage
 \subsubsection{Approximating the boundary values}
 One simple approximation of $\left.h\right|_\Gamma = h_\Gamma$ is
 $$
@@ -327,12 +340,19 @@ function $h_\Gamma$ is shown in figure \ref{boundary}.
 \end{figure}
 This approximation $\phi_\Gamma$ is added to the ``interior variation'' $\phi = \Phi\cdot\hat{h}$ to construct a possible solution.
 When a linear solver is given the linear system \eqref{poisson_matrix_equation}, it will find the interior variation $\phi$
-which minimises some residual norm. An iterative solver, for example, can then be thought of as progressively varying a thin membrane while keeping the boundary
-fixed, until the residual error is sufficiently small.
-\vskip 0.2in
-figure of the same mesh as above, but with some added interior variation $\phi$.
-\vskip 0.2in
-
+which minimises some residual norm. An iterative solver, for example, can then be thought of as progressively varying a thin membrane attached
+to the boundary curve,
+until the residual error is sufficiently small. This construction is shown in figure \ref{laplaceboundary}.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/laplaceboundary/laplaceboundaryv2.png}
+    \end{center}
+    \caption{\scriptsize
+        The fixed boundary approximation $\phi_\Gamma$ is added to a variable interior variation $\phi$ to give a possible approximate solution $\tilde{h}$.
+        This possible solution can be checked by integration against the trial control volumes $\Omega_1,\cdots,\Omega_n$.
+    }
+    \label{laplaceboundary}
+\end{figure}
 \subsubsection{Choosing a finite number of control volumes}
 If we choose some characteristic ``triangle centre'' for each triangle, then we can associate to the interior vertices
 $p_1,\cdots,p_n$ a set of domains $\Omega_1,\cdots,\Omega_n$. Each $\Omega_i$ is determined by the polygon which joins the centres of the triangles
@@ -350,26 +370,45 @@ The resulting cell decompositions are displayed in figure
     \caption{\scriptsize
         The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$.
         Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters.
+        Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily
+        contained in a single fan of triangles.
     }
     \label{cell_decompositions}
 \end{figure}
 
-This scheme has found some success, especially in the domain of geometry processing \cite{polygon_mesh_processing}.
-By Stokes' theorem, the matrix $A$ in \eqref{poisson_matrix_equation} can be thought of as a negative discrete Laplacian.
-If we compute these integrals, we will find a very simple closed form for the entries of $A$:
+The scheme as described so far, consisting of a triangle mesh, hat test functions, and barycentric or Voronoi control volumes,
+has found some success, especially in the domain of geometry processing \cite{polygon_mesh_processing}.
+We will work with the Voronoi cells.
 
-$$\text{cotan formula.}$$
+\subsubsection{Forming the linear system for this scheme}
+Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
+the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
+the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
 
-In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
-applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
+By fortuitous circumstances, these integrals actually have simple closed forms, equivalent to geometric constructions.
+Firstly, consider one of the matrix coefficient integrals
+\begin{equation}\label{fvm_matrix_coefficient_integral}
+\int_{\pom_j} -\nabla\phi_i\cdot\hat{n}\,dx.
+\end{equation}
+Let $v$ be a certain interior vertex, and denote by $v_1, \cdots, v_k$ its adjacent vertices (either in the interior
+or on the boundary), and by $T^v_1 \cdots T^v_k$ its adjacent triangles. Triangle $T^v_i$ joins $v,v_i,v_{i+1}$ where addition is taken
+modulo $k$.
+This vertex $v$ corresponds to a single trial flux integral over the surrounding Voronoi cell.
+The Voronoi polygon, by its definition, joins the midpoints $\frac{1}{2}(v + v_1),\cdots,\frac{1}{2}(v + v_k)$.
 
-\subsection{Results and visualisation}
-\vskip 0.2in
-(results and visualisation)
-\vskip 0.2in
-We have worked through an instance of a \textit{finite volume method} \cite{pde_larsson}.
-Finite volume methods are characterised by a selection of a finite number of control volumes, and computation of flux integrals.
-Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
+
+
+
+% In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
+% applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
+% \subsection{Results and visualisation}
+% \vskip 0.2in
+% (results and visualisation)
+% \vskip 0.2in
+% We have worked through an instance of a \textit{finite volume method} \cite{pde_larsson}.
+% Finite volume methods are characterised by a selection of a finite number of control volumes, and computation of flux integrals.
+% Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
+
 \section{From finite volumes to finite elements}\label{trial_function}
 The alternative ``finite element'' approach is directly related to the ``finite volumes'' described above. While each finite volume
 had a direct geometric meaning (as a small cell in which a certain test flux integral is taken), the geometric meaning of a ``finite element''
@@ -584,7 +623,7 @@ A typical sparsity pattern for a finite element problem is shown in figure \ref{
 Similar to the hat-functions-and-Voronoi-cells decomposition described for finite volumes,
 the simplest scheme for the finite element Poisson equation is to triangulate $\Omega$ as
     $\bigcup_i T_i$
-such that we have $n$ nodal points and $n_T$ triangles.
+such there are $n$ nodal points and $n_T$ triangles.
 Each nodal point $p_i$ will be associated with a piecewise linear ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
 $0$ at its neighbours. Now, diverging from the previous finite volume method, the simplest thing we could do is let the trial functions be the same
 as the test functions, $\psi_i = \phi_i$. This trivially gives a one-to-one correspondence between the $\phi_i$ and the $\psi_i$, which will lead
@@ -607,7 +646,7 @@ $\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$
 some Sobolev space, constructed over a domain tessellation.
 
 \section{Implementing the finite element method for Poisson's equation}
-We now have an effective algorithm for approximating the Poisson equation:
+We now have an effective algorithm for approximating Poisson's equation:
 \begin{enumerate}
     \item Partition the 2D domain $\Omega$ into triangles $T_i$. This implicitly defines the hat basis functions $\phi_i = \psi_i$.
     \item Form the matrix and right-hand-side in \eqref{poisson_fem_matrix_equation}, by analytical or numerical integration.
@@ -826,4 +865,9 @@ or provide the linear solver with callback routines that give the solver access 
 % $$
 % p^\Gamma_{n_\Gamma}
 % $$
-
+% $$
+%     + \quad =
+% $$
+% $$
+%     \phi_\Gamma \quad \phi = h_1\phi_1 + \cdots + h_n\phi_n \quad \tilde{h}
+% $$

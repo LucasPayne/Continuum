@@ -148,19 +148,19 @@
 \@writefile{toc}{\contentsline {section}{\numberline {4.2}The equation to solve: The Poisson equation}{26}{section.4.2}}
 \newlabel{poisson_compact}{{4.1}{26}{The equation to solve: The Poisson equation}{equation.4.2.1}{}}
 \newlabel{poisson_dirichlet_problem}{{4.2}{26}{The equation to solve: The Poisson equation}{equation.4.2.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Discretizing the differential versus integral form}{26}{subsection.4.2.1}}
-\@writefile{toc}{\contentsline {subsubsection}{Discretizing the differential form of the PDE}{26}{section*.24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Discretizing the differential form of the PDE}{26}{subsection.4.2.1}}
 \newlabel{gauss_euclidean_divergence}{{4.3}{26}{Discretizing the differential form of the PDE}{equation.4.2.3}{}}
 \newlabel{poisson_differential_intro}{{4.4}{26}{Discretizing the differential form of the PDE}{equation.4.2.4}{}}
 \citation{tum}
-\@writefile{toc}{\contentsline {subsubsection}{Discretizing the integral form of the PDE}{27}{section*.25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Deriving the heat and Poisson equation through diffusion processes}{27}{subsection.4.2.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{27}{subsection.4.2.2}}
+\@writefile{toc}{\contentsline {subsubsection}{Deriving the heat and Poisson equation through diffusion processes}{27}{section*.24}}
 \newlabel{heat_equation_integral}{{4.5}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.5}{}}
 \newlabel{heat_equation_differential}{{4.6}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.6}{}}
+\newlabel{heat_equation_differential_constant}{{4.7}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.7}{}}
+\newlabel{poisson_equation}{{4.8}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
 \citation{approximation_theory}
-\newlabel{heat_equation_differential_constant}{{4.7}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.7}{}}
-\newlabel{poisson_equation}{{4.8}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
 \newlabel{poisson_equation_integral}{{4.9}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.25}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.3}Discretizing Poisson's equation by finite volumes}{28}{section.4.3}}
 \newlabel{discretizing_poisson}{{\M@TitleReference {4.3}{Discretizing Poisson's equation by finite volumes}}{28}{Discretizing Poisson's equation by finite volumes}{section.4.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}The Dirichlet boundary condition and the test space}{28}{subsection.4.3.1}}
@@ -175,41 +175,42 @@
 \@writefile{toc}{\contentsline {subsubsection}{The test space}{30}{section*.27}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }}{30}{figure.caption.28}}
 \newlabel{ellipse_partition}{{\M@TitleReference {4.3}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }}{30}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }{figure.caption.28}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Approximating the boundary values}{30}{section*.29}}
 \citation{orourke}
-\citation{polygon_mesh_processing}
-\citation{polygon_mesh_processing}
+\@writefile{toc}{\contentsline {subsubsection}{Approximating the boundary values}{31}{section*.29}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{figure.caption.30}}
 \newlabel{boundary}{{\M@TitleReference {4.4}{\relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{\scriptsize A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }{figure.caption.30}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.31}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. \relax }}{31}{figure.caption.32}}
-\newlabel{cell_decompositions}{{\M@TitleReference {4.5}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. \relax }}{31}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. \relax }{figure.caption.32}{}}
-\citation{pde_larsson}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Results and visualisation}{32}{subsection.4.3.4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{figure.caption.31}}
+\newlabel{laplaceboundary}{{\M@TitleReference {4.5}{\relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{\scriptsize The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\tilde {h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots ,\Omega _n$. \relax }{figure.caption.31}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}}
+\citation{polygon_mesh_processing}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{figure.caption.33}}
+\newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcenters. Notice that, in the circumcenter case, the thin triangles do not contain their circumcenter, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }{figure.caption.33}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Forming the linear system for this scheme}{32}{section*.34}}
+\newlabel{fvm_matrix_coefficient_integral}{{4.14}{32}{Forming the linear system for this scheme}{equation.4.3.14}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{32}{section.4.4}}
 \newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{32}{From finite volumes to finite elements}{section.4.4}{}}
-\newlabel{example_trial_sum}{{4.14}{32}{From finite volumes to finite elements}{equation.4.4.14}{}}
-\newlabel{poisson_galerkin}{{4.16}{33}{From finite volumes to finite elements}{equation.4.4.16}{}}
+\newlabel{example_trial_sum}{{4.15}{32}{From finite volumes to finite elements}{equation.4.4.15}{}}
+\newlabel{poisson_galerkin}{{4.17}{34}{From finite volumes to finite elements}{equation.4.4.17}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{34}{section.4.5}}
-\newlabel{poisson_fem_matrix_equation}{{4.17}{34}{Discretizing Poisson's equation by finite elements}{equation.4.5.17}{}}
+\newlabel{poisson_fem_matrix_equation}{{4.18}{34}{Discretizing Poisson's equation by finite elements}{equation.4.5.18}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{34}{subsection.4.5.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{35}{figure.caption.35}}
+\newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{35}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.35}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{35}{section.4.6}}
 \citation{polygon_mesh_processing}
 \citation{geometry_central}
 \citation{polygon_mesh_processing_library}
 \citation{openmesh}
 \citation{triangle}
 \citation{orourke}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{35}{figure.caption.33}}
-\newlabel{sparsity_pattern}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{35}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.33}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{35}{section.4.6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{35}{subsection.4.6.1}}
 \citation{petsc}
 \citation{armadillo}
 \citation{eigen}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{36}{subsection.4.6.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{36}{subsection.4.6.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{36}{subsection.4.6.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{36}{figure.caption.37}}
-\newlabel{laplace_solution}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{36}{\scriptsize Text \relax }{figure.caption.37}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{37}{subsection.4.6.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{37}{figure.caption.39}}
+\newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{37}{\scriptsize Text \relax }{figure.caption.39}{}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{39}{chapter.5}}
@@ -232,31 +233,32 @@
 \bibcite{turing}{12}
 \bibcite{applied_mathematics}{13}
 \bibcite{polygon_mesh_processing}{14}
-\bibcite{ciarlet}{15}
-\bibcite{tum}{16}
-\bibcite{evans}{17}
-\bibcite{DOLFIN}{18}
-\bibcite{fenics_book}{19}
-\bibcite{approximation_theory}{20}
-\bibcite{stam}{21}
-\bibcite{ham_fem}{22}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{43}{section*.39}}
-\bibcite{fem_incompressible}{23}
-\bibcite{strang_equilibrium}{24}
-\bibcite{brenner_scott}{25}
-\bibcite{golub_van_loan}{26}
-\bibcite{triangle}{27}
-\bibcite{tetgen}{28}
-\bibcite{orourke}{29}
-\bibcite{petsc}{30}
-\bibcite{armadillo}{31}
-\bibcite{eigen}{32}
-\bibcite{geometry_central}{33}
-\bibcite{polygon_mesh_processing_library}{34}
-\bibcite{openmesh}{35}
-\bibcite{one_hundred_years_galerkin}{36}
-\bibcite{boris_galerkin}{37}
-\bibcite{sobolev_web_page}{38}
-\bibcite{firedrake}{39}
+\bibcite{ddg_triangulated}{15}
+\bibcite{ciarlet}{16}
+\bibcite{tum}{17}
+\bibcite{evans}{18}
+\bibcite{DOLFIN}{19}
+\bibcite{fenics_book}{20}
+\bibcite{approximation_theory}{21}
+\bibcite{stam}{22}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{43}{section*.41}}
+\bibcite{ham_fem}{23}
+\bibcite{fem_incompressible}{24}
+\bibcite{strang_equilibrium}{25}
+\bibcite{brenner_scott}{26}
+\bibcite{golub_van_loan}{27}
+\bibcite{triangle}{28}
+\bibcite{tetgen}{29}
+\bibcite{orourke}{30}
+\bibcite{petsc}{31}
+\bibcite{armadillo}{32}
+\bibcite{eigen}{33}
+\bibcite{geometry_central}{34}
+\bibcite{polygon_mesh_processing_library}{35}
+\bibcite{openmesh}{36}
+\bibcite{one_hundred_years_galerkin}{37}
+\bibcite{boris_galerkin}{38}
+\bibcite{sobolev_web_page}{39}
+\bibcite{firedrake}{40}
 \memsetcounter{lastsheet}{44}
 \memsetcounter{lastpage}{44}
