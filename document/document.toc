@@ -60,7 +60,7 @@
 \contentsline {subsubsection}{The test space}{30}{section*.27}
 \contentsline {subsubsection}{Approximating the boundary values}{30}{section*.29}
 \contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.31}
-\contentsline {subsection}{\numberline {4.3.4}Results and visualisation}{31}{subsection.4.3.4}
+\contentsline {subsection}{\numberline {4.3.4}Results and visualisation}{32}{subsection.4.3.4}
 \contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{32}{section.4.4}
 \contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{34}{section.4.5}
 \contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{34}{subsection.4.5.1}

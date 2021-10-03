@@ -114,8 +114,8 @@ For example, the general integral conservation law \eqref{continuity_equation},
 \end{align*}
 is a geometric statement about fluxes
 of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
-There are an infinite number of control volumes, and therefore an infinite number of equations which must hold, and there is an infinite-dimensional
-space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite-dimensional subspace of possible approximate solutions.
+There are an infinite number of control volumes, and therefore an infinite number of equations which must hold, and there is an infinite dimensional
+space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite dimensional subspace of possible approximate solutions.
 A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
 
 \vskip 0.2in
@@ -167,17 +167,19 @@ as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is
 The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
 
 \section{Discretizing Poisson's equation by finite volumes}\label{discretizing_poisson}
+---NOTE: $H^1$ May be wrong.
+---NOTE: Should discuss interpretation in terms of residual minimisation with respect to some norm.
 
 Equation \eqref{poisson_equation_integral} is quantified over an infinite number of control volumes $\Omega_0$.
 These control volumes are in the interior of $\Omega$, as the solution at the boundary $\Gamma$ is specified by the Dirichlet boundary condition
 $\left.h\right|_\Gamma = h_\Gamma$, and there is no flux information across $\Gamma$.
 A simple idea is to choose a finite number of control volumes $\Omega_1,\cdots,\Omega_n$ (hence ``finite volumes''), and check that the flux integral holds over each of these.
 We will then have $n$ equations on $h$. As this system will be underdetermined ($h$ has infinite degrees of freedom), we must
-restrict $h$ to a finite-dimensional space of approximations $\Phi^*$.
+restrict $h$ to a finite dimensional space of approximations $\Phi^*$.
 
 
 \subsection{The Dirichlet boundary condition and the test space}
-The solution is completely known on $\Gamma$ by the Dirichlet boundary condition $\left.h\right|_\Gamma = h_\Gamma$.
+The Dirichlet boundary condition $\left.h\right|_\Gamma = h_\Gamma$ specifies the boundary values for any solution.
 However, the finite dimensional space $\Phi^*$ may not be able to exactly represent the boundary function $h_\Gamma$,
 and therefore the first step is to approximate $h_\Gamma$ (for which there are many options, for example
 projection in the $L^2$-norm or interpolation across a finite sampling of boundary points \cite{approximation_theory}). Choosing some $\phi_\Gamma \in \Phi^*$ with
@@ -225,7 +227,10 @@ By linearity, to emphasize the separate integrals that need to be computed, the 
  \quad\quad j=1,\cdots,n.
 \end{equation}
 It is seen here that there must be some restrictions on the $\phi_i$ and $\phi_\Gamma$.
-Formally, they must be in the Sobolev space $H^1(\Omega)$. This simply means that they must have a gradient defined ``almost everywhere''.
+Formally, they must be in the Sobolev space $H^1(\Omega)$
+(--- NOTE: This is probably wrong, as the integrals are over internal cell boundaries and the boundary $\Gamma$. Need to read
+about $H^{\text{div}}$)
+This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
 the integral. The system \eqref{poisson_equation_integral_discretized} can be written in matrix form as
 \newcommand{\integralentry}[2]{\int_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
@@ -246,9 +251,9 @@ the integral. The system \eqref{poisson_equation_integral_discretized} can be wr
 \end{equation}
 This system is solved for the coefficients of combination $\hat{h} = (h_1 \cdots h_n)^T$, and the approximate
 solution is constructed as $\tilde{h} = \Phi\cdot\hat{h} + \phi_\Gamma$.
-If the domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
-are chosen well, this linear system will be non-singular and hopefully well-conditioned.
-In all cases we have a conservative system of balanced fluxes, but it is another question whether the approximation
+If the control volumes $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+are chosen well, this linear system will be nonsingular and hopefully well-conditioned.
+If the chosen control volumes join together in the interior of $\Omega$ like pieces of a puzzle, this gives a conservative system of balanced fluxes, but it is another question whether the approximation
 $\tilde{h}$ is good.
 
 \newpage
@@ -271,7 +276,8 @@ $T_1,\cdots,T_{n_T}$. An example triangulation of an ellipse-shaped domain is sh
 \end{figure}
 
 \subsubsection{The test space}
-Firstly, there is a clear choice of function space $\Phi^*$, which satisfies the $H^1$ condition, consisting of piecewise linear ``hat'' basis functions
+Firstly, there is a clear choice of function space $\Phi^*$, which satisfies the $H^1$ condition
+(NOTE: Is $H^1$ necessary? Need to check conditions for finite volumes), consisting of piecewise linear ``hat'' basis functions
 at each interior or boundary vertex,
 \newcommand{\hatfun}[1]{\text{Hat}(#1)}
 $$
@@ -282,12 +288,13 @@ $$
 $$
 The hat function at a vertex has value $1$ at that vertex and value $0$ at its neighbours.
 The test space (which is zero on the boundary $\Gamma$) is then
-$$
-    \Phi = \text{span}\left\{
+\begin{align*}
+    \Phi &= \text{span}\left\{
         \hatfun{p_1},\cdots,\hatfun{p_n}
-    \right\} = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.
-$$
-An example decomposition for the ellipse-shaped domain is shown in figure \ref{ellipse_partition}.
+    \right\} = \text{span}\left\{\phi_1,\cdots,\phi_n\right\},
+\end{align*}
+where $\phi_i \coloneqq \text{Hat}(p_i)$.
+One of these basis functions for the ellipse-shaped domain is shown in figure \ref{ellipse_partition}.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.53\linewidth]{figures/hat.png}
@@ -318,6 +325,13 @@ function $h_\Gamma$ is shown in figure \ref{boundary}.
     }
     \label{boundary}
 \end{figure}
+This approximation $\phi_\Gamma$ is added to the ``interior variation'' $\phi = \Phi\cdot\hat{h}$ to construct a possible solution.
+When a linear solver is given the linear system \eqref{poisson_matrix_equation}, it will find the interior variation $\phi$
+which minimises some residual norm. An iterative solver, for example, can then be thought of as progressively varying a thin membrane while keeping the boundary
+fixed, until the residual error is sufficiently small.
+\vskip 0.2in
+figure of the same mesh as above, but with some added interior variation $\phi$.
+\vskip 0.2in
 
 \subsubsection{Choosing a finite number of control volumes}
 If we choose some characteristic ``triangle centre'' for each triangle, then we can associate to the interior vertices
@@ -354,7 +368,7 @@ applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangul
 (results and visualisation)
 \vskip 0.2in
 We have worked through an instance of a \textit{finite volume method} \cite{pde_larsson}.
-Finite volume methods are characterised by an exact domain partition and computation of flux integrals.
+Finite volume methods are characterised by a selection of a finite number of control volumes, and computation of flux integrals.
 Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
 \section{From finite volumes to finite elements}\label{trial_function}
 The alternative ``finite element'' approach is directly related to the ``finite volumes'' described above. While each finite volume
@@ -439,7 +453,7 @@ We can now think of our trial space $\Psi$ as a span of functions, instead of a 
 Now, as the trial space is just a regular function space, we could instead let
     $$\Psi = \text{span}\left\{\psi_1,\cdots,\psi_n\right\}$$
 where the $\psi_j$
-need not be the indicator functions of a domain partition. We now have the system of equations
+need not be the indicator functions of a selection of control volumes. We now have the system of equations
 \begin{align*}
     \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i \psi_j\,dx = \int_{\om} g\psi_j\,dx,\quad j=1,\cdots,n.
 \end{align*}
@@ -521,7 +535,7 @@ Equation \eqref{poisson_galerkin} gives a discrete linear system
 \end{equation}
 This has quite a similar form to \eqref{poisson_matrix_equation}, but with boundary and cell integrals replaced by integrals over the entire
 domain.
-Again, if the domain partition $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+Again, if the control volumes $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be non-singular and hopefully well-conditioned.
 
 \subsection{Choosing a test and a trial space}
