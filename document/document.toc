@@ -61,13 +61,13 @@
 \contentsline {subsubsection}{Approximating the boundary values}{31}{section*.29}
 \contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}
 \contentsline {subsubsection}{Forming the linear system by closed-form integration}{32}{section*.34}
-\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{33}{section.4.4}
-\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{35}{section.4.5}
-\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{35}{subsection.4.5.1}
-\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{36}{section.4.6}
+\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{34}{section.4.4}
+\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{36}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{36}{subsection.4.5.1}
+\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{37}{section.4.6}
 \contentsline {subsection}{\numberline {4.6.1}Mesh generation}{37}{subsection.4.6.1}
-\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{37}{subsection.4.6.2}
+\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{38}{subsection.4.6.2}
 \contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{38}{subsection.4.6.3}
-\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{39}{chapter.5}
-\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{41}{chapter.6}
-\contentsline {chapter}{Bibliography}{43}{section*.41}
+\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}{chapter.5}
+\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{43}{chapter.6}
+\contentsline {chapter}{Bibliography}{45}{section*.41}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  4 OCT 2021 01:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  4 OCT 2021 02:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2661,139 +2661,152 @@ LaTeX Warning: Reference `fvm_integral_vertex' on page 33 undefined on input li
 ne 429.
 
 
-LaTeX Warning: Reference `poisson_matrix_equation' on page 33 undefined on inpu
-t line 467.
-
-
-LaTeX Warning: Reference `example_trial_sum' on page 33 undefined on input line
- 486.
-
-
-LaTeX Warning: Reference `example_trial_sum' on page 33 undefined on input line
- 487.
+Overfull \hbox (38.666pt too wide) detected at line 487
+[]
+ []
 
 [33]
 
-LaTeX Warning: Reference `poisson_equation_integral_discretized' on page 34 und
-efined on input line 521.
+LaTeX Warning: Reference `poisson_matrix_equation' on page 34 undefined on inpu
+t line 512.
+
+
+LaTeX Warning: Reference `example_trial_sum' on page 34 undefined on input line
+ 531.
+
+
+LaTeX Warning: Reference `example_trial_sum' on page 34 undefined on input line
+ 532.
 
 [34]
 
+LaTeX Warning: Reference `poisson_equation_integral_discretized' on page 35 und
+efined on input line 566.
+
+
 LaTeX Warning: Reference `poisson_galerkin' on page 35 undefined on input line 
-555.
+600.
 
 
 LaTeX Warning: Reference `poisson_equation_integral_discretized' on page 35 und
-efined on input line 555.
+efined on input line 600.
 
 
 LaTeX Warning: Reference `poisson_galerkin' on page 35 undefined on input line 
-556.
+601.
 
 
 LaTeX Warning: Reference `poisson_galerkin' on page 35 undefined on input line 
-557.
+602.
 
 
 LaTeX Warning: Reference `poisson_galerkin' on page 35 undefined on input line 
-613.
-
-
-LaTeX Warning: Reference `poisson_matrix_equation' on page 35 undefined on inpu
-t line 626.
-
-
-LaTeX Warning: Reference `poisson_fem_matrix_equation' on page 35 undefined on 
-input line 632.
-
-
-LaTeX Warning: Reference `poisson_matrix_equation' on page 35 undefined on inpu
-t line 632.
-
-
-LaTeX Warning: Reference `poisson_fem_matrix_equation' on page 35 undefined on 
-input line 652.
+658.
 
 [35]
 
+LaTeX Warning: Reference `poisson_matrix_equation' on page 36 undefined on inpu
+t line 671.
+
+
 LaTeX Warning: Reference `poisson_fem_matrix_equation' on page 36 undefined on 
-input line 656.
+input line 677.
+
+
+LaTeX Warning: Reference `poisson_matrix_equation' on page 36 undefined on inpu
+t line 677.
+
+
+LaTeX Warning: Reference `poisson_fem_matrix_equation' on page 36 undefined on 
+input line 697.
+
+
+LaTeX Warning: Reference `poisson_fem_matrix_equation' on page 36 undefined on 
+input line 701.
 
 
 LaTeX Warning: Reference `sparsity_pattern' on page 36 undefined on input line 
-660.
+705.
 
-<figures/sparsity_pattern_no_text.png, id=416, 563.10374pt x 560.0925pt>
+<figures/sparsity_pattern_no_text.png, id=414, 563.10374pt x 560.0925pt>
 File: figures/sparsity_pattern_no_text.png Graphic file (type png)
 <use figures/sparsity_pattern_no_text.png>
 Package pdftex.def Info: figures/sparsity_pattern_no_text.png  used on input li
-ne 664.
+ne 709.
 (pdftex.def)             Requested size: 110.75766pt x 110.16196pt.
-[36 <./figures/sparsity_pattern_no_text.png>]
+
+Underfull \vbox (badness 1540) has occurred while \output is active []
+
+ [36]
 
 LaTeX Warning: Reference `poisson_fem_matrix_equation' on page 37 undefined on 
-input line 703.
+input line 748.
 
 
 LaTeX Warning: Citation `polygon_mesh_processing' on page 37 undefined on input
- line 713.
+ line 758.
 
 
 LaTeX Warning: Citation `geometry_central' on page 37 undefined on input line 7
-14.
+59.
 
 
 LaTeX Warning: Citation `polygon_mesh_processing_library' on page 37 undefined 
-on input line 715.
+on input line 760.
 
 
-LaTeX Warning: Citation `openmesh' on page 37 undefined on input line 715.
+LaTeX Warning: Citation `openmesh' on page 37 undefined on input line 760.
 
 
-LaTeX Warning: Citation `triangle' on page 37 undefined on input line 718.
+LaTeX Warning: Citation `triangle' on page 37 undefined on input line 763.
 
 
-LaTeX Warning: Citation `orourke' on page 37 undefined on input line 719.
-
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: OT1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
-LaTeX Warning: Citation `petsc' on page 37 undefined on input line 868.
-
-
-LaTeX Warning: Citation `armadillo' on page 37 undefined on input line 869.
-
-
-LaTeX Warning: Citation `eigen' on page 37 undefined on input line 869.
+LaTeX Warning: Citation `orourke' on page 37 undefined on input line 764.
 
 
 Class memoir Warning: The material used in the headers is too large
 (27.2pt) for the given head height (13.6pt), it is recommended to
 either increase the head height or redesign the header
-(in both cases you will find help in the memoir manual). on input line 872.
+(in both cases you will find help in the memoir manual). on input line 767.
 
 
 Overfull \vbox (13.59999pt too high) has occurred while \output is active []
 
 
-[37]
-<figures/laplace/laplacev2.png, id=441, 2055.68pt x 652.4375pt>
+[37 <./figures/sparsity_pattern_no_text.png>]
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
+
+LaTeX Warning: Citation `petsc' on page 38 undefined on input line 913.
+
+
+LaTeX Warning: Citation `armadillo' on page 38 undefined on input line 914.
+
+
+LaTeX Warning: Citation `eigen' on page 38 undefined on input line 914.
+
+<figures/laplace/laplacev2.png, id=435, 2055.68pt x 652.4375pt>
 File: figures/laplace/laplacev2.png Graphic file (type png)
 <use figures/laplace/laplacev2.png>
-Package pdftex.def Info: figures/laplace/laplacev2.png  used on input line 875.
+Package pdftex.def Info: figures/laplace/laplacev2.png  used on input line 920.
 
 (pdftex.def)             Requested size: 426.0pt x 135.20403pt.
-) [38 <./figures/laplace/laplacev2.png>] [39
+) [38 <./figures/laplace/laplacev2.png>]
+Overfull \vbox (13.59999pt too high) has occurred while \output is active []
 
-] [40
+
+[39] [40
 
 ] [41] [42
 
+] [43] [44
+
 ]
 bibitemlist
-[43]
+[45]
 Underfull \hbox (badness 1622) in paragraph at lines 265--269
 []\OT1/cmr/m/n/10.95 (+20) Leif Kobbelt, Open-Mesh (sur-face mesh li-brary), ht
 tps://www.graphics.rwth-
@@ -2811,7 +2824,7 @@ Class memoir Warning: The material used in the headers is too large
 either increase the head height or redesign the header
 (in both cases you will find help in the memoir manual). on input line 292.
 
-[44]
+[46]
 \tf@toc=\write5
 \openout5 = `document.toc'.
 
@@ -2837,9 +2850,9 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 24393 strings out of 494847
- 415114 string characters out of 6179081
- 561170 words of memory out of 5000000
+ 24395 strings out of 494847
+ 415128 string characters out of 6179081
+ 560170 words of memory out of 5000000
  27077 multiletter control sequences out of 15000+600000
  550326 words of font info for 146 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
@@ -2858,15 +2871,16 @@ cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/s
 hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/latxfont/line10.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/symbols/msbm10.pfb>
-Output written on document.pdf (44 pages, 4973414 bytes).
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/latxfont/line10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/symbols/msbm10.pfb>
+Output written on document.pdf (46 pages, 4982702 bytes).
 PDF statistics:
- 643 PDF objects out of 1000 (max. 8388607)
- 507 compressed objects within 6 object streams
- 260 named destinations out of 1000 (max. 500000)
+ 655 PDF objects out of 1000 (max. 8388607)
+ 516 compressed objects within 6 object streams
+ 262 named destinations out of 1000 (max. 500000)
  20089 words of extra memory for PDF output out of 20736 (max. 10000000)
 

@@ -414,7 +414,7 @@ As the hat functions have compact support, $\Omega_j$ only intersects the domain
 to the adjacent vertices in the interior. Name these basis functions $\phi_j = \phi_v$ and $\phi_{v_1}, \cdots \phi_{v_k}$.
 Then the integral becomes
 \begin{equation}\label{fvm_integral_vertex}
-    \int_{\Omega_j}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{i=1}^{k}h_{v_i}\int_{\Omega_j}-\nabla\phi^v_i\cdot\hat{n}\,dx,
+    h_j\int_{\Omega_j}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{i=1}^{k}h_{v_i}\int_{\Omega_j}-\nabla\phi^v_i\cdot\hat{n}\,dx,
 \end{equation}
 where $h_{v_i}$ is defined as
 \begin{align*}
@@ -442,9 +442,54 @@ $T = vv^\pr v^\ppr$
 (figure)
 \vskip 0.2in
 
-The Voronoi polygon joins the midpoints $\frac{1}{2}(v + v^\pr)$ and $\frac{1}{2}(v + v^\ppr)$, taking a detour to the barycentre of $T$.
-However, since the vector field $\nabla\phi_v$ is constant, it is conservative, and we can simplify the domain to the line segment $L$ between
-the midpoints $\frac{1}{2}(v + v^\pr)$ and $\frac{1}{2}(v + v^\ppr)$.
+The Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v^\pr)$ and $m^\ppr = \frac{1}{2}(v + v^\ppr)$, taking a detour to the barycentre of $T$.
+However, since the gradient vector fields are constant, they are conservative, and we can simplify the domain to the line segment $L$ between
+the midpoints $m^\pr$ and $m^\ppr$. We now want to find closed forms for
+$$
+\int_L -\nabla\phi_v\cdot\hat{n}\,dx, \quad 
+\int_L -\nabla\phi_{v^\pr}\cdot\hat{n}\,dx, \text{\quad and\quad}
+\int_L -\nabla\phi_{v^\ppr}\cdot\hat{n}\,dx.
+$$
+
+$$
+\int_L -\nabla\phi_v\cdot\hat{n}\,dx = \nabla\phi_v\cdot(m^\ppr - m^\pr)^\perp
+    = \frac{1}{2}\nabla\phi_v\cdot(v^\ppr - v^\pr)^\perp,
+$$
+where $(v^\ppr - v^\pr)^\perp$ is the vector $v^\ppr - v^\pr$ rotated $90$ degrees anticlockwise.
+The gradients on $T$ are
+\begin{align*}
+    \nabla\phi_v &= \frac{1}{2\text{Area}(T)}\left(v^\ppr - v^\pr\right)^\perp,\\
+    \nabla\phi_{v^\pr} &= \frac{1}{2\text{Area}(T)}\left(v - v^\ppr\right)^\perp,\\
+    \nabla\phi_{v^\ppr} &= \frac{1}{2\text{Area}(T)}\left(v^\pr - v\right)^\perp.
+\end{align*}
+
+
+\begin{align*}
+    \int_L -\nabla\phi_v\cdot\hat{n}\,dx
+        &= -\frac{1}{4\text{Area}(T)}(v^\ppr - v^\pr)^\perp\cdot(v^\ppr - v^\pr)^\perp\\
+        &= -\frac{1}{4\text{Area}(T)}\norm{v^\ppr - v^\pr}^2.\\
+    \int_L -\nabla\phi_{v^\pr}\cdot\hat{n}\,dx
+        &= -\frac{1}{4\text{Area}(T)}(v - v^\ppr)^\perp\cdot(v^\ppr - v^\pr)^\perp.\\
+    \int_L -\nabla\phi_{v^\ppr}\cdot\hat{n}\,dx
+        &= -\frac{1}{4\text{Area}(T)}(v^\pr - v)^\perp\cdot(v^\ppr - v^\pr)^\perp.
+\end{align*}
+
+With these closed forms, we can express the original integral.
+\begin{align*}
+\int_{\pom_j} -\nabla \tilde{h}\cdot\hat{n}\,dx
+    =
+    \sum_{i=1}^k\left[
+        h_{v_i}\frac{(v_{i+1} - v)\cdot(v_{i+1} - v_{i})}{4\text{Area}(T^v_i)}
+        +h_{v_{i+1}}\frac{(v - v_i)\cdot(v_{i+1} - v_{i})}{4\text{Area}(T^v_i)}
+        -h_j
+        \frac{\norm{v_{i+1} - v_{i}}^2}{4\text{Area}(T^v_i)}
+    \right].
+\end{align*}
+
+This directly indicates an algorithm for constructing the linear system.
+Iterating over each interior vertex, add to the row in the matrix for interior adjacent vertices,
+edit the right-hand-side for boundary adjacent vertices.
+
 
 
 
