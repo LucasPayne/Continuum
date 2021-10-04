@@ -67,7 +67,7 @@
 \contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{37}{section.4.6}
 \contentsline {subsection}{\numberline {4.6.1}Mesh generation}{38}{subsection.4.6.1}
 \contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{38}{subsection.4.6.2}
-\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{38}{subsection.4.6.3}
+\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{39}{subsection.4.6.3}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}{chapter.5}
 \contentsline {chapter}{\chapternumberline {6}Some functional analysis}{43}{chapter.6}
 \contentsline {chapter}{Bibliography}{45}{section*.41}

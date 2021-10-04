@@ -386,7 +386,7 @@ the coefficients of the linear system \eqref{poisson_matrix_equation} and solve 
 the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
 By fortuitous circumstances, these integrals actually have simple closed forms.
 (This is with the exception of the heat-source integrals $\int_{\Omega_j}g\,dx$,
-which may necessarily require numerical integration if the heat-source $g$ is not restricted to $\Phi^*$.)
+which may require numerical integration if the heat-source $g$ is not restricted to $\Phi^*$.)
 
 It will be more convenient to start again with the trial flux integral
 \newcommand{\fvmintegral}{
@@ -461,45 +461,57 @@ The Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v_t)$ and $m^\p
 \vskip 0.2in
 
 However, since the gradient vector fields are constant, they are conservative, and we can simplify the domain $\Omega_j \cap T$ to the line segment $L$ between
-the midpoints $m^\pr$ and $m^\ppr$. Since the gradients are constant on $T$, these integrals are the length $\text{Length(L)}$ times one ``sample'' flux across $L$.
-This can be done easily, by noticing $L$ is parallel with, and half the length of, the line segment between $v_t$ and $v_{t+1}$.
+the midpoints $m^\pr$ and $m^\ppr$. Since the gradients are constant on $T$, these integrals are the length of $L$ multiplied by one ``sample'' flux across $L$.
+This can be done easily, by noticing $L$ is parallel with and half the length of the line segment between $v_t$ and $v_{t+1}$.
 We can then compute the integrals as:
-\begin{align*}
-            \frac{1}{2}\nabla\phi_v\cdot(v_{t+1} - v_t)^\perp,\text{\quad and \quad}
-            \frac{1}{2}\nabla\phi_{v_t}\cdot(v_{t+1} - v_t)^\perp,\text{\quad and \quad}
-            \frac{1}{2}\nabla\phi_{v_{t+1}}\cdot(v_{t+1} - v_t)^\perp,
-\end{align*}
+\begin{equation}\label{fvm_integrals_closed}
+    \frac{1}{2}\nabla\phi_v\cdot(v_{t+1} - v_t)^\perp,\text{\quad and \quad}
+    \frac{1}{2}\nabla\phi_{v_t}\cdot(v_{t+1} - v_t)^\perp,\text{\quad and \quad}
+    \frac{1}{2}\nabla\phi_{v_{t+1}}\cdot(v_{t+1} - v_t)^\perp,
+\end{equation}
 where $(v_{t+1} - v_t)^\perp$ is the vector $v_{t+1} - v_t$ rotated $90$ degrees anticlockwise.
-We now only need the constant gradients on $T$.
-The gradients on $T$ are
-\begin{align*}
-    \nabla\phi_v &= \frac{1}{2\text{Area}(T)}\left(v_{t+1} - v_t\right)^\perp,\\
-    \nabla\phi_{v_t} &= \frac{1}{2\text{Area}(T)}\left(v - v_{t+1}\right)^\perp,\\
-    \nabla\phi_{v_{t+1}} &= \frac{1}{2\text{Area}(T)}\left(v_t - v\right)^\perp.
-\end{align*}
+We now only need the constant gradients on $T$. This requires some simple geometry. As this construction is the same for each vertex, consider an anticlockwise ordering of $v,v_t,v_{t+1}$, named $v^\pr,v^\ppr,v^\pppr$.
 
+\vskip 0.2in
+(figure of a rectangle drawn around the triangle, and the perpendicular direction, with width and height labels)
+\vskip 0.2in
 
+We must normalize this vector and then divide by the height of this rectangle, as the gradient strength is inversely proportional with the height.
+This gives the gradient
+$$
+    \nabla\phi_{v^\pr} = \frac{(v^\pppr - v^\ppr)^\perp}{\norm{v^\pppr - v^\ppr}h} = \frac{(v^\pppr - v^\ppr)^\perp}{wh}.
+$$
+Finally, $\text{Area}(T) = wh/2$, so we can write the gradients as
+\begin{equation}\label{fvm_gradients}
+    \nabla\phi_v = \frac{\left(v_{t+1} - v_t\right)^\perp}{2\text{Area}(T)},\text{\quad and \quad}
+    \nabla\phi_{v_t} = \frac{\left(v - v_{t+1}\right)^\perp}{2\text{Area}(T)},\text{\quad and \quad}
+    \nabla\phi_{v_{t+1}} = \frac{\left(v_t - v\right)^\perp}{2\text{Area}(T)}.
+\end{equation}
+
+Plugging the gradients \eqref{fvm_gradients} into the closed form integrals \eqref{fvm_integrals_closed}, we get
 \begin{align*}
     \int_L -\nabla\phi_v\cdot\hat{n}\,dx
-        &= -\frac{1}{4\text{Area}(T)}(v_{t+1} - v_t)^\perp\cdot(v_{t+1} - v_t)^\perp\\
-        &= -\frac{1}{4\text{Area}(T)}\norm{v_{t+1} - v_t}^2.\\
+        &= \frac{1}{4\text{Area}(T)}\norm{v_{t+1} - v_t}^2,\\
     \int_L -\nabla\phi_{v_t}\cdot\hat{n}\,dx
-        &= -\frac{1}{4\text{Area}(T)}(v - v_{t+1})^\perp\cdot(v_{t+1} - v_t)^\perp.\\
+        &= \frac{1}{4\text{Area}(T)}(v - v_{t+1})\cdot(v_{t+1} - v_t),\\
     \int_L -\nabla\phi_{v_{t+1}}\cdot\hat{n}\,dx
-        &= -\frac{1}{4\text{Area}(T)}(v_t - v)^\perp\cdot(v_{t+1} - v_t)^\perp.
+        &= \frac{1}{4\text{Area}(T)}(v_t - v)\cdot(v_{t+1} - v_t),
 \end{align*}
-
+where the 90-degree rotation has been removed, as it preserves the dot product.
 With these closed forms, we can express the original integral.
-\begin{align*}
-\int_{\pom_j} -\nabla \tilde{h}\cdot\hat{n}\,dx
-    =
-    \sum_{i=1}^k\left[
-        h_{v_i}\frac{(v_{i+1} - v)\cdot(v_{i+1} - v_{i})}{4\text{Area}(T^v_i)}
-        +h_{v_{i+1}}\frac{(v - v_i)\cdot(v_{i+1} - v_{i})}{4\text{Area}(T^v_i)}
-        -h_j
-        \frac{\norm{v_{i+1} - v_{i}}^2}{4\text{Area}(T^v_i)}
-    \right].
-\end{align*}
+\begin{equation}
+\begin{split}
+&\oint_{\pom_j} -\nabla \tilde{h}\cdot\hat{n}\,dx\\
+    &=
+    \sum_{t=1}^k
+        \frac{1}{4\text{Area}(T^v_t)}
+        \left[
+        h_j \norm{v_{t+1} - v_{t}}^2
+        +h_{v_t}(v - v_{t+1})\cdot(v_{t+1} - v_{t})
+        +h_{v_{t+1}}(v_t - v)\cdot(v_{t+1} - v_{t})
+        \right].
+\end{split}
+\end{equation}
 
 This directly indicates an algorithm for constructing the linear system.
 Iterating over each interior vertex, add to the row in the matrix for interior adjacent vertices,
