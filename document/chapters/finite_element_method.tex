@@ -380,13 +380,13 @@ The scheme as described so far, consisting of a triangle mesh, hat test function
 has found some success, especially in the domain of geometry processing (\cite{polygon_mesh_processing}, \cite{ddg_triangulated}).
 We will work with the Voronoi cells.
 
-\subsubsection{Forming the linear system by closed-form integration}
+\subsection{Forming the linear system by closed-form integration}
 Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
 the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
 the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
 By fortuitous circumstances, these integrals actually have simple closed forms.
-(This is with the exception of the heat-source integrals $\int_{\Omega_j}g\,dx$,
-which may require numerical integration if the heat-source $g$ is not restricted to $\Phi^*$.)
+(This is with the exception of the heat source integrals $\int_{\Omega_j}g\,dx$,
+which may require numerical integration if the heat source $g$ is not restricted to $\Phi^*$.)
 
 It will be more convenient to start again with the trial flux integral
 \newcommand{\fvmintegral}{
@@ -476,7 +476,7 @@ We now only need the constant gradients on $T$. This requires some simple geomet
 (figure of a rectangle drawn around the triangle, and the perpendicular direction, with width and height labels)
 \vskip 0.2in
 
-We must normalize this vector and then divide by the height of this rectangle, as the gradient strength is inversely proportional with the height.
+We must normalize this vector and then divide by the height of this rectangle, as the gradient strength is inversely proportional to the height.
 This gives the gradient
 $$
     \nabla\phi_{v^\pr} = \frac{(v^\pppr - v^\ppr)^\perp}{\norm{v^\pppr - v^\ppr}h} = \frac{(v^\pppr - v^\ppr)^\perp}{wh}.
@@ -498,8 +498,8 @@ Plugging the gradients \eqref{fvm_gradients} into the closed form integrals \eqr
         &= \frac{1}{4\text{Area}(T)}(v_t - v)\cdot(v_{t+1} - v_t),
 \end{align*}
 where the 90-degree rotation has been removed, as it preserves the dot product.
-With these closed forms, we can express the original integral.
-\begin{equation}
+With these closed forms, we can express the original integral as
+\begin{equation}\label{flux_integral_summation}
 \begin{split}
 &\oint_{\pom_j} -\nabla \tilde{h}\cdot\hat{n}\,dx\\
     &=
@@ -512,10 +512,89 @@ With these closed forms, we can express the original integral.
         \right].
 \end{split}
 \end{equation}
+This directly indicates an effective algorithm for constructing the linear system.
 
-This directly indicates an algorithm for constructing the linear system.
-Iterating over each interior vertex, add to the row in the matrix for interior adjacent vertices,
-edit the right-hand-side for boundary adjacent vertices.
+\subsubsection{Integrating the source function}
+One more thing is needed, however. The right-hand-side vector of \eqref{poisson_matrix_equation} contains source integrals
+    $$\int_{\om_j}g\,dx,$$
+so we require some numerical integration. The simplest choice is a ``rectangle rule'', where we sample the source function $g$ at the interior vertex
+$p_j$, then assume that $g$ is constant over $\om_j$. This gives the approximation
+\begin{equation}\label{fvm_source_approximation}
+    \int_{\om_j}g\,dx \quad\approx\quad g(p_j)\text{Area}(\om_j) = g(p_j)\sum_{i=1}^k \text{Area}(T^{p_j}_k),
+\end{equation}
+which will be sufficient for now.
+
+\subsection{Implementing the finite volume method for Poisson's equation}
+Using the expression \eqref{flux_integral_summation}, the linear system
+\eqref{poisson_matrix_equation} can be constructed by iterating over each interior vertex, then each adjacent triangle,
+and computing these closed form integrals.
+Each adjacent triangle corresponds to two vertices, and for each of these vertices,
+a value is placed in either the system matrix or adjusting the right-hand-side,
+depending on whether the triangle vertex in the interior or on the boundary. Also, while iterating over the interior vertices,
+the corresonding source integral is approximated by \eqref{fvm_source_approximation}, and the result is added to the right-hand-side vector.
+
+
+
+\newcommand{\totaltrianglearea}{\text{total\_triangle\_area}}
+\begin{algorithm}
+
+% https://tex.stackexchange.com/questions/64204/mutliple-inputs-with-line-breaking
+\newlength\mylen
+\newcommand\mydata[1]{%
+  \settowidth\mylen{\KwData{}}%
+  \setlength\hangindent{\mylen}%
+  \hspace*{\mylen}#1\\}
+
+\SetKwProg{Fn}{Routine}{\string:}{}
+\SetKwProg{Def}{Define function}{\string:}{}
+\Fn{Solve\_Poisson\_FVM}{
+    \SetAlgoLined
+    \KwData{Domain $\Omega$ with boundary $\Gamma$.}
+    \mydata{Triangulation of $\Omega$ consisting of:}
+    \mydata{\quad Interior vertices $p_1,\cdots,p_n$.}
+    \mydata{\quad Boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$.}
+    \mydata{\quad Triangles $T_1,\cdots,T_{n_T}$.}
+    \mydata{Heat source function $g : \Omega\rightarrow \mathbb{R}$.}
+    \mydata{Dirichlet boundary function $h_\Gamma : \Gamma \rightarrow \mathbb{R}$.}
+    \KwResult{
+        Approximate solution $\tilde{h}:\Omega\rightarrow\mathbb{R}$ of the boundary value problem \eqref{poisson_dirichlet_problem}:\\
+        \qquad\qquad\qquad\qquad $-\Delta h = g$, $\left.h\right|_\Gamma = h_\Gamma$.
+    }
+    $M \leftarrow \text{$n\times n$ zero matrix}$\;
+    $b \leftarrow \text{length $n$ zero vector}$\;
+    \For{$j = 1,\cdots,n$}{
+        Let $v$ denote the interior vertex $p_j$\;
+        Let $v_1,\cdots,v_k$ denote the vertices adjacent to $v$\;
+        Let $T^v_1,\cdots,T^v_k$ denote the triangles adjacent to $v$\;
+        (Triangle $T_t$ joins vertices $v,v_t,v_{t+1}$.)\\
+        \For{$t = 1,\cdots, k$}{
+            $C \leftarrow \frac{1}{4\text{Area}(T)}$\;
+            $M[j,j] \leftarrow M[j,j] + C\norm{v_{t+1} - v_t}^2$\;
+            \If{$v_t$ is on the boundary}{
+                $b[I(t)] \leftarrow b[I(t)] - h_\Gamma(v_t)C(v - v_{t+1})\cdot(v_{t+1}-v_t)$\;
+            }
+            \Else{
+                $M[j, I(t)] \leftarrow M[j, I(t)] + C(v - v_{t+1})\cdot(v_{t+1} - v_t)$\;
+            }
+            \If{$v_{t+1}$ is on the boundary}{
+                $b[I(t+1)] \leftarrow b[I(t+1)] - h_\Gamma(v_{t+1})C(v_t - v)\cdot(v_{t+1}-v_t)$\;
+            }
+            \Else{
+                $M[j, I(t+1)] \leftarrow M[j, I(t+1)] + C(v_t - v)\cdot(v_{t+1} - v_t)$\;
+            }
+        }
+        $\totaltrianglearea \leftarrow 0$\;
+        \For{$t = 1,\cdots, k$}{
+            $\totaltrianglearea \leftarrow \totaltrianglearea + \text{Area}(T)$\;
+        }
+        $b[j] \leftarrow b[j] + \totaltrianglearea\cdot g(v)$\;
+    }
+    Solve $M\hat{h} = b$ for $\hat{h} = (h_1,\cdots,h_n)^T$\;
+    $\tilde{h} \leftarrow \sum_{j=1}^n h_j\text{Hat}(p_j) + \sum_{j=1}^{n_\Gamma} h_\Gamma(p_j^\Gamma)\text{Hat}(p_j^\Gamma)$\;
+    \Return{$\tilde{h}$}\;
+}
+    \caption{Pseudocode for the described finite-volume method for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
+\end{algorithm}
 
 
 
@@ -843,7 +922,7 @@ and store the value as entry $(i,j)$ of the matrix.
         \For{$l,m=1,\cdots,3$}{
             \If{$p_{I(l)}$ is on the boundary}{skip\;}
             \If{$p_{I(m)}$ is on the boundary}{
-                $\hat{b}[I(l)] \leftarrow \hat{b}[I(l)] - u_\Gamma(p_{I(m)})L(l, m)$\;
+                $\hat{b}[I(l)] \leftarrow \hat{b}[I(l)] - h_\Gamma(p_{I(m)})L(l, m)$\;
             }
             \Else{
                 $\text{Coefficients} \leftarrow \text{Coefficients} \cup \left\{(I(l),I(m),L(l,m))\right\}$\;

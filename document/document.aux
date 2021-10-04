@@ -187,23 +187,27 @@
 \citation{ddg_triangulated}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{figure.caption.33}}
 \newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }{figure.caption.33}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Forming the linear system by closed-form integration}{32}{section*.34}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Forming the linear system by closed-form integration}{32}{subsection.4.3.4}}
 \newlabel{fvm_integral}{{4.15}{32}{Forming the linear system by closed-form integration}{equation.4.3.15}{}}
 \newlabel{fvm_integral_linearity_expanded}{{4.16}{32}{Forming the linear system by closed-form integration}{equation.4.3.16}{}}
 \newlabel{fvm_integral_vertex}{{4.17}{33}{Forming the linear system by closed-form integration}{equation.4.3.17}{}}
 \newlabel{fvm_integral_vertex_triangles}{{4.18}{33}{Forming the linear system by closed-form integration}{equation.4.3.18}{}}
 \newlabel{fvm_integrals_closed}{{4.19}{33}{Forming the linear system by closed-form integration}{equation.4.3.19}{}}
 \newlabel{fvm_gradients}{{4.20}{34}{Forming the linear system by closed-form integration}{equation.4.3.20}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{34}{section.4.4}}
-\newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{34}{From finite volumes to finite elements}{section.4.4}{}}
-\newlabel{example_trial_sum}{{4.22}{34}{From finite volumes to finite elements}{equation.4.4.22}{}}
-\newlabel{poisson_galerkin}{{4.24}{36}{From finite volumes to finite elements}{equation.4.4.24}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{36}{section.4.5}}
-\newlabel{poisson_fem_matrix_equation}{{4.25}{36}{Discretizing Poisson's equation by finite elements}{equation.4.5.25}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{36}{subsection.4.5.1}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{37}{figure.caption.35}}
-\newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{37}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.35}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{37}{section.4.6}}
+\newlabel{flux_integral_summation}{{4.21}{34}{Forming the linear system by closed-form integration}{equation.4.3.21}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Integrating the source function}{34}{section*.34}}
+\newlabel{fvm_source_approximation}{{4.22}{34}{Integrating the source function}{equation.4.3.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}Implementing the finite volume method for Poisson's equation}{34}{subsection.4.3.5}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Pseudocode for the described finite-volume method for the Poisson boundary value problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {poisson_dirichlet_problem}\unskip \@@italiccorr )}}.\relax }}{35}{algocf.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{36}{section.4.4}}
+\newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{36}{From finite volumes to finite elements}{section.4.4}{}}
+\newlabel{example_trial_sum}{{4.23}{36}{From finite volumes to finite elements}{equation.4.4.23}{}}
+\newlabel{poisson_galerkin}{{4.25}{37}{From finite volumes to finite elements}{equation.4.4.25}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{37}{section.4.5}}
+\newlabel{poisson_fem_matrix_equation}{{4.26}{37}{Discretizing Poisson's equation by finite elements}{equation.4.5.26}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{38}{subsection.4.5.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{38}{figure.caption.36}}
+\newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{38}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.36}{}}
 \citation{polygon_mesh_processing}
 \citation{geometry_central}
 \citation{polygon_mesh_processing_library}
@@ -213,18 +217,19 @@
 \citation{petsc}
 \citation{armadillo}
 \citation{eigen}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{38}{subsection.4.6.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{38}{subsection.4.6.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{39}{section.4.6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{39}{subsection.4.6.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{39}{subsection.4.6.2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{39}{subsection.4.6.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{39}{figure.caption.39}}
-\newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{39}{\scriptsize Text \relax }{figure.caption.39}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{41}{figure.caption.40}}
+\newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{41}{\scriptsize Text \relax }{figure.caption.40}{}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}{chapter.5}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{43}{chapter.5}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{43}{chapter.6}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{45}{chapter.6}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \bibcite{newton}{1}
 \bibcite{johann_bernoulli}{2}
@@ -248,7 +253,7 @@
 \bibcite{fenics_book}{20}
 \bibcite{approximation_theory}{21}
 \bibcite{stam}{22}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{45}{section*.41}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{47}{section*.42}}
 \bibcite{ham_fem}{23}
 \bibcite{fem_incompressible}{24}
 \bibcite{strang_equilibrium}{25}
@@ -267,5 +272,5 @@
 \bibcite{boris_galerkin}{38}
 \bibcite{sobolev_web_page}{39}
 \bibcite{firedrake}{40}
-\memsetcounter{lastsheet}{46}
-\memsetcounter{lastpage}{46}
+\memsetcounter{lastsheet}{48}
+\memsetcounter{lastpage}{48}

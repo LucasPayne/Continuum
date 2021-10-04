@@ -60,14 +60,16 @@
 \contentsline {subsubsection}{The test space}{30}{section*.27}
 \contentsline {subsubsection}{Approximating the boundary values}{31}{section*.29}
 \contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}
-\contentsline {subsubsection}{Forming the linear system by closed-form integration}{32}{section*.34}
-\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{34}{section.4.4}
-\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{36}{section.4.5}
-\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{36}{subsection.4.5.1}
-\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{37}{section.4.6}
-\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{38}{subsection.4.6.1}
-\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{38}{subsection.4.6.2}
+\contentsline {subsection}{\numberline {4.3.4}Forming the linear system by closed-form integration}{32}{subsection.4.3.4}
+\contentsline {subsubsection}{Integrating the source function}{34}{section*.34}
+\contentsline {subsection}{\numberline {4.3.5}Implementing the finite volume method for Poisson's equation}{34}{subsection.4.3.5}
+\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{36}{section.4.4}
+\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{37}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{38}{subsection.4.5.1}
+\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{39}{section.4.6}
+\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{39}{subsection.4.6.1}
+\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{39}{subsection.4.6.2}
 \contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{39}{subsection.4.6.3}
-\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}{chapter.5}
-\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{43}{chapter.6}
-\contentsline {chapter}{Bibliography}{45}{section*.41}
+\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{43}{chapter.5}
+\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{45}{chapter.6}
+\contentsline {chapter}{Bibliography}{47}{section*.42}
