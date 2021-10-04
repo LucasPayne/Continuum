@@ -47,3 +47,6 @@ target_link_libraries(HeatSolver PRIVATE common)
 
 add_executable(discretization_figure discretization_figure.cpp)
 target_link_libraries(discretization_figure PRIVATE common)
+
+add_executable(FiniteVolume FiniteVolume.cpp)
+target_link_libraries(FiniteVolume PRIVATE common)
