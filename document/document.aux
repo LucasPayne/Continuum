@@ -184,30 +184,23 @@
 \newlabel{laplaceboundary}{{\M@TitleReference {4.5}{\relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{\scriptsize The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\tilde {h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots ,\Omega _n$. \relax }{figure.caption.31}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}}
 \citation{polygon_mesh_processing}
+\citation{polygon_mesh_processing}
 \citation{ddg_triangulated}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{figure.caption.33}}
-\newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }{figure.caption.33}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Forming the linear system by closed-form integration}{32}{subsection.4.3.4}}
-\newlabel{fvm_integral}{{4.15}{32}{Forming the linear system by closed-form integration}{equation.4.3.15}{}}
-\newlabel{fvm_integral_linearity_expanded}{{4.16}{32}{Forming the linear system by closed-form integration}{equation.4.3.16}{}}
-\newlabel{fvm_integral_vertex}{{4.17}{33}{Forming the linear system by closed-form integration}{equation.4.3.17}{}}
-\newlabel{fvm_integral_vertex_triangles}{{4.18}{33}{Forming the linear system by closed-form integration}{equation.4.3.18}{}}
-\newlabel{fvm_integrals_closed}{{4.19}{33}{Forming the linear system by closed-form integration}{equation.4.3.19}{}}
-\newlabel{fvm_gradients}{{4.20}{34}{Forming the linear system by closed-form integration}{equation.4.3.20}{}}
-\newlabel{flux_integral_summation}{{4.21}{34}{Forming the linear system by closed-form integration}{equation.4.3.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }}{32}{figure.caption.33}}
+\newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }{figure.caption.33}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Computing the linear system by closed-form integration}{32}{subsection.4.3.4}}
+\newlabel{fvm_integral}{{4.15}{32}{Computing the linear system by closed-form integration}{equation.4.3.15}{}}
+\newlabel{fvm_integral_linearity_expanded}{{4.16}{32}{Computing the linear system by closed-form integration}{equation.4.3.16}{}}
+\newlabel{fvm_integral_vertex}{{4.17}{33}{Computing the linear system by closed-form integration}{equation.4.3.17}{}}
+\newlabel{fvm_integral_vertex_triangles}{{4.18}{33}{Computing the linear system by closed-form integration}{equation.4.3.18}{}}
+\newlabel{fvm_integrals_closed}{{4.19}{33}{Computing the linear system by closed-form integration}{equation.4.3.19}{}}
+\newlabel{fvm_gradients}{{4.20}{34}{Computing the linear system by closed-form integration}{equation.4.3.20}{}}
+\newlabel{flux_integral_summation}{{4.21}{34}{Computing the linear system by closed-form integration}{equation.4.3.21}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Integrating the source function}{34}{section*.34}}
 \newlabel{fvm_source_approximation}{{4.22}{34}{Integrating the source function}{equation.4.3.22}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}Implementing the finite volume method for Poisson's equation}{34}{subsection.4.3.5}}
-\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Pseudocode for the described finite-volume method for the Poisson boundary value problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {poisson_dirichlet_problem}\unskip \@@italiccorr )}}.\relax }}{35}{algocf.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{36}{section.4.4}}
-\newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{36}{From finite volumes to finite elements}{section.4.4}{}}
-\newlabel{example_trial_sum}{{4.23}{36}{From finite volumes to finite elements}{equation.4.4.23}{}}
-\newlabel{poisson_galerkin}{{4.25}{37}{From finite volumes to finite elements}{equation.4.4.25}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{37}{section.4.5}}
-\newlabel{poisson_fem_matrix_equation}{{4.26}{37}{Discretizing Poisson's equation by finite elements}{equation.4.5.26}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{38}{subsection.4.5.1}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{38}{figure.caption.36}}
-\newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{38}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.36}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}The resulting matrix assembly algorithm}{35}{subsection.4.3.5}}
+\newlabel{alg:assembly}{{\M@TitleReference {\caption@xref {alg:assembly}{ on input line 549}}{The resulting matrix assembly algorithm}}{36}{The resulting matrix assembly algorithm}{algocf.caption.35}{}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Pseudocode for the described finite-volume matrix assembly process for the Poisson boundary value problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {poisson_dirichlet_problem}\unskip \@@italiccorr )}}.\relax }}{36}{algocf.1}}
 \citation{polygon_mesh_processing}
 \citation{geometry_central}
 \citation{polygon_mesh_processing_library}
@@ -217,10 +210,24 @@
 \citation{petsc}
 \citation{armadillo}
 \citation{eigen}
-\@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{39}{section.4.6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{39}{subsection.4.6.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{39}{subsection.4.6.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{39}{subsection.4.6.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.6}The resulting finite volume algorithm}{37}{subsection.4.3.6}}
+\newlabel{alg:fvm}{{\M@TitleReference {\caption@xref {alg:fvm}{ on input line 631}}{The resulting finite volume algorithm}}{37}{The resulting finite volume algorithm}{algocf.caption.36}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Mesh generation}{37}{section*.37}}
+\citation{triangle}
+\citation{orourke}
+\citation{geometry_central}
+\citation{eigen}
+\@writefile{toc}{\contentsline {subsubsection}{Numerical linear algebra}{38}{section*.38}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.7}An implementation in C\texttt  {++}}{38}{subsection.4.3.7}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{38}{section.4.4}}
+\newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{38}{From finite volumes to finite elements}{section.4.4}{}}
+\newlabel{example_trial_sum}{{4.23}{38}{From finite volumes to finite elements}{equation.4.4.23}{}}
+\newlabel{poisson_galerkin}{{4.25}{40}{From finite volumes to finite elements}{equation.4.4.25}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{40}{section.4.5}}
+\newlabel{poisson_fem_matrix_equation}{{4.26}{40}{Discretizing Poisson's equation by finite elements}{equation.4.5.26}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{40}{subsection.4.5.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{41}{figure.caption.39}}
+\newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{41}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.39}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{41}{figure.caption.40}}
 \newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{41}{\scriptsize Text \relax }{figure.caption.40}{}}
 \@writefile{lof}{\addvspace {10pt}}

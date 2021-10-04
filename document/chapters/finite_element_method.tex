@@ -369,18 +369,25 @@ The resulting cell decompositions are displayed in figure
     \end{center}
     \caption{\scriptsize
         The domain $\Omega$ is partitioned into triangular cells $T_1\cdots T_{n_T}$.
-        Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres.
-        Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily
-        contained in a single fan of triangles.
+        Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres.
     }
     \label{cell_decompositions}
 \end{figure}
+Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily
+contained in a single fan of triangles. Notice also that the Voronoi polygon passes through the midpoints of each edge incident to $p_i$.
+This midpoint property will soon prove useful in computing integrals, but the resulting exposition will be clearer if we can also
+assume that the cell boundary \textit{is} contained in a single fan of triangles. Therefore we define the \textit{mixed Voronoi cell} \cite{polygon_mesh_processing},
+where a wayward circumcentre is pulled back to the opposite edge.
 
-The scheme as described so far, consisting of a triangle mesh, hat test functions, and barycentric or Voronoi control volumes,
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+The scheme as described so far, consisting of a triangle mesh, hat test functions, and barycentric, Voronoi, or mixed Voronoi control volumes,
 has found some success, especially in the domain of geometry processing (\cite{polygon_mesh_processing}, \cite{ddg_triangulated}).
-We will work with the Voronoi cells.
+We will work with the mixed Voronoi cells.
 
-\subsection{Forming the linear system by closed-form integration}
+\subsection{Computing the linear system by closed-form integration}
 Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
 the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
 the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
@@ -454,7 +461,7 @@ This is simple because the gradients are constant on $\Omega_j \cap T_t^v$.
 (figure)
 \vskip 0.2in
 
-The Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v_t)$ and $m^\ppr = \frac{1}{2}(v + v_{t+1})$, taking a detour to the barycentre of $T$.
+The Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v_t)$ and $m^\ppr = \frac{1}{2}(v + v_{t+1})$, taking a detour to a point within $T$.
 
 \vskip 0.2in
 (figure)
@@ -476,7 +483,7 @@ We now only need the constant gradients on $T$. This requires some simple geomet
 (figure of a rectangle drawn around the triangle, and the perpendicular direction, with width and height labels)
 \vskip 0.2in
 
-We must normalize this vector and then divide by the height of this rectangle, as the gradient strength is inversely proportional to the height.
+We must normalize this vector and then divide by the height of this rectangle, as the slope is inversely proportional to the rectangle height.
 This gives the gradient
 $$
     \nabla\phi_{v^\pr} = \frac{(v^\pppr - v^\ppr)^\perp}{\norm{v^\pppr - v^\ppr}h} = \frac{(v^\pppr - v^\ppr)^\perp}{wh}.
@@ -524,19 +531,22 @@ $p_j$, then assume that $g$ is constant over $\om_j$. This gives the approximati
 \end{equation}
 which will be sufficient for now.
 
-\subsection{Implementing the finite volume method for Poisson's equation}
+\subsection{The resulting matrix assembly algorithm}
 Using the expression \eqref{flux_integral_summation}, the linear system
 \eqref{poisson_matrix_equation} can be constructed by iterating over each interior vertex, then each adjacent triangle,
 and computing these closed form integrals.
 Each adjacent triangle corresponds to two vertices, and for each of these vertices,
 a value is placed in either the system matrix or adjusting the right-hand-side,
 depending on whether the triangle vertex in the interior or on the boundary. Also, while iterating over the interior vertices,
-the corresonding source integral is approximated by \eqref{fvm_source_approximation}, and the result is added to the right-hand-side vector.
+the corresponding source integral is approximated by \eqref{fvm_source_approximation}, and the result is added to the right-hand-side vector.
+Pseudocode for this algorithm is given below.
 
 
+% Routine name
+\newcommand{\poissonfvmmatrixassembly}{Poisson\_FVM\_Matrix\_Assembly}
 
 \newcommand{\totaltrianglearea}{\text{total\_triangle\_area}}
-\begin{algorithm}
+\begin{algorithm}\label{alg:assembly}
 
 % https://tex.stackexchange.com/questions/64204/mutliple-inputs-with-line-breaking
 \newlength\mylen
@@ -547,21 +557,25 @@ the corresonding source integral is approximated by \eqref{fvm_source_approximat
 
 \SetKwProg{Fn}{Routine}{\string:}{}
 \SetKwProg{Def}{Define function}{\string:}{}
-\Fn{Solve\_Poisson\_FVM}{
+\Fn{\poissonfvmmatrixassembly}{
     \SetAlgoLined
     \KwData{Domain $\Omega$ with boundary $\Gamma$.}
-    \mydata{Triangulation of $\Omega$ consisting of:}
-    \mydata{\quad Interior vertices $p_1,\cdots,p_n$.}
-    \mydata{\quad Boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$.}
-    \mydata{\quad Triangles $T_1,\cdots,T_{n_T}$.}
     \mydata{Heat source function $g : \Omega\rightarrow \mathbb{R}$.}
     \mydata{Dirichlet boundary function $h_\Gamma : \Gamma \rightarrow \mathbb{R}$.}
+    \mydata{Triangulation of $\Omega$ consisting of:}
+    \mydata{\qquad Interior vertices $p_1,\cdots,p_n$.}
+    \mydata{\qquad Boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$.}
+    \mydata{\qquad Triangles $T_1,\cdots,T_{n_T}$.}
     \KwResult{
-        Approximate solution $\tilde{h}:\Omega\rightarrow\mathbb{R}$ of the boundary value problem \eqref{poisson_dirichlet_problem},\\
+        % Approximate solution $\tilde{h}:\Omega\rightarrow\mathbb{R}$ of the boundary value problem \eqref{poisson_dirichlet_problem},\\
+        % \qquad\qquad\qquad\qquad $-\Delta h = g$, $\left.h\right|_\Gamma = h_\Gamma$.
+        The coefficients $(A, \hat{f})$ of the system $A\hat{h} = \hat{f}$ \eqref{poisson_matrix_equation},
+        which can be solved by the caller for $\hat{h}$ in order to reconstruct
+        an approximate solution $\tilde{h}:\Omega\rightarrow\mathbb{R}$ of the boundary value problem \eqref{poisson_dirichlet_problem},\\
         \qquad\qquad\qquad\qquad $-\Delta h = g$, $\left.h\right|_\Gamma = h_\Gamma$.
     }
-    $M \leftarrow \text{$n\times n$ zero matrix}$\;
-    $b \leftarrow \text{length $n$ zero vector}$\;
+    $A \leftarrow \text{$n\times n$ zero matrix}$\;
+    $\hat{f} \leftarrow \text{length $n$ zero vector}$\;
     \For{$j = 1,\cdots,n$}{
         Let $v$ denote the interior vertex $p_j$.\\
         Let $v_1,\cdots,v_k$ denote the vertices adjacent to $v$.\\
@@ -569,34 +583,112 @@ the corresonding source integral is approximated by \eqref{fvm_source_approximat
         (Triangle $T_t$ joins vertices $v,v_t,v_{t+1}$.)\\
         \For{$t = 1,\cdots, k$}{
             $C \leftarrow \frac{1}{4\text{Area}(T)}$\;
-            $M[j,j] \leftarrow M[j,j] + C\norm{v_{t+1} - v_t}^2$\;
-            \If{$v_t$ is on the boundary}{
-                $b[I(t)] \leftarrow b[I(t)] - h_\Gamma(v_t)C(v - v_{t+1})\cdot(v_{t+1}-v_t)$\;
+            $A[j,j] \leftarrow A[j,j] + C\norm{v_{t+1} - v_t}^2$\;
+            \uIf{$v_t$ is on the boundary}{
+                $\hat{f}[I(t)] \leftarrow \hat{f}[I(t)] - h_\Gamma(v_t)C(v - v_{t+1})\cdot(v_{t+1}-v_t)$\;
             }
             \Else{
-                $M[j, I(t)] \leftarrow M[j, I(t)] + C(v - v_{t+1})\cdot(v_{t+1} - v_t)$\;
+                $A[j, I(t)] \leftarrow A[j, I(t)] + C(v - v_{t+1})\cdot(v_{t+1} - v_t)$\;
             }
-            \If{$v_{t+1}$ is on the boundary}{
-                $b[I(t+1)] \leftarrow b[I(t+1)] - h_\Gamma(v_{t+1})C(v_t - v)\cdot(v_{t+1}-v_t)$\;
+            \uIf{$v_{t+1}$ is on the boundary}{
+                $\hat{f}[I(t+1)] \leftarrow \hat{f}[I(t+1)] - h_\Gamma(v_{t+1})C(v_t - v)\cdot(v_{t+1}-v_t)$\;
             }
             \Else{
-                $M[j, I(t+1)] \leftarrow M[j, I(t+1)] + C(v_t - v)\cdot(v_{t+1} - v_t)$\;
+                $A[j, I(t+1)] \leftarrow A[j, I(t+1)] + C(v_t - v)\cdot(v_{t+1} - v_t)$\;
             }
         }
         $\totaltrianglearea \leftarrow 0$\;
         \For{$t = 1,\cdots, k$}{
             $\totaltrianglearea \leftarrow \totaltrianglearea + \text{Area}(T)$\;
         }
-        $b[j] \leftarrow b[j] + \totaltrianglearea\cdot g(v)$\;
+        $\hat{f}[j] \leftarrow \hat{f}[j] + \totaltrianglearea\cdot g(v)$\;
     }
-    Solve $M\hat{h} = b$ for $\hat{h} = (h_1,\cdots,h_n)^T$\;
+    \Return{$(A, \hat{f})$}\;
+    % Solve $A\hat{h} = b$ for $\hat{h} = (h_1,\cdots,h_n)^T$\;
+    % $\tilde{h} \leftarrow \sum_{j=1}^n h_j\text{Hat}(p_j) + \sum_{j=1}^{n_\Gamma} h_\Gamma(p_j^\Gamma)\text{Hat}(p_j^\Gamma)$\;
+    % \Return{$\tilde{h}$}\;
+}
+    % \caption{Pseudocode for the described finite-volume method for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
+    \caption{Pseudocode for the described finite-volume matrix assembly process for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
+\end{algorithm}
+\newpage
+
+\subsection{The resulting finite volume algorithm}
+We now have an effective algorithm for approximating Poisson's equation:
+\begin{enumerate}
+    \item Partition the 2D domain $\Omega$ into triangles $T_1,\cdots,T_{n_T}$. This determines the hat basis functions $\phi_1,\cdots,\phi_n$
+         and the mixed Voronoi cells $\Omega_1,\cdots,\Omega_n$.
+    \item Form the matrix and right-hand-side in \eqref{poisson_matrix_equation} with the algorithm \ref{alg:assembly}.
+    \item Solve the resulting linear system for $\hat{h}$, and construct the solution as $\tilde{h} = \phi_\Gamma + \Phi\cdot\hat{h}$.
+\end{enumerate}
+Each of these steps is conceptually well-separated into the domains of
+mesh generation, matrix assembly, and numerical linear algebra. The above pseudocode \ref{alg:assembly} is a matrix assembly algorithm.
+It assumes that there is already a domain triangulation, and constructs the linear system \eqref{poisson_matrix_equation}.
+Although we have addressed the
+problem of matrix assembly, specific to this particular finite volume method, mesh generation and numerical linear algebra can be delegated to external libraries.
+The full solve algorithm is given below.
+
+\begin{algorithm}\label{alg:fvm}
+
+\newcommand\mydata[1]{%
+  \settowidth\mylen{\KwData{}}%
+  \setlength\hangindent{\mylen}%
+  \hspace*{\mylen}#1\\}
+
+\SetKwProg{Fn}{Routine}{\string:}{}
+\SetKwProg{Def}{Define function}{\string:}{}
+\Fn{Solve\_Poisson\_FVM}{
+
+    \SetAlgoLined
+    \KwData{Domain $\Omega$ with boundary $\Gamma$.}
+    \mydata{Heat source function $g : \Omega\rightarrow \mathbb{R}$.}
+    \mydata{Dirichlet boundary function $h_\Gamma : \Gamma \rightarrow \mathbb{R}$.}
+    \KwResult{
+        Approximate solution $\tilde{h}:\Omega\rightarrow\mathbb{R}$ of the boundary value problem \eqref{poisson_dirichlet_problem},\\
+        \qquad\qquad\qquad\qquad $-\Delta h = g$, $\left.h\right|_\Gamma = h_\Gamma$.
+    }
+    \emph{// Mesh generation}\\
+    $\text{triangulation} \leftarrow \text{Generate\_Triangulation}(\Omega)$\;
+    \emph{// Matrix assembly}\\
+    $(A,\hat{f}) \leftarrow \text{\poissonfvmmatrixassembly}(\Omega, g, h_\Gamma, \text{triangulation})$\;
+    \emph{// Linear solve}\\
+    Solve $A\hat{h} = \hat{f}$ for $\hat{h}$.\\
+    \emph{// Solution reconstruction}\\
     $\tilde{h} \leftarrow \sum_{j=1}^n h_j\text{Hat}(p_j) + \sum_{j=1}^{n_\Gamma} h_\Gamma(p_j^\Gamma)\text{Hat}(p_j^\Gamma)$\;
     \Return{$\tilde{h}$}\;
 }
-    \caption{Pseudocode for the described finite-volume method for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
 \end{algorithm}
 
+The routine \textbf{Generate\_Triangulation} is provided by a mesh generator, and 
+the $\textbf{Solve}$ routine is provided by a numerical linear algebra library.
+\subsubsection{Mesh generation}
+Mesh generation is a huge field. However, there are only two essentials for the handling of 2D domains and piecewise linear triangulations
+--- a mesh data structure and a triangulator. Typically a mesh data structure will be provided by a separate library,
+and the data organization (e.g., vertex, triangle, and adjacency information) will be designed to facilitate the kinds
+of mesh traversals performed during matrix assembly. This is typically some variant of a ``halfedge'' data structure \cite{polygon_mesh_processing},
+implemented in libraries such as Geometry Central \cite{geometry_central},
+the Polygon Mesh Processing library \cite{polygon_mesh_processing_library}, and OpenMesh \cite{openmesh}.
+A mesh data structure is a foundational component of \textit{mesh generation} systems. For 2D domains, a somewhat regular sampling of points on the boundary
+and interior, followed by triangulation of these points, can suffice for a piecewise-linear finite volume mesh.
+The Triangle \cite{triangle} library, for example, contains a single very efficient and robust C routine (consisting of 16k lines of highly optimized code)
+for performing Delaunay triangulations \cite{orourke}
+on 2D domains,
+with the specific goal of creating robust finite element meshes.
 
+\subsubsection{Numerical linear algebra}
+The solution of large linear systems is a vast topic. Finite element solvers are typically clients
+of standard, robust linear and non-linear solver libraries, such as Argonne National Laboratory's PETSc libraries \cite{petsc}
+and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eigen \cite{eigen}.
+A finite element solver will typically pass either a full matrix to the linear solver (dense or sparse),
+or provide the linear solver with callback routines that give the solver access to the system coefficients when they are needed.
+
+\subsection{An implementation in C\texttt{++}}
+I have implemented the above algorithm in C\texttt{++}.
+This code uses a simple mesh generator based on the C library Triangle \cite{triangle}. Triangle is given a list of points
+and boundary points, and generates a Delaunay triangulation \cite{orourke}. This triangulation is then converted to a halfedge mesh data structure
+based on the ideas in the Geometry Central library \cite{geometry_central}.
+The system is solved with a sparse LU factorisation method provided by the C\texttt{++} Eigen library \cite{eigen}.
+With these interfaces, the resulting C\texttt{++} was almost a direct transliteration of the pseudocodes \ref{alg:fvm} and \ref{alg:assembly}.
 
 
 
@@ -847,179 +939,6 @@ Finite element methods are characterised by a test space $\Phi$ and trial space
 $\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
 some Sobolev space, constructed over a domain tessellation.
 
-\section{Implementing the finite element method for Poisson's equation}
-We now have an effective algorithm for approximating Poisson's equation:
-\begin{enumerate}
-    \item Partition the 2D domain $\Omega$ into triangles $T_i$. This implicitly defines the hat basis functions $\phi_i = \psi_i$.
-    \item Form the matrix and right-hand-side in \eqref{poisson_fem_matrix_equation}, by analytical or numerical integration.
-    \item Solve the resulting linear system for $\hat{h}$, and construct the solution as $\Phi\cdot\hat{h}$.
-\end{enumerate}
-Each of these steps is conceptually well-separated into the domains of
-mesh generation, matrix assembly, and numerical linear algebra.
-
-\subsection{Mesh generation}
-Mesh generation is itself a huge field. However, there are only two essentials for the handling of 2D meshes and piecewise linear finite elements
---- a mesh data structure and a triangulator. Typically a mesh data structure will be provided by a separate library,
-and the data organization (e.g., vertex, triangle, and adjacency information) will be designed to facilitate the kinds
-of mesh traversals performed during matrix assembly. This is typically some variant of a ``halfedge'' data structure \cite{polygon_mesh_processing},
-implemented in libraries such as Geometry Central \cite{geometry_central},
-the Polygon Mesh Processing library \cite{polygon_mesh_processing_library}, and OpenMesh \cite{openmesh}.
-A mesh data structure is a foundational component of \textit{mesh generation} systems. For 2D domains, a somewhat regular sampling of points on the boundary
-and interior, followed by triangulation of these points, can suffice for a piecewise-linear finite element mesh.
-The Triangle \cite{triangle} library, for example, contains a single very efficient and robust C routine (consisting of 16k lines of highly optimized code)
-for performing Delaunay triangulations \cite{orourke}
-on 2D domains,
-with the specific goal of creating robust finite element meshes.
-
-
-\subsection{Matrix assembly}
-The matrix assembly stage is the core of a finite element implementation. The simplest idea is to iterate over all pairs $\phi_i$ and $\psi_j$,
-letting $i=1,\cdots,n$, $j = 1,\cdots,n$, and approximate the integral $\int_\Omega \nabla\phi_i\cdot \nabla\cdot \psi_j\,dx$,
-and store the value as entry $(i,j)$ of the matrix.
-\begin{algorithm}
-    \SetAlgoLined
-    % \KwData{this text}
-    % \KwResult{HOW}
-    % initialization\;
-    $M \leftarrow \text{zero matrix}$\;
-    \For{$i=1,\cdots,n$}{
-        \For{$j=1,\cdots,n$}{
-            $M[i,j] \leftarrow \int_\Omega \nabla\phi_i\cdot \nabla\cdot \psi_j\,dx.$
-        }
-    }
-\end{algorithm}
-
-\begin{algorithm}
-    % rhs computation
-    \SetAlgoLined
-    \For{$i=1,\cdots,n$}{
-        $A \leftarrow 0$ \tcc*[l]{For computing total adjacent triangle areas.}
-        \For{each triangle $T_j$ adjacent to $p_i$}{
-            $A \leftarrow A + \text{Area}(T_j)$\;
-        }
-        $c \leftarrow g(p_i)$ \tcc*[l]{The source function is evaluated at the point $p_i$.}
-        $\hat{b}[i] \leftarrow A\cdot c/3$\;
-    }
-\end{algorithm}
-
-\begin{algorithm}
-    % stiffness matrix computation and RHS boundary conditions.
-    \SetAlgoLined
-
-    $\text{Coefficients} \leftarrow \{\}$\;\tcc*[l]{This will contain triples $(i,j,\text{value})$ used to create the sparse matrix.}
-
-    \For{each triangle $T_k$ in the domain partition}{
-        $A \leftarrow \text{Area}(T_k)$\;
-        $P,Q,R \coloneqq \text{The vertices of $T_k$}$\;
-        $J \leftarrow \begin{bmatrix} Q_x-P_x & R_x-P_x \\ Q_y-P_y & R_y - P_y \end{bmatrix}$ \tcc*[l]{Jacobian of the reference transform.}
-        $\text{Gradients} \leftarrow \left\{\begin{bmatrix} -1 & -1 \end{bmatrix},
-                                            \begin{bmatrix} 1 & 0 \end{bmatrix},
-                                            \begin{bmatrix} 0 & 1 \end{bmatrix}\right\}$\;
-        $L \leftarrow \text{zero matrix}$ \tcc*[l]{The local stiffness matrix.}
-        \For{$l,m=1,\cdots,3$}{
-	    $L[l,m] \leftarrow A\left(\text{Gradients}[l] J^{-1}\right)\cdot\left(\text{Gradients}[m]J^{-1}\right)$\;
-        }
-        \For{$l,m=1,\cdots,3$}{
-            \If{$p_{I(l)}$ is on the boundary}{skip\;}
-            \If{$p_{I(m)}$ is on the boundary}{
-                $\hat{b}[I(l)] \leftarrow \hat{b}[I(l)] - h_\Gamma(p_{I(m)})L(l, m)$\;
-            }
-            \Else{
-                $\text{Coefficients} \leftarrow \text{Coefficients} \cup \left\{(I(l),I(m),L(l,m))\right\}$\;
-            }
-        }
-    }
-\end{algorithm}
-    %     for (int i = 0; i < 3; i++) {
-    %         for (int j = 0; j < 3; j++) {
-    %             bool b1 = verts[i].on_boundary();
-    %             bool b2 = verts[j].on_boundary();
-    %             if (b1) {
-    %                 continue; // The trial function can't be centered on the boundary.
-    %             } else if (b2) {
-    %                 auto p = geom.position[verts[j]];
-    %                 double boundary_val = dirichlet_boundary_function(p.x(), p.z());
-    %                 rhs[vertex_indices[verts[i]]] -= boundary_val*local_stiffness_matrix(i,j);
-    %             } else {
-    %                 coefficients.push_back(EigenTriplet(vertex_indices[verts[i]], vertex_indices[verts[j]], local_stiffness_matrix(i,j)));
-    %             }
-    %         }
-    %     }
-
-    % for (auto tri : geom.mesh.faces()) {
-    %     Vertex verts[3];
-    %     int vertex_index = 0;
-    %     auto he = tri.halfedge();
-    %     do {
-    %         he = he.next();
-    %         verts[vertex_index] = he.vertex();
-    %     } while (++vertex_index < 3);
-
-    %     auto A = geom.position[verts[0]];
-    %     auto B = geom.position[verts[1]];
-    %     auto C = geom.position[verts[2]];
-    %     double triangle_area = 0.5*(B-A).cross(C-A).norm();
-
-    %     // Compute the local stiffness matrix.
-    %     Eigen::Matrix<double, 2,2> jacobian_matrix;
-    %     jacobian_matrix <<
-    %         B.x() - A.x(),  C.x() - A.x(),
-    %         B.z() - A.z(),  C.z() - A.z();
-    %     auto grad_transform = jacobian_matrix.inverse().transpose();
-    %     Eigen::Matrix<double, 3,2> gradients;
-    %     gradients <<
-    %         -1,-1,
-    %         1,0,
-    %         0,1;
-    %     Eigen::Matrix<double, 3,3> local_stiffness_matrix;
-    %     for (int i = 0; i < 3; i++) {
-    %         auto grad_i = grad_transform * gradients.row(i).transpose();
-    %         for (int j = 0; j < 3; j++) {
-    %             auto grad_j = grad_transform * gradients.row(j).transpose();
-    %             local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j); //*triangle_area ??????????????????????????????????????
-    %         }
-    %     }
-
-    %     
-    %     // Eigen::Matrix<double, 3,3> local_stiffness_matrix;
-    %     // local_stiffness_matrix << 
-    %     //     1, -0.5, -0.5,
-    %     //     -0.5, 0.5, 0,
-    %     //     -0.5, 0, 0.5;
-    %     // local_stiffness_matrix *= 2*triangle_area;
-
-    %     // i: Row, trial function.
-    %     // j: Column, test function.
-
-    %     for (int i = 0; i < 3; i++) {
-    %         for (int j = 0; j < 3; j++) {
-    %             bool b1 = verts[i].on_boundary();
-    %             bool b2 = verts[j].on_boundary();
-    %             if (b1) {
-    %                 continue; // The trial function can't be centered on the boundary.
-    %             } else if (b2) {
-    %                 auto p = geom.position[verts[j]];
-    %                 double boundary_val = dirichlet_boundary_function(p.x(), p.z());
-    %                 rhs[vertex_indices[verts[i]]] -= boundary_val*local_stiffness_matrix(i,j);
-    %             } else {
-    %                 coefficients.push_back(EigenTriplet(vertex_indices[verts[i]], vertex_indices[verts[j]], local_stiffness_matrix(i,j)));
-    %             }
-    %         }
-    %     }
-
-    %     // std::cout << local_stiffness_matrix << "\n";
-    %     // for (int i = 0; i < 3; i++) std::cout << (verts[i].on_boundary() ? "b " : "_ ");
-    %     // std::cout << "\n";
-    %     // std::cout << rhs << "\n";
-    %     // getchar();
-    % }
-
-\subsection{Numerical linear algebra}
-The solution of large linear systems is a vast topic in itself. Finite element solvers are typically clients
-of standard, robust linear and non-linear solver libraries, such as Argonne National Laboratory's PETSc libraries \cite{petsc}
-and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eigen \cite{eigen}.
-A finite element solver will typically pass either a full matrix to the linear solver (dense or sparse),
-or provide the linear solver with callback routines that give the solver access to the system coefficients when they are needed.
 
 \begin{figure}[H]
     \begin{center}
