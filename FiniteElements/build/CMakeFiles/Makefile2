@@ -63,10 +63,10 @@ CMAKE_BINARY_DIR = /home/lucas/Continuum/FiniteElements/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/HeatSolver.dir/all
-all: CMakeFiles/discretization_figure.dir/all
 all: CMakeFiles/LaplaceSolver.dir/all
-all: CMakeFiles/FiniteVolume.dir/all
+all: CMakeFiles/HeatSolver.dir/all
+all: CMakeFiles/FiniteVolumes.dir/all
+all: CMakeFiles/discretization_figure.dir/all
 all: dependencies/triangle/all
 .PHONY : all
 
@@ -75,10 +75,10 @@ preinstall: dependencies/triangle/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/HeatSolver.dir/clean
-clean: CMakeFiles/discretization_figure.dir/clean
 clean: CMakeFiles/LaplaceSolver.dir/clean
-clean: CMakeFiles/FiniteVolume.dir/clean
+clean: CMakeFiles/HeatSolver.dir/clean
+clean: CMakeFiles/FiniteVolumes.dir/clean
+clean: CMakeFiles/discretization_figure.dir/clean
 clean: /home/lucas/computer_graphics/cg_sandbox/build/clean
 clean: dependencies/triangle/clean
 .PHONY : clean
@@ -290,74 +290,6 @@ dependencies/triangle/clean: dependencies/triangle/CMakeFiles/triangle.dir/clean
 .PHONY : /home/lucas/computer_graphics/cg_sandbox/build/src/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/HeatSolver.dir
-
-# All Build rule for target.
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/src/CMakeFiles/glfw.dir/all
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/opengl_utilities/CMakeFiles/opengl_utilities.dir/all
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/interactive_graphics_context/CMakeFiles/interactive_graphics_context.dir/all
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/reflector/CMakeFiles/reflector.dir/all
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/table/CMakeFiles/table.dir/all
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/CMakeFiles/mathematics.dir/all
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/spatial_algebra/CMakeFiles/spatial_algebra.dir/all
-CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/all
-CMakeFiles/HeatSolver.dir/all: dependencies/triangle/CMakeFiles/triangle.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=3,4 "Built target HeatSolver"
-.PHONY : CMakeFiles/HeatSolver.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/HeatSolver.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 55
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/HeatSolver.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 0
-.PHONY : CMakeFiles/HeatSolver.dir/rule
-
-# Convenience name for target.
-HeatSolver: CMakeFiles/HeatSolver.dir/rule
-.PHONY : HeatSolver
-
-# clean rule for target.
-CMakeFiles/HeatSolver.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/clean
-.PHONY : CMakeFiles/HeatSolver.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/discretization_figure.dir
-
-# All Build rule for target.
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/src/CMakeFiles/glfw.dir/all
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/opengl_utilities/CMakeFiles/opengl_utilities.dir/all
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/interactive_graphics_context/CMakeFiles/interactive_graphics_context.dir/all
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/reflector/CMakeFiles/reflector.dir/all
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/table/CMakeFiles/table.dir/all
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/CMakeFiles/mathematics.dir/all
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/spatial_algebra/CMakeFiles/spatial_algebra.dir/all
-CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/all
-CMakeFiles/discretization_figure.dir/all: dependencies/triangle/CMakeFiles/triangle.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=25,26 "Built target discretization_figure"
-.PHONY : CMakeFiles/discretization_figure.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/discretization_figure.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 55
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/discretization_figure.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 0
-.PHONY : CMakeFiles/discretization_figure.dir/rule
-
-# Convenience name for target.
-discretization_figure: CMakeFiles/discretization_figure.dir/rule
-.PHONY : discretization_figure
-
-# clean rule for target.
-CMakeFiles/discretization_figure.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/clean
-.PHONY : CMakeFiles/discretization_figure.dir/clean
-
-#=============================================================================
 # Target rules for target CMakeFiles/LaplaceSolver.dir
 
 # All Build rule for target.
@@ -392,38 +324,106 @@ CMakeFiles/LaplaceSolver.dir/clean:
 .PHONY : CMakeFiles/LaplaceSolver.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/FiniteVolume.dir
+# Target rules for target CMakeFiles/HeatSolver.dir
 
 # All Build rule for target.
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/src/CMakeFiles/glfw.dir/all
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/opengl_utilities/CMakeFiles/opengl_utilities.dir/all
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/interactive_graphics_context/CMakeFiles/interactive_graphics_context.dir/all
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/reflector/CMakeFiles/reflector.dir/all
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/table/CMakeFiles/table.dir/all
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/CMakeFiles/mathematics.dir/all
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/spatial_algebra/CMakeFiles/spatial_algebra.dir/all
-CMakeFiles/FiniteVolume.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/all
-CMakeFiles/FiniteVolume.dir/all: dependencies/triangle/CMakeFiles/triangle.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolume.dir/build.make CMakeFiles/FiniteVolume.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolume.dir/build.make CMakeFiles/FiniteVolume.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=1,2 "Built target FiniteVolume"
-.PHONY : CMakeFiles/FiniteVolume.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/src/CMakeFiles/glfw.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/opengl_utilities/CMakeFiles/opengl_utilities.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/interactive_graphics_context/CMakeFiles/interactive_graphics_context.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/reflector/CMakeFiles/reflector.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/table/CMakeFiles/table.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/CMakeFiles/mathematics.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/spatial_algebra/CMakeFiles/spatial_algebra.dir/all
+CMakeFiles/HeatSolver.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/all
+CMakeFiles/HeatSolver.dir/all: dependencies/triangle/CMakeFiles/triangle.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=3,4 "Built target HeatSolver"
+.PHONY : CMakeFiles/HeatSolver.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/FiniteVolume.dir/rule: cmake_check_build_system
+CMakeFiles/HeatSolver.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 55
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/FiniteVolume.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/HeatSolver.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 0
-.PHONY : CMakeFiles/FiniteVolume.dir/rule
+.PHONY : CMakeFiles/HeatSolver.dir/rule
 
 # Convenience name for target.
-FiniteVolume: CMakeFiles/FiniteVolume.dir/rule
-.PHONY : FiniteVolume
+HeatSolver: CMakeFiles/HeatSolver.dir/rule
+.PHONY : HeatSolver
 
 # clean rule for target.
-CMakeFiles/FiniteVolume.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolume.dir/build.make CMakeFiles/FiniteVolume.dir/clean
-.PHONY : CMakeFiles/FiniteVolume.dir/clean
+CMakeFiles/HeatSolver.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/clean
+.PHONY : CMakeFiles/HeatSolver.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/FiniteVolumes.dir
+
+# All Build rule for target.
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/src/CMakeFiles/glfw.dir/all
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/opengl_utilities/CMakeFiles/opengl_utilities.dir/all
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/interactive_graphics_context/CMakeFiles/interactive_graphics_context.dir/all
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/reflector/CMakeFiles/reflector.dir/all
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/table/CMakeFiles/table.dir/all
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/CMakeFiles/mathematics.dir/all
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/spatial_algebra/CMakeFiles/spatial_algebra.dir/all
+CMakeFiles/FiniteVolumes.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/all
+CMakeFiles/FiniteVolumes.dir/all: dependencies/triangle/CMakeFiles/triangle.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=1,2 "Built target FiniteVolumes"
+.PHONY : CMakeFiles/FiniteVolumes.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/FiniteVolumes.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 55
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/FiniteVolumes.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 0
+.PHONY : CMakeFiles/FiniteVolumes.dir/rule
+
+# Convenience name for target.
+FiniteVolumes: CMakeFiles/FiniteVolumes.dir/rule
+.PHONY : FiniteVolumes
+
+# clean rule for target.
+CMakeFiles/FiniteVolumes.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/clean
+.PHONY : CMakeFiles/FiniteVolumes.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/discretization_figure.dir
+
+# All Build rule for target.
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/dependencies/glfw/src/CMakeFiles/glfw.dir/all
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/opengl_utilities/CMakeFiles/opengl_utilities.dir/all
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/interactive_graphics_context/CMakeFiles/interactive_graphics_context.dir/all
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/reflector/CMakeFiles/reflector.dir/all
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/table/CMakeFiles/table.dir/all
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/CMakeFiles/mathematics.dir/all
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/lib/mathematics/spatial_algebra/CMakeFiles/spatial_algebra.dir/all
+CMakeFiles/discretization_figure.dir/all: /home/lucas/computer_graphics/cg_sandbox/build/src/CMakeFiles/cg_sandbox.dir/all
+CMakeFiles/discretization_figure.dir/all: dependencies/triangle/CMakeFiles/triangle.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=25,26 "Built target discretization_figure"
+.PHONY : CMakeFiles/discretization_figure.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/discretization_figure.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 55
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/discretization_figure.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles 0
+.PHONY : CMakeFiles/discretization_figure.dir/rule
+
+# Convenience name for target.
+discretization_figure: CMakeFiles/discretization_figure.dir/rule
+.PHONY : discretization_figure
+
+# clean rule for target.
+CMakeFiles/discretization_figure.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/clean
+.PHONY : CMakeFiles/discretization_figure.dir/clean
 
 #=============================================================================
 # Target rules for target /home/lucas/computer_graphics/cg_sandbox/build/CMakeFiles/basic_application.dir

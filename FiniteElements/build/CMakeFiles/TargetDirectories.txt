@@ -1,13 +1,13 @@
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/install/local.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/list_install_components.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/rebuild_cache.dir
+/home/lucas/Continuum/FiniteElements/build/CMakeFiles/install/strip.dir
+/home/lucas/Continuum/FiniteElements/build/CMakeFiles/LaplaceSolver.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/HeatSolver.dir
+/home/lucas/Continuum/FiniteElements/build/CMakeFiles/FiniteVolumes.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/edit_cache.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/install.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/discretization_figure.dir
-/home/lucas/Continuum/FiniteElements/build/CMakeFiles/install/strip.dir
-/home/lucas/Continuum/FiniteElements/build/CMakeFiles/LaplaceSolver.dir
-/home/lucas/Continuum/FiniteElements/build/CMakeFiles/FiniteVolume.dir
 /home/lucas/computer_graphics/cg_sandbox/build/CMakeFiles/install/strip.dir
 /home/lucas/computer_graphics/cg_sandbox/build/CMakeFiles/edit_cache.dir
 /home/lucas/computer_graphics/cg_sandbox/build/CMakeFiles/basic_application.dir

@@ -96,6 +96,18 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
@@ -117,18 +129,6 @@ install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
 	/usr/local/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -162,32 +162,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named HeatSolver
-
-# Build rule for target.
-HeatSolver: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HeatSolver
-.PHONY : HeatSolver
-
-# fast build rule for target.
-HeatSolver/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
-.PHONY : HeatSolver/fast
-
-#=============================================================================
-# Target rules for targets named discretization_figure
-
-# Build rule for target.
-discretization_figure: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 discretization_figure
-.PHONY : discretization_figure
-
-# fast build rule for target.
-discretization_figure/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/build
-.PHONY : discretization_figure/fast
-
-#=============================================================================
 # Target rules for targets named LaplaceSolver
 
 # Build rule for target.
@@ -201,17 +175,43 @@ LaplaceSolver/fast:
 .PHONY : LaplaceSolver/fast
 
 #=============================================================================
-# Target rules for targets named FiniteVolume
+# Target rules for targets named HeatSolver
 
 # Build rule for target.
-FiniteVolume: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FiniteVolume
-.PHONY : FiniteVolume
+HeatSolver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HeatSolver
+.PHONY : HeatSolver
 
 # fast build rule for target.
-FiniteVolume/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolume.dir/build.make CMakeFiles/FiniteVolume.dir/build
-.PHONY : FiniteVolume/fast
+HeatSolver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
+.PHONY : HeatSolver/fast
+
+#=============================================================================
+# Target rules for targets named FiniteVolumes
+
+# Build rule for target.
+FiniteVolumes: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FiniteVolumes
+.PHONY : FiniteVolumes
+
+# fast build rule for target.
+FiniteVolumes/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/build
+.PHONY : FiniteVolumes/fast
+
+#=============================================================================
+# Target rules for targets named discretization_figure
+
+# Build rule for target.
+discretization_figure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 discretization_figure
+.PHONY : discretization_figure
+
+# fast build rule for target.
+discretization_figure/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/build
+.PHONY : discretization_figure/fast
 
 #=============================================================================
 # Target rules for targets named basic_application
@@ -369,29 +369,29 @@ triangle/fast:
 	$(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/build
 .PHONY : triangle/fast
 
-FiniteVolume.o: FiniteVolume.cpp.o
-.PHONY : FiniteVolume.o
+FiniteVolumes.o: FiniteVolumes.cpp.o
+.PHONY : FiniteVolumes.o
 
 # target to build an object file
-FiniteVolume.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolume.dir/build.make CMakeFiles/FiniteVolume.dir/FiniteVolume.cpp.o
-.PHONY : FiniteVolume.cpp.o
+FiniteVolumes.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/FiniteVolumes.cpp.o
+.PHONY : FiniteVolumes.cpp.o
 
-FiniteVolume.i: FiniteVolume.cpp.i
-.PHONY : FiniteVolume.i
+FiniteVolumes.i: FiniteVolumes.cpp.i
+.PHONY : FiniteVolumes.i
 
 # target to preprocess a source file
-FiniteVolume.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolume.dir/build.make CMakeFiles/FiniteVolume.dir/FiniteVolume.cpp.i
-.PHONY : FiniteVolume.cpp.i
+FiniteVolumes.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/FiniteVolumes.cpp.i
+.PHONY : FiniteVolumes.cpp.i
 
-FiniteVolume.s: FiniteVolume.cpp.s
-.PHONY : FiniteVolume.s
+FiniteVolumes.s: FiniteVolumes.cpp.s
+.PHONY : FiniteVolumes.s
 
 # target to generate assembly for a file
-FiniteVolume.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolume.dir/build.make CMakeFiles/FiniteVolume.dir/FiniteVolume.cpp.s
-.PHONY : FiniteVolume.cpp.s
+FiniteVolumes.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/FiniteVolumes.cpp.s
+.PHONY : FiniteVolumes.cpp.s
 
 HeatSolver.o: HeatSolver.cpp.o
 .PHONY : HeatSolver.o
@@ -479,7 +479,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... docs"
 	@echo "... uninstall"
-	@echo "... FiniteVolume"
+	@echo "... FiniteVolumes"
 	@echo "... HeatSolver"
 	@echo "... LaplaceSolver"
 	@echo "... basic_application"
@@ -493,9 +493,9 @@ help:
 	@echo "... spatial_algebra"
 	@echo "... table"
 	@echo "... triangle"
-	@echo "... FiniteVolume.o"
-	@echo "... FiniteVolume.i"
-	@echo "... FiniteVolume.s"
+	@echo "... FiniteVolumes.o"
+	@echo "... FiniteVolumes.i"
+	@echo "... FiniteVolumes.s"
 	@echo "... HeatSolver.o"
 	@echo "... HeatSolver.i"
 	@echo "... HeatSolver.s"
