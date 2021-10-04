@@ -557,15 +557,15 @@ the corresonding source integral is approximated by \eqref{fvm_source_approximat
     \mydata{Heat source function $g : \Omega\rightarrow \mathbb{R}$.}
     \mydata{Dirichlet boundary function $h_\Gamma : \Gamma \rightarrow \mathbb{R}$.}
     \KwResult{
-        Approximate solution $\tilde{h}:\Omega\rightarrow\mathbb{R}$ of the boundary value problem \eqref{poisson_dirichlet_problem}:\\
+        Approximate solution $\tilde{h}:\Omega\rightarrow\mathbb{R}$ of the boundary value problem \eqref{poisson_dirichlet_problem},\\
         \qquad\qquad\qquad\qquad $-\Delta h = g$, $\left.h\right|_\Gamma = h_\Gamma$.
     }
     $M \leftarrow \text{$n\times n$ zero matrix}$\;
     $b \leftarrow \text{length $n$ zero vector}$\;
     \For{$j = 1,\cdots,n$}{
-        Let $v$ denote the interior vertex $p_j$\;
-        Let $v_1,\cdots,v_k$ denote the vertices adjacent to $v$\;
-        Let $T^v_1,\cdots,T^v_k$ denote the triangles adjacent to $v$\;
+        Let $v$ denote the interior vertex $p_j$.\\
+        Let $v_1,\cdots,v_k$ denote the vertices adjacent to $v$.\\
+        Let $T^v_1,\cdots,T^v_k$ denote the triangles adjacent to $v$.\\
         (Triangle $T_t$ joins vertices $v,v_t,v_{t+1}$.)\\
         \For{$t = 1,\cdots, k$}{
             $C \leftarrow \frac{1}{4\text{Area}(T)}$\;

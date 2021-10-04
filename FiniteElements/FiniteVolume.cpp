@@ -155,30 +155,49 @@ VertexAttachment<double> FVSolver::solve()
 
 
 struct FVDemo : public IBehaviour {
-    FVDemo(SurfaceGeometry &_geom, PlaneFunction dirichlet_boundary_function);
+    FVDemo(PlaneFunction dirichlet_boundary_function);
 
     SurfaceGeometry *geom;
-    FVSolver fv_solver;
+    PlaneFunction dirichlet_boundary_function;
 
     void keyboard_handler(KeyboardEvent e);
     void mouse_handler(MouseEvent e);
     void update();
     void post_render_update();
+
+    int mesh_N;
+    bool random;
 };
 
 
 void FVDemo::keyboard_handler(KeyboardEvent e)
 {
+    if (e.action == KEYBOARD_PRESS) {
+        if (e.key.code == KEY_Q) {
+            exit(EXIT_SUCCESS);
+        }
+        if (e.key.code == KEY_O) {
+            mesh_N -= 5;
+            if (mesh_N < 2) mesh_N = 2;
+        }
+        if (e.key.code == KEY_P) {
+            mesh_N += 5;
+        }
+        if (e.key.code == KEY_R) {
+            random = !random;
+        }
+    }
 }
 void FVDemo::mouse_handler(MouseEvent e)
 {
 }
 
-FVDemo::FVDemo(SurfaceGeometry &_geom, PlaneFunction dirichlet_boundary_function) :
-    geom{&_geom},
-    fv_solver(_geom)
+FVDemo::FVDemo(PlaneFunction _dirichlet_boundary_function) :
+    dirichlet_boundary_function{_dirichlet_boundary_function}
 {
-    fv_solver.set_dirichlet_boundary(dirichlet_boundary_function);
+    mesh_N = 5;
+    random = false;
+    geom = nullptr;
 }
 
 void FVDemo::update()
@@ -187,14 +206,21 @@ void FVDemo::update()
 
 void FVDemo::post_render_update()
 {
+    if (geom != nullptr) delete geom;
+    geom = circle_mesh(mesh_N, random);
     auto solver = FVSolver(*geom);
-    solver.set_dirichlet_boundary([](double x, double y)->double {
-        return exp(-1.6*x*x - 0.3*(y-1)*(y-1));
-    });
+    solver.set_dirichlet_boundary(dirichlet_boundary_function);
     VertexAttachment<double> mesh_u = solver.solve();
 
-
     world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
+
+    auto lifted_geom = SurfaceGeometry(geom->mesh);
+    for (auto v : geom->mesh.vertices()) {
+        double u_val = mesh_u[v];
+        auto geom_pos = geom->position[v];
+        lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
+    }
+    world->graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.006f);
 }
 
 
@@ -216,8 +242,6 @@ public:
 
     Entity demo_e;
     Aspect<Behaviour> demo_b;
-    float source_force;
-    int mesh_N;
 };
 
 
@@ -242,12 +266,9 @@ App::App(World &_world) : world{_world}
     controller->angle = -2;
     
     // Create the demo.
-    source_force = 20;
-    mesh_N = 5;
-    geom = circle_mesh(mesh_N, false);
     demo_e = world.entities.add();
-    auto demo = world.add<FVDemo>(demo_e, *geom, [](double x, double y)->double {
-        return 1+0.4*sin(8*x + total_time);
+    auto demo = world.add<FVDemo>(demo_e, [](double x, double y)->double {
+        return 1+0.4*sin(8*x);
     });
     demo_b = demo_e.get<Behaviour>();
 }
@@ -266,28 +287,6 @@ void App::window_handler(WindowEvent e)
 
 void App::keyboard_handler(KeyboardEvent e)
 {
-    auto reset = [&](bool random) {
-        // note: The entity system is incomplete...
-        for (auto b : world.entities.aspects<Behaviour>()) {
-            if (b.entity() == demo_e) b->enabled = false;
-        }
-        geom = circle_mesh(mesh_N, random);
-        world.add<FVDemo>(demo_e, *geom, [](double x, double y)->double {
-            return 1+0.4*sin(8*x + total_time);
-        });
-    };
-    if (e.action == KEYBOARD_PRESS) {
-        if (e.key.code == KEY_Q) {
-            exit(EXIT_SUCCESS);
-        }
-        if (e.key.code == KEY_P) {
-            mesh_N += 5;
-            reset(false);
-        }
-        if (e.key.code == KEY_R) {
-            reset(true);
-        }
-    }
 }
 
 void App::mouse_handler(MouseEvent e)
