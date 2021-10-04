@@ -135,7 +135,7 @@
 \citation{boris_galerkin}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {4}The finite element method}{25}{chapter.4}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {4}Galerkin methods}{25}{chapter.4}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Some key figures whose work precipitated modern developments in PDEs.\relax }}{25}{figure.caption.21}}
@@ -158,8 +158,8 @@
 \newlabel{heat_equation_differential}{{4.6}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.6}{}}
 \newlabel{heat_equation_differential_constant}{{4.7}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.7}{}}
 \newlabel{poisson_equation}{{4.8}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
-\newlabel{poisson_equation_integral}{{4.9}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.9}{}}
 \citation{approximation_theory}
+\newlabel{poisson_equation_integral}{{4.9}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.9}{}}
 \@writefile{toc}{\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.25}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.3}Discretizing Poisson's equation by finite volumes}{28}{section.4.3}}
 \newlabel{discretizing_poisson}{{\M@TitleReference {4.3}{Discretizing Poisson's equation by finite volumes}}{28}{Discretizing Poisson's equation by finite volumes}{section.4.3}{}}
@@ -177,6 +177,7 @@
 \newlabel{ellipse_partition}{{\M@TitleReference {4.3}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }}{30}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }{figure.caption.28}{}}
 \citation{orourke}
 \@writefile{toc}{\contentsline {subsubsection}{Approximating the boundary values}{31}{section*.29}}
+\newlabel{boundary_approximation}{{4.14}{31}{Approximating the boundary values}{equation.4.3.14}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{figure.caption.30}}
 \newlabel{boundary}{{\M@TitleReference {4.4}{\relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{\scriptsize A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }{figure.caption.30}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{figure.caption.31}}
@@ -187,16 +188,16 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{figure.caption.33}}
 \newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycenters or circumcentres. Notice that, in the circumcentre case, the thin triangles do not contain their circumcentre, and therefore each cell boundary is not necessarily contained in a single fan of triangles. \relax }{figure.caption.33}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Forming the linear system by closed-form integration}{32}{section*.34}}
-\newlabel{fvm_integral}{{4.14}{32}{Forming the linear system by closed-form integration}{equation.4.3.14}{}}
-\newlabel{fvm_integral_linearity_expanded}{{4.15}{32}{Forming the linear system by closed-form integration}{equation.4.3.15}{}}
-\newlabel{fvm_integral_vertex}{{4.16}{32}{Forming the linear system by closed-form integration}{equation.4.3.16}{}}
-\newlabel{fvm_integral_vertex_triangles}{{4.17}{33}{Forming the linear system by closed-form integration}{equation.4.3.17}{}}
+\newlabel{fvm_integral}{{4.15}{32}{Forming the linear system by closed-form integration}{equation.4.3.15}{}}
+\newlabel{fvm_integral_linearity_expanded}{{4.16}{32}{Forming the linear system by closed-form integration}{equation.4.3.16}{}}
+\newlabel{fvm_integral_vertex}{{4.17}{33}{Forming the linear system by closed-form integration}{equation.4.3.17}{}}
+\newlabel{fvm_integral_vertex_triangles}{{4.18}{33}{Forming the linear system by closed-form integration}{equation.4.3.18}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{34}{section.4.4}}
 \newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{34}{From finite volumes to finite elements}{section.4.4}{}}
-\newlabel{example_trial_sum}{{4.18}{34}{From finite volumes to finite elements}{equation.4.4.18}{}}
-\newlabel{poisson_galerkin}{{4.20}{35}{From finite volumes to finite elements}{equation.4.4.20}{}}
+\newlabel{example_trial_sum}{{4.19}{34}{From finite volumes to finite elements}{equation.4.4.19}{}}
+\newlabel{poisson_galerkin}{{4.21}{36}{From finite volumes to finite elements}{equation.4.4.21}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{36}{section.4.5}}
-\newlabel{poisson_fem_matrix_equation}{{4.21}{36}{Discretizing Poisson's equation by finite elements}{equation.4.5.21}{}}
+\newlabel{poisson_fem_matrix_equation}{{4.22}{36}{Discretizing Poisson's equation by finite elements}{equation.4.5.22}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{36}{subsection.4.5.1}}
 \citation{polygon_mesh_processing}
 \citation{geometry_central}
@@ -207,14 +208,14 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{37}{figure.caption.35}}
 \newlabel{sparsity_pattern}{{\M@TitleReference {4.7}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{37}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.35}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.6}Implementing the finite element method for Poisson's equation}{37}{section.4.6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{37}{subsection.4.6.1}}
 \citation{petsc}
 \citation{armadillo}
 \citation{eigen}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Mesh generation}{38}{subsection.4.6.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Matrix assembly}{38}{subsection.4.6.2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Numerical linear algebra}{38}{subsection.4.6.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{38}{figure.caption.39}}
-\newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{38}{\scriptsize Text \relax }{figure.caption.39}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{39}{figure.caption.39}}
+\newlabel{laplace_solution}{{\M@TitleReference {4.8}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{39}{\scriptsize Text \relax }{figure.caption.39}{}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{41}{chapter.5}}

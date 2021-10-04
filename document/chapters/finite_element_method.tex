@@ -26,8 +26,8 @@ On the other side of the coin, fluid models are very often used in modern film, 
     \label{fig:galerkin_mathematicians}
 \end{figure}
 In applications, the Navier-Stokes equations are primarily
-solved on a computer, and a computer works with both finite data and finite precision. The Galerkin method
-is particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
+solved on a computer, and a computer works with both finite data and finite precision. Galerkin methods
+are particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
 residual minimisation, and solution reconstruction, can be automated (\cite{firedrake}, \cite{fenics_book}, \cite{DOLFIN}). We begin by
 deriving two instances of Galerkin methods for Poisson's equation, performed on an irregular 2D domain to emphasize that the methods trivially extend
 to complex geometries. A computer implementation is then presented, which generates visualisations and quality metrics for the results.
@@ -109,7 +109,7 @@ have geometric meaning.
 % Thinking instead about \eqref{poisson_integral_intro} will lead to Galerkin methods, which include finite volumes, finite elements, and spectral methods.
 For example, the general integral conservation law \eqref{continuity_equation},
 \begin{align*}
-    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
+    \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \oint_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
 \end{align*}
 is a geometric statement about fluxes
 of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
@@ -140,7 +140,7 @@ where $\mu$ is called the diffusion coefficient.
 This is one way of saying that the temperature tends to level out.
 If we form a continuity equation \eqref{continuity_equation} for temperature, with source $s$, we get
 \begin{equation}\label{heat_equation_integral}
-    \frac{d}{dt} \int_{\Omega_0} h\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \mu \nabla h \cdot \hat{n}\,dx,
+    \frac{d}{dt} \int_{\Omega_0} h\,dx = \int_{\Omega_0} s\,dx + \oint_{\pomn} \mu \nabla h \cdot \hat{n}\,dx,
 \end{equation}
 which by application of Stokes' theorem becomes
 \begin{equation}\label{heat_equation_differential}
@@ -160,7 +160,7 @@ This completes the derivation of Poisson's equation \eqref{poisson_compact}.
 % which models steady-state diffusion processes and can be used to calculate gravitational or electrostatic potential fields.
 In integral form, ``undoing'' the application of Stokes' theorem above, Poisson's equation is
 \begin{equation}\label{poisson_equation_integral}
-    \int_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} g\,dx \quad \text{for all control volumes $\Omega_0$.}
+    \oint_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} g\,dx \quad \text{for all control volumes $\Omega_0$.}
 \end{equation}
 Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
 as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount introduced into $\Omega_0$ by the source function.
@@ -221,21 +221,21 @@ The integral-conservation-law form \eqref{poisson_equation_integral} of Poisson'
 now directly indicates a method of approximation. Letting $h$ be approximated by $\tilde{h} = \phi + \phi_\Gamma$ (where $\phi \in \Phi$ is unknown and $\phi_\Gamma \in \Phi^*$ is known),
 and restricting the flux integrals to the control volumes $\Omega_1,\cdots,\Omega_n$, the conservation law \eqref{poisson_equation_integral} becomes
 \begin{equation}\label{poisson_equation_integral_fvm}
-    \int_{\partial\Omega_j} -\nabla \left(\phi + \phi_\Gamma\right) \cdot \hat{n}\,dx = \int_{\Omega_j} g\,dx \quad\quad j=1,\cdots,n.
+    \oint_{\partial\Omega_j} -\nabla \left(\phi + \phi_\Gamma\right) \cdot \hat{n}\,dx = \int_{\Omega_j} g\,dx \quad\quad j=1,\cdots,n.
 \end{equation}
 The ``interior variation'' $\phi = \Phi\cdot \hat{h}$ is the only unknown, so we can move all knowns to the right-hand-side
 and expand $\phi$ in terms of the basis test functions $\phi_1,\cdots,\phi_n$:
 \begin{equation}\label{poisson_equation_integral_fvm_knowns_unknowns}
-    \int_{\partial\Omega_j} -\nabla \left(\sum_{i=1}^nh_i\phi_i\right) \cdot \hat{n}\,dx =
+    \oint_{\partial\Omega_j} -\nabla \left(\sum_{i=1}^nh_i\phi_i\right) \cdot \hat{n}\,dx =
             \int_{\Omega_j} g\,dx
-            + \int_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
+            + \oint_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
  \quad\quad j=1,\cdots,n.
 \end{equation}
 By linearity, to emphasize the separate integrals that need to be computed, the above equation can be written as
 \begin{equation}\label{poisson_equation_integral_discretized}
-    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx =
+    \sum_{i=1}^n h_i\oint_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx =
             \int_{\Omega_j} g\,dx
-            + \int_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
+            + \oint_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
  \quad\quad j=1,\cdots,n.
 \end{equation}
 It is seen here that there must be some restrictions on the $\phi_i$ and $\phi_\Gamma$.
@@ -245,8 +245,8 @@ about $H^{\text{div}}$)
 This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
 the integral. The system \eqref{poisson_equation_integral_discretized} can be written in matrix form as
-\newcommand{\integralentry}[2]{\int_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
-\newcommand{\integralrhsentry}[1]{\int_{\om_{#1}}g\,dx + \int_{\pom_{#1}}\nabla\phi_\Gamma\cdot\hat{n}\,dx}
+\newcommand{\integralentry}[2]{\oint_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
+\newcommand{\integralrhsentry}[1]{\int_{\om_{#1}}g\,dx + \oint_{\pom_{#1}}\nabla\phi_\Gamma\cdot\hat{n}\,dx}
 \begin{equation}\label{poisson_matrix_equation}
 \begin{split}
     A\hat{h}
@@ -321,11 +321,11 @@ One of these basis functions for the ellipse-shaped domain is shown in figure \r
 \newpage
 \subsubsection{Approximating the boundary values}
 One simple approximation of $\left.h\right|_\Gamma = h_\Gamma$ is
-$$
+\begin{equation}\label{boundary_approximation}
     \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
                 + \cdots
                 + h_\Gamma(p^\Gamma_{n_\Gamma})\hatfun{p^\Gamma_{n_\Gamma}},
-$$
+\end{equation}
 which is a piecewise linear interpolation when restricted to the boundary $\Gamma$. The approximation $\phi_\Gamma$ for some boundary
 function $h_\Gamma$ is shown in figure \ref{boundary}.
 \begin{figure}[H]
@@ -384,37 +384,47 @@ We will work with the Voronoi cells.
 Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
 the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
 the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
-By fortuitous circumstances, these integrals actually have simple closed forms, equivalent to geometric constructions.
-Firstly, lets consider the trial flux integral
+By fortuitous circumstances, these integrals actually have simple closed forms.
+(This is with the exception of the heat-source integrals $\int_{\Omega_j}g\,dx$,
+which may necessarily require numerical integration if the heat-source $g$ is not restricted to $\Phi^*$.)
+
+It will be more convenient to start again with the trial flux integral
+\newcommand{\fvmintegral}{
+\oint_{\pom_j} -\nabla \tilde{h}\cdot\hat{n}\,dx
+}
 \begin{equation}\label{fvm_integral}
-\int_{\pom_j} -\nabla \tilde{h}\cdot\hat{n}\,dx.
+\fvmintegral,
 \end{equation}
-By linearity, $\nabla \tilde{h}$ is a combination of gradients of basis functions of $\Phi^*$:
+rather than with the expanded linear system \eqref{poisson_matrix_equation}.
+By linearity, the $\nabla$ in $\nabla\tilde{h}$ ``falls through'' the expansion of $\tilde{h}$:
+% $\nabla \tilde{h}$ is a combination of gradients of basis functions of $\Phi^*$:
 \begin{align*}
     \nabla \tilde{h} = \nabla\phi_\Gamma + \nabla\phi
              = \sum_{i=1}^{n_\Gamma}h_\Gamma(p^\Gamma_i)\nabla\phi^\Gamma_i + \sum_{i=1}^n h_i\nabla\phi_i.
 \end{align*}
 By linearity the integral \eqref{fvm_integral} becomes
 \begin{equation}\label{fvm_integral_linearity_expanded}
-    \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\int_{\Omega_j}-\nabla\phi^\Gamma_i\cdot\hat{n}\,dx\right]
-    + \sum_{i=1}^n\left[h_i\int_{\Omega_j}-\nabla\phi_i\cdot\hat{n}\,dx\right].
+    \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\oint_{\pom_j}-\nabla\phi^\Gamma_i\cdot\hat{n}\,dx\right]
+    + \sum_{i=1}^n\left[h_i\oint_{\pom_j}-\nabla\phi_i\cdot\hat{n}\,dx\right].
 \end{equation}
 
 % We therefore need only compute the integrals
 % $$
 %     \int_{\Omega_j} \nabla\phi_i \cdot \hat{n}\,dx.
 % $$
+Now consider a certain flux integral \eqref{fvm_integral} over control volume $\Omega_j$. We will reexpress the above integral
+in ``local'' terms.
 Let $v = p_j$ be the interior vertex corresponding to the control volume $\Omega_j$, and denote by $v_1, \cdots, v_k$ its adjacent vertices (either in the interior
-or on the boundary), and by $T^v_1 \cdots T^v_k$ its adjacent triangles. Triangle $T^v_l$ joins $v,v_l,v_{l+1}$ where addition is taken
-modulo $k$. As it will be necessary to relate these local indices to the global vertex indices, define an index map by
-    $$I(v_i) = \text{the global index $l$ of the $p_l$ corresponding to adjacent vertex $v_i$},$$
-which is valid only when $v_i$ is an interior vertex.
-This vertex $v$ corresponds to a single trial flux integral over the surrounding Voronoi cell $\Omega_j$.
-As the hat functions have compact support, $\Omega_j$ only intersects the domains of the basis function $\phi_j$ and those corresponding
-to the adjacent vertices in the interior. Name these basis functions $\phi_j = \phi_v$ and $\phi_{v_1}, \cdots \phi_{v_k}$.
-Then the integral becomes
+or on the boundary), and by $T^v_1 \cdots T^v_k$ its adjacent triangles. Triangle $T^v_l$ joins $v,v_l,v_{l+1}$ where addition wraps around from $k$ to $1$.
+As it will be necessary to relate these local indices (denoted $l$) to the global vertex indices (denoted $i$), define an index map by
+    $$I(l) = \text{the global index $i$ of the $p_i$ corresponding to adjacent vertex $v_l$},$$
+which is valid only when $v_l$ is an interior vertex.
+The vertex $v$ corresponds to a single trial flux integral over the surrounding Voronoi cell $\Omega_j$.
+As the hat functions have compact support, $\Omega_j$ only intersects the domains of the hat function $\phi_j$ and those corresponding
+to the adjacent vertices. Name these basis functions $\phi_j = \phi_v$ and $\phi_{v_1}, \cdots \phi_{v_k}$.
+Then the local form of the flux integral \eqref{fvm_integral} is
 \begin{equation}\label{fvm_integral_vertex}
-    h_j\int_{\Omega_j}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{i=1}^{k}h_{v_i}\int_{\Omega_j}-\nabla\phi^v_i\cdot\hat{n}\,dx,
+    \fvmintegral = h_j\oint_{\pom_j}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{l=1}^{k}h_{v_l}\oint_{\pom_j}-\nabla\phi^v_l\cdot\hat{n}\,dx,
 \end{equation}
 where $h_{v_i}$ is defined as
 \begin{align*}
@@ -428,50 +438,55 @@ The $\phi_v$ and $\phi_{v_1},\cdots,\phi_{v_k}$ are hat functions which are line
 $T^v_1,\cdots,T^v_k$. Therefore the gradients $\nabla\phi_v$ and $\nabla\phi_{v_1},\cdots,\nabla\phi_{v_k}$ are constant
 on those triangles. We can break the closed flux integrals in \eqref{fvm_integral_vertex} into flux integrals restricted to each triangle adjacent to $v$, giving
 \begin{equation}\label{fvm_integral_vertex_triangles}
-    \sum_{t=1}^k\left[\int_{\Omega_j \cap T^v_t}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{i=1}^{k}h_{v_i}\int_{\Omega_j \cap T^v_t}-\nabla\phi^v_i\cdot\hat{n}\,dx\right].
+    \fvmintegral = \sum_{t=1}^k\left[\int_{\Omega_j \cap T^v_t}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{l=1}^{k}h_{v_l}\int_{\Omega_j \cap T^v_t}-\nabla\phi^v_l\cdot\hat{n}\,dx\right].
 \end{equation}
-We now only need to find a closed form for
+We can simplify matters by focusing on just one adjacent triangle $T^v_t = T$, between vertices
+$v,v_t,v_{t+1}$. This triangle $T$ only overlaps with the domains of the hat functions centred at $v,v_t,v_{t+1}$, so we
+now only need to compute
 $$
-\int_{\Omega_j \cap T_t^v} -\nabla\phi_v\cdot\hat{n}\,dx \text{\quad and \quad} 
-\int_{\Omega_j \cap T_t^v} -\nabla\phi_{v_i}\cdot\hat{n}\,dx,
+\int_{\Omega_j \cap T} -\nabla\phi_v\cdot\hat{n}\,dx \text{\quad and \quad} 
+\int_{\Omega_j \cap T} -\nabla\phi_{v_t}\cdot\hat{n}\,dx \text{\quad and \quad} 
+\int_{\Omega_j \cap T} -\nabla\phi_{v_{t+1}}\cdot\hat{n}\,dx.
 $$
-which is simple because the gradients are constant on $\Omega_j \cap T_t^v$. We can simplify matters by focusing on just one adjacent triangle, say
-$T = vv^\pr v^\ppr$
+This is simple because the gradients are constant on $\Omega_j \cap T_t^v$.
 
 \vskip 0.2in
 (figure)
 \vskip 0.2in
 
-The Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v^\pr)$ and $m^\ppr = \frac{1}{2}(v + v^\ppr)$, taking a detour to the barycentre of $T$.
-However, since the gradient vector fields are constant, they are conservative, and we can simplify the domain to the line segment $L$ between
-the midpoints $m^\pr$ and $m^\ppr$. We now want to find closed forms for
-$$
-\int_L -\nabla\phi_v\cdot\hat{n}\,dx, \quad 
-\int_L -\nabla\phi_{v^\pr}\cdot\hat{n}\,dx, \text{\quad and\quad}
-\int_L -\nabla\phi_{v^\ppr}\cdot\hat{n}\,dx.
-$$
+The Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v_t)$ and $m^\ppr = \frac{1}{2}(v + v_{t+1})$, taking a detour to the barycentre of $T$.
 
-$$
-\int_L -\nabla\phi_v\cdot\hat{n}\,dx = \nabla\phi_v\cdot(m^\ppr - m^\pr)^\perp
-    = \frac{1}{2}\nabla\phi_v\cdot(v^\ppr - v^\pr)^\perp,
-$$
-where $(v^\ppr - v^\pr)^\perp$ is the vector $v^\ppr - v^\pr$ rotated $90$ degrees anticlockwise.
+\vskip 0.2in
+(figure)
+\vskip 0.2in
+
+However, since the gradient vector fields are constant, they are conservative, and we can simplify the domain $\Omega_j \cap T$ to the line segment $L$ between
+the midpoints $m^\pr$ and $m^\ppr$. Since the gradients are constant on $T$, these integrals are the length $\text{Length(L)}$ times one ``sample'' flux across $L$.
+This can be done easily, by noticing $L$ is parallel with, and half the length of, the line segment between $v_t$ and $v_{t+1}$.
+We can then compute the integrals as:
+\begin{align*}
+            \frac{1}{2}\nabla\phi_v\cdot(v_{t+1} - v_t)^\perp,\text{\quad and \quad}
+            \frac{1}{2}\nabla\phi_{v_t}\cdot(v_{t+1} - v_t)^\perp,\text{\quad and \quad}
+            \frac{1}{2}\nabla\phi_{v_{t+1}}\cdot(v_{t+1} - v_t)^\perp,
+\end{align*}
+where $(v_{t+1} - v_t)^\perp$ is the vector $v_{t+1} - v_t$ rotated $90$ degrees anticlockwise.
+We now only need the constant gradients on $T$.
 The gradients on $T$ are
 \begin{align*}
-    \nabla\phi_v &= \frac{1}{2\text{Area}(T)}\left(v^\ppr - v^\pr\right)^\perp,\\
-    \nabla\phi_{v^\pr} &= \frac{1}{2\text{Area}(T)}\left(v - v^\ppr\right)^\perp,\\
-    \nabla\phi_{v^\ppr} &= \frac{1}{2\text{Area}(T)}\left(v^\pr - v\right)^\perp.
+    \nabla\phi_v &= \frac{1}{2\text{Area}(T)}\left(v_{t+1} - v_t\right)^\perp,\\
+    \nabla\phi_{v_t} &= \frac{1}{2\text{Area}(T)}\left(v - v_{t+1}\right)^\perp,\\
+    \nabla\phi_{v_{t+1}} &= \frac{1}{2\text{Area}(T)}\left(v_t - v\right)^\perp.
 \end{align*}
 
 
 \begin{align*}
     \int_L -\nabla\phi_v\cdot\hat{n}\,dx
-        &= -\frac{1}{4\text{Area}(T)}(v^\ppr - v^\pr)^\perp\cdot(v^\ppr - v^\pr)^\perp\\
-        &= -\frac{1}{4\text{Area}(T)}\norm{v^\ppr - v^\pr}^2.\\
-    \int_L -\nabla\phi_{v^\pr}\cdot\hat{n}\,dx
-        &= -\frac{1}{4\text{Area}(T)}(v - v^\ppr)^\perp\cdot(v^\ppr - v^\pr)^\perp.\\
-    \int_L -\nabla\phi_{v^\ppr}\cdot\hat{n}\,dx
-        &= -\frac{1}{4\text{Area}(T)}(v^\pr - v)^\perp\cdot(v^\ppr - v^\pr)^\perp.
+        &= -\frac{1}{4\text{Area}(T)}(v_{t+1} - v_t)^\perp\cdot(v_{t+1} - v_t)^\perp\\
+        &= -\frac{1}{4\text{Area}(T)}\norm{v_{t+1} - v_t}^2.\\
+    \int_L -\nabla\phi_{v_t}\cdot\hat{n}\,dx
+        &= -\frac{1}{4\text{Area}(T)}(v - v_{t+1})^\perp\cdot(v_{t+1} - v_t)^\perp.\\
+    \int_L -\nabla\phi_{v_{t+1}}\cdot\hat{n}\,dx
+        &= -\frac{1}{4\text{Area}(T)}(v_t - v)^\perp\cdot(v_{t+1} - v_t)^\perp.
 \end{align*}
 
 With these closed forms, we can express the original integral.

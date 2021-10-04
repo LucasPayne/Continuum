@@ -25,7 +25,7 @@
 \BOOKMARK [2][-]{subsection.3.3.1}{The Reynolds number}{section.3.3}% 25
 \BOOKMARK [1][-]{section.3.4}{Stokes flow and the meaning of pressure}{chapter.3}% 26
 \BOOKMARK [2][-]{subsection.3.4.1}{Application to hydrostatics}{section.3.4}% 27
-\BOOKMARK [0][-]{chapter.4}{The finite element method}{}% 28
+\BOOKMARK [0][-]{chapter.4}{Galerkin methods}{}% 28
 \BOOKMARK [1][-]{section.4.1}{Introduction}{chapter.4}% 29
 \BOOKMARK [1][-]{section.4.2}{The equation to solve: The Poisson equation}{chapter.4}% 30
 \BOOKMARK [2][-]{subsection.4.2.1}{Discretizing the differential form of the PDE}{section.4.2}% 31

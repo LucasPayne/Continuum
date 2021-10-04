@@ -5,8 +5,10 @@
 #include <Eigen/SparseLU>
 
 #define BOUNDARY_FIGURE_MODE 1
+#define num_figure_modes 3
 
-float wireframe_thickness = 0.003f;
+// float wireframe_thickness = 0.003f;
+float wireframe_thickness = 0.006f;
 
 
 class LaplaceSolver {
@@ -58,6 +60,17 @@ void LaplaceSolver::set_source(PlaneFunction func)
 {
     source_function = func;
 }
+
+
+#if BOUNDARY_FIGURE_MODE == 1
+double interior_variation_function(double x, double y)
+{
+    double t = 0.1*cos(0.5*M_PI*x)*cos(0.5*M_PI*x);
+    t += 0.3*sin(x);
+    return t*t;
+}
+#endif
+
 
 
 VertexAttachment<double> LaplaceSolver::solve()
@@ -331,6 +344,8 @@ public:
     float source_force;
     int mesh_N;
     SolvingMesh *solving_mesh;
+
+    int figure_mode;
 };
 
 
@@ -348,7 +363,7 @@ App::App(World &_world) : world{_world}
     
     source_force = 0;
     #if BOUNDARY_FIGURE_MODE == 1
-    mesh_N = 8;
+    mesh_N = 6;
     #else
     mesh_N = 5;
     #endif
@@ -396,9 +411,20 @@ void App::loop()
         auto geom_pos = solving_mesh->geom.position[v];
         #if BOUNDARY_FIGURE_MODE == 1
         // Don't lift the mesh in the interior (to visualize the boundary approximation).
-        if (v.on_boundary())
-            lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
-        else lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), 0, geom_pos.z());
+        if (v.on_boundary()) {
+            if (figure_mode == 2) {
+                lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), 0, geom_pos.z());
+            } else {
+                lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
+            }
+        } else {
+            // showcase interior variation
+            if (figure_mode == 1) {
+                lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), 0, geom_pos.z());
+            } else {
+                lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val + source_force * interior_variation_function(geom_pos.x(), geom_pos.z()), geom_pos.z());
+            }
+        }
         #else
         lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
         #endif
@@ -438,7 +464,7 @@ void App::loop()
             boundary_condition_loop[i] = vec3(c, solver.dirichlet_boundary_function(c, s), s);
         }
         #if BOUNDARY_FIGURE_MODE == 1
-        world.graphics.paint.chain(boundary_condition_loop, 0.015, vec4(1,0.6,0.6,1));
+        world.graphics.paint.chain(boundary_condition_loop, 0.02, vec4(1,0.6,0.6,1));
         #else
         world.graphics.paint.chain(boundary_condition_loop, 0.004, vec4(1,0.6,0.6,1));
         #endif
@@ -478,6 +504,9 @@ void App::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_R) {
             delete solving_mesh;
             solving_mesh = new SolvingMesh(mesh_N, true);
+        }
+        if (e.key.code == KEY_Y) {
+            figure_mode = (figure_mode + 1) % num_figure_modes;
         }
     }
 }
