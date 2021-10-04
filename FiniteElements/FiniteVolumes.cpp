@@ -13,6 +13,29 @@ using SparseMatrix = Eigen::SparseMatrix<double>;
 using EigenTriplet = Eigen::Triplet<double>;
 
 
+
+vec2 triangle_circumcenter(vec2 p, vec2 q, vec2 r)
+{
+    float pp = vec2::dot(p, p);
+    float qq = vec2::dot(q, q);
+    float rr = vec2::dot(r, r);
+    vec2 pd = (rr - qq)*vec2(-p.y(), p.x());
+    vec2 qd = (pp - rr)*vec2(-q.y(), q.x());
+    vec2 rd = (qq - pp)*vec2(-r.y(), r.x());
+    float denom = vec2::cross(p, q) + vec2::cross(q, r) + vec2::cross(r, p);
+    return 0.5*(pd + qd + rd)/denom;
+}
+
+bool triangle_contains_point(vec2 p, vec2 q, vec2 r, vec2 point)
+{
+    bool p_side = vec2::dot(point - p, (p - q).perp()) > 0;
+    bool q_side = vec2::dot(point - q, (q - r).perp()) > 0;
+    bool r_side = vec2::dot(point - r, (r - p).perp()) > 0;
+    return (p_side == q_side) && (q_side == r_side);
+}
+
+
+
 class FVSolver {
 public:
     FVSolver(SurfaceGeometry &_geom);
@@ -114,6 +137,62 @@ VertexAttachment<double> FVSolver::solve()
         } while (he != start);
     }
     
+    /*--------------------------------------------------------------------------------
+        Source term contribution.
+    --------------------------------------------------------------------------------*/
+    for (Vertex v : geom->mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = vertex_indices[v]; // Global interior vertex index.
+        auto v_pos = geom->position[v];
+
+        // Compute the control volume area.
+        double control_volume_area = 0.0;
+        
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            auto tri = he.face();
+            // Get the triangle vertex positions.
+            //     todo: This should be simple to do with mesh_processing.
+            Eigen::Vector3f ps_3d[3];
+            int vertex_index = 0;
+            auto he_e = he;
+            do {
+                he_e = he_e.next();
+                ps_3d[vertex_index] = geom->position[he_e.vertex()];
+            } while (++vertex_index < 3);
+            // Convert to 2D points.
+            vec2 ps[3];
+            for (int i = 0; i < 3; i++) {
+                ps[i] = vec2(ps_3d[i].x(), ps_3d[i].z());
+            }
+            
+            vec2 c = triangle_circumcenter(ps[0], ps[1], ps[2]);
+            double segment_area = 0.0;
+            if (triangle_contains_point(ps[0], ps[1], ps[2], c)) {
+                vec2 midpoint1 = 0.5*(ps[0] + ps[1]);
+                vec2 midpoint2 = 0.5*(ps[0] + ps[2]);
+                // The circumcenter is inside the triangle.
+                // The resulting segment consists of one quarter triangle,
+                // and the triangle joining the midpoints with the circumcenter.
+                segment_area = 0.25*geom->triangle_area(tri) + 0.5*vec2::cross(c - midpoint1, midpoint2 - midpoint1);
+            } else {
+                // The circumcenter is pulled back to the midpoint of the opposite edge.
+                // The resulting segment consists of two quarter triangles.
+                segment_area = 0.5*geom->triangle_area(tri);
+            }
+            control_volume_area += segment_area;
+
+            he = he.twin().next();
+        } while (he != start);
+
+        // Rectangle-rule quadrature for source contribution.
+        // (This takes one sample at the control volume center,
+        //  then assumes the function is constant on the control volume.)
+        rhs[v_index] += source_function(v_pos.x(), v_pos.z()) * control_volume_area;
+    }
+    
 
     // Finalize the mass matrix.
     auto mass_matrix = SparseMatrix(num_interior_vertices, num_interior_vertices);
@@ -167,6 +246,7 @@ struct FVDemo : public IBehaviour {
 
     int mesh_N;
     bool random;
+    double source_force;
 };
 
 
@@ -198,22 +278,40 @@ FVDemo::FVDemo(PlaneFunction _dirichlet_boundary_function) :
     mesh_N = 5;
     random = false;
     geom = nullptr;
+    source_force = 0.0;
 }
 
 void FVDemo::update()
 {
+    float source_force_change_speed = 20.f;
+    if (world->input.keyboard.down(KEY_M)) {
+        source_force += source_force_change_speed * dt;
+    }
+    if (world->input.keyboard.down(KEY_N)) {
+        source_force -= source_force_change_speed * dt;
+    }
 }
 
 void FVDemo::post_render_update()
 {
+    // Recreate the mesh.
     if (geom != nullptr) delete geom;
     geom = circle_mesh(mesh_N, random);
+
+    // Solve the problem.
     auto solver = FVSolver(*geom);
     solver.set_dirichlet_boundary(dirichlet_boundary_function);
+    solver.set_source([&](double x, double y)->double {
+        float r = 0.3;
+        if (x*x + y*y <= r*r) {
+            return source_force;
+        }
+        return 0.0;
+    });
     VertexAttachment<double> mesh_u = solver.solve();
 
+    // Render the results.
     world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
-
     auto lifted_geom = SurfaceGeometry(geom->mesh);
     for (auto v : geom->mesh.vertices()) {
         double u_val = mesh_u[v];

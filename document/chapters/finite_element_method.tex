@@ -178,6 +178,7 @@ discretization method of these spaces, the finite volume method.
 \section{Discretizing Poisson's equation by finite volumes}\label{discretizing_poisson}
 ---NOTE: $H^1$ May be wrong.
 ---NOTE: Should discuss interpretation in terms of residual minimisation with respect to some norm.
+\vskip 0.5in
 
 Equation \eqref{poisson_equation_integral} is quantified over an infinite number of control volumes $\Omega_0$.
 These control volumes are in the interior of $\Omega$, as the solution at the boundary $\Gamma$ is specified by the Dirichlet boundary condition
@@ -486,7 +487,7 @@ We now only need the constant gradients on $T$. This requires some simple geomet
 We must normalize this vector and then divide by the height of this rectangle, as the slope is inversely proportional to the rectangle height.
 This gives the gradient
 $$
-    \nabla\phi_{v^\pr} = \frac{(v^\pppr - v^\ppr)^\perp}{\norm{v^\pppr - v^\ppr}h} = \frac{(v^\pppr - v^\ppr)^\perp}{wh}.
+    \nabla\phi_{v^\pr} = \left.\frac{(v^\pppr - v^\ppr)^\perp}{\norm{v^\pppr - v^\ppr}}\right/h = \frac{(v^\pppr - v^\ppr)^\perp}{wh}.
 $$
 Finally, $\text{Area}(T) = wh/2$, so we can write the gradients as
 \begin{equation}\label{fvm_gradients}
@@ -524,10 +525,12 @@ This directly indicates an effective algorithm for constructing the linear syste
 \subsubsection{Integrating the source function}
 One more thing is needed, however. The right-hand-side vector of \eqref{poisson_matrix_equation} contains source integrals
     $$\int_{\om_j}g\,dx,$$
-so we require some numerical integration. The simplest choice is a ``rectangle rule'', where we sample the source function $g$ at the interior vertex
+so we require some numerical integration.
+
+The simplest choice is a ``rectangle rule'', where we sample the source function $g$ at the interior vertex
 $p_j$, then assume that $g$ is constant over $\om_j$. This gives the approximation
 \begin{equation}\label{fvm_source_approximation}
-    \int_{\om_j}g\,dx \quad\approx\quad g(p_j)\text{Area}(\om_j) = g(p_j)\sum_{i=1}^k \text{Area}(T^{p_j}_k),
+    \int_{\om_j}g\,dx \approx g(p_j)\text{Area}(\om_j)
 \end{equation}
 which will be sufficient for now.
 

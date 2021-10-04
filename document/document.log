@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  4 OCT 2021 19:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  5 OCT 2021 12:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2157,18 +2157,18 @@ ures/mathematicians/Laurent_Schwartz.jpeg>] [26] [27] [28] [29]
 File: figures/triangulation/triangulation.png Graphic file (type png)
 <use figures/triangulation/triangulation.png>
 Package pdftex.def Info: figures/triangulation/triangulation.png  used on input
- line 280.
+ line 281.
 (pdftex.def)             Requested size: 225.77948pt x 110.79585pt.
 <figures/hat.png, id=679, 856.19875pt x 341.275pt>
 File: figures/hat.png Graphic file (type png)
 <use figures/hat.png>
-Package pdftex.def Info: figures/hat.png  used on input line 312.
+Package pdftex.def Info: figures/hat.png  used on input line 313.
 (pdftex.def)             Requested size: 225.77948pt x 89.9948pt.
  [30 <./figures/triangulation/triangulation.png> <./figures/hat.png>]
 <figures/boundary/boundary.png, id=692, 1612.0225pt x 439.6425pt>
 File: figures/boundary/boundary.png Graphic file (type png)
 <use figures/boundary/boundary.png>
-Package pdftex.def Info: figures/boundary/boundary.png  used on input line 333.
+Package pdftex.def Info: figures/boundary/boundary.png  used on input line 334.
 
 (pdftex.def)             Requested size: 383.3974pt x 104.56375pt.
 <figures/laplaceboundary/laplaceboundaryv2.png, id=695, 1882.03125pt x 364.3612
@@ -2176,12 +2176,12 @@ Package pdftex.def Info: figures/boundary/boundary.png  used on input line 333.
 File: figures/laplaceboundary/laplaceboundaryv2.png Graphic file (type png)
 <use figures/laplaceboundary/laplaceboundaryv2.png>
 Package pdftex.def Info: figures/laplaceboundary/laplaceboundaryv2.png  used on
- input line 348.
+ input line 349.
 (pdftex.def)             Requested size: 426.0pt x 82.47255pt.
 <figures/cell.png, id=698, 1224.575pt x 456.70625pt>
 File: figures/cell.png Graphic file (type png)
 <use figures/cell.png>
-Package pdftex.def Info: figures/cell.png  used on input line 368.
+Package pdftex.def Info: figures/cell.png  used on input line 369.
 (pdftex.def)             Requested size: 298.1987pt x 111.20758pt.
 
 Underfull \vbox (badness 3930) has occurred while \output is active []
@@ -2189,7 +2189,7 @@ Underfull \vbox (badness 3930) has occurred while \output is active []
  [31 <./figures/boundary/boundary.png> <./figures/laplaceboundary/laplacebounda
 ryv2.png>]
 [32 <./figures/cell.png>] [33]
-Overfull \hbox (9.08855pt too wide) detected at line 521
+Overfull \hbox (9.08855pt too wide) detected at line 522
 []
  []
 
@@ -2197,38 +2197,38 @@ Overfull \hbox (9.08855pt too wide) detected at line 521
 \mylen=\skip289
  [35] [36]
 
-Package caption Warning: \label without proper reference on input line 549.
+Package caption Warning: \label without proper reference on input line 551.
 See the caption package documentation for explanation.
 
 
-LaTeX Warning: Reference `alg:assembly' on page 37 undefined on input line 621.
+LaTeX Warning: Reference `alg:assembly' on page 37 undefined on input line 624.
 
 
 
-Package caption Warning: \label without proper reference on input line 549.
+Package caption Warning: \label without proper reference on input line 551.
 See the caption package documentation for explanation.
 
 
-LaTeX Warning: Reference `alg:assembly' on page 37 undefined on input line 625.
+LaTeX Warning: Reference `alg:assembly' on page 37 undefined on input line 628.
 
 
 [37]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 685.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 688.
 
 
-Package caption Warning: \label without proper reference on input line 631.
+Package caption Warning: \label without proper reference on input line 633.
 See the caption package documentation for explanation.
 
 
-LaTeX Warning: Reference `alg:fvm' on page 38 undefined on input line 691.
+LaTeX Warning: Reference `alg:fvm' on page 38 undefined on input line 694.
 
 
-Package caption Warning: \label without proper reference on input line 549.
+Package caption Warning: \label without proper reference on input line 551.
 See the caption package documentation for explanation.
 
 
-LaTeX Warning: Reference `alg:assembly' on page 38 undefined on input line 691.
+LaTeX Warning: Reference `alg:assembly' on page 38 undefined on input line 694.
 
 
 [38] [39]
@@ -2236,13 +2236,13 @@ LaTeX Warning: Reference `alg:assembly' on page 38 undefined on input line 691.
 File: figures/sparsity_pattern_no_text.png Graphic file (type png)
 <use figures/sparsity_pattern_no_text.png>
 Package pdftex.def Info: figures/sparsity_pattern_no_text.png  used on input li
-ne 907.
+ne 910.
 (pdftex.def)             Requested size: 110.75766pt x 110.16196pt.
  [40]
 <figures/laplace/laplacev2.png, id=841, 2055.68pt x 652.4375pt>
 File: figures/laplace/laplacev2.png Graphic file (type png)
 <use figures/laplace/laplacev2.png>
-Package pdftex.def Info: figures/laplace/laplacev2.png  used on input line 945.
+Package pdftex.def Info: figures/laplace/laplacev2.png  used on input line 948.
 
 (pdftex.def)             Requested size: 426.0pt x 135.20403pt.
 ) [41 <./figures/sparsity_pattern_no_text.png> <./figures/laplace/laplacev2.png
@@ -2281,6 +2281,9 @@ Package rerunfilecheck Info: File `document.out' has not changed.
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
  24490 strings out of 494847
@@ -2311,7 +2314,7 @@ pe1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/latxfont/line10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msbm10.pfb>
-Output written on document.pdf (48 pages, 5000757 bytes).
+Output written on document.pdf (48 pages, 5000733 bytes).
 PDF statistics:
  1030 PDF objects out of 1200 (max. 8388607)
  884 compressed objects within 9 object streams
