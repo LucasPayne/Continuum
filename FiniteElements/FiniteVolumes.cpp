@@ -140,6 +140,8 @@ VertexAttachment<double> FVSolver::solve()
     /*--------------------------------------------------------------------------------
         Source term contribution.
     --------------------------------------------------------------------------------*/
+    #if 0
+    // Rectangle quadrature
     for (Vertex v : geom->mesh.vertices()) {
         if (v.on_boundary()) continue;
         int v_index = vertex_indices[v]; // Global interior vertex index.
@@ -192,6 +194,55 @@ VertexAttachment<double> FVSolver::solve()
         //  then assumes the function is constant on the control volume.)
         rhs[v_index] += source_function(v_pos.x(), v_pos.z()) * control_volume_area;
     }
+    #else
+    // Linear quadrature.
+    for (Vertex v : geom->mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = vertex_indices[v]; // Global interior vertex index.
+        auto v_pos = geom->position[v];
+
+        double integral = 0.0;
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            auto tri = he.face();
+            // Get the triangle vertex positions.
+            //     todo: This should be simple to do with mesh_processing.
+            Eigen::Vector3f ps_3d[3];
+            int vertex_index = 0;
+            auto he_e = he;
+            do {
+                he_e = he_e.next();
+                ps_3d[vertex_index] = geom->position[he_e.vertex()];
+            } while (++vertex_index < 3);
+            // Convert to 2D points.
+            vec2 ps[3];
+            for (int i = 0; i < 3; i++) {
+                ps[i] = vec2(ps_3d[i].x(), ps_3d[i].z());
+            }
+            // Compute the circumcenter.
+            vec2 c = triangle_circumcenter(ps[0], ps[1], ps[2]);
+
+	    vec2 midpoint1 = 0.5*(ps[0] + ps[1]);
+	    vec2 midpoint2 = 0.5*(ps[0] + ps[2]);
+            
+            double f_v = source_function(v_pos.x(), v_pos.z());
+            double f_midpoint1 = source_function(midpoint1.x(), midpoint1.y());
+            double f_midpoint2 = source_function(midpoint2.x(), midpoint2.y());
+            double f_c = source_function(c.x(), c.y());
+            double tri_area = geom->triangle_area(tri);
+            double c_tri_area = 0.5*vec2::cross(c - midpoint1, midpoint2 - midpoint1);
+
+            integral += 0.5*tri_area*(f_v + f_midpoint1 + f_midpoint2)/6.0;
+            integral += 2*c_tri_area*(f_midpoint1 + f_midpoint2 + f_c)/6.0;
+
+            he = he.twin().next();
+        } while (he != start);
+
+        rhs[v_index] += integral;
+    }
+    #endif
     
 
     // Finalize the mass matrix.
