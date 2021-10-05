@@ -618,8 +618,8 @@ Pseudocode for this algorithm is given below.
     % $\tilde{h} \leftarrow \sum_{j=1}^n h_j\text{Hat}(p_j) + \sum_{j=1}^{n_\Gamma} h_\Gamma(p_j^\Gamma)\text{Hat}(p_j^\Gamma)$\;
     % \Return{$\tilde{h}$}\;
 }
-    % \caption{Pseudocode for the described finite-volume method for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
-    \caption{Pseudocode for the described finite-volume matrix assembly process for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
+    % \caption{Pseudocode for the described finite volume method for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
+    \caption{Pseudocode for the described finite volume matrix assembly process for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
 \end{algorithm}
 \newpage
 
@@ -692,6 +692,8 @@ and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eige
 A finite element solver will typically pass either a full matrix to the linear solver (dense or sparse),
 or provide the linear solver with callback routines that give the solver access to the system coefficients when they are needed.
 
+--- Discuss sparsity here.
+
 \subsection{An implementation in C\texttt{++}}
 I have implemented the above algorithm in C\texttt{++}.
 This code uses a simple mesh generator based on the C library Triangle \cite{triangle}. Triangle is given a list of points
@@ -701,29 +703,78 @@ The system is solved with a sparse LU factorisation method provided by the C\tex
 With these interfaces, the resulting C\texttt{++} was almost a direct transliteration of the pseudocodes \ref{alg:fvm} and \ref{alg:assembly}.
 
 
-A simple test case has been generated, using the ``method of manufactured solutions'' \cite{fenics_tutorial}.
-Suppose the exact solution is
+\subsubsection{Validating the method}
+In order to validate this algorithm, some simple test cases can be generated,
+using the ``method of manufactured solutions'' \cite{fenics_tutorial}.
+Firstly, suppose the exact solution is
 $$
-    h = e^{-2(x^2 + y^2)}.
+    h = x^2 - y^2.
 $$
-From the manufactured solution $h$ we can derive the boundary condition and heat source that would give that solution.
-Of course, the boundary condition must be $h_\Gamma = \left.h\right|_\Gamma$. We can solve for the source term $g$ by
+From the chosen solution $h$, we can derive the boundary condition and heat source that would give that solution.
+Of course, the boundary condition must be $h_\Gamma = \left.h\right|_\Gamma$.We can solve for the source term $g$ by
 plugging $h$ into Poisson's equation \eqref{poisson_compact}, giving
 $$
-    -\nabla\left(e^{-2(x^2 + y^2)}\right) = g \quad \Rightarrow \quad g = \left(8 - 16x^2 - 16y^2\right)e^{-2(x^2 + y^2)}.
+    -\Delta\left(x^2 - y^2\right) = g \quad \Rightarrow \quad g = -(2 - 2) = 0.
 $$
-Now, we must come up with measures of quality for the finite volume method \ref{alg:fvm}.
+This test case has been chosen as it degenerates to an instance of the simpler Laplace's equation, where there is no heat source:
+\begin{equation}\label{fvm_test_equation_1}
+    -\Delta h = 0,\quad \left.h\right|_\Gamma = x^2 - y^2 \quad \text{(The test problem)}.
+\end{equation}
+For clarity, we use a simple square domain $\Omega = [-1,1]^2$, and a uniform grid parameterized by value $r$
+\footnote{Traditionally this kind of parameter is denoted $h$, which we are already using for the heat function.}.
+Each square in this grid
+corresponds to two right-angled triangles in the triangulation
+\footnote{This is a rather uninteresting mesh which doesn't take advantage
+of Galerkin methods' ability to model complex geometries, but it is a difficult problem to parameterise a complex mesh by some $r$ such that the error
+metric acts ``nicely''.}.
+To measure convergence, we use the $L^2$ norm (although others could be used), defined by
+\begin{equation}\label{test_L2_norm}
+    \norm{\tilde{h} - h}_{L^2(\Omega)} = \int_{-1}^1\int_{-1}^1 (\tilde{h}(x,y) - h(x,y))^2 \,dx\,dy.
+\end{equation}
 
+To validate the convergence of the method, simply increase $h$, generate the mesh, solve the test equation,
+then compute the $L^2$ error \eqref{test_L2_norm}, and repeat. A log-log plot of the error for the simple test problem is shown in figure
+\ref{error_fvm_1}.
 
-\begin{figure}[H]
+\begin{figure}
     \begin{center}
-        \includegraphics[width=1\linewidth]{figures/graphs/error_fvm_1.png}
+        \includegraphics[width=1\linewidth]{figures/graphs/error_metric_file_square_fixup.png}
     \end{center}
     \caption{\scriptsize
-        text
+        The $L^2$-norm error for the test problem \eqref{fvm_test_equation_1}, as parameter $r$ varies.
     }
     \label{error_fvm_1}
 \end{figure}
+We see clearly that the convergence for test problem \eqref{fvm_test_equation_1} is straightforward and quadratic.
+
+
+Suppose instead that the exact solution is
+$$
+    h = e^{-2(x^2 + y^2)}.
+$$
+The source term $g$ is solved for as
+$$
+    -\Delta\left(e^{-2(x^2 + y^2)}\right) = g \quad \Rightarrow \quad g = \left(8 - 16x^2 - 16y^2\right)e^{-2(x^2 + y^2)},
+$$
+giving the new test problem,
+\begin{equation}\label{fvm_test_equation_2}
+    -\Delta h = \left(8 - 16x^2 - 16y^2\right)e^{-2(x^2 + y^2)},
+    \quad \left.h\right|_\Gamma = e^{-2(x^2 + y^2)} \quad \text{(The test problem)}.
+\end{equation}
+The log-log error plot is displayed in figure \eqref{error_fvm_2}. In this case, there is still a clear quadratic convergence,
+but with some oscillation in quality as $r$ decreases.
+This is likely due to the coarse numerical integration of the heat source (which is using the rectangle rule for simplicity).
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/graphs/error_metric_file_square_2_fixup.png}
+    \end{center}
+    \caption{\scriptsize
+        The $L^2$-norm error for the test problem \eqref{fvm_test_equation_2}, as parameter $r$ varies.
+    }
+    \label{error_fvm_2}
+\end{figure}
+
 
 
 
@@ -837,7 +888,7 @@ There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred
 variational methods with the original PDE.
 
 % \subsubsection{Integrating over trial functions versus integrating over domains}
-% The above construction (generalising a finite-volume flux integral to a finite-element ``blurred flux'' integral) is further investigated
+% The above construction (generalising a finite volume flux integral to a finite-element ``blurred flux'' integral) is further investigated
 % below.
 % We will work with the Dirac delta ``function'' (which is rather a distribution, or generalised function),
 % defined by
@@ -1026,3 +1077,28 @@ some Sobolev space, constructed over a domain tessellation.
 % $$
 %     \phi_\Gamma \quad \phi = h_1\phi_1 + \cdots + h_n\phi_n \quad \tilde{h}
 % $$
+
+\begin{align*}
+    &\text{$4\times 4$ grid}\\
+    &r = 0.742\\
+    &\text{error } = 0.082
+\end{align*}
+\begin{align*}
+    &\text{$6\times 6$ grid}\\
+    &r = 0.449\\
+    &\text{error } = 0.027
+\end{align*}
+\begin{align*}
+    &\text{$10\times 10$ grid}\\
+    &r = 0.251\\
+    &\text{error } = 0.009
+\end{align*}
+\begin{align*}
+    &\text{$20\times 20$ grid}\\
+    &r = 0.119\\
+    &\text{error } = 0.002
+\end{align*}
+% 3 0.7419784069 0.0811988786
+% 5 0.4487308264 0.0266765263
+% 9 0.2507884502 0.0091549866
+% 19 0.1193039417 0.0021749979

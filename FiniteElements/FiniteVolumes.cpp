@@ -332,11 +332,11 @@ void FVDemo::keyboard_handler(KeyboardEvent e)
             exit(EXIT_SUCCESS);
         }
         if (e.key.code == KEY_O) {
-            mesh_N -= 5;
+            mesh_N -= 1;
             if (mesh_N < 2) mesh_N = 2;
         }
         if (e.key.code == KEY_P) {
-            // mesh_N += 1;
+            mesh_N += 1;
             
             #if 0
             // debugging high error values...
@@ -533,9 +533,9 @@ void FVDemo::post_render_update()
     auto solver = FVSolver(*geom);
     solver.set_dirichlet_boundary(dirichlet_boundary_function);
     solver.set_source([&](double x, double y)->double {
-        // return -(4*pow(alpha, 2)*pow(x, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) + 4*pow(alpha, 2)*pow(y, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) - 4*alpha*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)));
+        return -(4*pow(alpha, 2)*pow(x, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) + 4*pow(alpha, 2)*pow(y, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) - 4*alpha*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)));
         
-        return 0.0;
+        // return 0.0;
 
 
         // float r = 0.3;
@@ -574,9 +574,28 @@ void FVDemo::post_render_update()
     glDisable(GL_BLEND);
     sprite_shader.unbind();
 
+    if (1) {
+        // Square
+        // Draw the exact boundary condition.
+        int num = 300;
+        for (int t = -1; t <= 1; t += 2) {
+            for (int axis = 0; axis <= 1; axis++) {
+	        auto bc = std::vector<vec3>();
+                for (int i = 0; i <= num; i++) {
+                    double val = -1+i*2.f/num;
+                    vec2 v;
+                    if (axis == 0) v = vec2(t, val);
+                    else v = vec2(val, t);
+                    bc.push_back(vec3(v.x(), dirichlet_boundary_function(v.x(), v.y()), v.y()));
+                }
+	        world->graphics.paint.chain(bc, 0.01, vec4(0,0,0,1));
+            }
+        }
+    }
+
 
     error_metrics(mesh_u);
-    mesh_N += 1;
+    // mesh_N += 1;
 }
 
 
@@ -626,9 +645,8 @@ App::App(World &_world) : world{_world}
     auto demo = world.add<FVDemo>(demo_e, [](double x, double y)->double {
         // return 1+0.4*sin(8*x);
         // return cos(x) + y*y;
-        // return exp(-alpha*(x*x + y*y));
-        
-        return x*x - y*y;
+        return exp(-alpha*(x*x + y*y));
+        // return x*x - y*y;
         
     });
     demo_b = demo_e.get<Behaviour>();
