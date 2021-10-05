@@ -530,9 +530,16 @@ so we require some numerical integration.
 The simplest choice is a ``rectangle rule'', where we sample the source function $g$ at the interior vertex
 $p_j$, then assume that $g$ is constant over $\om_j$. This gives the approximation
 \begin{equation}\label{fvm_source_approximation}
-    \int_{\om_j}g\,dx \approx g(p_j)\text{Area}(\om_j)
+    \int_{\om_j}g\,dx \approx g(p_j)\text{Area}(\om_j).
 \end{equation}
-which will be sufficient for now.
+--- However, a linear quadrature will give much better convergence results.
+% which will be sufficient for now. The computation of the mixed Voronoi cell area $\text{Area}(\om_j)$ can be achieved with some routine geometric calculations.
+% Iterating over each triangle incident to $p_j$, compute the cell segment area as the area of two triangles, the second triangle depending on whether
+% the computed circumcentre lies inside or outside the triangle.
+
+\vskip 0.2in
+(figure)
+\vskip 0.2in
 
 \subsection{The resulting matrix assembly algorithm}
 Using the expression \eqref{flux_integral_summation}, the linear system
@@ -693,6 +700,30 @@ based on the ideas in the Geometry Central library \cite{geometry_central}.
 The system is solved with a sparse LU factorisation method provided by the C\texttt{++} Eigen library \cite{eigen}.
 With these interfaces, the resulting C\texttt{++} was almost a direct transliteration of the pseudocodes \ref{alg:fvm} and \ref{alg:assembly}.
 
+
+A simple test case has been generated, using the ``method of manufactured solutions'' \cite{fenics_tutorial}.
+Suppose the exact solution is
+$$
+    h = e^{-2(x^2 + y^2)}.
+$$
+From the manufactured solution $h$ we can derive the boundary condition and heat source that would give that solution.
+Of course, the boundary condition must be $h_\Gamma = \left.h\right|_\Gamma$. We can solve for the source term $g$ by
+plugging $h$ into Poisson's equation \eqref{poisson_compact}, giving
+$$
+    -\nabla\left(e^{-2(x^2 + y^2)}\right) = g \quad \Rightarrow \quad g = \left(8 - 16x^2 - 16y^2\right)e^{-2(x^2 + y^2)}.
+$$
+Now, we must come up with measures of quality for the finite volume method \ref{alg:fvm}.
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/graphs/error_fvm_1.png}
+    \end{center}
+    \caption{\scriptsize
+        text
+    }
+    \label{error_fvm_1}
+\end{figure}
 
 
 

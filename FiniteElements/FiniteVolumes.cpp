@@ -6,13 +6,15 @@
 
 #include "mesh_generators.cpp"
 
+FILE *error_metric_file = nullptr;
+
 
 using PlaneFunction = std::function<double(double x, double y)>; // Function of the XY plane.
 using PlaneFunctionNL1 = std::function<double(double x, double y, double u)>; // First-order non-linear plane function.
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using EigenTriplet = Eigen::Triplet<double>;
 
-double alpha = -0.3;
+double alpha = 2;
 
 
 
@@ -194,6 +196,10 @@ VertexAttachment<double> FVSolver::solve()
         // Rectangle-rule quadrature for source contribution.
         // (This takes one sample at the control volume center,
         //  then assumes the function is constant on the control volume.)
+
+        // Apparently...
+        control_volume_area *= 2.f/3.f; //????????????????????????????????????????????????????????????
+
         rhs[v_index] += source_function(v_pos.x(), v_pos.z()) * control_volume_area;
     }
     #else
@@ -301,6 +307,8 @@ struct FVDemo : public IBehaviour {
     bool random;
     double source_force;
 
+    bool render_exact_solution; // Toggleable option. This uses the same mesh as the approximate solution.
+
 
 
     // Plotting.
@@ -312,6 +320,8 @@ struct FVDemo : public IBehaviour {
     GLuint sample_geometry_fbo;
     GLuint sample_geometry_texture;
     GLuint sample_geometry_depth_texture;
+
+    void error_metrics(VertexAttachment<double> &mesh_u);
 };
 
 
@@ -326,10 +336,24 @@ void FVDemo::keyboard_handler(KeyboardEvent e)
             if (mesh_N < 2) mesh_N = 2;
         }
         if (e.key.code == KEY_P) {
-            mesh_N += 5;
+            // error_metrics();
+            // mesh_N += 1;
+            
+            // debugging high error values...
+            static bool test_mesh_N = false;
+            if (test_mesh_N) {
+                mesh_N = 50;
+                test_mesh_N = false;
+            } else {
+                mesh_N = 51;
+                test_mesh_N = true;
+            }
         }
         if (e.key.code == KEY_R) {
             random = !random;
+        }
+        if (e.key.code == KEY_T) {
+            render_exact_solution = !render_exact_solution;
         }
     }
 }
@@ -340,10 +364,11 @@ void FVDemo::mouse_handler(MouseEvent e)
 FVDemo::FVDemo(PlaneFunction _dirichlet_boundary_function) :
     dirichlet_boundary_function{_dirichlet_boundary_function}
 {
-    mesh_N = 5;
+    mesh_N = 2;
     random = false;
     geom = nullptr;
     source_force = 0.0;
+    render_exact_solution = false;
 
     // Geometry sampling.
     sample_geometry_shader.add_shader(GLShader(VertexShader, SHADERS "sample_geometry/sample_geometry.vert"));
@@ -355,7 +380,7 @@ FVDemo::FVDemo(PlaneFunction _dirichlet_boundary_function) :
 
     glGenTextures(1, &sample_geometry_texture);
     glBindTexture(GL_TEXTURE_2D, sample_geometry_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1024, 1024, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);  
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sample_geometry_texture, 0);
@@ -395,7 +420,6 @@ FVDemo::FVDemo(PlaneFunction _dirichlet_boundary_function) :
     glBindVertexArray(0);
 
 
-
 }
 
 void FVDemo::update()
@@ -409,50 +433,25 @@ void FVDemo::update()
     }
 }
 
-void FVDemo::post_render_update()
+
+void FVDemo::error_metrics(VertexAttachment<double> &mesh_u)
 {
-    // Recreate the mesh.
-    if (geom != nullptr) delete geom;
-    geom = circle_mesh(mesh_N, random);
-
-    // Solve the problem.
-    auto solver = FVSolver(*geom);
-    solver.set_dirichlet_boundary(dirichlet_boundary_function);
-    solver.set_source([&](double x, double y)->double {
-        return 4*pow(alpha, 2)*pow(x, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) + 4*pow(alpha, 2)*pow(y, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) - 4*alpha*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2));
-
-        // float r = 0.3;
-        // if (x*x + y*y <= r*r) {
-        //     return source_force;
-        // }
-        // return 0.0;
-    });
-    VertexAttachment<double> mesh_u = solver.solve();
-
-    // Render the results.
-    world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
-    auto lifted_geom = SurfaceGeometry(geom->mesh);
-    for (auto v : geom->mesh.vertices()) {
-        double u_val = mesh_u[v];
-        auto geom_pos = geom->position[v];
-        lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
-    }
-    world->graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.006f);
-
-
     // Quality metric.
-
-
-
     auto sample_positions = std::vector<vec2>();
     auto sample_values = std::vector<float>();
     for (auto tri : geom->mesh.faces()) {
         auto start = tri.halfedge();
         auto he = start;
         do {
-            auto p = geom->position[he.vertex()];
+            auto v = he.vertex();
+            auto p = geom->position[v];
             sample_positions.push_back(vec2(p.x(), p.z()));
-            sample_values.push_back(dirichlet_boundary_function(p.x(), p.z()));
+            // Reconstruct from hat functions. This hat function has a coefficient in the interior, and a boundary value on the boundary.
+            if (v.on_boundary()) {
+                sample_values.push_back(dirichlet_boundary_function(p.x(), p.z()));
+            } else {
+                sample_values.push_back(mesh_u[v]);
+            }
             he = he.next();
         } while (he != start);
     }
@@ -482,6 +481,7 @@ void FVDemo::post_render_update()
     sample_geometry_shader.bind();
     glBindFramebuffer(GL_FRAMEBUFFER, sample_geometry_fbo);
     glDisable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, sample_positions.size());
     glEnable(GL_DEPTH_TEST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -493,13 +493,74 @@ void FVDemo::post_render_update()
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo_positions);
     glDeleteBuffers(1, &vbo_values);
-    
+
+    // Read in the result.
+    glBindFramebuffer(GL_FRAMEBUFFER, sample_geometry_fbo);
+    auto geometry_sample_pixels = std::vector<float>(4*1024*1024);
+    glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &geometry_sample_pixels[0]);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    float coeff = 1.f/(1024*1024);
+    float total = 0.f;
+    for (int i = 0; i < 1024; i++) {
+        for (int j = 0; j < 1024; j++) {
+            float val = geometry_sample_pixels[4*(1024*j + i)];
+            total += val * coeff;
+        }
+    }
+    float h = 0.f;
+    float h_coeff = 1.f / geom->mesh.num_edges();
+    for (auto edge : geom->mesh.edges()) {
+        auto a = geom->position[edge.a().vertex()];
+        auto b = geom->position[edge.b().vertex()];
+        h += h_coeff * (a - b).norm();
+    }
+
+    float error = sqrt(total);
+    fprintf(error_metric_file, "%d %.10f %.10f\n", mesh_N, h, error);
+    printf("%d %.10f %.10f\n", mesh_N, h, error);
+}
+
+void FVDemo::post_render_update()
+{
+    // Recreate the mesh.
+    if (geom != nullptr) delete geom;
+    geom = circle_mesh(mesh_N, random);
+
+    // Solve the problem.
+    auto solver = FVSolver(*geom);
+    solver.set_dirichlet_boundary(dirichlet_boundary_function);
+    solver.set_source([&](double x, double y)->double {
+        // return -(4*pow(alpha, 2)*pow(x, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) + 4*pow(alpha, 2)*pow(y, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) - 4*alpha*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)));
+        
+        return 0.0;
+
+
+        // float r = 0.3;
+        // if (x*x + y*y <= r*r) {
+        //     return 10;
+        // }
+        // return 0.0;
+    });
+    VertexAttachment<double> mesh_u = solver.solve();
+
+    // Render the results.
+    world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
+    auto lifted_geom = SurfaceGeometry(geom->mesh);
+    for (auto v : geom->mesh.vertices()) {
+        double u_val = mesh_u[v];
+        auto geom_pos = geom->position[v];
+        lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), render_exact_solution ? dirichlet_boundary_function(geom_pos.x(), geom_pos.z()) : u_val, geom_pos.z());
+    }
+    world->graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.006f);
+
     // Plot the solution.
     sprite_shader.bind();
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glUniform2f(sprite_shader.uniform_location("bottom_left"), 0,0);
-    glUniform2f(sprite_shader.uniform_location("top_right"), 0.35,0.45);
+    float wid = 0.4;
+    glUniform2f(sprite_shader.uniform_location("top_right"), wid, wid/0.566);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, sample_geometry_texture);
     glUniform1i(sprite_shader.uniform_location("tex"), 0);
@@ -510,6 +571,10 @@ void FVDemo::post_render_update()
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     sprite_shader.unbind();
+
+
+    error_metrics(mesh_u);
+    // mesh_N += 1;
 }
 
 
@@ -559,7 +624,10 @@ App::App(World &_world) : world{_world}
     auto demo = world.add<FVDemo>(demo_e, [](double x, double y)->double {
         // return 1+0.4*sin(8*x);
         // return cos(x) + y*y;
-        return exp(-alpha*(x*x + y*y)) - 1.0;
+        // return exp(-alpha*(x*x + y*y));
+        
+        return x*x - y*y;
+        
     });
     demo_b = demo_e.get<Behaviour>();
 }
@@ -590,6 +658,8 @@ void App::mouse_handler(MouseEvent e)
 
 int main(int argc, char *argv[])
 {
+    error_metric_file = fopen(DATA "error_metric_file.txt", "w+");
+
     printf("[main] Creating context...\n");
     IGC::Context context("A world");
     printf("[main] Creating world...\n");
@@ -603,4 +673,6 @@ int main(int argc, char *argv[])
     printf("[main] Entering loop...\n");
     context.enter_loop();
     context.close();
+
+    fclose(error_metric_file);
 }

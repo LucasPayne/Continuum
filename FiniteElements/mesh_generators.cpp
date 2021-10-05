@@ -46,7 +46,8 @@ SurfaceGeometry *circle_mesh(int N, bool random)
     // fclose(node_file);
 
     // Triangulate this point cloud.
-    std::string triswitches = "zV";
+    // std::string triswitches = "zV";
+    std::string triswitches = "z";
     double *p_mem = (double *) malloc(2*sizeof(double)*all_points.size());
     for (int i = 0; i < all_points.size(); i++) {
         p_mem[2*i] = all_points[i].x();

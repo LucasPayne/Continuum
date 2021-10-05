@@ -4,10 +4,12 @@
 layout (location = 0) in vec2 position;
 layout (location = 1) in float value;
 
+out vec2 f_position;
 out float f;
 
 void main(void)
 {
     gl_Position = vec4(position, 0, 1);
+    f_position = position;
     f = value;
 }

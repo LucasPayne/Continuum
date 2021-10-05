@@ -69,7 +69,7 @@
 \contentsline {subsection}{\numberline {4.3.7}An implementation in C\texttt {++}}{38}{subsection.4.3.7}
 \contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{38}{section.4.4}
 \contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{40}{section.4.5}
-\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{40}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{41}{subsection.4.5.1}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{43}{chapter.5}
 \contentsline {chapter}{\chapternumberline {6}Some functional analysis}{45}{chapter.6}
-\contentsline {chapter}{Bibliography}{47}{section*.42}
+\contentsline {chapter}{Bibliography}{47}{section*.43}
