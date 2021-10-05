@@ -19,11 +19,14 @@ hs = np.array(hs)
 errors = np.array(errors)
 
 plt.loglog(hs, errors, color="k", linewidth=2)
-plt.loglog(hs, hs, color="b")
-plt.loglog(hs, hs**2, color="r")
+
+
+
+plt.loglog(hs, (errors[-1]/hs[-1]) * hs, color="b")
+plt.loglog(hs, (errors[-1]/(hs[-1]**2)) * hs**2, color="r")
 plt.scatter(hs, errors)
-plt.legend([r"$\log(error)$", r"$\log(h)$", r"$\log(h^2)$"])
-plt.xlabel(r"$\log(h)$")
+plt.legend([r"$\log(error)$", r"$\log(h) + const$", r"$\log(h^2) + const$"])
+plt.xlabel(r"$h$ (labels), $\log(h)$ (scale)")
 plt.title("Log-log plot $L^2$ error of the linear triangulation FVM for Poisson's equation.")
 plt.show()
 

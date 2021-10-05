@@ -336,9 +336,9 @@ void FVDemo::keyboard_handler(KeyboardEvent e)
             if (mesh_N < 2) mesh_N = 2;
         }
         if (e.key.code == KEY_P) {
-            // error_metrics();
             // mesh_N += 1;
             
+            #if 0
             // debugging high error values...
             static bool test_mesh_N = false;
             if (test_mesh_N) {
@@ -348,6 +348,7 @@ void FVDemo::keyboard_handler(KeyboardEvent e)
                 mesh_N = 51;
                 test_mesh_N = true;
             }
+            #endif
         }
         if (e.key.code == KEY_R) {
             random = !random;
@@ -525,7 +526,8 @@ void FVDemo::post_render_update()
 {
     // Recreate the mesh.
     if (geom != nullptr) delete geom;
-    geom = circle_mesh(mesh_N, random);
+    // geom = circle_mesh(mesh_N, random);
+    geom = square_mesh(mesh_N);
 
     // Solve the problem.
     auto solver = FVSolver(*geom);
@@ -574,7 +576,7 @@ void FVDemo::post_render_update()
 
 
     error_metrics(mesh_u);
-    // mesh_N += 1;
+    mesh_N += 1;
 }
 
 

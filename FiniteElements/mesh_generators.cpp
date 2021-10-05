@@ -83,3 +83,35 @@ SurfaceGeometry *circle_mesh(int N, bool random)
 }
 
 
+
+// [-1,1]^2
+SurfaceGeometry *square_mesh(int N)
+{
+    SurfaceMesh *mesh = new SurfaceMesh();
+    SurfaceGeometry *geom = new SurfaceGeometry(*mesh);
+    
+    auto vertices = std::vector<Vertex>((N+1)*(N+1));
+    // Create vertices.
+    for (int i = 0; i <= N; i++) {
+        double x = -1 + i*2.f/N;
+        for (int j = 0; j <= N; j++) {
+            double y = -1 + j*2.f/N;
+            auto v = mesh->add_vertex();
+            geom->position[v] = Eigen::Vector3f(x, 0, y);
+            vertices[i*(N+1) + j] = v;
+        }
+    }
+    // Create triangles.
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            Vertex a = vertices[i*(N+1) + j];
+            Vertex b = vertices[(i+1)*(N+1) + j];
+            Vertex c = vertices[(i+1)*(N+1) + j+1];
+            Vertex d = vertices[i*(N+1) + j+1];
+            mesh->add_triangle(a,b,d);
+            mesh->add_triangle(b,c,d);
+        }
+    }
+    mesh->lock();
+    return geom;
+}
