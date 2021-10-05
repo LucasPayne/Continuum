@@ -33,6 +33,7 @@ include_directories(
 add_library(common INTERFACE)
 target_compile_definitions(common INTERFACE
     DATA="${CMAKE_CURRENT_SOURCE_DIR}/data/"
+    SHADERS="${CMAKE_CURRENT_SOURCE_DIR}/shaders/"
 )
 target_link_libraries(common INTERFACE
     triangle

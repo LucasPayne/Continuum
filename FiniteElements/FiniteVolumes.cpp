@@ -12,6 +12,8 @@ using PlaneFunctionNL1 = std::function<double(double x, double y, double u)>; //
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using EigenTriplet = Eigen::Triplet<double>;
 
+double alpha = -0.3;
+
 
 
 vec2 triangle_circumcenter(vec2 p, vec2 q, vec2 r)
@@ -140,7 +142,7 @@ VertexAttachment<double> FVSolver::solve()
     /*--------------------------------------------------------------------------------
         Source term contribution.
     --------------------------------------------------------------------------------*/
-    #if 0
+    #if 1
     // Rectangle quadrature
     for (Vertex v : geom->mesh.vertices()) {
         if (v.on_boundary()) continue;
@@ -298,6 +300,18 @@ struct FVDemo : public IBehaviour {
     int mesh_N;
     bool random;
     double source_force;
+
+
+
+    // Plotting.
+    GLShaderProgram sprite_shader;
+    GLuint sprite_vao;
+
+    GLShaderProgram sample_geometry_shader;
+
+    GLuint sample_geometry_fbo;
+    GLuint sample_geometry_texture;
+    GLuint sample_geometry_depth_texture;
 };
 
 
@@ -330,6 +344,58 @@ FVDemo::FVDemo(PlaneFunction _dirichlet_boundary_function) :
     random = false;
     geom = nullptr;
     source_force = 0.0;
+
+    // Geometry sampling.
+    sample_geometry_shader.add_shader(GLShader(VertexShader, SHADERS "sample_geometry/sample_geometry.vert"));
+    sample_geometry_shader.add_shader(GLShader(FragmentShader, SHADERS "sample_geometry/sample_geometry.frag"));
+    sample_geometry_shader.link();
+
+    glGenFramebuffers(1, &sample_geometry_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, sample_geometry_fbo);
+
+    glGenTextures(1, &sample_geometry_texture);
+    glBindTexture(GL_TEXTURE_2D, sample_geometry_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);  
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sample_geometry_texture, 0);
+
+    glGenTextures(1, &sample_geometry_depth_texture);
+    glBindTexture(GL_TEXTURE_2D, sample_geometry_depth_texture);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 1024, 1024, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, sample_geometry_depth_texture, 0);
+
+    GLenum framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if(framebuffer_status != GL_FRAMEBUFFER_COMPLETE) {
+        fprintf(stderr, "Framebuffer incomplete.\n");
+        exit(EXIT_FAILURE);
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+
+    // Plotting
+    sprite_shader.add_shader(GLShader(VertexShader, SHADERS "plot/plot.vert"));
+    sprite_shader.add_shader(GLShader(FragmentShader, SHADERS "plot/plot.frag"));
+    sprite_shader.link();
+    glGenVertexArrays(1, &sprite_vao);
+
+    GLuint sprite_vbo;
+    glGenBuffers(1, &sprite_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, sprite_vbo);
+    float sprite_uvs[2*4] = {
+        0,0, 1,0, 1,1, 0,1
+    };
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, sprite_uvs, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &sprite_vao);
+    glBindVertexArray(sprite_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, sprite_vbo);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+
+
 }
 
 void FVDemo::update()
@@ -353,11 +419,13 @@ void FVDemo::post_render_update()
     auto solver = FVSolver(*geom);
     solver.set_dirichlet_boundary(dirichlet_boundary_function);
     solver.set_source([&](double x, double y)->double {
-        float r = 0.3;
-        if (x*x + y*y <= r*r) {
-            return source_force;
-        }
-        return 0.0;
+        return 4*pow(alpha, 2)*pow(x, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) + 4*pow(alpha, 2)*pow(y, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) - 4*alpha*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2));
+
+        // float r = 0.3;
+        // if (x*x + y*y <= r*r) {
+        //     return source_force;
+        // }
+        // return 0.0;
     });
     VertexAttachment<double> mesh_u = solver.solve();
 
@@ -370,6 +438,78 @@ void FVDemo::post_render_update()
         lifted_geom.position[v] = Eigen::Vector3f(geom_pos.x(), u_val, geom_pos.z());
     }
     world->graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.006f);
+
+
+    // Quality metric.
+
+
+
+    auto sample_positions = std::vector<vec2>();
+    auto sample_values = std::vector<float>();
+    for (auto tri : geom->mesh.faces()) {
+        auto start = tri.halfedge();
+        auto he = start;
+        do {
+            auto p = geom->position[he.vertex()];
+            sample_positions.push_back(vec2(p.x(), p.z()));
+            sample_values.push_back(dirichlet_boundary_function(p.x(), p.z()));
+            he = he.next();
+        } while (he != start);
+    }
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint vbo_positions;
+    glGenBuffers(1, &vbo_positions);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vec2) * sample_positions.size(), &sample_positions[0], GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(0);
+
+    GLuint vbo_values;
+    glGenBuffers(1, &vbo_values);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_values);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * sample_values.size(), &sample_values[0], GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(1);
+
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport); // save the viewport to restore after rendering sample geometry.
+    glDisable(GL_SCISSOR_TEST);
+    glViewport(0,0,1024,1024);
+
+    sample_geometry_shader.bind();
+    glBindFramebuffer(GL_FRAMEBUFFER, sample_geometry_fbo);
+    glDisable(GL_DEPTH_TEST);
+    glDrawArrays(GL_TRIANGLES, 0, sample_positions.size());
+    glEnable(GL_DEPTH_TEST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    sample_geometry_shader.unbind();
+
+    glEnable(GL_SCISSOR_TEST);
+    glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo_positions);
+    glDeleteBuffers(1, &vbo_values);
+    
+    // Plot the solution.
+    sprite_shader.bind();
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glUniform2f(sprite_shader.uniform_location("bottom_left"), 0,0);
+    glUniform2f(sprite_shader.uniform_location("top_right"), 0.35,0.45);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, sample_geometry_texture);
+    glUniform1i(sprite_shader.uniform_location("tex"), 0);
+
+    glBindVertexArray(sprite_vao);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+    sprite_shader.unbind();
 }
 
 
@@ -417,7 +557,9 @@ App::App(World &_world) : world{_world}
     // Create the demo.
     demo_e = world.entities.add();
     auto demo = world.add<FVDemo>(demo_e, [](double x, double y)->double {
-        return 1+0.4*sin(8*x);
+        // return 1+0.4*sin(8*x);
+        // return cos(x) + y*y;
+        return exp(-alpha*(x*x + y*y)) - 1.0;
     });
     demo_b = demo_e.get<Behaviour>();
 }
