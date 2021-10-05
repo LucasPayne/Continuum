@@ -526,16 +526,17 @@ void FVDemo::post_render_update()
 {
     // Recreate the mesh.
     if (geom != nullptr) delete geom;
-    // geom = circle_mesh(mesh_N, random);
-    geom = square_mesh(mesh_N);
+    srand(230192301);
+    geom = circle_mesh(mesh_N, random);
+    // geom = square_mesh(mesh_N);
 
     // Solve the problem.
     auto solver = FVSolver(*geom);
     solver.set_dirichlet_boundary(dirichlet_boundary_function);
     solver.set_source([&](double x, double y)->double {
-        return -(4*pow(alpha, 2)*pow(x, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) + 4*pow(alpha, 2)*pow(y, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) - 4*alpha*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)));
+        // return -(4*pow(alpha, 2)*pow(x, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) + 4*pow(alpha, 2)*pow(y, 2)*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)) - 4*alpha*exp(-alpha*pow(x, 2))*exp(-alpha*pow(y, 2)));
         
-        // return 0.0;
+        return 0.0;
 
 
         // float r = 0.3;
@@ -577,6 +578,7 @@ void FVDemo::post_render_update()
     if (1) {
         // Square
         // Draw the exact boundary condition.
+        #if 0
         int num = 300;
         for (int t = -1; t <= 1; t += 2) {
             for (int axis = 0; axis <= 1; axis++) {
@@ -591,6 +593,18 @@ void FVDemo::post_render_update()
 	        world->graphics.paint.chain(bc, 0.01, vec4(0,0,0,1));
             }
         }
+        #else
+        // Circle
+        int num = 300;
+        auto boundary_condition_loop = std::vector<vec3>(num+1);
+        for (int i = 0; i <= num; i++) {
+            float theta = 2*i*M_PI/num;
+            float c = cos(theta);
+            float s = sin(theta);
+            boundary_condition_loop[i] = vec3(c, dirichlet_boundary_function(c, s), s);
+        }
+        world->graphics.paint.chain(boundary_condition_loop, 0.01, vec4(0,0,0,1));
+        #endif
     }
 
 
@@ -645,8 +659,8 @@ App::App(World &_world) : world{_world}
     auto demo = world.add<FVDemo>(demo_e, [](double x, double y)->double {
         // return 1+0.4*sin(8*x);
         // return cos(x) + y*y;
-        return exp(-alpha*(x*x + y*y));
-        // return x*x - y*y;
+        // return exp(-alpha*(x*x + y*y));
+        return x*x - y*y + 1.13;
         
     });
     demo_b = demo_e.get<Behaviour>();

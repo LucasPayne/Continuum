@@ -38,9 +38,10 @@
 \BOOKMARK [2][-]{subsection.4.3.5}{The resulting matrix assembly algorithm}{section.4.3}% 38
 \BOOKMARK [2][-]{subsection.4.3.6}{The resulting finite volume algorithm}{section.4.3}% 39
 \BOOKMARK [2][-]{subsection.4.3.7}{An implementation in C++}{section.4.3}% 40
-\BOOKMARK [1][-]{section.4.4}{From finite volumes to finite elements}{chapter.4}% 41
-\BOOKMARK [1][-]{section.4.5}{Discretizing Poisson's equation by finite elements}{chapter.4}% 42
-\BOOKMARK [2][-]{subsection.4.5.1}{Choosing a test and a trial space}{section.4.5}% 43
-\BOOKMARK [0][-]{chapter.5}{Solving the Navier-Stokes equations}{}% 44
-\BOOKMARK [0][-]{chapter.6}{Some functional analysis}{}% 45
-\BOOKMARK [0][-]{section*.45}{Bibliography}{}% 46
+\BOOKMARK [2][-]{subsection.4.3.8}{Validating the method}{section.4.3}% 41
+\BOOKMARK [1][-]{section.4.4}{From finite volumes to finite elements}{chapter.4}% 42
+\BOOKMARK [1][-]{section.4.5}{Discretizing Poisson's equation by finite elements}{chapter.4}% 43
+\BOOKMARK [2][-]{subsection.4.5.1}{Choosing a test and a trial space}{section.4.5}% 44
+\BOOKMARK [0][-]{chapter.5}{Solving the Navier-Stokes equations}{}% 45
+\BOOKMARK [0][-]{chapter.6}{Some functional analysis}{}% 46
+\BOOKMARK [0][-]{section*.46}{Bibliography}{}% 47

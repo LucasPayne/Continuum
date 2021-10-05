@@ -7,7 +7,8 @@ Continuum mechanics provides the foundation for understanding of fluid motion, a
 a Newtonian fluid are the primary model for the prediction of fluid behaviour in engineering.
 The domain and initial/boundary conditions can be arbitrarily complex. For example, fluid motion is often simulated
 through a digital surface model of a real-world object or system created in computer-aided design software.
-On the other side of the coin, fluid models are very often used in modern film, both live action and animated.
+On the other side of the coin, fluid models are very often used in modern film, both live action and animated,
+and all relevant geometry can be adjusted by artists for a desired visual effect.
 \captionsetup[subfigure]{labelformat=empty}
 \begin{figure}[H]
     \centering
@@ -26,7 +27,8 @@ On the other side of the coin, fluid models are very often used in modern film, 
     \label{fig:galerkin_mathematicians}
 \end{figure}
 In applications, the Navier-Stokes equations are primarily
-solved on a computer, and a computer works with both finite data and finite precision. Galerkin methods
+solved on a computer, and a computer works with both finite data and finite precision. We will solve these equations by a \textit{Galerkin method}.
+Galerkin methods
 are particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
 residual minimisation, and solution reconstruction, can be automated (\cite{firedrake}, \cite{fenics_book}, \cite{DOLFIN}). We begin by
 deriving two instances of Galerkin methods for Poisson's equation, performed on an irregular 2D domain to emphasize that the methods trivially extend
@@ -607,11 +609,7 @@ Pseudocode for this algorithm is given below.
                 $A[j, I(t+1)] \leftarrow A[j, I(t+1)] + C(v_t - v)\cdot(v_{t+1} - v_t)$\;
             }
         }
-        $\totaltrianglearea \leftarrow 0$\;
-        \For{$t = 1,\cdots, k$}{
-            $\totaltrianglearea \leftarrow \totaltrianglearea + \text{Area}(T)$\;
-        }
-        $\hat{f}[j] \leftarrow \hat{f}[j] + \totaltrianglearea\cdot g(v)$\;
+        $\hat{f}[j] \leftarrow \hat{f}[j] + \text{Control\_Volume\_Area}(\Omega_j)\cdot g(v)$\;
     }
     \Return{$(A, \hat{f})$}\;
     % Solve $A\hat{h} = b$ for $\hat{h} = (h_1,\cdots,h_n)^T$\;
@@ -678,6 +676,7 @@ and the data organization (e.g., vertex, triangle, and adjacency information) wi
 of mesh traversals performed during matrix assembly. This is typically some variant of a ``halfedge'' data structure \cite{polygon_mesh_processing},
 implemented in libraries such as Geometry Central \cite{geometry_central},
 the Polygon Mesh Processing library \cite{polygon_mesh_processing_library}, and OpenMesh \cite{openmesh}.
+
 A mesh data structure is a foundational component of \textit{mesh generation} systems. For 2D domains, a somewhat regular sampling of points on the boundary
 and interior, followed by triangulation of these points, can suffice for a piecewise-linear finite volume mesh.
 The Triangle \cite{triangle} library, for example, contains a single very efficient and robust C routine (consisting of 16k lines of highly optimized code)
@@ -703,8 +702,8 @@ The system is solved with a sparse LU factorisation method provided by the C\tex
 With these interfaces, the resulting C\texttt{++} was almost a direct transliteration of the pseudocodes \ref{alg:fvm} and \ref{alg:assembly}.
 
 
-\subsubsection{Validating the method}
-In order to validate this algorithm, some simple test cases can be generated,
+\subsection{Validating the method}
+In order to validate this algorithm, and in particular its C\texttt{++} implementation described above, some simple test cases can be generated,
 using the ``method of manufactured solutions'' \cite{fenics_tutorial}.
 Firstly, suppose the exact solution is
 $$
@@ -729,7 +728,7 @@ of Galerkin methods' ability to model complex geometries, but it is a difficult 
 metric acts ``nicely''.}.
 To measure convergence, we use the $L^2$ norm (although others could be used), defined by
 \begin{equation}\label{test_L2_norm}
-    \norm{\tilde{h} - h}_{L^2(\Omega)} = \int_{-1}^1\int_{-1}^1 (\tilde{h}(x,y) - h(x,y))^2 \,dx\,dy.
+    \norm{\tilde{h} - h}_{L^2(\Omega)} = \sqrt{\int_{-1}^1\int_{-1}^1 (\tilde{h}(x,y) - h(x,y))^2 \,dx\,dy}.
 \end{equation}
 
 To validate the convergence of the method, simply increase $h$, generate the mesh, solve the test equation,
@@ -740,15 +739,15 @@ then compute the $L^2$ error \eqref{test_L2_norm}, and repeat. A log-log plot of
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/graphs/error_metric_file_square_fixup.png}
     \end{center}
-    \caption{\scriptsize
+    \caption{
         The $L^2$-norm error for the test problem \eqref{fvm_test_equation_1}, as parameter $r$ varies.
     }
     \label{error_fvm_1}
 \end{figure}
-We see clearly that the convergence for test problem \eqref{fvm_test_equation_1} is straightforward and quadratic.
+It can be seen clearly that the convergence for test problem \eqref{fvm_test_equation_1} is quadratic.
 
 
-Suppose instead that the exact solution is
+We should also try a test problem which does not degenerate to Laplace's equation. Suppose instead that the exact solution is
 $$
     h = e^{-2(x^2 + y^2)}.
 $$
@@ -764,12 +763,15 @@ giving the new test problem,
 The log-log error plot is displayed in figure \eqref{error_fvm_2}. In this case, there is still a clear quadratic convergence,
 but with some oscillation in quality as $r$ decreases.
 This is likely due to the coarse numerical integration of the heat source (which is using the rectangle rule for simplicity).
+A visualization of these convergence results for problem \eqref{fvm_test_equation_2} is given in figure \ref{fvm_error_page}.
+To emphasize the generality of the algorithm, figure \ref{fvm_laplace_error} displays convergence for problem \eqref{fvm_test_equation_1}
+on an irregularly-meshed disk.
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/graphs/error_metric_file_square_2_fixup.png}
     \end{center}
-    \caption{\scriptsize
+    \caption{
         The $L^2$-norm error for the test problem \eqref{fvm_test_equation_2}, as parameter $r$ varies.
     }
     \label{error_fvm_2}
@@ -777,6 +779,31 @@ This is likely due to the coarse numerical integration of the heat source (which
 
 
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/error/error.png}
+    \end{center}
+    \caption{
+        Approximate solutions to the test problem \eqref{fvm_test_equation_2} with varying $r$.
+        The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle).
+        Black is $h = 0$, and white is $h = 1$.
+        On the right, a 3D view of the solution and mesh is shown.
+    }
+    \label{fvm_error_page}
+\end{figure}
+
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/error/laplace_error.png}
+    \end{center}
+    \caption{
+        Approximate solutions to the test problem \eqref{fvm_test_equation_1} with varying $r$.
+        The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref{alg:fvm}
+        works trivially with curved domains and irregular meshes.
+    }
+    \label{fvm_laplace_error}
+\end{figure}
 
 % In geometry processing this matrix is called the ``cotangent Laplacian'' \cite{polygon_mesh_processing}, and it is typically
 % applied to surface meshes in $\mathbb{R}^3$, which can be thought of as triangulations of a smooth surface.
@@ -1078,27 +1105,21 @@ some Sobolev space, constructed over a domain tessellation.
 %     \phi_\Gamma \quad \phi = h_1\phi_1 + \cdots + h_n\phi_n \quad \tilde{h}
 % $$
 
-\begin{align*}
-    &\text{$4\times 4$ grid}\\
-    &r = 0.742\\
-    &\text{error } = 0.082
-\end{align*}
-\begin{align*}
-    &\text{$6\times 6$ grid}\\
-    &r = 0.449\\
-    &\text{error } = 0.027
-\end{align*}
-\begin{align*}
-    &\text{$10\times 10$ grid}\\
-    &r = 0.251\\
-    &\text{error } = 0.009
-\end{align*}
-\begin{align*}
-    &\text{$20\times 20$ grid}\\
-    &r = 0.119\\
-    &\text{error } = 0.002
-\end{align*}
 % 3 0.7419784069 0.0811988786
 % 5 0.4487308264 0.0266765263
 % 9 0.2507884502 0.0091549866
 % 19 0.1193039417 0.0021749979
+% \begin{align*}
+%     \text{$4\times 4$ grid}&\\
+%     r = 0.742&\\
+%     \text{error } = 0.082&\\
+%     \text{$6\times 6$ grid}&\\
+%     r = 0.449&\\
+%     \text{error } = 0.027&\\
+%     \text{$10\times 10$ grid}&\\
+%     r = 0.251&\\
+%     \text{error } = 0.009&\\
+%     \text{$20\times 20$ grid}&\\
+%     r = 0.119&\\
+%     \text{error } = 0.002&
+% \end{align*}
