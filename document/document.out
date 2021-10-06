@@ -27,14 +27,14 @@
 \BOOKMARK [2][-]{subsection.3.4.1}{Application to hydrostatics}{section.3.4}% 27
 \BOOKMARK [0][-]{chapter.4}{Two Galerkin methods for Poisson's equation}{}% 28
 \BOOKMARK [1][-]{section.4.1}{Introduction}{chapter.4}% 29
-\BOOKMARK [1][-]{section.4.2}{The equation to solve: The Poisson equation}{chapter.4}% 30
+\BOOKMARK [1][-]{section.4.2}{The equation to solve: Poisson's equation}{chapter.4}% 30
 \BOOKMARK [2][-]{subsection.4.2.1}{Discretizing the differential form of the PDE}{section.4.2}% 31
 \BOOKMARK [2][-]{subsection.4.2.2}{Discretizing the integral form of the PDE}{section.4.2}% 32
 \BOOKMARK [1][-]{section.4.3}{Discretizing Poisson's equation by finite volumes}{chapter.4}% 33
 \BOOKMARK [2][-]{subsection.4.3.1}{The Dirichlet boundary condition and the test space}{section.4.3}% 34
 \BOOKMARK [2][-]{subsection.4.3.2}{Forming a linear system}{section.4.3}% 35
 \BOOKMARK [2][-]{subsection.4.3.3}{A piecewise linear triangulation scheme}{section.4.3}% 36
-\BOOKMARK [2][-]{subsection.4.3.4}{Computing the linear system by closed-form integration}{section.4.3}% 37
+\BOOKMARK [2][-]{subsection.4.3.4}{Computing the linear system by closed form integration}{section.4.3}% 37
 \BOOKMARK [2][-]{subsection.4.3.5}{The resulting matrix assembly algorithm}{section.4.3}% 38
 \BOOKMARK [2][-]{subsection.4.3.6}{The resulting finite volume algorithm}{section.4.3}% 39
 \BOOKMARK [2][-]{subsection.4.3.7}{An implementation in C++}{section.4.3}% 40
@@ -42,7 +42,9 @@
 \BOOKMARK [1][-]{section.4.4}{From finite volumes to general Galerkin methods}{chapter.4}% 42
 \BOOKMARK [2][-]{subsection.4.4.1}{Generalising the flux integrals by combining equations}{section.4.4}% 43
 \BOOKMARK [2][-]{subsection.4.4.2}{The weak form of Poisson's equation}{section.4.4}% 44
-\BOOKMARK [1][-]{section.4.5}{Discretizing Poisson's equation by finite elements}{chapter.4}% 45
-\BOOKMARK [2][-]{subsection.4.5.1}{Choosing a test and a trial space}{section.4.5}% 46
-\BOOKMARK [0][-]{chapter.5}{Solving the Navier-Stokes equations}{}% 47
-\BOOKMARK [0][-]{section*.46}{Bibliography}{}% 48
+\BOOKMARK [2][-]{subsection.4.4.3}{General Galerkin methods for Poisson's equation}{section.4.4}% 45
+\BOOKMARK [1][-]{section.4.5}{Discretizing Poisson's equation by finite elements}{chapter.4}% 46
+\BOOKMARK [2][-]{subsection.4.5.1}{Forming a linear system}{section.4.5}% 47
+\BOOKMARK [2][-]{subsection.4.5.2}{Computing the linear system by closed form integration}{section.4.5}% 48
+\BOOKMARK [0][-]{chapter.5}{Solving the Navier-Stokes equations}{}% 49
+\BOOKMARK [0][-]{section*.45}{Bibliography}{}% 50

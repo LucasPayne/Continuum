@@ -57,7 +57,7 @@ is much closer to the answer than, for example, the finite difference method.
 
 \subsubsection{The finite element method}
 
-\section{The equation to solve: The Poisson equation}
+\section{The equation to solve: Poisson's equation}
 
 Among the fundamental PDEs
 are the heat equation
@@ -390,7 +390,7 @@ The scheme as described so far, consisting of a triangle mesh, hat test function
 has found some success, especially in the domain of geometry processing (\cite{polygon_mesh_processing}, \cite{ddg_triangulated}).
 We will work with the mixed Voronoi cells.
 
-\subsection{Computing the linear system by closed-form integration}
+\subsection{Computing the linear system by closed form integration}
 Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
 the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
 the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
@@ -950,20 +950,54 @@ Formally, $v$ is in the Sobolev space $H^1_0(\Omega)$, where the $0$ subscript d
 that $v$ must vanish on the boundary $\Gamma$. (The integral of fluxes cannot contain a flux measurement
 across $\Gamma$, as the solution there is specified by the Dirichlet boundary condition --- there is no flux information on $\Gamma$.)
 
-
-Now we can forget our definition of $v$, and define the \textit{weak form} of Poisson's equation to be
+Now we can forget our specific definition of $v$, and define the \textit{weak form} of Poisson's equation to be
 \begin{equation}\label{poisson_equation_weak_form}
     \int_\Omega \nabla h \cdot \nabla v \,dx = \int_\Omega gv\,dx \text{\quad for all $v \in H^1_0(\Omega)$}.
 \end{equation}
+The weak form will be the starting point for deriving general Galerkin methods.
+
+\subsection{General Galerkin methods for Poisson's equation}
 A general Galerkin method will discretize the test space as usual, approximating $h$ by
 $$\tilde{h} \in \Phi = \text{span}\left\{\phi_1, \cdots, \phi_n\right\},$$
-and also approximate the trial space $H^1_0$ as
+and will also approximate the ``trial space'' $H^1_0(\Omega)$
+\footnote{The function space $\Psi$ is called the trial space as it determines the finite number of ``trial equations'' which need to hold in order
+           to establish that $\tilde{h}$ is an approximate solution.}
+as
     $$v \in \Psi = \text{span}\left\{\psi_1, \cdots, \psi_n\right\}.$$
-The resulting discrete system of equations is
-
+Since the weak form equations \eqref{poisson_equation_weak_form} are linear in $v$, we need only check them for $v=\psi_1,\cdots,\psi_n$.
+The resulting discrete system of equations for a general Galerkin method is
 \begin{equation}\label{poisson_galerkin_system}
-    equation
-\end{equation
+\begin{split}
+    \int_\Omega \nabla\tilde{h}\cdot \nabla\psi_j\,dx
+        &\equiv \int_\Omega \nabla(\phi_\Gamma + \Phi\cdot\hat{h})\cdot \nabla\psi_j\,dx \\
+    &\equiv \int_\Omega \nabla\phi_\Gamma \cdot \nabla\psi_j\,dx + \sum_{i=1}^n h_i\int_\Omega \nabla\phi_i\cdot \nabla\psi_j\,dx\\
+    &= \int_\Omega g\psi_j\,dx,
+        \text{\quad\quad $j = 1,\cdots,n$}.
+\end{split}
+\end{equation}
+Remember that we start with the discrete solution space $\Phi^*$, then define the test space $\Phi$ to be $\Phi^*$ restricted to those functions vanishing on $\Gamma$.
+The term $\phi_\Gamma \in \Phi^*$ is a ``base'' term which approximates the boundary condition $h_\Gamma$ on $\Gamma$.
+We can try just about any kind of function spaces for $\Phi$ and $\Psi$, but we can make some broad distinctions, for example:
+\begin{itemize}
+    \item If $\Psi = \Phi$, then we call this a \textit{Bubnov--Galerkin} method.
+    \item If $\Psi \neq \Phi$, then we call this a \textit{Petrov--Galerkin} method.
+\end{itemize}
+Further, whether Bubnov-- or Petrov--Galerkin, there are two common classes of $H^1_0$-conforming Galerkin methods:
+\begin{itemize}
+    \item If the $\Phi$ and $\Psi$ basis functions have well-localised compact support, we get the \textit{finite element method}.
+    \item If the $\Phi$ and $\Psi$ basis functions are non-localised global functions, for example harmonics of $\Omega$, we get the \textit{spectral method}.
+\end{itemize}
+Next, we will derive a simple finite element method for Poisson's equation.
+
+\begin{aside}
+Relation to FVM: The finite volume method can be considered a sharp edge case of \eqref{poisson_galerkin_system}, where $\Psi_{\text{FVM}}$ is defined as
+$$
+    \Psi_{\text{FVM}} = \text{span}\left\{\chi(\Omega_1), \cdots, \chi(\Omega_n)\right\}
+$$
+for some choice of control volumes $\Omega_1, \cdots, \Omega_n$.
+While $\Psi_{\text{FVM}}$ is technically not $H^1_0$-conforming, if the gradient generalisation \eqref{fem_indicator_gradient} is used, the result is the finite volume method.
+\end{aside}
+
 
 
 
@@ -1094,92 +1128,123 @@ The resulting discrete system of equations is
 % the linear system will be symmetric-positive-definite, and stably solvable by, for example, conjugate gradients.
 
 \section{Discretizing Poisson's equation by finite elements}
+Much of the FEM discretization scheme, and resulting algorithm, will be the same as the previously derived FVM scheme.
+The distinguishing feature is that different integrals are taken when forming the linear system.
+\subsection{Forming a linear system}
+We now start with the weak form \eqref{poisson_equation_weak_form}.
+We can use the same piecewise linear triangulation scheme as in the finite volume method, but we no longer
+take trial flux integrals over mixed Voronoi cells. Instead, we can use the Bubnov--Galerkin method: Let $\Psi = \Phi$
+(which are the hat functions) and form the system of linear equations \eqref{poisson_galerkin_system}.
+In matrix form this linear system is
 
-Equation \eqref{poisson_galerkin} gives a discrete linear system
-\renewcommand{\integralentry}[2]{\int_{\Omega}\nabla\phi_{#2} \cdot \nabla\psi_{#1}\,dx}
-\begin{equation}\label{poisson_fem_matrix_equation}
-    A\hat{h} = \begin{bmatrix}
+\renewcommand{\integralentry}[2]{\int_{\om_{#1}}\nabla\phi_{#2}\cdot\nabla{\psi_j}\,dx}
+\renewcommand{\integralrhsentry}[1]{\int_{\om_{#1}}g\,dx - \int_{\om_{#1}}\nabla\phi_\Gamma\cdot\nabla{\psi_j}\,dx}
+\begin{equation}\label{fem_poisson_matrix_equation}
+\begin{split}
+    A\hat{h}
+    &= \begin{bmatrix}
             \integralentry{1}{1} & \cdots & \integralentry{1}{n} \\
             \vdots & & \vdots \\
             \integralentry{n}{1} & \cdots & \integralentry{n}{n}
-            \end{bmatrix}
-    \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
-    =
-    \begin{bmatrix} \int_{\om}g\psi_1\,dx \\ \int_{\om}g\psi_2\,dx \\ \vdots \\ \int_{\om}g\psi_{n-1}\,dx \\ \int_{\om}g\psi_{n}\,dx \end{bmatrix}
-    = \hat{g}.
+    \end{bmatrix}
+    \begin{bmatrix} h_1 \\ \vdots \\ h_n \end{bmatrix}
+    \\
+    &= \begin{bmatrix} \integralrhsentry{1} \\ \vdots \\ \integralrhsentry{n}  \end{bmatrix}
+    = \hat{f}.
+\end{split}
 \end{equation}
-This has quite a similar form to \eqref{poisson_matrix_equation}, but with boundary and cell integrals replaced by integrals over the entire
-domain.
-Again, if the control volumes $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
-are chosen well, this linear system will be non-singular and hopefully well-conditioned.
+This is much the same as the FVM matrix equation \eqref{poisson_matrix_equation}, with flux integrals replaced
+by integrals against trial functions (giving ``blurred'' flux integrals).
 
-\subsection{Choosing a test and a trial space}
-Notice that the integrals in \eqref{poisson_fem_matrix_equation}, in contrast to \eqref{poisson_matrix_equation},
-are over the \textit{entire domain}. It may be very costly in general to construct such a matrix, requiring
-the computation of many large integrals. The finite element method, in particular, solves this problem
-by ``localising'' basis functions of the test and trial spaces. Each basis test function $\phi_i$
-has \textit{compact support}, meaning that there is some compact subdomain $D^\phi_i$ such that
-\begin{align*}
-    \phi_i(x) =
-    \left\{\begin{array}{lr}
-        \phi_i(x) &\text{if $x \in D^\phi_i$}\\
-        0 &\text{otherwise},\\
-    \end{array}\right.
-\end{align*}
-and similarly each basis trial function $\psi_i$ has some corresponding compact subdomain $D^\psi_i$ such that
-\begin{align*}
-    \psi_i(x) =
-    \left\{\begin{array}{lr}
-        \psi_i(x) &\text{if $x \in D^\psi_i$}\\
-        0 &\text{otherwise}.\\
-    \end{array}\right.
-\end{align*}
-This has the effect of reducing the domain of each integral in \eqref{poisson_fem_matrix_equation}, as
-    $$\int_\Omega \nabla\phi_i \cdot \nabla\psi_j\,dx = \int_{D_i^\phi \cap D_j^\psi} \nabla\phi_i \cdot \nabla\psi_j\,dx. $$
-With well-localised basis functions, the intersection will be
-    $$D_i^\phi \cap D_j^\psi = \emptyset$$
-for most indices $i,j$, implying the matrix \eqref{poisson_fem_matrix_equation} will be \textit{sparse}. In practice this allows
-the use of iterative or graph-based sparse matrix algorithms which can be hugely more efficient than dense matrix computations of the same size.
-The size of the matrix will increase quadratically with the number of nodes in the discretization, while the number of nonzeros
-typically increases linearly.
-A typical sparsity pattern for a finite element problem is shown in figure \ref{sparsity_pattern}.
+\subsection{Computing the linear system by closed form integration}
+In deriving the FVM, we had to compute closed form flux integrals over complex polygonal cells.
+The integration required for our new FEM method is somewhat simpler.
 
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.26\linewidth]{figures/sparsity_pattern_no_text.png}
-    \end{center}
-    \caption{\scriptsize
-        An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
-        The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$.
-    }
-    \label{sparsity_pattern}
-\end{figure}
-
-
-Similar to the hat-functions-and-Voronoi-cells decomposition described for finite volumes,
-the simplest scheme for the finite element Poisson equation is to triangulate $\Omega$ as
-    $\bigcup_i T_i$
-such there are $n$ nodal points and $n_T$ triangles.
-Each nodal point $p_i$ will be associated with a piecewise linear ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
-$0$ at its neighbours. Now, diverging from the previous finite volume method, the simplest thing we could do is let the trial functions be the same
-as the test functions, $\psi_i = \phi_i$. This trivially gives a one-to-one correspondence between the $\phi_i$ and the $\psi_i$, which will lead
-to a well-formed linear system.
-
-\vskip 0.1in
-(draw this)
-\vskip 0.1in
-
-% It is at this stage that, in a finite volume method, we would choose a test space and a cell decomposition in one-to-one correspondence
-% with a basis of the test space.
-% In that case,
-% there was the obvious candidate of a polygonal cell per-vertex.
-% However, there is a vast array of possible Galerkin ``decompositions'' of the domain.
-% A ``finite element method'', in particular, uses test and trial basis functions of \textit{compact support}.
-
-We have so far worked up to an instance of a \textit{finite element method}.
-Finite element methods are characterised by a test space $\Phi$ and trial space
-$\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
-some Sobolev space, constructed over a domain tessellation.
+% Equation \eqref{poisson_galerkin} gives a discrete linear system
+% \renewcommand{\integralentry}[2]{\int_{\Omega}\nabla\phi_{#2} \cdot \nabla\psi_{#1}\,dx}
+% \begin{equation}\label{poisson_fem_matrix_equation}
+%     A\hat{h} = \begin{bmatrix}
+%             \integralentry{1}{1} & \cdots & \integralentry{1}{n} \\
+%             \vdots & & \vdots \\
+%             \integralentry{n}{1} & \cdots & \integralentry{n}{n}
+%             \end{bmatrix}
+%     \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_{n-1} \\ h_n \end{bmatrix}
+%     =
+%     \begin{bmatrix} \int_{\om}g\psi_1\,dx \\ \int_{\om}g\psi_2\,dx \\ \vdots \\ \int_{\om}g\psi_{n-1}\,dx \\ \int_{\om}g\psi_{n}\,dx \end{bmatrix}
+%     = \hat{g}.
+% \end{equation}
+% This has quite a similar form to \eqref{poisson_matrix_equation}, but with boundary and cell integrals replaced by integrals over the entire
+% domain.
+% Again, if the control volumes $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
+% are chosen well, this linear system will be non-singular and hopefully well-conditioned.
+% 
+% \subsection{Choosing a test and a trial space}
+% Notice that the integrals in \eqref{poisson_fem_matrix_equation}, in contrast to \eqref{poisson_matrix_equation},
+% are over the \textit{entire domain}. It may be very costly in general to construct such a matrix, requiring
+% the computation of many large integrals. The finite element method, in particular, solves this problem
+% by ``localising'' basis functions of the test and trial spaces. Each basis test function $\phi_i$
+% has \textit{compact support}, meaning that there is some compact subdomain $D^\phi_i$ such that
+% \begin{align*}
+%     \phi_i(x) =
+%     \left\{\begin{array}{lr}
+%         \phi_i(x) &\text{if $x \in D^\phi_i$}\\
+%         0 &\text{otherwise},\\
+%     \end{array}\right.
+% \end{align*}
+% and similarly each basis trial function $\psi_i$ has some corresponding compact subdomain $D^\psi_i$ such that
+% \begin{align*}
+%     \psi_i(x) =
+%     \left\{\begin{array}{lr}
+%         \psi_i(x) &\text{if $x \in D^\psi_i$}\\
+%         0 &\text{otherwise}.\\
+%     \end{array}\right.
+% \end{align*}
+% This has the effect of reducing the domain of each integral in \eqref{poisson_fem_matrix_equation}, as
+%     $$\int_\Omega \nabla\phi_i \cdot \nabla\psi_j\,dx = \int_{D_i^\phi \cap D_j^\psi} \nabla\phi_i \cdot \nabla\psi_j\,dx. $$
+% With well-localised basis functions, the intersection will be
+%     $$D_i^\phi \cap D_j^\psi = \emptyset$$
+% for most indices $i,j$, implying the matrix \eqref{poisson_fem_matrix_equation} will be \textit{sparse}. In practice this allows
+% the use of iterative or graph-based sparse matrix algorithms which can be hugely more efficient than dense matrix computations of the same size.
+% The size of the matrix will increase quadratically with the number of nodes in the discretization, while the number of nonzeros
+% typically increases linearly.
+% A typical sparsity pattern for a finite element problem is shown in figure \ref{sparsity_pattern}.
+% 
+% \begin{figure}[H]
+%     \begin{center}
+%         \includegraphics[width=0.26\linewidth]{figures/sparsity_pattern_no_text.png}
+%     \end{center}
+%     \caption{\scriptsize
+%         An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
+%         The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$.
+%     }
+%     \label{sparsity_pattern}
+% \end{figure}
+% 
+% 
+% Similar to the hat-functions-and-Voronoi-cells decomposition described for finite volumes,
+% the simplest scheme for the finite element Poisson equation is to triangulate $\Omega$ as
+%     $\bigcup_i T_i$
+% such there are $n$ nodal points and $n_T$ triangles.
+% Each nodal point $p_i$ will be associated with a piecewise linear ``hat'' basis function $\phi_i$ which is $1$ at $p_i$ and
+% $0$ at its neighbours. Now, diverging from the previous finite volume method, the simplest thing we could do is let the trial functions be the same
+% as the test functions, $\psi_i = \phi_i$. This trivially gives a one-to-one correspondence between the $\phi_i$ and the $\psi_i$, which will lead
+% to a well-formed linear system.
+% 
+% \vskip 0.1in
+% (draw this)
+% \vskip 0.1in
+% 
+% % It is at this stage that, in a finite volume method, we would choose a test space and a cell decomposition in one-to-one correspondence
+% % with a basis of the test space.
+% % In that case,
+% % there was the obvious candidate of a polygonal cell per-vertex.
+% % However, there is a vast array of possible Galerkin ``decompositions'' of the domain.
+% % A ``finite element method'', in particular, uses test and trial basis functions of \textit{compact support}.
+% 
+% We have so far worked up to an instance of a \textit{finite element method}.
+% Finite element methods are characterised by a test space $\Phi$ and trial space
+% $\Psi$ with basis functions of \textit{compact support}, where $\Phi$ and $\Psi$ typically consist of continuous functions in
+% some Sobolev space, constructed over a domain tessellation.
 
 
 \begin{figure}[H]

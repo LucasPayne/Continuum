@@ -48,7 +48,7 @@
 \contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}
 \contentsline {subsubsection}{The Galerkin method}{26}{section*.22}
 \contentsline {subsubsection}{The finite element method}{26}{section*.23}
-\contentsline {section}{\numberline {4.2}The equation to solve: The Poisson equation}{26}{section.4.2}
+\contentsline {section}{\numberline {4.2}The equation to solve: Poisson's equation}{26}{section.4.2}
 \contentsline {subsection}{\numberline {4.2.1}Discretizing the differential form of the PDE}{26}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{27}{subsection.4.2.2}
 \contentsline {subsubsection}{Deriving the heat and Poisson equation through diffusion processes}{27}{section*.24}
@@ -60,7 +60,7 @@
 \contentsline {subsubsection}{The test space}{30}{section*.27}
 \contentsline {subsubsection}{Approximating the boundary values}{31}{section*.29}
 \contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}
-\contentsline {subsection}{\numberline {4.3.4}Computing the linear system by closed-form integration}{32}{subsection.4.3.4}
+\contentsline {subsection}{\numberline {4.3.4}Computing the linear system by closed form integration}{32}{subsection.4.3.4}
 \contentsline {subsubsection}{Integrating the source function}{34}{section*.34}
 \contentsline {subsection}{\numberline {4.3.5}The resulting matrix assembly algorithm}{35}{subsection.4.3.5}
 \contentsline {subsection}{\numberline {4.3.6}The resulting finite volume algorithm}{36}{subsection.4.3.6}
@@ -71,7 +71,9 @@
 \contentsline {section}{\numberline {4.4}From finite volumes to general Galerkin methods}{40}{section.4.4}
 \contentsline {subsection}{\numberline {4.4.1}Generalising the flux integrals by combining equations}{40}{subsection.4.4.1}
 \contentsline {subsection}{\numberline {4.4.2}The weak form of Poisson's equation}{41}{subsection.4.4.2}
-\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{42}{section.4.5}
-\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{42}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.4.3}General Galerkin methods for Poisson's equation}{42}{subsection.4.4.3}
+\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{43}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Forming a linear system}{43}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.5.2}Computing the linear system by closed form integration}{43}{subsection.4.5.2}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{45}{chapter.5}
-\contentsline {chapter}{Bibliography}{47}{section*.46}
+\contentsline {chapter}{Bibliography}{47}{section*.45}

@@ -55,6 +55,16 @@
 \renewcommand\footnoterule{}
 
 \newcommand{\todo}[1]{\vskip 0.1in \hrule \vskip 0.03in {#1} \vskip 0.03in \hrule \vskip 0.1in}
+
+% aside
+% https://tex.stackexchange.com/questions/21388/implementing-aside-environment-for-explaining-details-of-calculation
+\usepackage{framed}
+\newcommand{\optionrule}{\noindent\rule{1.0\textwidth}{0.75pt}}
+\newenvironment{aside}
+  {\def\FrameCommand{\hspace{2em}}
+   \MakeFramed {\advance\hsize-\width}\optionrule\small}
+{\par\vskip-\smallskipamount\optionrule\endMakeFramed}
+
 % >>>
 
 \begin{document}

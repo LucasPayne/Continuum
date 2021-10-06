@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  6 OCT 2021 15:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.5.4)  6 OCT 2021 17:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1881,28 +1881,35 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip288
 )
+(/usr/share/texlive/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip289
+\fb@frw=\dimen276
+\fb@frh=\dimen277
+)
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... none found.
-
-(./document.aux)
+ (./document.aux)
 \openout1 = `document.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
- (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
 
@@ -1920,13 +1927,13 @@ File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count350
-\scratchdimen=\dimen276
+\scratchdimen=\dimen278
 \scratchbox=\box61
 \nofMPsegments=\count351
 \nofMParguments=\count352
 \everyMPshowfont=\toks32
 \MPscratchCnt=\count353
-\MPscratchDim=\dimen277
+\MPscratchDim=\dimen279
 \MPnumerator=\count354
 \makeMPintoPDFobject=\count355
 \everyMPtoPDFconversion=\toks33
@@ -1947,10 +1954,10 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\Gin@req@height=\dimen278
-\Gin@req@width=\dimen279
+\Gin@req@height=\dimen280
+\Gin@req@width=\dimen281
 )
-LaTeX Info: Redefining \microtypecontext on input line 60.
+LaTeX Info: Redefining \microtypecontext on input line 70.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1970,7 +1977,7 @@ Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box62
-Package hyperref Info: Link coloring OFF on input line 60.
+Package hyperref Info: Link coloring OFF on input line 70.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -1982,15 +1989,15 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 Redoing nameref's sectioning
 Redoing nameref's label
-LaTeX Info: Redefining \nameref on input line 60.
-LaTeX Info: Redefining \ref on input line 60.
-LaTeX Info: Redefining \pageref on input line 60.
-LaTeX Info: Redefining \nameref on input line 60.
+LaTeX Info: Redefining \nameref on input line 70.
+LaTeX Info: Redefining \ref on input line 70.
+LaTeX Info: Redefining \pageref on input line 70.
+LaTeX Info: Redefining \nameref on input line 70.
 (./document.out) (./document.out)
 \@outlinefile=\write4
 \openout4 = `document.out'.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 65.
+LaTeX Font Info:    Try loading font information for U+msa on input line 75.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -1998,7 +2005,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 65.
+LaTeX Font Info:    Try loading font information for U+msb on input line 75.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -2029,25 +2036,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 8--8
 ] [4
 
 ] (./chapters/continuum_mechanics.tex
-<figures/2.pdf, id=271, page=11, 551.05875pt x 509.905pt>
+<figures/2.pdf, id=281, page=11, 551.05875pt x 509.905pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 11>
 Package pdftex.def Info: figures/2.pdf , page11 used on input line 26.
 (pdftex.def)             Requested size: 551.05739pt x 509.90375pt.
  [5 <./figures/2.pdf>] [6]
-<figures/2.pdf, id=308, page=7, 402.50375pt x 731.73375pt>
+<figures/2.pdf, id=318, page=7, 402.50375pt x 731.73375pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 7>
 Package pdftex.def Info: figures/2.pdf , page7 used on input line 94.
 (pdftex.def)             Requested size: 402.50276pt x 731.73196pt.
 
 [7 <./figures/2.pdf>] [8] [9]
-<figures/2.pdf, id=371, page=8, 551.05875pt x 727.71875pt>
+<figures/2.pdf, id=381, page=8, 551.05875pt x 727.71875pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 8>
 Package pdftex.def Info: figures/2.pdf , page8 used on input line 258.
 (pdftex.def)             Requested size: 551.05739pt x 727.71696pt.
-<figures/2.pdf, id=372, page=9, 551.05875pt x 519.9425pt>
+<figures/2.pdf, id=382, page=9, 551.05875pt x 519.9425pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 9>
 Package pdftex.def Info: figures/2.pdf , page9 used on input line 271.
@@ -2056,40 +2063,40 @@ Package pdftex.def Info: figures/2.pdf , page9 used on input line 271.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [10 <./figures/2.pdf>]
-<figures/2.pdf, id=384, page=2, 334.24875pt x 731.73375pt>
+<figures/2.pdf, id=394, page=2, 334.24875pt x 731.73375pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 2>
 Package pdftex.def Info: figures/2.pdf , page2 used on input line 301.
 (pdftex.def)             Requested size: 334.24792pt x 731.73196pt.
-<figures/2.pdf, id=385, page=3, 395.4775pt x 731.73375pt>
+<figures/2.pdf, id=395, page=3, 395.4775pt x 731.73375pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 3>
 Package pdftex.def Info: figures/2.pdf , page3 used on input line 311.
 (pdftex.def)             Requested size: 395.47653pt x 731.73196pt.
  [11 <./figures/2.pdf> <./figures/2.pdf>]
-<figures/2.pdf, id=400, page=4, 497.86pt x 731.73375pt>
+<figures/2.pdf, id=410, page=4, 497.86pt x 731.73375pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 4>
 Package pdftex.def Info: figures/2.pdf , page4 used on input line 338.
 (pdftex.def)             Requested size: 497.85878pt x 731.73196pt.
  [12 <./figures/2.pdf> <./figures/2.pdf>]
-<figures/2.pdf, id=417, page=5, 551.05875pt x 630.355pt>
+<figures/2.pdf, id=427, page=5, 551.05875pt x 630.355pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 5>
 Package pdftex.def Info: figures/2.pdf , page5 used on input line 361.
 (pdftex.def)             Requested size: 551.05739pt x 630.35345pt.
-<figures/1.pdf, id=419, page=1, 551.05875pt x 703.62875pt>
+<figures/1.pdf, id=429, page=1, 551.05875pt x 703.62875pt>
 File: figures/1.pdf Graphic file (type pdf)
 <use figures/1.pdf, page 1>
 Package pdftex.def Info: figures/1.pdf , page1 used on input line 378.
 (pdftex.def)             Requested size: 551.05739pt x 703.62703pt.
  [13 <./figures/2.pdf> <./figures/1.pdf>]
-<figures/2.pdf, id=442, page=1, 433.62pt x 731.73375pt>
+<figures/2.pdf, id=452, page=1, 433.62pt x 731.73375pt>
 File: figures/2.pdf Graphic file (type pdf)
 <use figures/2.pdf, page 1>
 Package pdftex.def Info: figures/2.pdf , page1 used on input line 411.
 (pdftex.def)             Requested size: 433.61894pt x 731.73196pt.
-<figures/3.pdf, id=443, page=2, 551.05875pt x 214.8025pt>
+<figures/3.pdf, id=453, page=2, 551.05875pt x 214.8025pt>
 File: figures/3.pdf Graphic file (type pdf)
 <use figures/3.pdf, page 2>
 Package pdftex.def Info: figures/3.pdf , page2 used on input line 427.
@@ -2107,37 +2114,37 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 
 ] [20] [21]
 [22]) [23] [24] (./chapters/finite_element_method.tex
-<figures/mathematicians/Peter_Dirichlet.jpg, id=598, 371.13657pt x 410.2828pt>
+<figures/mathematicians/Peter_Dirichlet.jpg, id=608, 371.13657pt x 410.2828pt>
 File: figures/mathematicians/Peter_Dirichlet.jpg Graphic file (type jpg)
 <use figures/mathematicians/Peter_Dirichlet.jpg>
 Package pdftex.def Info: figures/mathematicians/Peter_Dirichlet.jpg  used on in
 put line 15.
 (pdftex.def)             Requested size: 74.63939pt x 82.51282pt.
-<figures/mathematicians/David_Hilbert.jpeg, id=599, 347.2975pt x 501.875pt>
+<figures/mathematicians/David_Hilbert.jpeg, id=609, 347.2975pt x 501.875pt>
 File: figures/mathematicians/David_Hilbert.jpeg Graphic file (type jpg)
 <use figures/mathematicians/David_Hilbert.jpeg>
 Package pdftex.def Info: figures/mathematicians/David_Hilbert.jpeg  used on inp
 ut line 17.
 (pdftex.def)             Requested size: 57.09494pt x 82.51282pt.
-<figures/mathematicians/Walther_Ritz.jpg, id=600, 301.125pt x 311.1625pt>
+<figures/mathematicians/Walther_Ritz.jpg, id=610, 301.125pt x 311.1625pt>
 File: figures/mathematicians/Walther_Ritz.jpg Graphic file (type jpg)
 <use figures/mathematicians/Walther_Ritz.jpg>
 Package pdftex.def Info: figures/mathematicians/Walther_Ritz.jpg  used on input
  line 19.
 (pdftex.def)             Requested size: 79.84828pt x 82.51282pt.
-<figures/mathematicians/Boris_Galerkin.jpeg, id=601, 200.75pt x 225.84375pt>
+<figures/mathematicians/Boris_Galerkin.jpeg, id=611, 200.75pt x 225.84375pt>
 File: figures/mathematicians/Boris_Galerkin.jpeg Graphic file (type jpg)
 <use figures/mathematicians/Boris_Galerkin.jpeg>
 Package pdftex.def Info: figures/mathematicians/Boris_Galerkin.jpeg  used on in
 put line 21.
 (pdftex.def)             Requested size: 73.34511pt x 82.51282pt.
-<figures/mathematicians/Sergei_Sobolev.jpg, id=602, 401.5pt x 324.21124pt>
+<figures/mathematicians/Sergei_Sobolev.jpg, id=612, 401.5pt x 324.21124pt>
 File: figures/mathematicians/Sergei_Sobolev.jpg Graphic file (type jpg)
 <use figures/mathematicians/Sergei_Sobolev.jpg>
 Package pdftex.def Info: figures/mathematicians/Sergei_Sobolev.jpg  used on inp
 ut line 23.
 (pdftex.def)             Requested size: 119.80153pt x 96.73918pt.
-<figures/mathematicians/Laurent_Schwartz.jpeg, id=603, 463.7325pt x 327.2225pt>
+<figures/mathematicians/Laurent_Schwartz.jpeg, id=613, 463.7325pt x 327.2225pt>
 
 File: figures/mathematicians/Laurent_Schwartz.jpeg Graphic file (type jpg)
 <use figures/mathematicians/Laurent_Schwartz.jpeg>
@@ -2150,32 +2157,32 @@ input line 25.
 _Hilbert.jpeg> <./figures/mathematicians/Walther_Ritz.jpg> <./figures/mathemati
 cians/Boris_Galerkin.jpeg> <./figures/mathematicians/Sergei_Sobolev.jpg> <./fig
 ures/mathematicians/Laurent_Schwartz.jpeg>] [26] [27] [28] [29]
-<figures/triangulation/triangulation.png, id=687, 1194.4625pt x 586.19pt>
+<figures/triangulation/triangulation.png, id=697, 1194.4625pt x 586.19pt>
 File: figures/triangulation/triangulation.png Graphic file (type png)
 <use figures/triangulation/triangulation.png>
 Package pdftex.def Info: figures/triangulation/triangulation.png  used on input
  line 283.
 (pdftex.def)             Requested size: 225.77948pt x 110.79585pt.
-<figures/hat.png, id=690, 856.19875pt x 341.275pt>
+<figures/hat.png, id=700, 856.19875pt x 341.275pt>
 File: figures/hat.png Graphic file (type png)
 <use figures/hat.png>
 Package pdftex.def Info: figures/hat.png  used on input line 315.
 (pdftex.def)             Requested size: 225.77948pt x 89.9948pt.
  [30 <./figures/triangulation/triangulation.png> <./figures/hat.png>]
-<figures/boundary/boundary.png, id=702, 1612.0225pt x 439.6425pt>
+<figures/boundary/boundary.png, id=712, 1612.0225pt x 439.6425pt>
 File: figures/boundary/boundary.png Graphic file (type png)
 <use figures/boundary/boundary.png>
 Package pdftex.def Info: figures/boundary/boundary.png  used on input line 336.
 
 (pdftex.def)             Requested size: 383.3974pt x 104.56375pt.
-<figures/laplaceboundary/laplaceboundaryv2.png, id=705, 1882.03125pt x 364.3612
+<figures/laplaceboundary/laplaceboundaryv2.png, id=715, 1882.03125pt x 364.3612
 5pt>
 File: figures/laplaceboundary/laplaceboundaryv2.png Graphic file (type png)
 <use figures/laplaceboundary/laplaceboundaryv2.png>
 Package pdftex.def Info: figures/laplaceboundary/laplaceboundaryv2.png  used on
  input line 351.
 (pdftex.def)             Requested size: 426.0pt x 82.47255pt.
-<figures/cell.png, id=708, 1224.575pt x 456.70625pt>
+<figures/cell.png, id=718, 1224.575pt x 456.70625pt>
 File: figures/cell.png Graphic file (type png)
 <use figures/cell.png>
 Package pdftex.def Info: figures/cell.png  used on input line 371.
@@ -2191,7 +2198,7 @@ Overfull \hbox (9.08855pt too wide) detected at line 524
  []
 
 [34]
-\mylen=\skip289
+\mylen=\skip290
  [35]
 
 Package caption Warning: \label without proper reference on input line 561.
@@ -2236,7 +2243,7 @@ LaTeX Warning: Reference `alg:assembly' on page 37 undefined on input line 703.
 
 
 [37]
-<figures/graphs/error_metric_file_square_fixup.png, id=834, 516.4896pt x 184.77
+<figures/graphs/error_metric_file_square_fixup.png, id=844, 516.4896pt x 184.77
 03pt>
 File: figures/graphs/error_metric_file_square_fixup.png Graphic file (type png)
 
@@ -2244,7 +2251,7 @@ File: figures/graphs/error_metric_file_square_fixup.png Graphic file (type png)
 Package pdftex.def Info: figures/graphs/error_metric_file_square_fixup.png  use
 d on input line 746.
 (pdftex.def)             Requested size: 426.0pt x 152.40353pt.
-<figures/graphs/error_metric_file_square_2_fixup.png, id=842, 516.4896pt x 184.
+<figures/graphs/error_metric_file_square_2_fixup.png, id=852, 516.4896pt x 184.
 7703pt>
 File: figures/graphs/error_metric_file_square_2_fixup.png Graphic file (type pn
 g)
@@ -2252,14 +2259,14 @@ g)
 Package pdftex.def Info: figures/graphs/error_metric_file_square_2_fixup.png  u
 sed on input line 777.
 (pdftex.def)             Requested size: 426.0pt x 152.40353pt.
-<figures/error/error.png, id=845, 1866.975pt x 2400.97pt>
+<figures/error/error.png, id=855, 1866.975pt x 2400.97pt>
 File: figures/error/error.png Graphic file (type png)
 <use figures/error/error.png>
 Package pdftex.def Info: figures/error/error.png  used on input line 789.
 (pdftex.def)             Requested size: 426.0pt x 547.8152pt.
  [38 <./figures/graphs/error_metric_file_square_fixup.png> <./figures/graphs/er
 ror_metric_file_square_2_fixup.png>]
-<figures/error/laplace_error.png, id=859, 2842.62pt x 716.6775pt>
+<figures/error/laplace_error.png, id=869, 2842.62pt x 716.6775pt>
 File: figures/error/laplace_error.png Graphic file (type png)
 <use figures/error/laplace_error.png>
 Package pdftex.def Info: figures/error/laplace_error.png  used on input line 80
@@ -2289,43 +2296,27 @@ Overfull \hbox (11.71295pt too wide) detected at line 855
  [] \OMS/cmsy/m/n/10.95 ^^@ \OT1/cmr/m/n/10.95 2 []
  []
 
-[40 <./figures/error/laplace_error.png>] [41]
-
-LaTeX Warning: Reference `poisson_galerkin' on page 42 undefined on input line 
-1093.
-
-[42]
-<figures/sparsity_pattern_no_text.png, id=911, 563.10374pt x 560.0925pt>
-File: figures/sparsity_pattern_no_text.png Graphic file (type png)
-<use figures/sparsity_pattern_no_text.png>
-Package pdftex.def Info: figures/sparsity_pattern_no_text.png  used on input li
-ne 1144.
-(pdftex.def)             Requested size: 110.75766pt x 110.16196pt.
-<figures/laplace/laplacev2.png, id=912, 2055.68pt x 652.4375pt>
+[40 <./figures/error/laplace_error.png>] [41] [42]
+<figures/laplace/laplacev2.png, id=923, 2055.68pt x 652.4375pt>
 File: figures/laplace/laplacev2.png Graphic file (type png)
 <use figures/laplace/laplacev2.png>
-Package pdftex.def Info: figures/laplace/laplacev2.png  used on input line 1182
+Package pdftex.def Info: figures/laplace/laplacev2.png  used on input line 1252
 .
 (pdftex.def)             Requested size: 426.0pt x 135.20403pt.
-
-Underfull \vbox (badness 1199) has occurred while \output is active []
-
- [43 <./figures/sparsity_pattern_no_text.png>]) [44 <./figures/laplace/laplacev
-2.png>]
-[45
+ [43]) [44 <./figures/laplace/laplacev2.png>] [45
 
 ] [46
 
 ]
 bibitemlist
 [47]
-Underfull \hbox (badness 1622) in paragraph at lines 266--270
+Underfull \hbox (badness 1622) in paragraph at lines 276--280
 []\OT1/cmr/m/n/10.95 (+20) Leif Kobbelt, Open-Mesh (sur-face mesh li-brary), ht
 tps://www.graphics.rwth-
  []
 
 
-Underfull \hbox (badness 2735) in paragraph at lines 282--285
+Underfull \hbox (badness 2735) in paragraph at lines 292--295
 []\OT1/cmr/m/n/10.95 (+20) Sobolev In-sti-tute of Math-e-mat-ics, Sergei Sobole
 v, bi-o-graph-i-cal web page,
  []
@@ -2334,24 +2325,24 @@ v, bi-o-graph-i-cal web page,
 \tf@toc=\write5
 \openout5 = `document.toc'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 293.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 293.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 303.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 303.
  (./document.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 293.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 293.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 303.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 303.
 Package rerunfilecheck Info: File `document.out' has not changed.
-(rerunfilecheck)             Checksum: C866378F94D33BE20CE313EB8474FAF9;3827.
+(rerunfilecheck)             Checksum: A04C321C3A281C8C5CF71A3857C4C18D;4024.
 
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 24570 strings out of 494847
- 418381 string characters out of 6179081
- 573289 words of memory out of 5000000
- 27210 multiletter control sequences out of 15000+600000
- 552053 words of font info for 151 fonts, out of 8000000 for 9000
+ 24639 strings out of 494847
+ 419341 string characters out of 6179081
+ 573469 words of memory out of 5000000
+ 27259 multiletter control sequences out of 15000+600000
+ 555368 words of font info for 168 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  47i,22n,49p,10403b,561s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
@@ -2361,25 +2352,27 @@ ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/latxfont/line10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/symbols/msbm10.pfb>
-Output written on document.pdf (48 pages, 6452495 bytes).
+1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/font
+s/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt1
+2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/latxfont/line1
+0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10
+.pfb>
+Output written on document.pdf (48 pages, 6462288 bytes).
 PDF statistics:
- 1100 PDF objects out of 1200 (max. 8388607)
- 939 compressed objects within 10 object streams
- 288 named destinations out of 1000 (max. 500000)
- 20493 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 1120 PDF objects out of 1200 (max. 8388607)
+ 959 compressed objects within 10 object streams
+ 291 named destinations out of 1000 (max. 500000)
+ 24088 words of extra memory for PDF output out of 24883 (max. 10000000)
 
