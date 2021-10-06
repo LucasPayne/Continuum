@@ -54,9 +54,6 @@ of generalised functions by Laurent Schwartz (1915-2002), integral to the modern
 These developments are clarifications on the question: What do we mean when we speak of a solution to a PDE from physics? Galerkin's method
 is much closer to the answer than, for example, the finite difference method.
 
-
-\subsubsection{The finite element method}
-
 \section{The equation to solve: Poisson's equation}
 
 Among the fundamental PDEs
@@ -171,9 +168,9 @@ as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is
 The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
 
 \subsubsection{So how do we discretize Poisson's equation?}
-Even starting with \eqref{poisson_equation_integral}, there are many routes to take to discretization.
+Starting with \eqref{poisson_equation_integral}, there are many routes to take to discretization.
 Notice that there are two variables in \eqref{poisson_equation_integral}, although one is bound over universal quantification:
-the control volume $\Omega_0$ and the function $h$.
+the function $h$ and the control volume $\Omega_0$.
 The general Galerkin method very naturally appears when the ``space'' $\Omega_0$ resides in and the space $h$ resides in are reduced
 such that the equations are both finite dimensional and well-determined. Firstly, let's derive the conceptually simplest
 discretization method of these spaces, the finite volume method.
@@ -390,7 +387,7 @@ The scheme as described so far, consisting of a triangle mesh, hat test function
 has found some success, especially in the domain of geometry processing (\cite{polygon_mesh_processing}, \cite{ddg_triangulated}).
 We will work with the mixed Voronoi cells.
 
-\subsection{Computing the linear system by closed form integration}
+\subsection{Computing the linear system by closed form integration}\label{fvm_closed_form}
 Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
 the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
 the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
@@ -424,11 +421,20 @@ By linearity the integral \eqref{fvm_integral} becomes
 % $$
 Now consider a certain flux integral \eqref{fvm_integral} over control volume $\Omega_j$. We will reexpress the above integral
 in ``local'' terms.
-Let $v = p_j$ be the interior vertex corresponding to the control volume $\Omega_j$, and denote by $v_1, \cdots, v_k$ its adjacent vertices (either in the interior
+%local terms------------------------------------------------------------
+\newcommand{\definelocalterms}[1]{
+\begin{aside}
+\textit{Some local indexing definitions.}\\
+\vskip -0.1in
+Let $v = p_j$ be the interior vertex corresponding to #1, and denote by $v_1, \cdots, v_k$ its adjacent vertices (either in the interior
 or on the boundary), and by $T^v_1 \cdots T^v_k$ its adjacent triangles. Triangle $T^v_l$ joins $v,v_l,v_{l+1}$ where addition wraps around from $k$ to $1$.
 As it will be necessary to relate these local indices (denoted $l$) to the global vertex indices (denoted $i$), define an index map by
     $$I(l) = \text{the global index $i$ of the $p_i$ corresponding to adjacent vertex $v_l$},$$
 which is valid only when $v_l$ is an interior vertex.
+\end{aside}
+}
+\definelocalterms{the control volume $\Omega_j$}
+%end local terms------------------------------------------------------------
 The vertex $v$ corresponds to a single trial flux integral over the surrounding Voronoi cell $\Omega_j$.
 As the hat functions have compact support, $\Omega_j$ only intersects the domains of the hat function $\phi_j$ and those corresponding
 to the adjacent vertices. Name these basis functions $\phi_j = \phi_v$ and $\phi_{v_1}, \cdots \phi_{v_k}$.
@@ -437,6 +443,7 @@ Then the local form of the flux integral \eqref{fvm_integral} is
     \fvmintegral = h_j\oint_{\pom_j}-\nabla\phi_v\cdot\hat{n}\,dx + \sum_{l=1}^{k}h_{v_l}\oint_{\pom_j}-\nabla\phi^v_l\cdot\hat{n}\,dx,
 \end{equation}
 where $h_{v_i}$ is defined as
+\newcommand{\hvidefinition}{
 \begin{align*}
     h_{v_i} =
     \left\{\begin{array}{lr}
@@ -444,6 +451,8 @@ where $h_{v_i}$ is defined as
         h_{I(v_i)} &\text{if $v_i$ is an interior vertex}.\\
         \end{array}\right.
 \end{align*}
+}
+\hvidefinition
 The $\phi_v$ and $\phi_{v_1},\cdots,\phi_{v_k}$ are hat functions which are linear when restricted to each triangle
 $T^v_1,\cdots,T^v_k$. Therefore the gradients $\nabla\phi_v$ and $\nabla\phi_{v_1},\cdots,\nabla\phi_{v_k}$ are constant
 on those triangles. We can break the closed flux integrals in \eqref{fvm_integral_vertex} into flux integrals restricted to each triangle adjacent to $v$, giving
@@ -528,7 +537,6 @@ This directly indicates an effective algorithm for constructing the linear syste
 One more thing is needed, however. The right-hand side vector of \eqref{poisson_matrix_equation} contains source integrals
     $$\int_{\om_j}g\,dx,$$
 so we require some numerical integration.
-
 The simplest choice is a ``rectangle rule'', where we sample the source function $g$ at the interior vertex
 $p_j$, then assume that $g$ is constant over $\om_j$. This gives the approximation
 \begin{equation}\label{fvm_source_approximation}
@@ -539,17 +547,13 @@ $p_j$, then assume that $g$ is constant over $\om_j$. This gives the approximati
 % Iterating over each triangle incident to $p_j$, compute the cell segment area as the area of two triangles, the second triangle depending on whether
 % the computed circumcentre lies inside or outside the triangle.
 
-\vskip 0.2in
-(figure)
-\vskip 0.2in
-
 \subsection{The resulting matrix assembly algorithm}
 Using the expression \eqref{flux_integral_summation}, the linear system
-\eqref{poisson_matrix_equation} can be constructed by iterating over each interior vertex, then each adjacent triangle,
+\eqref{poisson_matrix_equation} can be constructed by iterating over each interior vertex $v$, then each adjacent triangle,
 and computing these closed form integrals.
-Each adjacent triangle corresponds to two vertices, and for each of these vertices,
-a value is placed in either the system matrix or adjusting the right-hand side,
-depending on whether the triangle vertex in the interior or on the boundary. Also, while iterating over the interior vertices,
+Each adjacent triangle corresponds to two vertices incident to $v$, and for each of these vertices,
+either a value is placed in either the system matrix or the right-hand side is adjusted,
+depending on whether the triangle vertex is in the interior or on the boundary. Also, while iterating over the interior vertices,
 the corresponding source integral is approximated by \eqref{fvm_source_approximation}, and the result is added to the right-hand side vector.
 Pseudocode for this algorithm is given below.
 
@@ -724,7 +728,8 @@ This test case has been chosen as it degenerates to an instance of the simpler L
 \begin{equation}\label{fvm_test_equation_1}
     -\Delta h = 0,\quad \left.h\right|_\Gamma = x^2 - y^2 \quad \text{(The test problem)}.
 \end{equation}
-For clarity, we use a simple square domain $\Omega = [-1,1]^2$, and a uniform grid parameterized by value $r$
+For clarity, we use a simple square domain $\Omega = [-1,1]^2$, and a uniform grid parameterized by value $r$, which measures
+the average length of a triangle edge.
 \footnote{Traditionally this kind of parameter is denoted $h$, which we are already using for the heat function.}.
 Each square in this grid
 corresponds to two right-angled triangles in the triangulation
@@ -736,7 +741,7 @@ To measure convergence, we use the $L^2$-norm (although others could be used), d
     \norm{\tilde{h} - h}_{L^2(\Omega)} = \sqrt{\int_{-1}^1\int_{-1}^1 (\tilde{h}(x,y) - h(x,y))^2 \,dx\,dy}.
 \end{equation}
 
-To validate the convergence of the method, simply increase $r$, generate the mesh, solve the test equation,
+To validate the convergence of the method, simply decrease $r$, generate the mesh, solve the test equation,
 compute the $L^2$ error \eqref{test_L2_norm}, and repeat. A log-log plot of the error for the simple test problem is shown in figure
 \ref{error_fvm_1}.
 It can be seen clearly that the convergence for test problem \eqref{fvm_test_equation_1} is quadratic.
@@ -821,7 +826,7 @@ on an irregularly-meshed disk.
 % Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
 
 \section{From finite volumes to general Galerkin methods}
-We will soon derive another instance of a Galerkin method, called the \textit{finite element method}.
+We will soon derive another instance of a Galerkin method, called a \textit{finite element method}.
 This approach is directly related to the ``finite volumes'' described above. 
 The finite element method, however, requires a construction called the \textit{weak form} of a PDE,
 which can be directly motivated from the preceding discussion on finite volumes.
@@ -860,7 +865,7 @@ Now suppose instead we are working with the original integral form of Poisson's 
     \oint_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} g\,dx \quad \text{for all control volumes $\Omega_0$.}
 \end{equation*}
 Then, in the same way, we can take linear combinations of the equations \eqref{poisson_equation_integral}
-for some collection of control volumes, to get another equation which the exact solution $h$ must satisfy. However, in addition, we can take integral
+for some collection of control volumes, to get another equation which the exact solution $h$ must satisfy. In addition we can take integral
 combinations, whenever that integral is well-defined. For example, consider a parameterised family of control volumes,
 $\left\{\Omega_{0,t} \mid 0 < t  < 1\right\}$, defined by
     $$\Omega_{0,t} = \text{the disk of radius $t$ around some fixed point $c$}.$$
@@ -887,8 +892,8 @@ where $v$ is a scalar function defined as
         \end{array}\right.
 \end{equation}
 This deserves some explanation, which will be given at two levels of informality.
-The concentric family of control volumes $\Omega_{0,t}$ appear as level sets $v = t$.
-Since this cone has unit slope, the normal $\hat{n}$ of the level set $v = t$ is $-\nabla v$. Since the left-hand side of
+The concentric family of control volumes $\Omega_{0,t}$ appear as level sets $v = 1-t$.
+Since this cone has unit slope, the normal $\hat{n}$ of the level set $v = 1-t$ is $-\nabla v$. Since the left-hand side of
 \eqref{poisson_integral_example_modified} is an integral over the fluxes through each level set, the nested integral is subsumed into
 one integral over the union of level sets.
 The outer integral of the right-hand side of \eqref{poisson_integral_example_modified} consists of a ``stack of integrations'' of $g$ against concentric disks, which 
@@ -1203,7 +1208,8 @@ take trial flux integrals over mixed Voronoi cells. Instead, we can use the Bubn
 
 \subsection{Computing the linear system by closed form integration}
 In deriving the FVM, we had to compute closed form flux integrals over complex polygonal cells.
-The integration required for our new FEM method is somewhat more routine.
+The integration required for our new FEM method is different, but many of the steps here are exactly the same as
+in section \ref{fvm_closed_form}. Important ideas are repeated here for clarity.
 Again, we use the piecewise linear interpolation \eqref{boundary_approximation} of the Dirichlet boundary function $h_\Gamma$:
 \begin{equation*}
     \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
@@ -1217,13 +1223,112 @@ As before, we expand the gradient $\nabla\tilde{h}$ \eqref{gradient_expansion} b
 \end{equation*}
 and in this case the (Bubnov--)Galerkin linear system \eqref{poisson_galerkin_system} becomes
 \begin{equation}\label{fem_integral_linearity_expanded}
+    \int_{\om} \nabla \tilde{h}\cdot \nabla \phi_j\,dx
+    =
     \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\int_{\om}\nabla\phi^\Gamma_i\cdot\nabla\phi_j\,dx\right]
     + \sum_{i=1}^n\left[h_i\int_{\om}\nabla\phi_i\cdot\nabla\phi_j\,dx\right].
 \end{equation}
-As in section (), we now reexpress \eqref{fem_integral_linearity_expanded} in terms of local indices. A trial function
-$\psi_j = \phi_j$ has compact support, with domain $D^\phi_j = D^\psi_j = D_j$.
+As in section \ref{fvm_closed_form}, we now reexpress \eqref{fem_integral_linearity_expanded} in terms of local indices. First, note that a trial function
+$\psi_j = \phi_j$ has compact support, with domain $D^\phi_j = D^\psi_j = D_j$,
+which is the union of triangles incident to the interior vertex $p_j$.
+This domain intersects with the domains of those hat basis functions of $\Phi^*$ which are centred on $p_j$ or an adjacent vertex
+(either in the interior or on the boundary).
+We repeat the local index definitions from section \ref{fvm_closed_form} here.
+\definelocalterms{the trial function $\psi_j = \phi_j$}
+The local form of the equation \eqref{fem_integral_linearity_expanded} is then
+
+\begin{equation}\label{fem_integral_vertex}
+    \int_{\om} \nabla \tilde{h}\cdot \nabla \psi_j\,dx
+     = h_j\int_{\om}\nabla\phi_v\cdot\nabla\psi_j\,dx + \sum_{l=1}^{k}h_{v_l}\int_{\om}\nabla\phi^v_l\cdot\nabla\psi_j\,dx,
+\end{equation}
+where, as in \ref{fvm_closed_form}, $h_{v_i}$ is defined as
+\hvidefinition
+Again, with the same reasoning as in section \ref{fvm_closed_form}, due to $\nabla\phi_i$ being constant on each triangle, to simplify integration
+we break \eqref{fem_integral_vertex} into a sum of integrals over triangles:
+\begin{equation}\label{fem_integral_vertex_triangles}
+    \int_{\om} \nabla \tilde{h}\cdot \nabla \psi_j\,dx
+    = \sum_{t=1}^k\left[\int_{T^v_t}\nabla\phi_v\cdot\nabla\psi_j\,dx + \sum_{l=1}^{k}h_{v_l}\int_{T^v_t}\nabla\phi^v_l\cdot\nabla\psi_j\,dx\right].
+\end{equation}
+We want to reduce an integral over each separate triangle (oblique, isosceles, etc.) to an integral over a reference triangle
+for which we have closed forms.
+This is a common pattern in the finite element method.
+We will transform each triangle domain $T$ into a ``reference element''
+% Right angled triangle.
+% https://tex.stackexchange.com/questions/65455/is-there-a-math-symbol-for-right-angled-triangle
+\def\ll{{\mbox{\begin{picture}(7,10)
+\put(1,0){\line(1,0){5}}
+\put(6,0){\line(-1,2){5}}
+\put(1,0){\line(0,1){10}}
+\end{picture}
+}}}
+$\ll$, defined by
+    $$\ll = \left\{(x,y) \in [0,1]^2 \mid x + y < 1\right\}.$$
+We introduce the ``reference basis functions'', which account for all possible ways a hat function could intersect with this triangle:
+\begin{equation}\label{fem_reference_basis_functions}
+    \Phi_1 = 1-x-y, \text{\quad and \quad} \Phi_2 = x \text{\quad and \quad} \Phi_3 = y.
+\end{equation}
+with gradients
+\begin{equation}\label{fem_reference_basis_function_gradients}
+    \nabla\Phi_1 = (-1, -1)^T, \text{\quad and \quad} \nabla\Phi_2 = (1,0)^T \text{\quad and \quad} \Phi_3 = (0,1)^T.
+\end{equation}
+
+\vskip 0.2in
+(draw $\ll$ and reference basis functions)
+\vskip 0.2in
+
+Suppose we are computing the integral \eqref{fem_integral_vertex_triangles} around some interior vertex $v$,
+and are computing the subintegral for some incident triangle $T$ with vertices $v,v^\pr,v^\ppr$.
+We would like to make a change of variables to the reference domain $\ll$.
+The affine map
+\newcommand{\affmap}{\gamma}
+$\affmap : \ll \rightarrow T$ defined by
+\begin{equation}\label{fem_affine_map}
+    \affmap(x,y) = v + (v^\pr - v)x + (v^\ppr - v)y
+\end{equation}
+gives a pullback of scalar functions $\Phi_{1,2,3}$ on $\ll$
+to scalar functions $\Phi_{1,2,3}^*$ on $T$. These scalar functions on $T$ correspond
+exactly to those pieces of basis hat functions whose gradients we want to integrate.
+
+\vskip 0.2in
+(draw this affine mapping)
+\vskip 0.2in
+
+To derive a change of variables formula, we need to compute the Jacobian matrix of $\affmap$:
+$$
+    J = \begin{bmatrix} \Part{\affmap_x}{x} & \Part{\affmap_x}{y} \\ 
+                        \Part{\affmap_y}{x} & \Part{\affmap_y}{y} \end{bmatrix}
+      =
+        \left[
+        \begin{array}{c|c}
+            v^\pr - v & v^\ppr - v
+        \end{array}
+        \right].
+$$
+If we pushforward the domain of integration from $T$ to $\ll$ by $\affmap$ (enacting a change of variables),
+the resulting expression is
+\begin{equation}\label{fem_closed_form_integral_complicated}
+    \int_T \nabla\Phi_l^* \cdot \nabla\Phi_m^*\,dx
+        = \int_\ll \det(J)(J^{-T}\nabla\Phi_l)\cdot(J^{-T}\nabla\Phi_m)\,dx.
+\end{equation}
+Since $J$ depends only on the triangle vertex positions $v,v^\pr,v^\ppr$, it is constant on $\ll$, and we can easily compute its inverse transpose
+(using the standard $2 \times 2$ inverse formula). Since $\det(J) = 2\text{Area}(T)$, and the integrand is constant,
+\eqref{fem_closed_form_integral_complicated} simplifies to
+\begin{equation}\label{fem_closed_form_integral}
+    \int_T \nabla\Phi_l^* \cdot \nabla\Phi_m^*\,dx
+        = \text{Area}(T)(J^{-T}\nabla\Phi_l)\cdot(J^{-T}\nabla\Phi_m).
+\end{equation}
 
 
+
+
+% Again, we can simplify matters by focusing on just one adjacent triangle $T^v_t = T$, between vertices
+% $v,v_t,v_{t+1}$. This triangle $T$ only overlaps with the domains of the hat functions centred at $v,v_t,v_{t+1}$, so we
+% now only need to compute
+% $$
+% \int_{T} \nabla\phi_v\cdot\nabla\psi_j\,dx \text{\quad and \quad} 
+% \int_{T} \nabla\phi_{v_t}\cdot\nabla\psi_j\,dx \text{\quad and \quad} 
+% \int_{T} \nabla\phi_{v_{t+1}}\cdot\nabla\psi_j\,dx.
+% $$
 
 % Equation \eqref{poisson_galerkin} gives a discrete linear system
 % \renewcommand{\integralentry}[2]{\int_{\Omega}\nabla\phi_{#2} \cdot \nabla\psi_{#1}\,dx}

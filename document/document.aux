@@ -144,7 +144,6 @@
 \citation{sobolev_web_page}
 \citation{one_hundred_years_galerkin}
 \@writefile{toc}{\contentsline {subsubsection}{The Galerkin method}{26}{section*.22}}
-\@writefile{toc}{\contentsline {subsubsection}{The finite element method}{26}{section*.23}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.2}The equation to solve: Poisson's equation}{26}{section.4.2}}
 \newlabel{poisson_compact}{{4.1}{26}{The equation to solve: Poisson's equation}{equation.4.2.1}{}}
 \newlabel{poisson_dirichlet_problem}{{4.2}{26}{The equation to solve: Poisson's equation}{equation.4.2.2}{}}
@@ -153,14 +152,14 @@
 \newlabel{poisson_differential_intro}{{4.4}{26}{Discretizing the differential form of the PDE}{equation.4.2.4}{}}
 \citation{tum}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{27}{subsection.4.2.2}}
-\@writefile{toc}{\contentsline {subsubsection}{Deriving the heat and Poisson equation through diffusion processes}{27}{section*.24}}
+\@writefile{toc}{\contentsline {subsubsection}{Deriving the heat and Poisson equation through diffusion processes}{27}{section*.23}}
 \newlabel{heat_equation_integral}{{4.5}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.5}{}}
 \newlabel{heat_equation_differential}{{4.6}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.6}{}}
 \newlabel{heat_equation_differential_constant}{{4.7}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.7}{}}
+\newlabel{poisson_equation}{{4.8}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
 \citation{approximation_theory}
-\newlabel{poisson_equation}{{4.8}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
 \newlabel{poisson_equation_integral}{{4.9}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.9}{}}
-\@writefile{toc}{\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.25}}
+\@writefile{toc}{\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.24}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.3}Discretizing Poisson's equation by finite volumes}{28}{section.4.3}}
 \newlabel{discretizing_poisson}{{\M@TitleReference {4.3}{Discretizing Poisson's equation by finite volumes}}{28}{Discretizing Poisson's equation by finite volumes}{section.4.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}The Dirichlet boundary condition and the test space}{28}{subsection.4.3.1}}
@@ -170,25 +169,26 @@
 \newlabel{poisson_equation_integral_discretized}{{4.12}{29}{Forming a linear system}{equation.4.3.12}{}}
 \newlabel{poisson_matrix_equation}{{4.13}{29}{Forming a linear system}{equation.4.3.13}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}A piecewise linear triangulation scheme}{30}{subsection.4.3.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into $n_T = 12$ triangular cells $T_1\cdots  T_{12}$. The boundary is sampled at $n_\Gamma = 10$ points $p^\Gamma _1,\cdots  ,p^\Gamma _{10}$. There are $n = 2$ interior points, $p_1$ and $p_2$. \relax }}{30}{figure.caption.26}}
-\newlabel{triangulation}{{\M@TitleReference {4.2}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into $n_T = 12$ triangular cells $T_1\cdots  T_{12}$. The boundary is sampled at $n_\Gamma = 10$ points $p^\Gamma _1,\cdots  ,p^\Gamma _{10}$. There are $n = 2$ interior points, $p_1$ and $p_2$. \relax }}{30}{\scriptsize The domain $\Omega $ is partitioned into $n_T = 12$ triangular cells $T_1\cdots T_{12}$. The boundary is sampled at $n_\Gamma = 10$ points $p^\Gamma _1,\cdots ,p^\Gamma _{10}$. There are $n = 2$ interior points, $p_1$ and $p_2$. \relax }{figure.caption.26}{}}
-\@writefile{toc}{\contentsline {subsubsection}{The test space}{30}{section*.27}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }}{30}{figure.caption.28}}
-\newlabel{ellipse_partition}{{\M@TitleReference {4.3}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }}{30}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }{figure.caption.28}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into $n_T = 12$ triangular cells $T_1\cdots  T_{12}$. The boundary is sampled at $n_\Gamma = 10$ points $p^\Gamma _1,\cdots  ,p^\Gamma _{10}$. There are $n = 2$ interior points, $p_1$ and $p_2$. \relax }}{30}{figure.caption.25}}
+\newlabel{triangulation}{{\M@TitleReference {4.2}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into $n_T = 12$ triangular cells $T_1\cdots  T_{12}$. The boundary is sampled at $n_\Gamma = 10$ points $p^\Gamma _1,\cdots  ,p^\Gamma _{10}$. There are $n = 2$ interior points, $p_1$ and $p_2$. \relax }}{30}{\scriptsize The domain $\Omega $ is partitioned into $n_T = 12$ triangular cells $T_1\cdots T_{12}$. The boundary is sampled at $n_\Gamma = 10$ points $p^\Gamma _1,\cdots ,p^\Gamma _{10}$. There are $n = 2$ interior points, $p_1$ and $p_2$. \relax }{figure.caption.25}{}}
+\@writefile{toc}{\contentsline {subsubsection}{The test space}{30}{section*.26}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }}{30}{figure.caption.27}}
+\newlabel{ellipse_partition}{{\M@TitleReference {4.3}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }}{30}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. One example of a hat basis function $\phi _i$ is shown, where the vertical axis is the basis function value. \relax }{figure.caption.27}{}}
 \citation{orourke}
-\@writefile{toc}{\contentsline {subsubsection}{Approximating the boundary values}{31}{section*.29}}
+\@writefile{toc}{\contentsline {subsubsection}{Approximating the boundary values}{31}{section*.28}}
 \newlabel{boundary_approximation}{{4.14}{31}{Approximating the boundary values}{equation.4.3.14}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{figure.caption.30}}
-\newlabel{boundary}{{\M@TitleReference {4.4}{\relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{\scriptsize A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }{figure.caption.30}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{figure.caption.31}}
-\newlabel{laplaceboundary}{{\M@TitleReference {4.5}{\relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{\scriptsize The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\tilde {h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots ,\Omega _n$. \relax }{figure.caption.31}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{figure.caption.29}}
+\newlabel{boundary}{{\M@TitleReference {4.4}{\relax \fontsize  {8}{9.5}\selectfont  A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots  ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }}{31}{\scriptsize A circle domain $\Omega $ with boundary $\Gamma $ is tessellated by triangles $T_1,\cdots ,T_{n_T}$. The boundary function $h_\Gamma $ is approximated by $\phi _\Gamma $, a linear combination of hat functions centred at the boundary vertices. \relax }{figure.caption.29}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{figure.caption.30}}
+\newlabel{laplaceboundary}{{\M@TitleReference {4.5}{\relax \fontsize  {8}{9.5}\selectfont  The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\mathaccentV {tilde}07E{h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots  ,\Omega _n$. \relax }}{31}{\scriptsize The fixed boundary approximation $\phi _\Gamma $ is added to a variable interior variation $\phi $ to give a possible approximate solution $\tilde {h}$. This possible solution can be checked by integration against the trial control volumes $\Omega _1,\cdots ,\Omega _n$. \relax }{figure.caption.30}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.31}}
 \citation{polygon_mesh_processing}
 \citation{polygon_mesh_processing}
 \citation{ddg_triangulated}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }}{32}{figure.caption.33}}
-\newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }{figure.caption.33}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }}{32}{figure.caption.32}}
+\newlabel{cell_decompositions}{{\M@TitleReference {4.6}{\relax \fontsize  {8}{9.5}\selectfont  The domain $\Omega $ is partitioned into triangular cells $T_1\cdots  T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }}{32}{\scriptsize The domain $\Omega $ is partitioned into triangular cells $T_1\cdots T_{n_T}$. Flux integrals are taken over $n$ polygonal cells, one for each internal vertex $p_i$, for example using triangle barycentres or circumcentres. \relax }{figure.caption.32}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Computing the linear system by closed form integration}{32}{subsection.4.3.4}}
+\newlabel{fvm_closed_form}{{\M@TitleReference {4.3.4}{Computing the linear system by closed form integration}}{32}{Computing the linear system by closed form integration}{subsection.4.3.4}{}}
 \newlabel{fvm_integral}{{4.15}{32}{Computing the linear system by closed form integration}{equation.4.3.15}{}}
 \newlabel{gradient_expansion}{{4.16}{32}{Computing the linear system by closed form integration}{equation.4.3.16}{}}
 \newlabel{fvm_integral_linearity_expanded}{{4.17}{32}{Computing the linear system by closed form integration}{equation.4.3.17}{}}
@@ -197,10 +197,10 @@
 \newlabel{fvm_integrals_closed}{{4.20}{33}{Computing the linear system by closed form integration}{equation.4.3.20}{}}
 \newlabel{fvm_gradients}{{4.21}{34}{Computing the linear system by closed form integration}{equation.4.3.21}{}}
 \newlabel{flux_integral_summation}{{4.22}{34}{Computing the linear system by closed form integration}{equation.4.3.22}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Integrating the source function}{34}{section*.34}}
+\@writefile{toc}{\contentsline {subsubsection}{Integrating the source function}{34}{section*.33}}
 \newlabel{fvm_source_approximation}{{4.23}{34}{Integrating the source function}{equation.4.3.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}The resulting matrix assembly algorithm}{35}{subsection.4.3.5}}
-\newlabel{alg:assembly}{{\M@TitleReference {\caption@xref {alg:assembly}{ on input line 561}}{The resulting matrix assembly algorithm}}{35}{The resulting matrix assembly algorithm}{algocf.caption.35}{}}
+\newlabel{alg:assembly}{{\M@TitleReference {\caption@xref {alg:assembly}{ on input line 565}}{The resulting matrix assembly algorithm}}{35}{The resulting matrix assembly algorithm}{algocf.caption.34}{}}
 \@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces Pseudocode for the described finite volume matrix assembly process for the Poisson boundary value problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {poisson_dirichlet_problem}\unskip \@@italiccorr )}}.\relax }}{35}{algocf.1}}
 \citation{polygon_mesh_processing}
 \citation{geometry_central}
@@ -212,28 +212,28 @@
 \citation{armadillo}
 \citation{eigen}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.6}The resulting finite volume algorithm}{36}{subsection.4.3.6}}
-\newlabel{alg:fvm}{{\M@TitleReference {\caption@xref {alg:fvm}{ on input line 639}}{The resulting finite volume algorithm}}{36}{The resulting finite volume algorithm}{algocf.caption.36}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Mesh generation}{36}{section*.37}}
+\newlabel{alg:fvm}{{\M@TitleReference {\caption@xref {alg:fvm}{ on input line 643}}{The resulting finite volume algorithm}}{36}{The resulting finite volume algorithm}{algocf.caption.35}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Mesh generation}{36}{section*.36}}
 \citation{triangle}
 \citation{orourke}
 \citation{geometry_central}
 \citation{eigen}
 \citation{eigen}
 \citation{fenics_tutorial}
-\@writefile{toc}{\contentsline {subsubsection}{Numerical linear algebra}{37}{section*.38}}
+\@writefile{toc}{\contentsline {subsubsection}{Numerical linear algebra}{37}{section*.37}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.7}An implementation in C\texttt  {++}}{37}{subsection.4.3.7}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.8}Validating the method}{37}{subsection.4.3.8}}
 \newlabel{fvm_test_equation_1}{{4.24}{37}{Validating the method}{equation.4.3.24}{}}
 \newlabel{test_L2_norm}{{4.25}{37}{Validating the method}{equation.4.3.25}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces  The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{figure.caption.39}}
-\newlabel{error_fvm_1}{{\M@TitleReference {4.7}{ The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{ The $L^2$-norm error for the test problem \eqref {fvm_test_equation_1}, as parameter $r$ varies. \relax }{figure.caption.39}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces  The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{figure.caption.38}}
+\newlabel{error_fvm_1}{{\M@TitleReference {4.7}{ The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{ The $L^2$-norm error for the test problem \eqref {fvm_test_equation_1}, as parameter $r$ varies. \relax }{figure.caption.38}{}}
 \newlabel{fvm_test_equation_2}{{4.26}{38}{Validating the method}{equation.4.3.26}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces  The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{figure.caption.40}}
-\newlabel{error_fvm_2}{{\M@TitleReference {4.8}{ The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{ The $L^2$-norm error for the test problem \eqref {fvm_test_equation_2}, as parameter $r$ varies. \relax }{figure.caption.40}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces  Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{39}{figure.caption.41}}
-\newlabel{fvm_error_page}{{\M@TitleReference {4.9}{ Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{39}{ Approximate solutions to the test problem \eqref {fvm_test_equation_2} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }{figure.caption.41}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces  Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref  {alg:fvm} works trivially with curved domains and irregular meshes. \relax }}{40}{figure.caption.42}}
-\newlabel{fvm_laplace_error}{{\M@TitleReference {4.10}{ Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref  {alg:fvm} works trivially with curved domains and irregular meshes. \relax }}{40}{ Approximate solutions to the test problem \eqref {fvm_test_equation_1} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref {alg:fvm} works trivially with curved domains and irregular meshes. \relax }{figure.caption.42}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces  The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{figure.caption.39}}
+\newlabel{error_fvm_2}{{\M@TitleReference {4.8}{ The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{ The $L^2$-norm error for the test problem \eqref {fvm_test_equation_2}, as parameter $r$ varies. \relax }{figure.caption.39}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces  Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{39}{figure.caption.40}}
+\newlabel{fvm_error_page}{{\M@TitleReference {4.9}{ Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{39}{ Approximate solutions to the test problem \eqref {fvm_test_equation_2} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }{figure.caption.40}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces  Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref  {alg:fvm} works trivially with curved domains and irregular meshes. \relax }}{40}{figure.caption.41}}
+\newlabel{fvm_laplace_error}{{\M@TitleReference {4.10}{ Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref  {alg:fvm} works trivially with curved domains and irregular meshes. \relax }}{40}{ Approximate solutions to the test problem \eqref {fvm_test_equation_1} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref {alg:fvm} works trivially with curved domains and irregular meshes. \relax }{figure.caption.41}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to general Galerkin methods}{40}{section.4.4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Generalising the flux integrals by combining equations}{40}{subsection.4.4.1}}
 \newlabel{example_trial_sum}{{4.27}{40}{Generalising the flux integrals by combining equations}{equation.4.4.27}{}}
@@ -250,14 +250,21 @@
 \@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{43}{section.4.5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Forming a linear system}{43}{subsection.4.5.1}}
 \newlabel{fem_poisson_matrix_equation}{{4.36}{43}{Forming a linear system}{equation.4.5.36}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{44}{figure.caption.43}}
-\newlabel{sparsity_pattern}{{\M@TitleReference {4.11}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{44}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.43}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{44}{figure.caption.42}}
+\newlabel{sparsity_pattern}{{\M@TitleReference {4.11}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{44}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.42}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}Almost the same piecewise linear triangulation scheme}{44}{subsection.4.5.2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}Computing the linear system by closed form integration}{44}{subsection.4.5.3}}
 \newlabel{fem_integral_linearity_expanded}{{4.37}{44}{Computing the linear system by closed form integration}{equation.4.5.37}{}}
+\newlabel{fem_integral_vertex}{{4.38}{45}{Computing the linear system by closed form integration}{equation.4.5.38}{}}
+\newlabel{fem_integral_vertex_triangles}{{4.39}{45}{Computing the linear system by closed form integration}{equation.4.5.39}{}}
+\newlabel{fem_reference_basis_functions}{{4.40}{45}{Computing the linear system by closed form integration}{equation.4.5.40}{}}
+\newlabel{fem_reference_basis_function_gradients}{{4.41}{45}{Computing the linear system by closed form integration}{equation.4.5.41}{}}
+\newlabel{fem_affine_map}{{4.42}{46}{Computing the linear system by closed form integration}{equation.4.5.42}{}}
+\newlabel{fem_closed_form_integral_complicated}{{4.43}{46}{Computing the linear system by closed form integration}{equation.4.5.43}{}}
+\newlabel{fem_closed_form_integral}{{4.44}{46}{Computing the linear system by closed form integration}{equation.4.5.44}{}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{45}{chapter.5}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{47}{chapter.5}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \bibcite{newton}{1}
 \bibcite{johann_bernoulli}{2}
@@ -280,7 +287,7 @@
 \bibcite{DOLFIN}{19}
 \bibcite{fenics_book}{20}
 \bibcite{fenics_tutorial}{21}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{47}{section*.45}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{49}{section*.44}}
 \bibcite{approximation_theory}{22}
 \bibcite{stam}{23}
 \bibcite{ham_fem}{24}
@@ -301,5 +308,5 @@
 \bibcite{boris_galerkin}{39}
 \bibcite{sobolev_web_page}{40}
 \bibcite{firedrake}{41}
-\memsetcounter{lastsheet}{48}
-\memsetcounter{lastpage}{48}
+\memsetcounter{lastsheet}{50}
+\memsetcounter{lastpage}{50}

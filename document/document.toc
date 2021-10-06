@@ -47,25 +47,24 @@
 \contentsline {chapter}{\chapternumberline {4}Two Galerkin methods for Poisson's equation}{25}{chapter.4}
 \contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}
 \contentsline {subsubsection}{The Galerkin method}{26}{section*.22}
-\contentsline {subsubsection}{The finite element method}{26}{section*.23}
 \contentsline {section}{\numberline {4.2}The equation to solve: Poisson's equation}{26}{section.4.2}
 \contentsline {subsection}{\numberline {4.2.1}Discretizing the differential form of the PDE}{26}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Discretizing the integral form of the PDE}{27}{subsection.4.2.2}
-\contentsline {subsubsection}{Deriving the heat and Poisson equation through diffusion processes}{27}{section*.24}
-\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.25}
+\contentsline {subsubsection}{Deriving the heat and Poisson equation through diffusion processes}{27}{section*.23}
+\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.24}
 \contentsline {section}{\numberline {4.3}Discretizing Poisson's equation by finite volumes}{28}{section.4.3}
 \contentsline {subsection}{\numberline {4.3.1}The Dirichlet boundary condition and the test space}{28}{subsection.4.3.1}
 \contentsline {subsection}{\numberline {4.3.2}Forming a linear system}{29}{subsection.4.3.2}
 \contentsline {subsection}{\numberline {4.3.3}A piecewise linear triangulation scheme}{30}{subsection.4.3.3}
-\contentsline {subsubsection}{The test space}{30}{section*.27}
-\contentsline {subsubsection}{Approximating the boundary values}{31}{section*.29}
-\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.32}
+\contentsline {subsubsection}{The test space}{30}{section*.26}
+\contentsline {subsubsection}{Approximating the boundary values}{31}{section*.28}
+\contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.31}
 \contentsline {subsection}{\numberline {4.3.4}Computing the linear system by closed form integration}{32}{subsection.4.3.4}
-\contentsline {subsubsection}{Integrating the source function}{34}{section*.34}
+\contentsline {subsubsection}{Integrating the source function}{34}{section*.33}
 \contentsline {subsection}{\numberline {4.3.5}The resulting matrix assembly algorithm}{35}{subsection.4.3.5}
 \contentsline {subsection}{\numberline {4.3.6}The resulting finite volume algorithm}{36}{subsection.4.3.6}
-\contentsline {subsubsection}{Mesh generation}{36}{section*.37}
-\contentsline {subsubsection}{Numerical linear algebra}{37}{section*.38}
+\contentsline {subsubsection}{Mesh generation}{36}{section*.36}
+\contentsline {subsubsection}{Numerical linear algebra}{37}{section*.37}
 \contentsline {subsection}{\numberline {4.3.7}An implementation in C\texttt {++}}{37}{subsection.4.3.7}
 \contentsline {subsection}{\numberline {4.3.8}Validating the method}{37}{subsection.4.3.8}
 \contentsline {section}{\numberline {4.4}From finite volumes to general Galerkin methods}{40}{section.4.4}
@@ -76,5 +75,5 @@
 \contentsline {subsection}{\numberline {4.5.1}Forming a linear system}{43}{subsection.4.5.1}
 \contentsline {subsection}{\numberline {4.5.2}Almost the same piecewise linear triangulation scheme}{44}{subsection.4.5.2}
 \contentsline {subsection}{\numberline {4.5.3}Computing the linear system by closed form integration}{44}{subsection.4.5.3}
-\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{45}{chapter.5}
-\contentsline {chapter}{Bibliography}{47}{section*.45}
+\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{47}{chapter.5}
+\contentsline {chapter}{Bibliography}{49}{section*.44}

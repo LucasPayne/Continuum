@@ -134,7 +134,7 @@ VertexAttachment<double> LaplaceSolver::solve()
             auto grad_i = grad_transform * gradients.row(i).transpose();
             for (int j = 0; j < 3; j++) {
                 auto grad_j = grad_transform * gradients.row(j).transpose();
-                local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j); //*triangle_area ??????????????????????????????????????
+                local_stiffness_matrix(i,j) = triangle_area * grad_i.dot(grad_j);
             }
         }
 
