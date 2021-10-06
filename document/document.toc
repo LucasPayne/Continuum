@@ -44,7 +44,7 @@
 \contentsline {section}{\numberline {3.4}Stokes flow and the meaning of pressure}{22}{section.3.4}
 \contentsline {subsubsection}{Alternative direct derivation in terms of a modified energy}{23}{section*.20}
 \contentsline {subsection}{\numberline {3.4.1}Application to hydrostatics}{23}{subsection.3.4.1}
-\contentsline {chapter}{\chapternumberline {4}Galerkin methods}{25}{chapter.4}
+\contentsline {chapter}{\chapternumberline {4}Two Galerkin methods for Poisson's equation}{25}{chapter.4}
 \contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}
 \contentsline {subsubsection}{The Galerkin method}{26}{section*.22}
 \contentsline {subsubsection}{The finite element method}{26}{section*.23}
@@ -68,9 +68,10 @@
 \contentsline {subsubsection}{Numerical linear algebra}{37}{section*.38}
 \contentsline {subsection}{\numberline {4.3.7}An implementation in C\texttt {++}}{37}{subsection.4.3.7}
 \contentsline {subsection}{\numberline {4.3.8}Validating the method}{37}{subsection.4.3.8}
-\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{38}{section.4.4}
+\contentsline {section}{\numberline {4.4}From finite volumes to general Galerkin methods}{40}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Generalising the flux integrals by combining equations}{40}{subsection.4.4.1}
+\contentsline {subsection}{\numberline {4.4.2}The weak form of Poisson's equation}{41}{subsection.4.4.2}
 \contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{42}{section.4.5}
 \contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{42}{subsection.4.5.1}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{45}{chapter.5}
-\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{47}{chapter.6}
-\contentsline {chapter}{Bibliography}{49}{section*.46}
+\contentsline {chapter}{Bibliography}{47}{section*.46}

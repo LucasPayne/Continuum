@@ -32,7 +32,9 @@ Galerkin methods
 are particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
 residual minimisation, and solution reconstruction, can be automated (\cite{firedrake}, \cite{fenics_book}, \cite{DOLFIN}). We begin by
 deriving two instances of Galerkin methods for Poisson's equation, performed on an irregular 2D domain to emphasize that the methods trivially extend
-to complex geometries. A computer implementation is then presented, which generates visualisations and quality metrics for the results.
+to complex geometries.
+These methods are instances of a \textit{finite volume method} and a \textit{finite element method}.
+Computer implementations are presented, which generate visualisations and quality metrics for the results.
 
 
 
@@ -226,7 +228,7 @@ and restricting the flux integrals to the control volumes $\Omega_1,\cdots,\Omeg
 \begin{equation}\label{poisson_equation_integral_fvm}
     \oint_{\partial\Omega_j} -\nabla \left(\phi + \phi_\Gamma\right) \cdot \hat{n}\,dx = \int_{\Omega_j} g\,dx \quad\quad j=1,\cdots,n.
 \end{equation}
-The ``interior variation'' $\phi = \Phi\cdot \hat{h}$ is the only unknown, so we can move all knowns to the right-hand-side
+The ``interior variation'' $\phi = \Phi\cdot \hat{h}$ is the only unknown, so we can move all knowns to the right-hand side
 and expand $\phi$ in terms of the basis test functions $\phi_1,\cdots,\phi_n$:
 \begin{equation}\label{poisson_equation_integral_fvm_knowns_unknowns}
     \oint_{\partial\Omega_j} -\nabla \left(\sum_{i=1}^nh_i\phi_i\right) \cdot \hat{n}\,dx =
@@ -271,8 +273,6 @@ are chosen well, this linear system will be nonsingular and hopefully well-condi
 If the chosen control volumes join together in the interior of $\Omega$ like pieces of a puzzle, this gives a conservative system of balanced fluxes, but it is another question whether the approximation
 $\tilde{h}$ is good.
 
-\newpage
-% \subsection{Choosing the test space, boundary approximation, and control volumes}
 \subsection{A piecewise linear triangulation scheme}
 Possibly the simplest scheme is to triangulate $\Omega$ as
     $\bigcup_i T_i,$
@@ -525,7 +525,7 @@ With these closed forms, we can express the original integral as
 This directly indicates an effective algorithm for constructing the linear system.
 
 \subsubsection{Integrating the source function}
-One more thing is needed, however. The right-hand-side vector of \eqref{poisson_matrix_equation} contains source integrals
+One more thing is needed, however. The right-hand side vector of \eqref{poisson_matrix_equation} contains source integrals
     $$\int_{\om_j}g\,dx,$$
 so we require some numerical integration.
 
@@ -548,9 +548,9 @@ Using the expression \eqref{flux_integral_summation}, the linear system
 \eqref{poisson_matrix_equation} can be constructed by iterating over each interior vertex, then each adjacent triangle,
 and computing these closed form integrals.
 Each adjacent triangle corresponds to two vertices, and for each of these vertices,
-a value is placed in either the system matrix or adjusting the right-hand-side,
+a value is placed in either the system matrix or adjusting the right-hand side,
 depending on whether the triangle vertex in the interior or on the boundary. Also, while iterating over the interior vertices,
-the corresponding source integral is approximated by \eqref{fvm_source_approximation}, and the result is added to the right-hand-side vector.
+the corresponding source integral is approximated by \eqref{fvm_source_approximation}, and the result is added to the right-hand side vector.
 Pseudocode for this algorithm is given below.
 
 
@@ -626,7 +626,7 @@ We now have an effective algorithm for approximating Poisson's equation:
 \begin{enumerate}
     \item Partition the 2D domain $\Omega$ into triangles $T_1,\cdots,T_{n_T}$. This determines the hat basis functions $\phi_1,\cdots,\phi_n$
          and the mixed Voronoi cells $\Omega_1,\cdots,\Omega_n$.
-    \item Form the matrix and right-hand-side in \eqref{poisson_matrix_equation} with the algorithm \ref{alg:assembly}.
+    \item Form the matrix and right-hand side in \eqref{poisson_matrix_equation} with the algorithm \ref{alg:assembly}.
     \item Solve the resulting linear system for $\hat{h}$, and construct the solution as $\tilde{h} = \phi_\Gamma + \Phi\cdot\hat{h}$.
 \end{enumerate}
 Each of these steps is conceptually well-separated into the domains of
@@ -677,7 +677,7 @@ of mesh traversals performed during matrix assembly. This is typically some vari
 implemented in libraries such as Geometry Central \cite{geometry_central},
 the Polygon Mesh Processing library \cite{polygon_mesh_processing_library}, and OpenMesh \cite{openmesh}.
 
-A mesh data structure is a foundational component of \textit{mesh generation} systems. For 2D domains, a somewhat regular sampling of points on the boundary
+A mesh data structure is a foundational component of mesh generation systems. For 2D domains, a somewhat regular sampling of points on the boundary
 and interior, followed by triangulation of these points, can suffice for a piecewise-linear finite volume mesh.
 The Triangle \cite{triangle} library, for example, contains a single very efficient and robust C routine (consisting of 16k lines of highly optimized code)
 for performing Delaunay triangulations \cite{orourke}
@@ -685,21 +685,26 @@ on 2D domains,
 with the specific goal of creating robust finite element meshes.
 
 \subsubsection{Numerical linear algebra}
-The solution of large linear systems is a vast topic. Finite element solvers are typically clients
+The solution of large linear systems is a vast topic. PDE solvers are typically clients
 of standard, robust linear and non-linear solver libraries, such as Argonne National Laboratory's PETSc libraries \cite{petsc}
 and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eigen \cite{eigen}.
-A finite element solver will typically pass either a full matrix to the linear solver (dense or sparse),
-or provide the linear solver with callback routines that give the solver access to the system coefficients when they are needed.
+A PDE solver will typically pass either a full matrix to the linear solver (dense or sparse),
+or provide the linear solver with callback routines that give it access to the system coefficients when they are needed.
 
 --- Discuss sparsity here.
 
 \subsection{An implementation in C\texttt{++}}
-I have implemented the above algorithm in C\texttt{++}.
+I have implemented algorithm \ref{alg:fvm} in C\texttt{++}.
 This code uses a simple mesh generator based on the C library Triangle \cite{triangle}. Triangle is given a list of points
 and boundary points, and generates a Delaunay triangulation \cite{orourke}. This triangulation is then converted to a halfedge mesh data structure
 based on the ideas in the Geometry Central library \cite{geometry_central}.
+The matrix is constructed as a flat array of indices and coefficients, which are then converted to CRS (compressed row storage) form.
 The system is solved with a sparse LU factorisation method provided by the C\texttt{++} Eigen library \cite{eigen}.
 With these interfaces, the resulting C\texttt{++} was almost a direct transliteration of the pseudocodes \ref{alg:fvm} and \ref{alg:assembly}.
+
+The implemented matrix assembly algorithm has linear space and time complexity in the number of mesh vertices,
+and all data is generated and accessed in flat buffers, giving good cache performance.
+The only superlinear stage is the system solve, which is handled by Eigen \cite{eigen}.
 
 
 \subsection{Validating the method}
@@ -726,16 +731,17 @@ corresponds to two right-angled triangles in the triangulation
 \footnote{This is a rather uninteresting mesh which doesn't take advantage
 of Galerkin methods' ability to model complex geometries, but it is a difficult problem to parameterise a complex mesh by some $r$ such that the error
 metric acts ``nicely''.}.
-To measure convergence, we use the $L^2$ norm (although others could be used), defined by
+To measure convergence, we use the $L^2$-norm (although others could be used), defined by
 \begin{equation}\label{test_L2_norm}
     \norm{\tilde{h} - h}_{L^2(\Omega)} = \sqrt{\int_{-1}^1\int_{-1}^1 (\tilde{h}(x,y) - h(x,y))^2 \,dx\,dy}.
 \end{equation}
 
-To validate the convergence of the method, simply increase $h$, generate the mesh, solve the test equation,
-then compute the $L^2$ error \eqref{test_L2_norm}, and repeat. A log-log plot of the error for the simple test problem is shown in figure
+To validate the convergence of the method, simply increase $r$, generate the mesh, solve the test equation,
+compute the $L^2$ error \eqref{test_L2_norm}, and repeat. A log-log plot of the error for the simple test problem is shown in figure
 \ref{error_fvm_1}.
+It can be seen clearly that the convergence for test problem \eqref{fvm_test_equation_1} is quadratic.
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/graphs/error_metric_file_square_fixup.png}
     \end{center}
@@ -744,7 +750,6 @@ then compute the $L^2$ error \eqref{test_L2_norm}, and repeat. A log-log plot of
     }
     \label{error_fvm_1}
 \end{figure}
-It can be seen clearly that the convergence for test problem \eqref{fvm_test_equation_1} is quadratic.
 
 
 We should also try a test problem which does not degenerate to Laplace's equation. Suppose instead that the exact solution is
@@ -767,7 +772,7 @@ A visualization of these convergence results for problem \eqref{fvm_test_equatio
 To emphasize the generality of the algorithm, figure \ref{fvm_laplace_error} displays convergence for problem \eqref{fvm_test_equation_1}
 on an irregularly-meshed disk.
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/graphs/error_metric_file_square_2_fixup.png}
     \end{center}
@@ -779,7 +784,7 @@ on an irregularly-meshed disk.
 
 
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/error/error.png}
     \end{center}
@@ -793,7 +798,7 @@ on an irregularly-meshed disk.
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/error/laplace_error.png}
     \end{center}
@@ -815,104 +820,229 @@ on an irregularly-meshed disk.
 % Finite volume methods are characterised by a selection of a finite number of control volumes, and computation of flux integrals.
 % Finite volume methods are typically \textit{conservative}, due to the ``flux network'' nature of the discretisation.
 
-\section{From finite volumes to finite elements}\label{trial_function}
-The alternative ``finite element'' approach is directly related to the ``finite volumes'' described above. While each finite volume
-had a direct geometric meaning (as a small cell in which a certain test flux integral is taken), the geometric meaning of a ``finite element''
-requires slightly more thought, although it will be seen to be the same idea in disguise.
+\section{From finite volumes to general Galerkin methods}
+We will soon derive another instance of a Galerkin method, called the \textit{finite element method}.
+This approach is directly related to the ``finite volumes'' described above. 
+The finite element method, however, requires a construction called the \textit{weak form} of a PDE,
+which can be directly motivated from the preceding discussion on finite volumes.
+While each finite volume
+has a clear geometric meaning (as a small cell around which a certain test flux integral is taken), the geometric meaning of a ``finite element''
+requires slightly more thought, although it will be seen to be the same idea in disguise --- the resulting linear system
+will be formed from averaged, or ``blurred'' flux integrals, rather than single flux integrals.
+% Much of the resulting algorithm is the same as the finite volume method derived above, but
+% with different integrals.
+
+\subsection{Generalising the flux integrals by combining equations}
+
 The matrix equation \eqref{poisson_matrix_equation} consists of linear equations
 \begin{align*}
-    \int_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
+    \oint_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
     =
     \int_{\om_1}g\,dx\quad\text{(for $j=1$)},
 \end{align*}
 and so on. We cannot compute flux integrals
-over all arbitrary control volumes, but we can take a number of ``trial'' flux integrals over the finite number of cells $\Omega_i$.
-We can take linear combinations of these equations to get more equations which must hold on a solution.
+over all arbitrary control volumes, but we can take a number of ``trial'' flux integrals over the finite number of cells $\Omega_1,\cdots,\Omega_n$.
+As with any linear system, we can take linear combinations of these equations to get more equations which must hold on a solution.
 For example,
 \begin{equation}\label{example_trial_sum}
-    \int_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
-    +
-    \int_{\pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
+    5\left[\oint_{\pom_1} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx\right]
+    -
+    2\left[\oint_{\pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx\right]
     =
-    \int_{\om_1}g\,dx
-    +
-    \int_{\om_2}g\,dx
+    5\left[\int_{\om_1}g\,dx\right]
+    -
+    2\left[\int_{\om_2}g\,dx\right]
 \end{equation}
-must hold. At first sight, \eqref{example_trial_sum} cannot directly be interpreted as a statement about a ``flux integral'', but rather about a sum
-of flux integrals. However, a key idea is to regard \eqref{example_trial_sum} as a flux integral over a \textit{formal sum} of domains,
-    $$\Omega_1 + \Omega_2.$$
-We now have the equation
-\begin{equation}
-    \int_{\pom_1 + \pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
-    =
-    \int_{\om_1 + \om_2}g\,dx.
+must hold for a solution $\hat{h}$ to \eqref{poisson_matrix_equation}.
+Equation \eqref{example_trial_sum} is not a flux integral, but a sum of flux integrals.
+Now suppose instead we are working with the original integral form of Poisson's equation, \eqref{poisson_equation_integral}:
+\begin{equation*}
+    \oint_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} g\,dx \quad \text{for all control volumes $\Omega_0$.}
+\end{equation*}
+Then, in the same way, we can take linear combinations of the equations \eqref{poisson_equation_integral}
+for some collection of control volumes, to get another equation which the exact solution $h$ must satisfy. However, in addition, we can take integral
+combinations, whenever that integral is well-defined. For example, consider a parameterised family of control volumes,
+$\left\{\Omega_{0,t} \mid 0 < t  < 1\right\}$, defined by
+    $$\Omega_{0,t} = \text{the disk of radius $t$ around some fixed point $c$}.$$
+Then the equation
+\begin{equation}\label{poisson_integral_example}
+    \int_{t=0}^{t=1}\left[\oint_{\partial\Omega_{0,t}} -\nabla h\cdot \hat{n}\,dx\right]\,dt = \int_{t=0}^{t=1}\left[\int_{\Omega_{0,t}} g\,dx\right]\,dt
 \end{equation}
-In differential geometry $\Omega_1 + \Omega_2$ is called a \textit{chain}. For example, we may visualise $\Omega_1 + 2\Omega_2 + 0.5\Omega_4$ as:
+must also hold for the exact solution $h$. We therefore have an alternative route to discretization of the integral equation \eqref{poisson_equation_integral}:
+instead of choosing a finite number of flux equations over single control volumes, we choose a finite number of integrals of flux equations over
+families of control volumes.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
-We define the boundary operator $\partial$ to be linear in formal sums e.g.,
-    $$\partial(\Omega_1 + \Omega_2) = \pom_1 + \pom_2.$$
-If $\om_1$ and $\om_2$ share a boundary, we would like $\om_1 + \om_2$ to represent their union, such that a flux
-integral over $\partial(\Omega_1 + \Omega_2)$ evaluates to zero on the shared boundary. This can be done by thinking of
-the boundary as \textit{oriented}, as in, consisting of oriented ``surface elements'' over which flux integrals can be taken.
-For example, the $\hat{n}$ in a flux integral denotes the outward-pointing normal, which represents an ``outward-flux-measuring surface element''.
-The opposite $-\hat{n}$ then represents the ``inward-flux-measuring surface element'', which is outward from the perspective of an adjacent cell.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
-We may now define
-    $$\Psi = \text{span}\left\{\Omega_1,\cdots,\Omega_n\right\}$$
-to be the \textit{trial space}, where the span is taken with respect to formal sums. As with a typical linear space,
-we may choose from many possible bases. For example,
-    $$\Psi = \text{span}\left\{\Omega_1, \Omega_2, \Omega_3\right\} =
-    \text{span}\left\{\Omega_1 + \Omega_2, 2\Omega_2, \Omega_3\right\}.$$
-A key idea, leading to Galerkin methods, is to allow freedom in the choice of the trial space $\Psi$.
-Notably, we do not need $\Psi$ to be a space of formal sums of domains.
-The Poisson equation is discretised over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
-which we repeat here:
-\begin{align*}
-    \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
-\end{align*}
-Applying Stokes' theorem, we get
-\begin{align*}
-    \sum_{i=1}^n h_i\int_{\om_j} -\Delta \phi_i \,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
-\end{align*}
-We can think of these integrals as over the \textit{entire domain} $\Omega$, giving the form
-\begin{align*}
-    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i\cdot \chi(\om_j)\,dx = \int_{\om} g\cdot\chi(\om_j)\,dx,\quad j=1,\cdots,n.
-\end{align*}
-where $\chi(\om_j)$ is the indicator function of $\om_j$,
-\begin{align*}
-    \chi(\om_j)(x) \coloneqq \left\{\begin{array}{lr}
-        0 &\text{if $x \in \om_j$}\\
-        1 &\text{if $x \notin \om_j$.}\\
+\subsection{The weak form of Poisson's equation}
+The averaged flux integral equation \eqref{poisson_integral_example}, expressed as a nested integral, can be restated as a single integral over
+the whole domain:
+\begin{equation}\label{poisson_integral_example_modified}
+    \int_{\Omega}\nabla h\cdot \nabla v\,dx = \int_{\Omega}gv\,dx,
+\end{equation}
+where $v$ is a scalar function defined as
+\begin{equation}\label{poisson_integral_example_v}
+    v(x) = 
+    \left\{\begin{array}{lr}
+        $1-t$ &\text{if $x \in \Omega_{0,t}$}\\
+        0 &\text{otherwise}.\\
         \end{array}\right.
-\end{align*}
-We can now think of our trial space $\Psi$ as a span of functions, instead of a span of domains:
-    $$\Psi = \text{span}\left\{\chi(\Omega_1),\cdots,\chi(\Omega_n)\right\}.$$
-Now, as the trial space is just a regular function space, we could instead let
-    $$\Psi = \text{span}\left\{\psi_1,\cdots,\psi_n\right\}$$
-where the $\psi_j$
-need not be the indicator functions of a selection of control volumes. We now have the system of equations
-\begin{align*}
-    \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i \psi_j\,dx = \int_{\om} g\psi_j\,dx,\quad j=1,\cdots,n.
-\end{align*}
-By integration by parts we have the system of equations
-\begin{equation}\label{poisson_galerkin}
-    \sum_{i=1}^n h_i\int_{\om} \nabla \phi_i \cdot \nabla \psi_j\,dx = \int_{\om} g\psi_j\,dx,\quad j=1,\cdots,n,
 \end{equation}
-and we see that we still only require the $\phi_i$ to be in $H^1(\Omega)$.
-We can see that equation \eqref{poisson_galerkin} is very similar to the exact fluxes in \eqref{poisson_equation_integral_discretized},
-and indeed \eqref{poisson_galerkin} gives a discrete linear system in much the same way.
-There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred convolution'' of flux integrals.
+This deserves some explanation, which will be given at two levels of informality.
+The concentric family of control volumes $\Omega_{0,t}$ appear as level sets $v = t$.
+Since this cone has unit slope, the normal $\hat{n}$ of the level set $v = t$ is $-\nabla v$. Since the left-hand side of
+\eqref{poisson_integral_example_modified} is an integral over the fluxes through each level set, the nested integral is subsumed into
+one integral over the union of level sets.
+The outer integral of the right-hand side of \eqref{poisson_integral_example_modified} consists of a ``stack of integrations'' of $g$ against concentric disks, which 
+is equivalent to integrating $g$ against a ``stack of concentric disks'', or rather, the cone $v$ \eqref{poisson_integral_example_v}.
 
---- Mention the weak form, the above is an alternative motivation using the discrete equations rather than
-variational methods with the original PDE.
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+At another level of informality, with more notation, we can define the indicator function
+\begin{equation}\label{fem_indicator_function}
+    \chi(\Omega_{0,t})(x) = 
+    \left\{\begin{array}{lr}
+        1 &\text{if $x \in \Omega_{0,t}$}\\
+        0 &\text{otherwise},\\
+        \end{array}\right.
+\end{equation}
+and define the gradient of the indicator function by
+\begin{equation}\label{fem_indicator_gradient}
+    \nabla\chi(\Omega_{0,t})(x) = 
+    \left\{\begin{array}{lr}
+        -\hat{n}\cdot\infty &\text{if $x \in \pom_{0,t}$}\\
+        0 &\text{otherwise}.\\
+        \end{array}\right.
+\end{equation}
+The $\infty$ is an informal way of stating that a 2D integral will give a non-zero value on this boundary,
+which is a set of measure zero --- with typical functions, any isolated set of measure zero is ignored
+\footnote{This idea (and the related
+Dirac delta ``function'') is formalised in
+the theory of distributions, or generalised functions, introduced by Laurent Schwartz in the late 1940s.}.
+If there should be any definition of a ``generalised gradient'', this seems reasonable --- if the indicator function
+$\chi(\Omega_{0,t})$ is approximated by a sequence of smooth functions $f_1, f_2,\cdots$, the gradient $\nabla f_i$
+will approach \eqref{fem_indicator_gradient}.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+We then have the equalities
+\begin{align*}
+    \int_{t=0}^{t=1}\left[\oint_{\partial\Omega_{0,t}} -\nabla h\cdot \hat{n}\,dx\right]\,dt
+    &= \int_{t=0}^{t=1} \left[
+        \int_\Omega \nabla h\cdot \nabla \chi(\Omega_{0,t})\,dx
+    \right]\,dt
+    \\
+    &= \int_\Omega \nabla h \cdot \nabla \left[
+        \int_{t=0}^{t=1}\chi(\Omega_{0,t})\,dt
+    \right]\,dx,
+\end{align*}
+where the final equality might assume some regularity (--- Fubini's theorem?).
+We then define
+\begin{equation}\label{fem_v_definition}
+    v \coloneqq \int_{t=0}^{t=1}\chi(\Omega_{0,t})\,dt,
+\end{equation}
+which is simplified to \eqref{poisson_integral_example_v}.
+Note that $\nabla v$ is not defined everywhere ($\nabla v$ does not exist at $c$ or on the unit circle around $c$).
+However, this is fine, as these are isolated sets of measure zero, which can be ignored as making no contribution to the integral.
+Formally, $v$ is in the Sobolev space $H^1_0(\Omega)$, where the $0$ subscript denotes
+that $v$ must vanish on the boundary $\Gamma$. (The integral of fluxes cannot contain a flux measurement
+across $\Gamma$, as the solution there is specified by the Dirichlet boundary condition --- there is no flux information on $\Gamma$.)
+
+
+Now we can forget our definition of $v$, and define the \textit{weak form} of Poisson's equation to be
+\begin{equation}\label{poisson_equation_weak_form}
+    \int_\Omega \nabla h \cdot \nabla v \,dx = \int_\Omega gv\,dx \text{\quad for all $v \in H^1_0(\Omega)$}.
+\end{equation}
+A general Galerkin method will discretize the test space as usual, approximating $h$ by
+$$\tilde{h} \in \Phi = \text{span}\left\{\phi_1, \cdots, \phi_n\right\},$$
+and also approximate the trial space $H^1_0$ as
+    $$v \in \Psi = \text{span}\left\{\psi_1, \cdots, \psi_n\right\}.$$
+The resulting discrete system of equations is
+
+\begin{equation}\label{poisson_galerkin_system}
+    equation
+\end{equation
+
+
+
+
+% At first sight, \eqref{example_trial_sum} cannot directly be interpreted as a statement about a ``flux integral'', but rather about a sum
+% of flux integrals. However, a key idea is to regard \eqref{example_trial_sum} as a flux integral over a \textit{formal sum} of domains,
+%     $$\Omega_1 + \Omega_2.$$
+% We now have the equation
+% \begin{equation}
+%     \int_{\pom_1 + \pom_2} -\nabla \left(\sum_{i=1}^n h_i\phi_i\right) \cdot \hat{n}\,dx
+%     =
+%     \int_{\om_1 + \om_2}g\,dx.
+% \end{equation}
+% In differential geometry $\Omega_1 + \Omega_2$ is called a \textit{chain}. For example, we may visualise $\Omega_1 + 2\Omega_2 + 0.5\Omega_4$ as:
+% 
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+% 
+% We define the boundary operator $\partial$ to be linear in formal sums e.g.,
+%     $$\partial(\Omega_1 + \Omega_2) = \pom_1 + \pom_2.$$
+% If $\om_1$ and $\om_2$ share a boundary, we would like $\om_1 + \om_2$ to represent their union, such that a flux
+% integral over $\partial(\Omega_1 + \Omega_2)$ evaluates to zero on the shared boundary. This can be done by thinking of
+% the boundary as \textit{oriented}, as in, consisting of oriented ``surface elements'' over which flux integrals can be taken.
+% For example, the $\hat{n}$ in a flux integral denotes the outward-pointing normal, which represents an ``outward-flux-measuring surface element''.
+% The opposite $-\hat{n}$ then represents the ``inward-flux-measuring surface element'', which is outward from the perspective of an adjacent cell.
+% 
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
+% 
+% We may now define
+%     $$\Psi = \text{span}\left\{\Omega_1,\cdots,\Omega_n\right\}$$
+% to be the \textit{trial space}, where the span is taken with respect to formal sums. As with a typical linear space,
+% we may choose from many possible bases. For example,
+%     $$\Psi = \text{span}\left\{\Omega_1, \Omega_2, \Omega_3\right\} =
+%     \text{span}\left\{\Omega_1 + \Omega_2, 2\Omega_2, \Omega_3\right\}.$$
+% A key idea, leading to Galerkin methods, is to allow freedom in the choice of the trial space $\Psi$.
+% Notably, we do not need $\Psi$ to be a space of formal sums of domains.
+% The Poisson equation is discretised over flux integrals around cell boundaries in the linear system \eqref{poisson_equation_integral_discretized},
+% which we repeat here:
+% \begin{align*}
+%     \sum_{i=1}^n h_i\int_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
+% \end{align*}
+% Applying Stokes' theorem, we get
+% \begin{align*}
+%     \sum_{i=1}^n h_i\int_{\om_j} -\Delta \phi_i \,dx = \int_{\om_j} g\,dx,\quad j=1,\cdots,n.
+% \end{align*}
+% We can think of these integrals as over the \textit{entire domain} $\Omega$, giving the form
+% \begin{align*}
+%     \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i\cdot \chi(\om_j)\,dx = \int_{\om} g\cdot\chi(\om_j)\,dx,\quad j=1,\cdots,n.
+% \end{align*}
+% where $\chi(\om_j)$ is the indicator function of $\om_j$,
+% \begin{align*}
+%     \chi(\om_j)(x) \coloneqq \left\{\begin{array}{lr}
+%         0 &\text{if $x \in \om_j$}\\
+%         1 &\text{if $x \notin \om_j$.}\\
+%         \end{array}\right.
+% \end{align*}
+% We can now think of our trial space $\Psi$ as a span of functions, instead of a span of domains:
+%     $$\Psi = \text{span}\left\{\chi(\Omega_1),\cdots,\chi(\Omega_n)\right\}.$$
+% Now, as the trial space is just a regular function space, we could instead let
+%     $$\Psi = \text{span}\left\{\psi_1,\cdots,\psi_n\right\}$$
+% where the $\psi_j$
+% need not be the indicator functions of a selection of control volumes. We now have the system of equations
+% \begin{align*}
+%     \sum_{i=1}^n h_i\int_{\om} -\Delta \phi_i \psi_j\,dx = \int_{\om} g\psi_j\,dx,\quad j=1,\cdots,n.
+% \end{align*}
+% By integration by parts we have the system of equations
+% \begin{equation}\label{poisson_galerkin}
+%     \sum_{i=1}^n h_i\int_{\om} \nabla \phi_i \cdot \nabla \psi_j\,dx = \int_{\om} g\psi_j\,dx,\quad j=1,\cdots,n,
+% \end{equation}
+% and we see that we still only require the $\phi_i$ to be in $H^1(\Omega)$.
+% We can see that equation \eqref{poisson_galerkin} is very similar to the exact fluxes in \eqref{poisson_equation_integral_discretized},
+% and indeed \eqref{poisson_galerkin} gives a discrete linear system in much the same way.
+% There is a real geometric sense in which \eqref{poisson_galerkin} is a ``blurred convolution'' of flux integrals.
+% 
+% --- Mention the weak form, the above is an alternative motivation using the discrete equations rather than
+% variational methods with the original PDE.
 
 % \subsubsection{Integrating over trial functions versus integrating over domains}
 % The above construction (generalising a finite volume flux integral to a finite-element ``blurred flux'' integral) is further investigated

@@ -35,7 +35,7 @@ style = {"linestyle": "--", "linewidth": 0.8}
 plt.loglog(hs, (errors[-1]/hs[-1]) * hs, color="b", **style)
 plt.loglog(hs, (errors[-1]/(hs[-1]**2)) * hs**2, color="r", **style)
 plt.scatter(hs, errors)
-plt.legend([r"$\log(error)$", r"$\log(r) + const$", r"$\log(r^2) + const$"])
+plt.legend([r"$\log(error)$", r"$\log(r)$ + const", r"$\log(r^2)$ + const"])
 plt.xlabel(r"$r$ (labels), $\log(r)$ (scale)")
 plt.title("Log-log plot of the $L^2$ error for varying $r$.")
 

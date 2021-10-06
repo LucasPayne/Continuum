@@ -132,15 +132,15 @@
 \citation{firedrake}
 \citation{fenics_book}
 \citation{DOLFIN}
-\citation{boris_galerkin}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {4}Galerkin methods}{25}{chapter.4}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {4}Two Galerkin methods for Poisson's equation}{25}{chapter.4}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {4.1}Introduction}{25}{section.4.1}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Some key figures whose work precipitated modern developments in PDEs.\relax }}{25}{figure.caption.21}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{fig:galerkin_mathematicians}{{\M@TitleReference {4.1}{Some key figures whose work precipitated modern developments in PDEs.\relax }}{25}{Some key figures whose work precipitated modern developments in PDEs.\relax }{figure.caption.21}{}}
+\citation{boris_galerkin}
 \citation{sobolev_web_page}
 \citation{one_hundred_years_galerkin}
 \@writefile{toc}{\contentsline {subsubsection}{The Galerkin method}{26}{section*.22}}
@@ -157,8 +157,8 @@
 \newlabel{heat_equation_integral}{{4.5}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.5}{}}
 \newlabel{heat_equation_differential}{{4.6}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.6}{}}
 \newlabel{heat_equation_differential_constant}{{4.7}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.7}{}}
-\newlabel{poisson_equation}{{4.8}{27}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
 \citation{approximation_theory}
+\newlabel{poisson_equation}{{4.8}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.8}{}}
 \newlabel{poisson_equation_integral}{{4.9}{28}{Deriving the heat and Poisson equation through diffusion processes}{equation.4.2.9}{}}
 \@writefile{toc}{\contentsline {subsubsection}{So how do we discretize Poisson's equation?}{28}{section*.25}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.3}Discretizing Poisson's equation by finite volumes}{28}{section.4.3}}
@@ -217,6 +217,7 @@
 \citation{orourke}
 \citation{geometry_central}
 \citation{eigen}
+\citation{eigen}
 \citation{fenics_tutorial}
 \@writefile{toc}{\contentsline {subsubsection}{Numerical linear algebra}{37}{section*.38}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.7}An implementation in C\texttt  {++}}{37}{subsection.4.3.7}}
@@ -225,31 +226,34 @@
 \newlabel{test_L2_norm}{{4.24}{37}{Validating the method}{equation.4.3.24}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces  The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{figure.caption.39}}
 \newlabel{error_fvm_1}{{\M@TitleReference {4.7}{ The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{ The $L^2$-norm error for the test problem \eqref {fvm_test_equation_1}, as parameter $r$ varies. \relax }{figure.caption.39}{}}
+\newlabel{fvm_test_equation_2}{{4.25}{38}{Validating the method}{equation.4.3.25}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces  The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{figure.caption.40}}
 \newlabel{error_fvm_2}{{\M@TitleReference {4.8}{ The $L^2$-norm error for the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}}, as parameter $r$ varies. \relax }}{38}{ The $L^2$-norm error for the test problem \eqref {fvm_test_equation_2}, as parameter $r$ varies. \relax }{figure.caption.40}{}}
-\newlabel{fvm_test_equation_2}{{4.25}{38}{Validating the method}{equation.4.3.25}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to finite elements}{38}{section.4.4}}
-\newlabel{trial_function}{{\M@TitleReference {4.4}{From finite volumes to finite elements}}{38}{From finite volumes to finite elements}{section.4.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces  Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{39}{figure.caption.41}}
 \newlabel{fvm_error_page}{{\M@TitleReference {4.9}{ Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{39}{ Approximate solutions to the test problem \eqref {fvm_test_equation_2} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }{figure.caption.41}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces  Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref  {alg:fvm} works trivially with curved domains and irregular meshes. \relax }}{40}{figure.caption.42}}
 \newlabel{fvm_laplace_error}{{\M@TitleReference {4.10}{ Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_1}\unskip \@@italiccorr )}} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref  {alg:fvm} works trivially with curved domains and irregular meshes. \relax }}{40}{ Approximate solutions to the test problem \eqref {fvm_test_equation_1} with varying $r$. The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref {alg:fvm} works trivially with curved domains and irregular meshes. \relax }{figure.caption.42}{}}
-\newlabel{example_trial_sum}{{4.26}{40}{From finite volumes to finite elements}{equation.4.4.26}{}}
-\newlabel{poisson_galerkin}{{4.28}{41}{From finite volumes to finite elements}{equation.4.4.28}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}From finite volumes to general Galerkin methods}{40}{section.4.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Generalising the flux integrals by combining equations}{40}{subsection.4.4.1}}
+\newlabel{example_trial_sum}{{4.26}{40}{Generalising the flux integrals by combining equations}{equation.4.4.26}{}}
+\newlabel{poisson_integral_example}{{4.27}{41}{Generalising the flux integrals by combining equations}{equation.4.4.27}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}The weak form of Poisson's equation}{41}{subsection.4.4.2}}
+\newlabel{poisson_integral_example_modified}{{4.28}{41}{The weak form of Poisson's equation}{equation.4.4.28}{}}
+\newlabel{poisson_integral_example_v}{{4.29}{41}{The weak form of Poisson's equation}{equation.4.4.29}{}}
+\newlabel{fem_indicator_function}{{4.30}{41}{The weak form of Poisson's equation}{equation.4.4.30}{}}
+\newlabel{fem_indicator_gradient}{{4.31}{41}{The weak form of Poisson's equation}{equation.4.4.31}{}}
+\newlabel{fem_v_definition}{{4.32}{42}{The weak form of Poisson's equation}{equation.4.4.32}{}}
+\newlabel{poisson_equation_weak_form}{{4.33}{42}{The weak form of Poisson's equation}{equation.4.4.33}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{42}{section.4.5}}
-\newlabel{poisson_fem_matrix_equation}{{4.29}{42}{Discretizing Poisson's equation by finite elements}{equation.4.5.29}{}}
+\newlabel{poisson_fem_matrix_equation}{{4.34}{42}{Discretizing Poisson's equation by finite elements}{equation.4.5.34}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Choosing a test and a trial space}{42}{subsection.4.5.1}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{43}{figure.caption.43}}
 \newlabel{sparsity_pattern}{{\M@TitleReference {4.11}{\relax \fontsize  {8}{9.5}\selectfont  An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }}{43}{\scriptsize An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero. The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$. \relax }{figure.caption.43}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.12}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{43}{figure.caption.44}}
-\newlabel{laplace_solution}{{\M@TitleReference {4.12}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{43}{\scriptsize Text \relax }{figure.caption.44}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.12}{\ignorespaces \relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{44}{figure.caption.44}}
+\newlabel{laplace_solution}{{\M@TitleReference {4.12}{\relax \fontsize  {8}{9.5}\selectfont  Text \relax }}{44}{\scriptsize Text \relax }{figure.caption.44}{}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
 \@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{45}{chapter.5}}
-\@writefile{loa}{\addvspace {10\p@ }}
-\@writefile{lof}{\addvspace {10pt}}
-\@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {6}Some functional analysis}{47}{chapter.6}}
 \@writefile{loa}{\addvspace {10\p@ }}
 \bibcite{newton}{1}
 \bibcite{johann_bernoulli}{2}
@@ -272,8 +276,8 @@
 \bibcite{DOLFIN}{19}
 \bibcite{fenics_book}{20}
 \bibcite{fenics_tutorial}{21}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{47}{section*.46}}
 \bibcite{approximation_theory}{22}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{49}{section*.46}}
 \bibcite{stam}{23}
 \bibcite{ham_fem}{24}
 \bibcite{fem_incompressible}{25}
@@ -293,5 +297,5 @@
 \bibcite{boris_galerkin}{39}
 \bibcite{sobolev_web_page}{40}
 \bibcite{firedrake}{41}
-\memsetcounter{lastsheet}{50}
-\memsetcounter{lastpage}{50}
+\memsetcounter{lastsheet}{48}
+\memsetcounter{lastpage}{48}
