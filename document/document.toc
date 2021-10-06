@@ -74,6 +74,7 @@
 \contentsline {subsection}{\numberline {4.4.3}General Galerkin methods for Poisson's equation}{42}{subsection.4.4.3}
 \contentsline {section}{\numberline {4.5}Discretizing Poisson's equation by finite elements}{43}{section.4.5}
 \contentsline {subsection}{\numberline {4.5.1}Forming a linear system}{43}{subsection.4.5.1}
-\contentsline {subsection}{\numberline {4.5.2}Computing the linear system by closed form integration}{43}{subsection.4.5.2}
+\contentsline {subsection}{\numberline {4.5.2}Almost the same piecewise linear triangulation scheme}{44}{subsection.4.5.2}
+\contentsline {subsection}{\numberline {4.5.3}Computing the linear system by closed form integration}{44}{subsection.4.5.3}
 \contentsline {chapter}{\chapternumberline {5}Solving the Navier-Stokes equations}{45}{chapter.5}
 \contentsline {chapter}{Bibliography}{47}{section*.45}

@@ -408,10 +408,10 @@ It will be more convenient to start again with the trial flux integral
 rather than with the expanded linear system \eqref{poisson_matrix_equation}.
 By linearity, the $\nabla$ in $\nabla\tilde{h}$ ``falls through'' the expansion of $\tilde{h}$:
 % $\nabla \tilde{h}$ is a combination of gradients of basis functions of $\Phi^*$:
-\begin{align*}
+\begin{equation}\label{gradient_expansion}
     \nabla \tilde{h} = \nabla\phi_\Gamma + \nabla\phi
              = \sum_{i=1}^{n_\Gamma}h_\Gamma(p^\Gamma_i)\nabla\phi^\Gamma_i + \sum_{i=1}^n h_i\nabla\phi_i.
-\end{align*}
+\end{equation}
 By linearity the integral \eqref{fvm_integral} becomes
 \begin{equation}\label{fvm_integral_linearity_expanded}
     \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\oint_{\pom_j}-\nabla\phi^\Gamma_i\cdot\hat{n}\,dx\right]
@@ -882,7 +882,7 @@ where $v$ is a scalar function defined as
 \begin{equation}\label{poisson_integral_example_v}
     v(x) = 
     \left\{\begin{array}{lr}
-        $1-t$ &\text{if $x \in \Omega_{0,t}$}\\
+        1 - t &\text{if $x \in \Omega_{0,t}$}\\
         0 &\text{otherwise}.\\
         \end{array}\right.
 \end{equation}
@@ -920,7 +920,7 @@ which is a set of measure zero --- with typical functions, any isolated set of m
 Dirac delta ``function'') is formalised in
 the theory of distributions, or generalised functions, introduced by Laurent Schwartz in the late 1940s.}.
 If there should be any definition of a ``generalised gradient'', this seems reasonable --- if the indicator function
-$\chi(\Omega_{0,t})$ is approximated by a sequence of smooth functions $f_1, f_2,\cdots$, the gradient $\nabla f_i$
+$\chi(\Omega_{0,t})$ is approximated by a sequence of smooth functions $f_1, f_2,\ldots$, the gradient $\nabla f_i$
 will approach \eqref{fem_indicator_gradient}.
 
 \vskip 0.2in
@@ -1132,13 +1132,10 @@ Much of the FEM discretization scheme, and resulting algorithm, will be the same
 The distinguishing feature is that different integrals are taken when forming the linear system.
 \subsection{Forming a linear system}
 We now start with the weak form \eqref{poisson_equation_weak_form}.
-We can use the same piecewise linear triangulation scheme as in the finite volume method, but we no longer
-take trial flux integrals over mixed Voronoi cells. Instead, we can use the Bubnov--Galerkin method: Let $\Psi = \Phi$
-(which are the hat functions) and form the system of linear equations \eqref{poisson_galerkin_system}.
-In matrix form this linear system is
+Firstly, we can express the resulting Galerkin linear system in matrix form as
 
-\renewcommand{\integralentry}[2]{\int_{\om_{#1}}\nabla\phi_{#2}\cdot\nabla{\psi_j}\,dx}
-\renewcommand{\integralrhsentry}[1]{\int_{\om_{#1}}g\,dx - \int_{\om_{#1}}\nabla\phi_\Gamma\cdot\nabla{\psi_j}\,dx}
+\renewcommand{\integralentry}[2]{\int_{\om}\nabla\phi_{#2}\cdot\nabla{\psi_j}\,dx}
+\renewcommand{\integralrhsentry}[1]{\int_{\om}g\psi_j\,dx - \int_{\om}\nabla\phi_\Gamma\cdot\nabla{\psi_j}\,dx}
 \begin{equation}\label{fem_poisson_matrix_equation}
 \begin{split}
     A\hat{h}
@@ -1155,10 +1152,78 @@ In matrix form this linear system is
 \end{equation}
 This is much the same as the FVM matrix equation \eqref{poisson_matrix_equation}, with flux integrals replaced
 by integrals against trial functions (giving ``blurred'' flux integrals).
+Notice that the integrals in \eqref{fem_poisson_matrix_equation}, in contrast to \eqref{poisson_matrix_equation},
+are over the \textit{entire domain}. It may be very costly in general to construct such a matrix, requiring
+the computation of many large integrals. The finite element method, in particular, solves this problem
+by ``localising'' basis functions of the test and trial spaces. Each basis test function $\phi_i$
+has \textit{compact support}, meaning that there is some compact subdomain $D^\phi_i$ such that
+\begin{align*}
+    \phi_i(x) =
+    \left\{\begin{array}{lr}
+        \phi_i(x) &\text{if $x \in D^\phi_i$}\\
+        0 &\text{otherwise},\\
+    \end{array}\right.
+\end{align*}
+and similarly each basis trial function $\psi_i$ has some corresponding compact subdomain $D^\psi_i$ such that
+\begin{align*}
+    \psi_i(x) =
+    \left\{\begin{array}{lr}
+        \psi_i(x) &\text{if $x \in D^\psi_i$}\\
+        0 &\text{otherwise}.\\
+    \end{array}\right.
+\end{align*}
+This has the effect of reducing the domain of each integral in \eqref{fem_poisson_matrix_equation}, as
+    $$\int_\Omega \nabla\phi_i \cdot \nabla\psi_j\,dx = \int_{D_i^\phi \cap D_j^\psi} \nabla\phi_i \cdot \nabla\psi_j\,dx. $$
+With well-localised basis functions, the intersection will be
+    $$D_i^\phi \cap D_j^\psi = \emptyset$$
+for most indices $i,j$, implying the matrix \eqref{fem_poisson_matrix_equation} will be \textit{sparse}. In practice this allows
+the use of iterative or graph-based sparse matrix algorithms which can be hugely more efficient than dense matrix computations of the same size.
+The size of the matrix will increase quadratically with the number of nodes in the discretization, while the number of nonzeros
+typically increases linearly.
+A typical sparsity pattern for a finite element problem is shown in figure \ref{sparsity_pattern}.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.26\linewidth]{figures/sparsity_pattern_no_text.png}
+    \end{center}
+    \caption{\scriptsize
+        An example sparsity pattern for the finite element matrix of a 2D Poisson problem. White is zero and black is non-zero.
+        The mesh has 61 vertices (16 on the boundary), and 104 triangles, resulting in a 45x45 system with 2025 entries, 197 non-zeros, and fill of $0.0973$.
+    }
+    \label{sparsity_pattern}
+\end{figure}
+
+\subsection{Almost the same piecewise linear triangulation scheme}
+We can use almost the same piecewise linear triangulation scheme as in the finite volume method, but we no longer
+take trial flux integrals over mixed Voronoi cells. Instead, we can use the Bubnov--Galerkin method: Let $\Psi = \Phi$
+(which are the hat functions) and form the system of linear equations \eqref{poisson_galerkin_system}.
+
+
+
 
 \subsection{Computing the linear system by closed form integration}
 In deriving the FVM, we had to compute closed form flux integrals over complex polygonal cells.
-The integration required for our new FEM method is somewhat simpler.
+The integration required for our new FEM method is somewhat more routine.
+Again, we use the piecewise linear interpolation \eqref{boundary_approximation} of the Dirichlet boundary function $h_\Gamma$:
+\begin{equation*}
+    \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
+                + \cdots
+                + h_\Gamma(p^\Gamma_{n_\Gamma})\hatfun{p^\Gamma_{n_\Gamma}}.
+\end{equation*}
+As before, we expand the gradient $\nabla\tilde{h}$ \eqref{gradient_expansion} by linearity as
+\begin{equation*}
+    \nabla \tilde{h} = \nabla\phi_\Gamma + \nabla\phi
+             = \sum_{i=1}^{n_\Gamma}h_\Gamma(p^\Gamma_i)\nabla\phi^\Gamma_i + \sum_{i=1}^n h_i\nabla\phi_i,
+\end{equation*}
+and in this case the (Bubnov--)Galerkin linear system \eqref{poisson_galerkin_system} becomes
+\begin{equation}\label{fem_integral_linearity_expanded}
+    \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\int_{\om}\nabla\phi^\Gamma_i\cdot\nabla\phi_j\,dx\right]
+    + \sum_{i=1}^n\left[h_i\int_{\om}\nabla\phi_i\cdot\nabla\phi_j\,dx\right].
+\end{equation}
+As in section (), we now reexpress \eqref{fem_integral_linearity_expanded} in terms of local indices. A trial function
+$\psi_j = \phi_j$ has compact support, with domain $D^\phi_j = D^\psi_j = D_j$.
+
+
 
 % Equation \eqref{poisson_galerkin} gives a discrete linear system
 % \renewcommand{\integralentry}[2]{\int_{\Omega}\nabla\phi_{#2} \cdot \nabla\psi_{#1}\,dx}
@@ -1247,15 +1312,15 @@ The integration required for our new FEM method is somewhat simpler.
 % some Sobolev space, constructed over a domain tessellation.
 
 
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=\linewidth]{figures/laplace/laplacev2.png}
-    \end{center}
-    \caption{\scriptsize
-        Text
-    }
-    \label{laplace_solution}
-\end{figure}
+% \begin{figure}[H]
+%     \begin{center}
+%         \includegraphics[width=\linewidth]{figures/laplace/laplacev2.png}
+%     \end{center}
+%     \caption{\scriptsize
+%         Text
+%     }
+%     \label{laplace_solution}
+% \end{figure}
 
 
 % $$
