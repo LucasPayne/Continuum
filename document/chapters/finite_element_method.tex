@@ -734,7 +734,7 @@ $$
     h = x^2 - y^2.
 $$
 From the chosen solution $h$, we can derive the boundary condition and heat source that would give that solution.
-Of course, the boundary condition must be $h_\Gamma = \left.h\right|_\Gamma$.We can solve for the source term $g$ by
+Of course, the boundary condition must be $h_\Gamma = \left.h\right|_\Gamma$. We can solve for the source term $g$ by
 plugging $h$ into Poisson's equation \eqref{poisson_compact}, giving
 $$
     -\Delta\left(x^2 - y^2\right) = g \quad \Rightarrow \quad g = -(2 - 2) = 0.
@@ -1432,6 +1432,12 @@ given in barycentric coordinates, so a natural choice of nodal points are the tr
 Using barycentric coordinates $(x,y,z)$ on $T$, where $x + y + z = 1$, the quadratic nodal basis functions are
 \begin{equation}\label{quadratic_nodal}
 \begin{split}
+    \Phi_{100} &= x - 2xy - 2xz,\quad 
+    \Phi_{110} = 4xy,\\
+    \Phi_{010} &= y - 2yz - 2yx,\quad
+    \Phi_{011} = 4yz,\\
+    \Phi_{001} &= z - 2zx - 2zy,\quad
+    \Phi_{101} = 4zx.
 \end{split}
 \end{equation}
 
@@ -1446,6 +1452,34 @@ Using barycentric coordinates $(x,y,z)$ on $T$, where $x + y + z = 1$, the quadr
     \label{quadratic_basis}
 \end{figure}
 
+Introducing some convenient notation for the piecewise quadratic basis functions,
+we refer to the basis functions corresponding to interior vertices by $\phi_1,\cdots,\phi_{n_I}$ ,
+the basis functions corresponding to boundary vertices by $\phi_1^\Gamma,\cdots,\phi_{n_\Gamma}^\Gamma$,
+and the basis function corresponding to the midpoint of adjacent vertices $i$ and $j$ by $\phi_{ij}$ and $\phi^\Gamma_{ij}$
+, respectively in the interior and on the boundary.
+
+As we are identifying the nodal points shared by adjacent triangles, we get two kinds of global basis functions:
+those associated to a vertex, and those associated to a midpoint.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{figures/basis_functions/quadratic_basis_global.png}
+    \end{center}
+    \caption{\scriptsize
+        Text
+    }
+    \label{quadratic_basis_global}
+\end{figure}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/quadratic_approx/collage_1.png}
+    \end{center}
+    \caption{\scriptsize
+        Text
+    }
+    \label{quadratic_approx}
+\end{figure}
 
 % \newcommand{\mgradone}{(v^\ppr - v^\pr)} % no perp
 % \newcommand{\mgradtwo}{(v - v^\ppr)}

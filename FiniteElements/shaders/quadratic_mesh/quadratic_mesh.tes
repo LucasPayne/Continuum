@@ -1,6 +1,9 @@
 #version 420
 layout(triangles, equal_spacing, ccw) in;
 
+// option for generating comparison figures between quadratic and linear
+uniform int linear_mode;
+
 in TCS_OUT {
     vec3 position;
     float value;
@@ -48,12 +51,21 @@ void main(void)
 
 
     float p[6];
-    p[0] = p0(x,y,z);
-    p[1] = p1(x,y,z);
-    p[2] = p2(x,y,z);
-    p[3] = p3(x,y,z);
-    p[4] = p4(x,y,z);
-    p[5] = p5(x,y,z);
+    if (linear_mode == 1) {
+        p[0] = x;
+        p[1] = y;
+        p[2] = z;
+        p[3] = 0;
+        p[4] = 0;
+        p[5] = 0;
+    } else {
+        p[0] = p0(x,y,z);
+        p[1] = p1(x,y,z);
+        p[2] = p2(x,y,z);
+        p[3] = p3(x,y,z);
+        p[4] = p4(x,y,z);
+        p[5] = p5(x,y,z);
+    }
     vec2 plane_pos =   x*tes_in[0].position.xz
                      + y*tes_in[1].position.xz
                      + z*tes_in[2].position.xz;
@@ -69,12 +81,21 @@ void main(void)
     float epsilon = 0.01;
     
     // Tangent 1 (x)
-    p[0] = p0(x+epsilon,y,z-epsilon);
-    p[1] = p1(x+epsilon,y,z-epsilon);
-    p[2] = p2(x+epsilon,y,z-epsilon);
-    p[3] = p3(x+epsilon,y,z-epsilon);
-    p[4] = p4(x+epsilon,y,z-epsilon);
-    p[5] = p5(x+epsilon,y,z-epsilon);
+    if (linear_mode == 1) {
+        p[0] = x+epsilon;
+        p[1] = y;
+        p[2] = z-epsilon;
+        p[3] = 0;
+        p[4] = 0;
+        p[5] = 0;
+    } else {
+        p[0] = p0(x+epsilon,y,z-epsilon);
+        p[1] = p1(x+epsilon,y,z-epsilon);
+        p[2] = p2(x+epsilon,y,z-epsilon);
+        p[3] = p3(x+epsilon,y,z-epsilon);
+        p[4] = p4(x+epsilon,y,z-epsilon);
+        p[5] = p5(x+epsilon,y,z-epsilon);
+    }
     float tangent_1_y = 0.f;
     for (int i = 0; i < 6; i++) {
         tangent_1_y += tes_in[i].value * p[i];
@@ -85,12 +106,21 @@ void main(void)
     vec3 tangent_1_pos = vec3(tangent_1_plane_pos.x, tangent_1_y, tangent_1_plane_pos.y);
     
     // Tangent 2 (y)
-    p[0] = p0(x,y+epsilon,z-epsilon);
-    p[1] = p1(x,y+epsilon,z-epsilon);
-    p[2] = p2(x,y+epsilon,z-epsilon);
-    p[3] = p3(x,y+epsilon,z-epsilon);
-    p[4] = p4(x,y+epsilon,z-epsilon);
-    p[5] = p5(x,y+epsilon,z-epsilon);
+    if (linear_mode == 1) {
+        p[0] = x;
+        p[1] = y+epsilon;
+        p[2] = z-epsilon;
+        p[3] = 0;
+        p[4] = 0;
+        p[5] = 0;
+    } else {
+        p[0] = p0(x,y+epsilon,z-epsilon);
+        p[1] = p1(x,y+epsilon,z-epsilon);
+        p[2] = p2(x,y+epsilon,z-epsilon);
+        p[3] = p3(x,y+epsilon,z-epsilon);
+        p[4] = p4(x,y+epsilon,z-epsilon);
+        p[5] = p5(x,y+epsilon,z-epsilon);
+    }
     float tangent_2_y = 0.f;
     for (int i = 0; i < 6; i++) {
         tangent_2_y += tes_in[i].value * p[i];
