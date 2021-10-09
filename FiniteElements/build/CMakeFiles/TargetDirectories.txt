@@ -8,6 +8,7 @@
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/install.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/discretization_figure.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/edit_cache.dir
+/home/lucas/Continuum/FiniteElements/build/CMakeFiles/QuadraticLaplaceSolver.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/quadratic_figure.dir
 /home/lucas/computer_graphics/cg_sandbox/build/CMakeFiles/install/strip.dir
 /home/lucas/computer_graphics/cg_sandbox/build/CMakeFiles/edit_cache.dir
