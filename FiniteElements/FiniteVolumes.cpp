@@ -337,18 +337,6 @@ void FVDemo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_P) {
             mesh_N += 1;
-            
-            #if 0
-            // debugging high error values...
-            static bool test_mesh_N = false;
-            if (test_mesh_N) {
-                mesh_N = 50;
-                test_mesh_N = false;
-            } else {
-                mesh_N = 51;
-                test_mesh_N = true;
-            }
-            #endif
         }
         if (e.key.code == KEY_R) {
             random = !random;

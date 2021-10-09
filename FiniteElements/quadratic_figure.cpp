@@ -114,84 +114,114 @@ void App::close()
 
 void App::loop()
 {
-    auto tri_points_vec = std::vector<vec3>(4);
-    for (int i = 0; i < 4; i++){
-        tri_points_vec[i] = vec3(cos(i*2.f*M_PI/3.f), 0, sin(i*2.f*M_PI/3.f));
-        if (i < 3) tri_points[i] = tri_points_vec[i];
-    }
-    world.graphics.paint.chain(tri_points_vec, 0.006, vec4(0,0,0,1));
-
-    auto tri_point = [&](double x, double y, double z)->vec3 {
-        return x*tri_points[0] + y*tri_points[1] + z*tri_points[2];
-    };
-
-    SurfaceMesh mesh;
-    SurfaceGeometry geom(mesh);
-    VertexAttachment<vec3> barycentric(mesh);
-    int N = 100;
-    auto vertex_grid = std::vector<Vertex>((N+1)*(N+1));
-    for (int i = 0; i <= N; i++) {
-        double x = i*1./N;
-        for (int j = 0; j <= N-i; j++) {
-            int k = N - i - j;
-            float y = j*1./N;
-            float z = k*1./N;
-            // printf("%d %d %.2f %.2f %.2f\n", i,j,x,y,z);
-            auto v = mesh.add_vertex();
-            vec3 p = tri_point(x,y,z);
-            geom.position[v] = Eigen::Vector3f(p.x(), p.y(), p.z());
-            vertex_grid[i*(N+1) + j] = v;
-            barycentric[v] = vec3(x,y,z);
+    #if 0
+    // Rose basis function.
+    for (int TRI = 0; TRI < 6; TRI++) {
+        float TRI_THETA = 2.f*TRI*M_PI/6.f;
+        auto tri_points_vec = std::vector<vec3>(4);
+        for (int i = 0; i < 4; i++){
+            tri_points_vec[i] = vec3(cos(TRI_THETA) + cos(i*2.f*M_PI/3.f + TRI_THETA + M_PI/3), 0, sin(TRI_THETA) + sin(i*2.f*M_PI/3.f + TRI_THETA + M_PI/3));
+            if (i < 3) tri_points[i] = tri_points_vec[i];
         }
-    }
-    for (int i = 1; i <= N; i++) {
-        for (int j = 0; j <= N-i; j++) {
-            auto vgrid = [&](int a, int b) { return vertex_grid[(i+a)*(N+1) + j+b]; };
-            mesh.add_triangle(vgrid(0,0), vgrid(-1,1), vgrid(-1,0));
-            if (j > 0) {
-                mesh.add_triangle(vgrid(0,0), vgrid(-1,0), vgrid(0,-1));
+    #else
+    // Edge basis function.
+    for (int TRI = 0; TRI < 2; TRI ++) {
+        float l = sqrt(1 - sin(M_PI/3)*sin(M_PI/3));
+        auto tri_points_vec = std::vector<vec3>(4);
+        for (int i = 0; i < 4; i++){
+            if (TRI == 0) {
+                tri_points_vec[i] = vec3(-l - cos(i*2.f*M_PI/3.f), 0, sin(i*2.f*M_PI/3.f));
+            } else {
+                tri_points_vec[i] = vec3(l + cos(i*2.f*M_PI/3.f), 0, sin(i*2.f*M_PI/3.f));
+            }
+            if (i < 3) tri_points[i] = tri_points_vec[i];
+        }
+    #endif
+
+        world.graphics.paint.chain(tri_points_vec, 0.006, vec4(0,0,0,1));
+
+        auto tri_point = [&](double x, double y, double z)->vec3 {
+            return x*tri_points[0] + y*tri_points[1] + z*tri_points[2];
+        };
+
+        SurfaceMesh mesh;
+        SurfaceGeometry geom(mesh);
+        VertexAttachment<vec3> barycentric(mesh);
+        int N = 50;
+        auto vertex_grid = std::vector<Vertex>((N+1)*(N+1));
+        for (int i = 0; i <= N; i++) {
+            double x = i*1./N;
+            for (int j = 0; j <= N-i; j++) {
+                int k = N - i - j;
+                float y = j*1./N;
+                float z = k*1./N;
+                // printf("%d %d %.2f %.2f %.2f\n", i,j,x,y,z);
+                auto v = mesh.add_vertex();
+                vec3 p = tri_point(x,y,z);
+                geom.position[v] = Eigen::Vector3f(p.x(), p.y(), p.z());
+                vertex_grid[i*(N+1) + j] = v;
+                barycentric[v] = vec3(x,y,z);
             }
         }
-    }
-    mesh.lock();
-    // world.graphics.paint.wireframe(geom, mat4x4::identity(), 0.001);
-    for (auto tri : mesh.faces()) {
-        auto start = tri.halfedge();
-        auto he = start;
-        auto ps = std::vector<vec3>();
-        do {
-            auto p = geom.position[he.vertex()];
-            ps.push_back(vec3(p.x(), p.y(), p.z()));
-            he = he.next();
-        } while (he != start);
-        ps.push_back(ps[0]);
-        // world.graphics.paint.chain(ps, 0.0005, vec4(0,0,0,0.5));
-    }
+        for (int i = 1; i <= N; i++) {
+            for (int j = 0; j <= N-i; j++) {
+                auto vgrid = [&](int a, int b) { return vertex_grid[(i+a)*(N+1) + j+b]; };
+                if (TRI == 1) { //...
+                    mesh.add_triangle(vgrid(0,0), vgrid(-1,1), vgrid(-1,0));
+                } else {
+                    mesh.add_triangle(vgrid(-1,1), vgrid(0,0), vgrid(-1,0));
+                }
+                if (j > 0) {
+                    if (TRI == 1) { //...
+                        mesh.add_triangle(vgrid(0,0), vgrid(-1,0), vgrid(0,-1));
+                    } else {
+                        mesh.add_triangle(vgrid(-1,0), vgrid(0,0), vgrid(0,-1));
+                    }
+                }
+            }
+        }
+        mesh.lock();
+        // world.graphics.paint.wireframe(geom, mat4x4::identity(), 0.001);
+        for (auto tri : mesh.faces()) {
+            auto start = tri.halfedge();
+            auto he = start;
+            auto ps = std::vector<vec3>();
+            do {
+                auto p = geom.position[he.vertex()];
+                ps.push_back(vec3(p.x(), p.y(), p.z()));
+                he = he.next();
+            } while (he != start);
+            ps.push_back(ps[0]);
+            // world.graphics.paint.chain(ps, 0.0005, vec4(0,0,0,0.5));
+        }
 
-    auto func = funcs[func_index];
-    SurfaceGeometry lifted_geom(mesh);
-    for (auto v : mesh.vertices()) {
-        auto b = barycentric[v];
-        lifted_geom.position[v] = geom.position[v] + Eigen::Vector3f(0, func(b.x(), b.y(), b.z()), 0);
-    }
-    world.graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.001);
-    for (auto he : mesh.halfedges()) {
-        // if (!edge.a().vertex().on_boundary() || !edge.b().vertex().on_boundary()) continue;
-        if (!he.face().null()) continue;
-        vec3 a = eigen_to_vec3(lifted_geom.position[he.vertex()]);
-        vec3 b = eigen_to_vec3(lifted_geom.position[he.tip()]);
-        world.graphics.paint.line(a, b, 0.005, vec4(0,0,0,1));
-    }
+        auto func = funcs[func_index];
+        SurfaceGeometry lifted_geom(mesh);
+        for (auto v : mesh.vertices()) {
+            auto b = barycentric[v];
+            lifted_geom.position[v] = geom.position[v] + Eigen::Vector3f(0, func(b.x(), b.y(), b.z()), 0);
+        }
+        world.graphics.paint.wireframe(lifted_geom, mat4x4::identity(), 0.001);
+        for (auto he : mesh.halfedges()) {
+            // if (!edge.a().vertex().on_boundary() || !edge.b().vertex().on_boundary()) continue;
+            if (!he.face().null()) continue;
+            vec3 a = eigen_to_vec3(lifted_geom.position[he.vertex()]);
+            vec3 b = eigen_to_vec3(lifted_geom.position[he.tip()]);
+            world.graphics.paint.line(a, b, 0.005, vec4(0,0,0,1));
+        }
 
 
 
-    for (int i = 0; i <= 2; i++) {
-        for (int j = 0; j <= 2-i; j++) {
-            double x = i*1./2;
-            double y = j*1./2;
-            vec3 p = tri_point(x,y, 1-x-y);
-            world.graphics.paint.sphere(p, 0.03, vec4(1.4,0.7,0.7,1));
-            world.graphics.paint.line(p, p + vec3(0,func(x,y,1-x-y),0), 0.005, vec4(0,0,0,1));
+        for (int i = 0; i <= 2; i++) {
+            for (int j = 0; j <= 2-i; j++) {
+                double x = i*1./2;
+                double y = j*1./2;
+                vec3 p = tri_point(x,y, 1-x-y);
+                vec3 p_lift = p;
+                p_lift.y() = func(x,y,1-x-y);
+                world.graphics.paint.sphere(p_lift, 0.03, vec4(1.4,0.7,0.7,1));
+                world.graphics.paint.line(p, p_lift, 0.005, vec4(0,0,0,1));
+            }
         }
     }
 

@@ -54,3 +54,6 @@ target_link_libraries(FiniteVolumes PRIVATE common)
 
 add_executable(quadratic_figure quadratic_figure.cpp)
 target_link_libraries(quadratic_figure PRIVATE common)
+
+add_executable(QuadraticLaplaceSolver QuadraticLaplaceSolver.cpp)
+target_link_libraries(QuadraticLaplaceSolver PRIVATE common)
