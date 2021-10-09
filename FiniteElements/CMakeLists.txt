@@ -35,6 +35,7 @@ target_compile_definitions(common INTERFACE
     DATA="${CMAKE_CURRENT_SOURCE_DIR}/data/"
     SHADERS="${CMAKE_CURRENT_SOURCE_DIR}/shaders/"
 )
+set(CMAKE_CXX_FLAGS "-g")
 target_link_libraries(common INTERFACE
     triangle
     cg_sandbox
@@ -54,6 +55,9 @@ target_link_libraries(FiniteVolumes PRIVATE common)
 
 add_executable(quadratic_figure quadratic_figure.cpp)
 target_link_libraries(quadratic_figure PRIVATE common)
+
+add_executable(basis_quadratic_figure basis_quadratic_figure.cpp)
+target_link_libraries(basis_quadratic_figure PRIVATE common)
 
 add_executable(QuadraticLaplaceSolver QuadraticLaplaceSolver.cpp)
 target_link_libraries(QuadraticLaplaceSolver PRIVATE common)

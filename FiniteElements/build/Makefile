@@ -162,6 +162,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named basis_quadratic_figure
+
+# Build rule for target.
+basis_quadratic_figure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 basis_quadratic_figure
+.PHONY : basis_quadratic_figure
+
+# fast build rule for target.
+basis_quadratic_figure/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/build
+.PHONY : basis_quadratic_figure/fast
+
+#=============================================================================
 # Target rules for targets named LaplaceSolver
 
 # Build rule for target.
@@ -491,6 +504,30 @@ QuadraticLaplaceSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/QuadraticLaplaceSolver.cpp.s
 .PHONY : QuadraticLaplaceSolver.cpp.s
 
+basis_quadratic_figure.o: basis_quadratic_figure.cpp.o
+.PHONY : basis_quadratic_figure.o
+
+# target to build an object file
+basis_quadratic_figure.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/basis_quadratic_figure.cpp.o
+.PHONY : basis_quadratic_figure.cpp.o
+
+basis_quadratic_figure.i: basis_quadratic_figure.cpp.i
+.PHONY : basis_quadratic_figure.i
+
+# target to preprocess a source file
+basis_quadratic_figure.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/basis_quadratic_figure.cpp.i
+.PHONY : basis_quadratic_figure.cpp.i
+
+basis_quadratic_figure.s: basis_quadratic_figure.cpp.s
+.PHONY : basis_quadratic_figure.s
+
+# target to generate assembly for a file
+basis_quadratic_figure.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/basis_quadratic_figure.cpp.s
+.PHONY : basis_quadratic_figure.cpp.s
+
 discretization_figure.o: discretization_figure.cpp.o
 .PHONY : discretization_figure.o
 
@@ -558,6 +595,7 @@ help:
 	@echo "... LaplaceSolver"
 	@echo "... QuadraticLaplaceSolver"
 	@echo "... basic_application"
+	@echo "... basis_quadratic_figure"
 	@echo "... cg_sandbox"
 	@echo "... discretization_figure"
 	@echo "... glfw"
@@ -581,6 +619,9 @@ help:
 	@echo "... QuadraticLaplaceSolver.o"
 	@echo "... QuadraticLaplaceSolver.i"
 	@echo "... QuadraticLaplaceSolver.s"
+	@echo "... basis_quadratic_figure.o"
+	@echo "... basis_quadratic_figure.i"
+	@echo "... basis_quadratic_figure.s"
 	@echo "... discretization_figure.o"
 	@echo "... discretization_figure.i"
 	@echo "... discretization_figure.s"

@@ -1,6 +1,7 @@
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/install/local.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/list_install_components.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/rebuild_cache.dir
+/home/lucas/Continuum/FiniteElements/build/CMakeFiles/basis_quadratic_figure.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/install/strip.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/LaplaceSolver.dir
 /home/lucas/Continuum/FiniteElements/build/CMakeFiles/HeatSolver.dir
