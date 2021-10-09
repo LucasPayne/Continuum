@@ -108,16 +108,6 @@ install/strip/fast: preinstall/fast
 	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/local/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-.PHONY : edit_cache/fast
-
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
@@ -129,6 +119,16 @@ install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
 	/usr/local/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/local/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -212,6 +212,19 @@ discretization_figure: cmake_check_build_system
 discretization_figure/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/build
 .PHONY : discretization_figure/fast
+
+#=============================================================================
+# Target rules for targets named quadratic_figure
+
+# Build rule for target.
+quadratic_figure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 quadratic_figure
+.PHONY : quadratic_figure
+
+# fast build rule for target.
+quadratic_figure/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/quadratic_figure.dir/build.make CMakeFiles/quadratic_figure.dir/build
+.PHONY : quadratic_figure/fast
 
 #=============================================================================
 # Target rules for targets named basic_application
@@ -465,6 +478,30 @@ discretization_figure.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/discretization_figure.cpp.s
 .PHONY : discretization_figure.cpp.s
 
+quadratic_figure.o: quadratic_figure.cpp.o
+.PHONY : quadratic_figure.o
+
+# target to build an object file
+quadratic_figure.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/quadratic_figure.dir/build.make CMakeFiles/quadratic_figure.dir/quadratic_figure.cpp.o
+.PHONY : quadratic_figure.cpp.o
+
+quadratic_figure.i: quadratic_figure.cpp.i
+.PHONY : quadratic_figure.i
+
+# target to preprocess a source file
+quadratic_figure.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/quadratic_figure.dir/build.make CMakeFiles/quadratic_figure.dir/quadratic_figure.cpp.i
+.PHONY : quadratic_figure.cpp.i
+
+quadratic_figure.s: quadratic_figure.cpp.s
+.PHONY : quadratic_figure.s
+
+# target to generate assembly for a file
+quadratic_figure.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/quadratic_figure.dir/build.make CMakeFiles/quadratic_figure.dir/quadratic_figure.cpp.s
+.PHONY : quadratic_figure.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -489,6 +526,7 @@ help:
 	@echo "... interactive_graphics_context"
 	@echo "... mathematics"
 	@echo "... opengl_utilities"
+	@echo "... quadratic_figure"
 	@echo "... reflector"
 	@echo "... spatial_algebra"
 	@echo "... table"
@@ -505,6 +543,9 @@ help:
 	@echo "... discretization_figure.o"
 	@echo "... discretization_figure.i"
 	@echo "... discretization_figure.s"
+	@echo "... quadratic_figure.o"
+	@echo "... quadratic_figure.i"
+	@echo "... quadratic_figure.s"
 .PHONY : help
 
 

@@ -47,7 +47,7 @@ the residual is minimised with respect to the Euclidean norm.
 
 As well as proving highly useful
 in numerical applications, the methods of Galerkin (and preceding work by mathematicians such as Walther Ritz) proved important to further developments
-in the mathematical theory of PDEs. In a 1934 talk named ``Generalized Solutions to the Wave Equation'', mathematician Sergei L. Sobolev (1908--1989)
+in the mathematical theory of PDEs. A 1934 talk named ``Generalized Solutions to the Wave Equation'', by mathematician Sergei L. Sobolev (1908--1989),
 precipitated the development
 of generalised functions by Laurent Schwartz (1915-2002), integral to the modern study of PDEs
 (\cite{sobolev_web_page}, \cite{one_hundred_years_galerkin}).
@@ -63,51 +63,18 @@ and Poisson's equation
 \begin{equation}\label{poisson_compact}
     -\Delta h = g.
 \end{equation}
-The latter can be thought of as the steady-state version of the former. The solution of a Poisson problem will be a crucial component
-of the solution of the Stokes equations. It seems ideal to start by discussing
-discretization methods for Poisson's equation \eqref{poisson_compact} in particular,
-as it is likely the simplest non-trivial PDE.
 The focus here is on the Dirichlet problem
 \begin{equation}\label{poisson_dirichlet_problem}
     -\Delta h = g, \quad \left.h\right|_{\Gamma} = h_\Gamma,
 \end{equation}
 where $\Gamma$ is the boundary of the domain, and the domain is 2D.
-
-\subsection{Discretizing the differential form of the PDE}
-It is a theorem of Gauss that in Euclidean space $\mathbb{R}^3$ we have
-\begin{equation}\label{gauss_euclidean_divergence}
-    \nabla \cdot v = \Part{v_x}{x} + \Part{v_y}{y} + \Part{v_z}{z},
-\end{equation}
-and we get \eqref{poisson_compact} in the form
-\begin{equation}\label{poisson_differential_intro}
-    -\left(\frac{\partial^2 h}{\partial x^2}
-           +\frac{\partial^2 h}{\partial y^2}
-           +\frac{\partial^2 h}{\partial z^2}\right) = g.
-\end{equation}
-Thinking about \eqref{poisson_differential_intro} leads to the finite difference method, historically the first and
-still very important in applications.
-By forming secant approximations of the derivatives over a regular grid, a linear system is formed, and the approximate solution is solved
-for as a function of this grid.
-However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
-They could be coefficients of, for example, hat basis functions.
-Yet a finite difference discretization of Poisson equation \eqref{poisson_compact} may not take this into account at all. One might feel that
-limits have been taken too soon.
-
-% Consider a single conservation law as described in section \ref{conservation_laws}. This law
-% was given in two forms, ``integral'' \eqref{continuity_equation}:
-% \begin{equation*}
-%     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
-% \end{equation*}
-% and ``differential'' \eqref{continuity_equation_differential}:
-% \begin{equation*}
-%     \Part{\phi}{t} = s - \nabla\cdot (\phi j).
-% \end{equation*}
-
-\subsection{Discretizing the integral form of the PDE}
-In physics, Poisson's equation is an equilibrium conservation law, and therefore has an integral form.
-This form will give clearer routes to discretizations which
+Poisson's equation can be thought of as the steady-state version of the heat equation. The solution of a Poisson problem will be a crucial component
+of the solution of the Stokes equations. It seems ideal to start by discussing
+discretization methods for Poisson's equation \eqref{poisson_compact} in particular,
+as it is likely the simplest non-trivial PDE. Poisson's equation \eqref{poisson_compact}, importantly,
+is based on an integral conservation law.
+An integral form will give clearer routes to discretizations which
 have geometric meaning.
-% Thinking instead about \eqref{poisson_integral_intro} will lead to Galerkin methods, which include finite volumes, finite elements, and spectral methods.
 For example, the general integral conservation law \eqref{continuity_equation},
 \begin{align*}
     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \oint_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
@@ -119,13 +86,6 @@ space of solutions to choose from. A key idea, then, is to choose a finite numbe
 A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
 To continue with this idea, we must write Poisson's equation \eqref{poisson_compact} in integral form.
 
-% \vskip 0.2in
-% (figure)
-% \vskip 0.2in
-% 
-% Finite element methods, and more generally Galerkin methods, live comfortably in the language of weak solutions, integral forms of partial differential equations,
-% and the calculus of variations.
-% To continue with this idea, we must write Poisson's equation \eqref{poisson_compact} in integral form.
 
 \subsubsection{Deriving the heat and Poisson equation through diffusion processes}
 The Poisson equation \eqref{poisson_compact} can be thought of as the steady state of some diffusion process with a source term $g$,
@@ -168,19 +128,68 @@ as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is
 The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
 
 \subsubsection{So how do we discretize Poisson's equation?}
-Starting with \eqref{poisson_equation_integral}, there are many routes to take to discretization.
+Thinking about the differential equation \eqref{poisson_differential_intro} leads to the \textit{finite difference method}, historically the first and
+still very important in applications.
+
+\begin{aside}
+\textit{An aside: The finite difference method.}
+\vskip 0.05in
+
+\noindent
+It is a theorem of Gauss that in Euclidean space $\mathbb{R}^3$ we have
+\begin{equation}\label{gauss_euclidean_divergence}
+    \nabla \cdot v = \Part{v_x}{x} + \Part{v_y}{y} + \Part{v_z}{z},
+\end{equation}
+and we get \eqref{poisson_compact} in the form
+\begin{equation}\label{poisson_differential_intro}
+    -\left(\frac{\partial^2 h}{\partial x^2}
+           +\frac{\partial^2 h}{\partial y^2}
+           +\frac{\partial^2 h}{\partial z^2}\right) = g.
+\end{equation}
+By forming secant approximations of the derivatives over a regular grid,
+a linear system is formed, and the approximate solution is solved
+for as a function of this grid.
+However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
+They could be coefficients of, for example, hat basis functions.
+Yet a finite difference discretization of Poisson equation \eqref{poisson_compact} may not take this into account at all. One might feel that
+limits have been taken too soon.
+\end{aside}
+
+We will not be using the finite difference method
+\footnote{However, even if the spatial discretization is based on integral conservation laws, typically time-dependent problems
+          are discretized with finite differences in the time dimension.}.
+Starting with the integral form \eqref{poisson_equation_integral}, there are many routes to take to discretization.
 Notice that there are two variables in \eqref{poisson_equation_integral}, although one is bound over universal quantification:
 the function $h$ and the control volume $\Omega_0$.
 The general Galerkin method very naturally appears when the ``space'' $\Omega_0$ resides in and the space $h$ resides in are reduced
-such that the equations are both finite dimensional and well-determined. Firstly, let's derive the conceptually simplest
+such that the equations are both finite dimensional and well-determined.
+Firstly, let's derive the conceptually simplest
 discretization method of these spaces, the finite volume method.
+
+% Consider a single conservation law as described in section \ref{conservation_laws}. This law
+% was given in two forms, ``integral'' \eqref{continuity_equation}:
+% \begin{equation*}
+%     \frac{d}{dt} \int_{\Omega_0} \phi\,dx = \int_{\Omega_0} s\,dx + \int_{\pomn} \phi j \cdot \left(-\hat{n}\right)\,dx,
+% \end{equation*}
+% and ``differential'' \eqref{continuity_equation_differential}:
+% \begin{equation*}
+%     \Part{\phi}{t} = s - \nabla\cdot (\phi j).
+% \end{equation*}
+
+% \vskip 0.2in
+% (figure)
+% \vskip 0.2in
+% 
+% Finite element methods, and more generally Galerkin methods, live comfortably in the language of weak solutions, integral forms of partial differential equations,
+% and the calculus of variations.
+% To continue with this idea, we must write Poisson's equation \eqref{poisson_compact} in integral form.
+
 
 
 \section{Discretizing Poisson's equation by finite volumes}\label{discretizing_poisson}
----NOTE: $H^1$ May be wrong.
----NOTE: Should discuss interpretation in terms of residual minimisation with respect to some norm.
-\vskip 0.5in
-
+% ---NOTE: $H^1$ May be wrong.
+% ---NOTE: Should discuss interpretation in terms of residual minimisation with respect to some norm.
+% \vskip 0.5in
 Equation \eqref{poisson_equation_integral} is quantified over an infinite number of control volumes $\Omega_0$.
 These control volumes are in the interior of $\Omega$, as the solution at the boundary $\Gamma$ is specified by the Dirichlet boundary condition
 $\left.h\right|_\Gamma = h_\Gamma$, and there is no flux information across $\Gamma$.
@@ -270,7 +279,7 @@ are chosen well, this linear system will be nonsingular and hopefully well-condi
 If the chosen control volumes join together in the interior of $\Omega$ like pieces of a puzzle, this gives a conservative system of balanced fluxes, but it is another question whether the approximation
 $\tilde{h}$ is good.
 
-\subsection{A piecewise linear triangulation scheme}
+\subsection{A piecewise linear finite volume triangulation scheme}
 Possibly the simplest scheme is to triangulate $\Omega$ as
     $\bigcup_i T_i,$
 such that there are $n$ interior vertices $p_1,\cdots,p_n$, and $n_\Gamma$ boundary vertices $p^\Gamma_1,\cdots,p^\Gamma_{n_\Gamma}$, and $n_T$ triangles
@@ -508,14 +517,16 @@ Finally, $\text{Area}(T) = wh/2$, so we can write the gradients as
 \end{equation}
 
 Plugging the gradients \eqref{fvm_gradients} into the closed form integrals \eqref{fvm_integrals_closed}, we get
-\begin{align*}
+\begin{equation}\label{fvm_closed_form_integrals}
+\begin{split}
     \int_L -\nabla\phi_v\cdot\hat{n}\,dx
         &= \frac{1}{4\text{Area}(T)}\norm{v_{t+1} - v_t}^2,\\
     \int_L -\nabla\phi_{v_t}\cdot\hat{n}\,dx
         &= \frac{1}{4\text{Area}(T)}(v - v_{t+1})\cdot(v_{t+1} - v_t),\\
     \int_L -\nabla\phi_{v_{t+1}}\cdot\hat{n}\,dx
         &= \frac{1}{4\text{Area}(T)}(v_t - v)\cdot(v_{t+1} - v_t),
-\end{align*}
+\end{split}
+\end{equation}
 where the 90-degree rotation has been removed, as it preserves the dot product.
 With these closed forms, we can express the original integral as
 \begin{equation}\label{flux_integral_summation}
@@ -542,10 +553,13 @@ $p_j$, then assume that $g$ is constant over $\om_j$. This gives the approximati
 \begin{equation}\label{fvm_source_approximation}
     \int_{\om_j}g\,dx \approx g(p_j)\text{Area}(\om_j).
 \end{equation}
---- However, a linear quadrature will give much better convergence results.
-% which will be sufficient for now. The computation of the mixed Voronoi cell area $\text{Area}(\om_j)$ can be achieved with some routine geometric calculations.
-% Iterating over each triangle incident to $p_j$, compute the cell segment area as the area of two triangles, the second triangle depending on whether
-% the computed circumcentre lies inside or outside the triangle.
+The computation of the mixed Voronoi cell area $\text{Area}(\om_j)$ can be achieved with some routine geometric calculations.
+Iterating over each triangle incident to $p_j$, compute the cell segment area as the area of two triangles, the second triangle depending on whether
+the computed circumcentre lies inside or outside the triangle.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
 
 \subsection{The resulting matrix assembly algorithm}
 Using the expression \eqref{flux_integral_summation}, the linear system
@@ -709,6 +723,7 @@ With these interfaces, the resulting C\texttt{++} was almost a direct transliter
 The implemented matrix assembly algorithm has linear space and time complexity in the number of mesh vertices,
 and all data is generated and accessed in flat buffers, giving good cache performance.
 The only superlinear stage is the system solve, which is handled by Eigen \cite{eigen}.
+All computations have been performed with double precision floating point.
 
 
 \subsection{Validating the method}
@@ -1133,8 +1148,11 @@ While $\Psi_{\text{FVM}}$ is technically not $H^1_0$-conforming, if the gradient
 % the linear system will be symmetric-positive-definite, and stably solvable by, for example, conjugate gradients.
 
 \section{Discretizing Poisson's equation by finite elements}
-Much of the FEM discretization scheme, and resulting algorithm, will be the same as the previously derived FVM scheme.
-The distinguishing feature is that different integrals are taken when forming the linear system.
+We now derive two finite element methods for Poisson's equation. The first will use
+the same piecewise linear triangulation scheme as for the previous FVM, but with seemingly different integrals --- the
+result will turn out to not give any improvement over algorithm \ref{alg:fvm}. However, we will subsequently generalise this finite element method
+to a higher order method.
+
 \subsection{Forming a linear system}
 We now start with the weak form \eqref{poisson_equation_weak_form}.
 Firstly, we can express the resulting Galerkin linear system in matrix form as
@@ -1198,18 +1216,17 @@ A typical sparsity pattern for a finite element problem is shown in figure \ref{
     \label{sparsity_pattern}
 \end{figure}
 
-\subsection{Almost the same piecewise linear triangulation scheme}
+\subsection{A piecewise linear finite element triangulation scheme}
 We can use almost the same piecewise linear triangulation scheme as in the finite volume method, but we no longer
 take trial flux integrals over mixed Voronoi cells. Instead, we can use the Bubnov--Galerkin method: Let $\Psi = \Phi$
 (which are the hat functions) and form the system of linear equations \eqref{poisson_galerkin_system}.
-
-
-
-
-\subsection{Computing the linear system by closed form integration}
+\subsubsection{Computing the linear system by closed form integration}\label{fem_closed_form}
 In deriving the FVM, we had to compute closed form flux integrals over complex polygonal cells.
-The integration required for our new FEM method is different, but many of the steps here are exactly the same as
-in section \ref{fvm_closed_form}. Important ideas are repeated here for clarity.
+At first sight, the integration required for our new FEM method is different, although many of the steps here are the same as
+in section \ref{fvm_closed_form}. However, the integrals for the matrix system \eqref{poisson_galerkin_system} will turn out to be
+\textit{exactly} the same as those derived for our finite volume method. This is a peculiarity of the hat functions --- we will then
+show how this, seemingly pedantic, complete derivation of this equivalent FEM scheme, can be generalised.
+
 Again, we use the piecewise linear interpolation \eqref{boundary_approximation} of the Dirichlet boundary function $h_\Gamma$:
 \begin{equation*}
     \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
@@ -1233,21 +1250,22 @@ $\psi_j = \phi_j$ has compact support, with domain $D^\phi_j = D^\psi_j = D_j$,
 which is the union of triangles incident to the interior vertex $p_j$.
 This domain intersects with the domains of those hat basis functions of $\Phi^*$ which are centred on $p_j$ or an adjacent vertex
 (either in the interior or on the boundary).
+We will compute the integral for a certain trial function $\psi = \psi_j$.
 We repeat the local index definitions from section \ref{fvm_closed_form} here.
-\definelocalterms{the trial function $\psi_j = \phi_j$}
+\definelocalterms{the trial function $\psi = \psi_j = \phi_j$}
 The local form of the equation \eqref{fem_integral_linearity_expanded} is then
 
 \begin{equation}\label{fem_integral_vertex}
-    \int_{\om} \nabla \tilde{h}\cdot \nabla \psi_j\,dx
-     = h_j\int_{\om}\nabla\phi_v\cdot\nabla\psi_j\,dx + \sum_{l=1}^{k}h_{v_l}\int_{\om}\nabla\phi^v_l\cdot\nabla\psi_j\,dx,
+    \int_{\om} \nabla \tilde{h}\cdot \nabla \psi\,dx
+     = h_j\int_{\om}\nabla\phi_v\cdot\nabla\psi\,dx + \sum_{l=1}^{k}h_{v_l}\int_{\om}\nabla\phi^v_l\cdot\nabla\psi\,dx,
 \end{equation}
 where, as in \ref{fvm_closed_form}, $h_{v_i}$ is defined as
 \hvidefinition
-Again, with the same reasoning as in section \ref{fvm_closed_form}, due to $\nabla\phi_i$ being constant on each triangle, to simplify integration
+Again, with the same reasoning as in section \ref{fvm_closed_form}, due to $\nabla\phi_i = \nabla\psi_i$ being constant on each triangle, to simplify integration
 we break \eqref{fem_integral_vertex} into a sum of integrals over triangles:
 \begin{equation}\label{fem_integral_vertex_triangles}
-    \int_{\om} \nabla \tilde{h}\cdot \nabla \psi_j\,dx
-    = \sum_{t=1}^k\left[\int_{T^v_t}\nabla\phi_v\cdot\nabla\psi_j\,dx + \sum_{l=1}^{k}h_{v_l}\int_{T^v_t}\nabla\phi^v_l\cdot\nabla\psi_j\,dx\right].
+    \int_{\om} \nabla \tilde{h}\cdot \nabla \psi\,dx
+    = \sum_{t=1}^k\left[\int_{T^v_t}\nabla\phi_v\cdot\nabla\psi\,dx + \sum_{l=1}^{k}h_{v_l}\int_{T^v_t}\nabla\phi^v_l\cdot\nabla\psi\,dx\right].
 \end{equation}
 We want to reduce an integral over each separate triangle (oblique, isosceles, etc.) to an integral over a reference triangle
 for which we have closed forms.
@@ -1311,12 +1329,145 @@ the resulting expression is
         = \int_\ll \det(J)(J^{-T}\nabla\Phi_l)\cdot(J^{-T}\nabla\Phi_m)\,dx.
 \end{equation}
 Since $J$ depends only on the triangle vertex positions $v,v^\pr,v^\ppr$, it is constant on $\ll$, and we can easily compute its inverse transpose
-(using the standard $2 \times 2$ inverse formula). Since $\det(J) = 2\text{Area}(T)$, and the integrand is constant,
+(using the standard $2 \times 2$ inverse formula):
+\begin{align*}
+    J^{-T} = \frac{1}{\det(J)}\begin{bmatrix}
+        v_y^\ppr - v_y & v_y - v^\pr_y \\ v_x - v_x^\ppr & v^\pr_x - v_x
+    \end{bmatrix}
+    = \frac{1}{2\text{Area}(T)}\left[\begin{array}{c|c}
+        (v^\ppr - v)^\perp & (v^\pr - v)^\perp
+    \end{array}\right].
+\end{align*}
+
+Since the integrand is constant,
 \eqref{fem_closed_form_integral_complicated} simplifies to
 \begin{equation}\label{fem_closed_form_integral}
     \int_T \nabla\Phi_l^* \cdot \nabla\Phi_m^*\,dx
-        = \text{Area}(T)(J^{-T}\nabla\Phi_l)\cdot(J^{-T}\nabla\Phi_m).
+        = \text{Area}(T)(J^{-T}\nabla\Phi_l)\cdot(J^{-T}\nabla\Phi_m),
 \end{equation}
+and if we define the matrix
+\begin{align*}
+    K = \left[\begin{array}{c|c}
+        (v^\ppr - v)^\perp & (v^\pr - v)^\perp
+    \end{array}\right],
+\end{align*}
+the equation \eqref{fem_closed_form_integral} is further simplified to
+\begin{equation}\label{fem_closed_form_integral_simple}
+    \int_T \nabla\Phi_l^* \cdot \nabla\Phi_m^*\,dx
+        = \frac{1}{4\text{Area}(T)} (M\nabla\Phi_l)\cdot(M\nabla\Phi_m).
+\end{equation}
+Plugging in the gradients \label{fem_reference_basis_function_gradients}, we get
+\begin{equation}
+    M\nabla\Phi_1 = (v^\ppr - v^\pr)^\perp, \text{\quad and \quad}
+    M\nabla\Phi_2 = (v - v^\ppr)^\perp, \text{\quad and \quad}
+    M\nabla\Phi_3 = (v^\pr - v)^\perp.
+\end{equation}
+By plugging these expressions into \eqref{fem_closed_form_integral_simple}, we get
+\begin{align*}
+    \int_L \nabla\Phi_v\cdot\psi\,dx
+        &= \frac{1}{4\text{Area}(T)}\norm{v_{t+1} - v_t}^2,\\
+    \int_L \nabla\Phi_{v_t}\cdot\nabla\psi\,dx
+        &= \frac{1}{4\text{Area}(T)}(v - v_{t+1})\cdot(v_{t+1} - v_t),\\
+    \int_L \nabla\Phi_{v_{t+1}}\cdot\nabla\psi\,dx
+        &= \frac{1}{4\text{Area}(T)}(v_t - v)\cdot(v_{t+1} - v_t).
+\end{align*}
+Note that these are the same as the closed forms \eqref{fvm_closed_form_integrals} derived for the finite volume method.
+Now we notice that all this work has been wasted, as this finite element method gives
+exactly the same matrix as the previous finite volume method.
+
+\subsubsection{Integrating the source function}
+Again, one more thing is needed.
+We require some numerical integration for the right-hand side source terms
+    $$\int_{\Omega}g\psi_j\,dx, \text{\quad $j=1,\cdots,n$}.$$
+Again, we use the simplest choice, a ``rectangle rule'', where we sample the source function $g$ at the interior vertex
+$p_j$, then assume that $g$ is constant over $\om_j$.
+Due to the assumption that $g$ is constant, we are effectively multiplying the sample $g$ value by the geometric volume of the hat function $\psi_j$,
+which is one fourth the area of its domain $D^\psi_j$.
+This gives the approximation
+\begin{equation}\label{fem_source_approximation}
+    \int_{\Omega}g\psi_j\,dx \quad\approx\quad g(p_j)\frac{1}{4}\sum_{t=1}^k\text{Area}(T^{p_j}_t).
+\end{equation}
+Note that $\frac{1}{4}\sum_{t=1}^k\text{Area}(T^{p_j}_t)$, the volume of the hat function, is also equal to the
+area of the midpoint-connecting polygon.
+Approximation \eqref{fem_source_approximation} is \textit{almost} the same as the FVM source approximation \eqref{fvm_source_approximation},
+but instead of integrating over the mixed Voronoi cell, we integrate over the midpoint-connecting polygon.
+
+\vskip 0.2in
+(draw this)
+\vskip 0.2in
+
+The midpoint-connecting polygons do not pack together like puzzle pieces, as the mixed Voronoi cells did --- so we should expect
+approximation \eqref{fem_source_approximation} to be \textit{worse} than \eqref{fvm_source_approximation}.
+We therefore will not bother in implementing this piecewise linear scheme.
+So what was the point?
+
+\subsection{A piecewise quadratic finite element triangulation scheme}
+In fact, the closed form integrals for our linear scheme, for both of our finite volume
+and finite element methods, are just a simple geometric construction.
+
+\vskip 0.2in
+(draw the triangle and the gradients, and the normal vectors of the piece of the cell boundary)
+\vskip 0.2in
+
+It should have been clear from the start that the resulting integrals would be the same --- however, it is instructive to work through
+the computational, routine derivation in section \ref{fem_closed_form}, as unlike with finite volumes, we have a very clear generalisation.
+
+The computation of hat function integrals in sections \ref{fvm_closed_form} and \ref{fem_closed_form} turned out to reduce to
+integrals of linear functions (and their gradients) over triangles. So lets focus on just one triangle $T$. We have a standard basis
+on $T$, consisting of those linear functions which are $1$ at one vertex and $0$ at the others. The hat function basis appears incidentally,
+as we identify coefficients of vertices shared by adjacent triangles.
+A key idea of finite elements extends this naturally:
+Form a function space over a triangle (or more generally some other cell shape such as a quadrilateral), and choose some ``nodal basis''.
+A linear function on $T$ is determined by its value at the corners --- the linear basis functions are called ``nodal'' due to their defining property,
+being $1$ at one vertex and $0$ at the others. When a nodal point is shared by two triangles, the coefficient values are identified. This implicitly
+determines a basis function of the global test and trial function spaces, $\Phi$ and $\Psi$.
+
+As we tried linear polynomials on $T$, why not try quadratic polynomials? There are $6$ degrees of freedom for quadratic polynomials
+given in barycentric coordinates, so a natural choice of nodal points are the triangle vertices and their midpoints, shown below.
+
+\vskip 0.2in
+(nodal points and corresponding basis functions)
+\vskip 0.2in
+
+Using barycentric coordinates $(x,y,z)$ on $T$, where $x + y + z = 1$, the quadratic nodal basis functions are
+\begin{equation}\label{quadratic_nodal}
+\begin{split}
+\end{split}
+\end{equation}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/basis_functions/quadratic_basis.png}
+    \end{center}
+    \caption{\scriptsize
+        Text
+    }
+    \label{quadratic_basis}
+\end{figure}
+
+
+% \newcommand{\mgradone}{(v^\ppr - v^\pr)} % no perp
+% \newcommand{\mgradtwo}{(v - v^\ppr)}
+% \newcommand{\mgradthree}{(v^\pr - v)}
+% \begin{equation}\label{fem_poisson_lsm}
+% \begin{split}
+%     L &= \frac{1}{4\text{Area}(T)}\begin{bmatrix}
+%         (M\nabla\Phi_l)\cdot(M\nabla\Phi_m)
+%     \end{bmatrix}_{l,m}\\
+%     &= \frac{1}{4\text{Area}(T)}\begin{bmatrix}
+%         \mgradone\cdot\mgradone &
+%             \mgradone\cdot\mgradtwo &
+%             \mgradone\cdot\mgradthree \\
+%         \mgradtwo\cdot\mgradone &
+%             \mgradtwo\cdot\mgradtwo &
+%             \mgradtwo\cdot\mgradthree \\
+%         \mgradthree\cdot\mgradone &
+%             \mgradthree\cdot\mgradtwo &
+%             \mgradthree\cdot\mgradthree
+%     \end{bmatrix}.
+% \end{split}
+% \end{equation}
 
 
 

@@ -1,51 +1,48 @@
 \BOOKMARK [0][-]{section*.1}{Contents}{}% 1
-\BOOKMARK [0][-]{chapter.1}{Mechanics}{}% 2
-\BOOKMARK [0][-]{chapter.2}{Continuum mechanics}{}% 3
-\BOOKMARK [1][-]{section.2.1}{Introduction}{chapter.2}% 4
-\BOOKMARK [1][-]{section.2.2}{Transport}{chapter.2}% 5
-\BOOKMARK [2][-]{subsection.2.2.1}{Continuity equations and conservation laws}{section.2.2}% 6
-\BOOKMARK [2][-]{subsection.2.2.2}{The Reynolds transport theorem}{section.2.2}% 7
-\BOOKMARK [2][-]{subsection.2.2.3}{Incompressible and compressible transport}{section.2.2}% 8
-\BOOKMARK [2][-]{subsection.2.2.4}{Transport of vector and tensor quantities}{section.2.2}% 9
-\BOOKMARK [1][-]{section.2.3}{The kinematics of the continuum}{chapter.2}% 10
-\BOOKMARK [2][-]{subsection.2.3.1}{Position maps}{section.2.3}% 11
-\BOOKMARK [2][-]{subsection.2.3.2}{Velocity}{section.2.3}% 12
-\BOOKMARK [2][-]{subsection.2.3.3}{The deformation and velocity gradients}{section.2.3}% 13
-\BOOKMARK [2][-]{subsection.2.3.4}{Material points and material derivatives}{section.2.3}% 14
-\BOOKMARK [1][-]{section.2.4}{The dynamics of the continuum}{chapter.2}% 15
-\BOOKMARK [2][-]{subsection.2.4.1}{Conservation of mass}{section.2.4}% 16
-\BOOKMARK [2][-]{subsection.2.4.2}{Conservation of linear momentum}{section.2.4}% 17
-\BOOKMARK [2][-]{subsection.2.4.3}{Constitutive relations}{section.2.4}% 18
-\BOOKMARK [0][-]{chapter.3}{The Navier-Stokes equations}{}% 19
-\BOOKMARK [1][-]{section.3.1}{Introduction}{chapter.3}% 20
-\BOOKMARK [1][-]{section.3.2}{The equations of fluid motion}{chapter.3}% 21
-\BOOKMARK [2][-]{subsection.3.2.1}{Conservation of angular momentum}{section.3.2}% 22
-\BOOKMARK [2][-]{subsection.3.2.2}{Conservation of energy}{section.3.2}% 23
-\BOOKMARK [1][-]{section.3.3}{Scaling and dimension}{chapter.3}% 24
-\BOOKMARK [2][-]{subsection.3.3.1}{The Reynolds number}{section.3.3}% 25
-\BOOKMARK [1][-]{section.3.4}{Stokes flow and the meaning of pressure}{chapter.3}% 26
-\BOOKMARK [2][-]{subsection.3.4.1}{Application to hydrostatics}{section.3.4}% 27
-\BOOKMARK [0][-]{chapter.4}{Two Galerkin methods for Poisson's equation}{}% 28
-\BOOKMARK [1][-]{section.4.1}{Introduction}{chapter.4}% 29
-\BOOKMARK [1][-]{section.4.2}{The equation to solve: Poisson's equation}{chapter.4}% 30
-\BOOKMARK [2][-]{subsection.4.2.1}{Discretizing the differential form of the PDE}{section.4.2}% 31
-\BOOKMARK [2][-]{subsection.4.2.2}{Discretizing the integral form of the PDE}{section.4.2}% 32
-\BOOKMARK [1][-]{section.4.3}{Discretizing Poisson's equation by finite volumes}{chapter.4}% 33
-\BOOKMARK [2][-]{subsection.4.3.1}{The Dirichlet boundary condition and the test space}{section.4.3}% 34
-\BOOKMARK [2][-]{subsection.4.3.2}{Forming a linear system}{section.4.3}% 35
-\BOOKMARK [2][-]{subsection.4.3.3}{A piecewise linear triangulation scheme}{section.4.3}% 36
-\BOOKMARK [2][-]{subsection.4.3.4}{Computing the linear system by closed form integration}{section.4.3}% 37
-\BOOKMARK [2][-]{subsection.4.3.5}{The resulting matrix assembly algorithm}{section.4.3}% 38
-\BOOKMARK [2][-]{subsection.4.3.6}{The resulting finite volume algorithm}{section.4.3}% 39
-\BOOKMARK [2][-]{subsection.4.3.7}{An implementation in C++}{section.4.3}% 40
-\BOOKMARK [2][-]{subsection.4.3.8}{Validating the method}{section.4.3}% 41
-\BOOKMARK [1][-]{section.4.4}{From finite volumes to general Galerkin methods}{chapter.4}% 42
-\BOOKMARK [2][-]{subsection.4.4.1}{Generalising the flux integrals by combining equations}{section.4.4}% 43
-\BOOKMARK [2][-]{subsection.4.4.2}{The weak form of Poisson's equation}{section.4.4}% 44
-\BOOKMARK [2][-]{subsection.4.4.3}{General Galerkin methods for Poisson's equation}{section.4.4}% 45
-\BOOKMARK [1][-]{section.4.5}{Discretizing Poisson's equation by finite elements}{chapter.4}% 46
-\BOOKMARK [2][-]{subsection.4.5.1}{Forming a linear system}{section.4.5}% 47
-\BOOKMARK [2][-]{subsection.4.5.2}{Almost the same piecewise linear triangulation scheme}{section.4.5}% 48
-\BOOKMARK [2][-]{subsection.4.5.3}{Computing the linear system by closed form integration}{section.4.5}% 49
-\BOOKMARK [0][-]{chapter.5}{Solving the Navier-Stokes equations}{}% 50
-\BOOKMARK [0][-]{section*.44}{Bibliography}{}% 51
+\BOOKMARK [0][-]{chapter.1}{Continuum mechanics}{}% 2
+\BOOKMARK [1][-]{section.1.1}{Introduction}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.2}{Transport}{chapter.1}% 4
+\BOOKMARK [2][-]{subsection.1.2.1}{Continuity equations and conservation laws}{section.1.2}% 5
+\BOOKMARK [2][-]{subsection.1.2.2}{The Reynolds transport theorem}{section.1.2}% 6
+\BOOKMARK [2][-]{subsection.1.2.3}{Incompressible and compressible transport}{section.1.2}% 7
+\BOOKMARK [2][-]{subsection.1.2.4}{Transport of vector and tensor quantities}{section.1.2}% 8
+\BOOKMARK [1][-]{section.1.3}{The kinematics of the continuum}{chapter.1}% 9
+\BOOKMARK [2][-]{subsection.1.3.1}{Position maps}{section.1.3}% 10
+\BOOKMARK [2][-]{subsection.1.3.2}{Velocity}{section.1.3}% 11
+\BOOKMARK [2][-]{subsection.1.3.3}{The deformation and velocity gradients}{section.1.3}% 12
+\BOOKMARK [2][-]{subsection.1.3.4}{Material points and material derivatives}{section.1.3}% 13
+\BOOKMARK [1][-]{section.1.4}{The dynamics of the continuum}{chapter.1}% 14
+\BOOKMARK [2][-]{subsection.1.4.1}{Conservation of mass}{section.1.4}% 15
+\BOOKMARK [2][-]{subsection.1.4.2}{Conservation of linear momentum}{section.1.4}% 16
+\BOOKMARK [2][-]{subsection.1.4.3}{Constitutive relations}{section.1.4}% 17
+\BOOKMARK [0][-]{chapter.2}{The Navier-Stokes equations}{}% 18
+\BOOKMARK [1][-]{section.2.1}{Introduction}{chapter.2}% 19
+\BOOKMARK [1][-]{section.2.2}{The equations of fluid motion}{chapter.2}% 20
+\BOOKMARK [2][-]{subsection.2.2.1}{Conservation of angular momentum}{section.2.2}% 21
+\BOOKMARK [2][-]{subsection.2.2.2}{Conservation of energy}{section.2.2}% 22
+\BOOKMARK [1][-]{section.2.3}{Scaling and dimension}{chapter.2}% 23
+\BOOKMARK [2][-]{subsection.2.3.1}{The Reynolds number}{section.2.3}% 24
+\BOOKMARK [1][-]{section.2.4}{Stokes flow and the meaning of pressure}{chapter.2}% 25
+\BOOKMARK [2][-]{subsection.2.4.1}{Application to hydrostatics}{section.2.4}% 26
+\BOOKMARK [0][-]{chapter.3}{Two Galerkin methods for Poisson's equation}{}% 27
+\BOOKMARK [1][-]{section.3.1}{Introduction}{chapter.3}% 28
+\BOOKMARK [1][-]{section.3.2}{The equation to solve: Poisson's equation}{chapter.3}% 29
+\BOOKMARK [1][-]{section.3.3}{Discretizing Poisson's equation by finite volumes}{chapter.3}% 30
+\BOOKMARK [2][-]{subsection.3.3.1}{The Dirichlet boundary condition and the test space}{section.3.3}% 31
+\BOOKMARK [2][-]{subsection.3.3.2}{Forming a linear system}{section.3.3}% 32
+\BOOKMARK [2][-]{subsection.3.3.3}{A piecewise linear finite volume triangulation scheme}{section.3.3}% 33
+\BOOKMARK [2][-]{subsection.3.3.4}{Computing the linear system by closed form integration}{section.3.3}% 34
+\BOOKMARK [2][-]{subsection.3.3.5}{The resulting matrix assembly algorithm}{section.3.3}% 35
+\BOOKMARK [2][-]{subsection.3.3.6}{The resulting finite volume algorithm}{section.3.3}% 36
+\BOOKMARK [2][-]{subsection.3.3.7}{An implementation in C++}{section.3.3}% 37
+\BOOKMARK [2][-]{subsection.3.3.8}{Validating the method}{section.3.3}% 38
+\BOOKMARK [1][-]{section.3.4}{From finite volumes to general Galerkin methods}{chapter.3}% 39
+\BOOKMARK [2][-]{subsection.3.4.1}{Generalising the flux integrals by combining equations}{section.3.4}% 40
+\BOOKMARK [2][-]{subsection.3.4.2}{The weak form of Poisson's equation}{section.3.4}% 41
+\BOOKMARK [2][-]{subsection.3.4.3}{General Galerkin methods for Poisson's equation}{section.3.4}% 42
+\BOOKMARK [1][-]{section.3.5}{Discretizing Poisson's equation by finite elements}{chapter.3}% 43
+\BOOKMARK [2][-]{subsection.3.5.1}{Forming a linear system}{section.3.5}% 44
+\BOOKMARK [2][-]{subsection.3.5.2}{A piecewise linear finite element triangulation scheme}{section.3.5}% 45
+\BOOKMARK [2][-]{subsection.3.5.3}{A piecewise quadratic finite element triangulation scheme}{section.3.5}% 46
+\BOOKMARK [0][-]{chapter.4}{Solving the Navier-Stokes equations}{}% 47
+\BOOKMARK [0][-]{section*.47}{Bibliography}{}% 48
