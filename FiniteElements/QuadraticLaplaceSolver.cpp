@@ -255,6 +255,33 @@ void Demo::post_render_update()
     glDeleteBuffers(1, &q_values);
     //--------------------------------------------------------------------------------
     
+    // Draw the lines of the wireframe.
+    int line_N = 25;
+    for (auto edge : geom->mesh.edges()) {
+        auto p = geom->position[edge.a().vertex()];
+        auto pp = geom->position[edge.b().vertex()];
+        auto midpoint = midpoints[edge];
+        auto ps = std::vector<vec3>(line_N);
+
+        // Evaluate basis functions restricted to this edge.
+        float val_a = dirichlet_boundary_function(p.x(), p.z());
+        float val_b = dirichlet_boundary_function(midpoint.x(), midpoint.z());
+        float val_c = dirichlet_boundary_function(pp.x(), pp.z());
+
+        for (int i = 0; i < line_N; i++) {
+            auto x = p.x() + (i*1.f/(line_N-1)) * (pp - p).x();
+            auto z = p.z() + (i*1.f/(line_N-1)) * (pp - p).z();
+
+            float u = i*1.f/(line_N-1);
+            float val =   val_a * (1 - u - 2*u*(1-u))
+                        + val_b * (4*u*(1-u))
+                        + val_c * (u - 2*u*(1-u));
+
+            ps[i] = vec3(x, val + 0.1, z);
+        }
+        world->graphics.paint.chain(ps, 0.0021, vec4(0,0,0,1));
+    }
+
 }
 
 
@@ -302,7 +329,8 @@ App::App(World &_world) : world{_world}
     auto demo = world.add<Demo>(demo_e, [](double x, double y)->double {
         // return x*x - y*y + 1.13;
         // return 0.5*sin(5*x)*y + 1.13;
-        return 0.5*(x*x - y*y) + 0.2*sin(8*x)*y + 1.13;
+        // return 0.5*(x*x - y*y) + 0.2*sin(8*x)*y + 1.13;
+        return 0.5*(x*x - y*y)+1.13 + cos(8*x)*0.28;
     });
     demo_b = demo_e.get<Behaviour>();
 }

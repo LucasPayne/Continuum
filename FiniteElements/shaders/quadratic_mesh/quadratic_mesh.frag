@@ -24,10 +24,12 @@ void main(void)
 
     color = face_color;
     
-    float b = 0.01;
-    if (x < b || y < b || z < b) {
-        color = wireframe_color;
-    }
+    // float b = 0.01;
+    // if (x < b || y < b || z < b) {
+    //     color = wireframe_color;
+    // }
+    // float dist = min(x - b, min(y - b, z - b));
+    // color = mix(wireframe_color, face_color, smoothstep(-0.002, 0.002, dist));
     
 }
 
