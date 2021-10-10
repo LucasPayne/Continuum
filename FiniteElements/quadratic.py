@@ -54,23 +54,58 @@ def integrate_gradients(a,b,c, i,j,k):
     f_dy = sym.integrate(f, (y, 0,1-x))
     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
 
-    print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), inte.simplify().subs(-K1-K2,K3))
+    print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), f_dy_dx.simplify().subs(-K1-K2,K3))
 
 
-print("vertex integrals")
-integrate_gradients(0,0,2,  0,0,2)
-integrate_gradients(0,0,2,  2,0,0)
-integrate_gradients(0,0,2,  0,2,0)
+def grads():
+    print("vertex integrals")
+    integrate_gradients(0,0,2,  0,0,2)
+    integrate_gradients(0,0,2,  2,0,0)
+    integrate_gradients(0,0,2,  0,2,0)
+    
+    integrate_gradients(0,0,2,  1,0,1)
+    integrate_gradients(0,0,2,  0,1,1)
+    integrate_gradients(0,0,2,  1,1,0)
+    
+    print("midpoint integrals")
+    integrate_gradients(1,1,0,  1,1,0)
+    integrate_gradients(1,1,0,  0,1,1)
+    integrate_gradients(1,1,0,  1,0,1)
+    
+    integrate_gradients(1,1,0,  2,0,0)
+    integrate_gradients(1,1,0,  0,2,0)
+    integrate_gradients(1,1,0,  0,0,2)
 
-integrate_gradients(0,0,2,  1,0,1)
-integrate_gradients(0,0,2,  0,1,1)
-integrate_gradients(0,0,2,  1,1,0)
 
-print("midpoint integrals")
-integrate_gradients(1,1,0,  1,1,0)
-integrate_gradients(1,1,0,  0,1,1)
-integrate_gradients(1,1,0,  1,0,1)
+# Source term integration
+def integrate_scalars(a,b,c, i,j,k):
+    f1 = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+    f2 = nodal_basis_functions[barycentric_index_to_linear(i,j,k)]
+    f = f1*f2
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), f_dy_dx.simplify().subs(-K1-K2,K3))
 
-integrate_gradients(1,1,0,  2,0,0)
-integrate_gradients(1,1,0,  0,2,0)
-integrate_gradients(1,1,0,  0,0,2)
+
+def scalars():
+    print("source term vertex integrals")
+    integrate_scalars(0,0,2,  0,0,2)
+    integrate_scalars(0,0,2,  2,0,0)
+    integrate_scalars(0,0,2,  0,2,0)
+    
+    integrate_scalars(0,0,2,  1,0,1)
+    integrate_scalars(0,0,2,  0,1,1)
+    integrate_scalars(0,0,2,  1,1,0)
+
+    print("source term midpoint integrals")
+    integrate_scalars(1,1,0,  0,0,2)
+    integrate_scalars(1,1,0,  2,0,0)
+    integrate_scalars(1,1,0,  0,2,0)
+    
+    integrate_scalars(1,1,0,  1,0,1)
+    integrate_scalars(1,1,0,  0,1,1)
+    integrate_scalars(1,1,0,  1,1,0)
+
+
+# grads()
+scalars()

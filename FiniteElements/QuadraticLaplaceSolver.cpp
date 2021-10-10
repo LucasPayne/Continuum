@@ -25,6 +25,10 @@ Eigen::Vector3f vec3_to_eigen(vec3 v)
 }
 
 
+struct ManufacturedSolution {
+    PlaneFunction dirichlet_boundary_function;
+    PlaneFunction source_function;
+};
 
 
 class Solver {
@@ -42,7 +46,7 @@ public:
     VertexAttachment<double> vertex_u;
     EdgeAttachment<double> midpoint_u;
 
-private:
+// private:
     SurfaceGeometry *geom; // Assumes y is 0. (this is bad, maybe should template the SurfaceGeometry class...)
                            // The geometry does not change.
     int num_interior_vertices;
@@ -125,7 +129,9 @@ void Solver::solve()
         coefficients.push_back(EigenTriplet(i, j, value));
     };
 
-    // Compute the integrals for interior vertices.
+    /*--------------------------------------------------------------------------------
+        Compute the integrals for interior vertices.
+    --------------------------------------------------------------------------------*/
     for (Vertex v : geom->mesh.vertices()) {
         if (v.on_boundary()) continue;
         int v_index = vertex_indices[v]; // Global interior vertex index.
@@ -155,7 +161,7 @@ void Solver::solve()
             add_entry(v_index, v_index, val);
 
             // vp contribution.
-            val = -(1.f/6.f) * C * K1.dot(K3);
+            val = -(1./6.) * C * K1.dot(K3);
             if (vp.on_boundary()) {
                 double bv = dirichlet_boundary_function(vp_pos.x(), vp_pos.z());
                 rhs[v_index] -= bv * val;
@@ -165,7 +171,7 @@ void Solver::solve()
             }
             
             // vpp contribution.
-            val = -(1.f/6.f) * C * K2.dot(K3);
+            val = -(1./6.) * C * K2.dot(K3);
             if (vpp.on_boundary()) {
                 double bv = dirichlet_boundary_function(vpp_pos.x(), vpp_pos.z());
                 rhs[v_index] -= bv * val;
@@ -175,12 +181,12 @@ void Solver::solve()
             }
 
             // midpoint_vp contribution.
-            val = (2.f/3.f)*C*K1.dot(K3);
+            val = (2./3.)*C*K1.dot(K3);
             int midpoint_vp_index = midpoint_indices[vp_edge];
             add_entry(v_index, num_interior_vertices + midpoint_vp_index, val);
             
             // midpoint_vpp contribution.
-            val = (2.f/3.f)*C*K2.dot(K3);
+            val = (2./3.)*C*K2.dot(K3);
             int midpoint_vpp_index = midpoint_indices[vpp_edge];
             add_entry(v_index, num_interior_vertices + midpoint_vpp_index, val);
 
@@ -188,7 +194,9 @@ void Solver::solve()
         } while (he != start);
     }
 
-    // Compute the integrals for interior midpoints.
+    /*--------------------------------------------------------------------------------
+        Compute the integrals for interior midpoints.
+    --------------------------------------------------------------------------------*/
     for (auto edge : geom->mesh.edges()) {
         if (edge.on_boundary()) continue;
         int midpoint_index = midpoint_indices[edge];
@@ -266,6 +274,94 @@ void Solver::solve()
             }
         }
     }
+    /*--------------------------------------------------------------------------------
+        Source term integration.
+    --------------------------------------------------------------------------------*/
+    // Sample the source function at each vertex and midpoint.
+    // This determines a piecewise quadratic interpolation.
+    VertexAttachment<double> g_vertex(geom->mesh);
+    EdgeAttachment<double> g_edge(geom->mesh);
+    for (auto v : geom->mesh.vertices()) {
+        auto v_pos = geom->position[v];
+        g_vertex[v] = source_function(v_pos.x(), v_pos.z());
+    }
+    for (auto edge : geom->mesh.edges()) {
+        auto midpoint_pos = midpoints[edge];
+        g_edge[edge] = source_function(midpoint_pos.x(), midpoint_pos.z());
+    }
+
+    // Vertex trial integrals.
+    for (auto v : geom->mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = vertex_indices[v];
+        auto v_pos = geom->position[v];
+
+        double integral = 0.;
+
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            // Define terms.
+            Face tri = he.face();
+            double tri_area = geom->triangle_area(tri);
+            double J = tri_area;
+            Vertex vp = he.next().vertex();
+            Vertex vpp = he.next().tip();
+            auto vp_pos = geom->position[vp];
+            auto vpp_pos = geom->position[vpp];
+
+            auto opposite_edge = he.next().edge();
+
+            // v
+            integral += (1./60.) * J * g_vertex[v];
+            // vp
+            integral += (-1./360.) * J * g_vertex[vp];
+            // vpp
+            integral += (-1./360.) * J * g_vertex[vpp];
+            // opposite_edge midpoint
+            integral += (-1./90.) * J * g_edge[opposite_edge];
+
+            he = he.next();
+        } while (he != start);
+        rhs[v_index] += integral;
+    }
+
+    // Midpoint trial integrals.
+    for (auto edge : geom->mesh.edges()) {
+        if (edge.on_boundary()) continue;
+        int midpoint_index = midpoint_indices[edge];
+        Halfedge hes[2] = {edge.a(), edge.b()};
+
+        double integral = 0.;
+
+        // For the two incident triangles.
+        for (int t = 0; t < 2; t++) {
+            // Define terms.
+            auto he = hes[t];
+            auto tri = he.face();
+            double tri_area = geom->triangle_area(tri);
+            double J = tri_area;
+            // Triangle vertices.
+            auto v = he.next().tip(); // v is the opposite vertex.
+            auto vp = he.vertex();
+            auto vpp = he.tip();
+            // Opposite triangle midpoints.
+            auto midpoint_vp = he.next().next().edge();
+            auto midpoint_vpp = he.next().edge();
+            
+            // edge
+            integral += (4./45.) * J * g_edge[edge];
+            // midpoint_vp
+            integral += (2./45.) * J * g_edge[midpoint_vp];
+            // midpoint_vpp
+            integral += (2./45.) * J * g_edge[midpoint_vpp];
+            // v
+            integral += (-1./90.) * J * g_vertex[v];
+        }
+        rhs[num_interior_vertices + midpoint_index] += integral;
+    }
+
 
     // Finalize the mass matrix.
     auto mass_matrix = SparseMatrix(N, N);
@@ -323,10 +419,9 @@ void Solver::solve()
 
 
 struct Demo : public IBehaviour {
-    Demo(PlaneFunction dirichlet_boundary_function);
+    Demo();
 
     SurfaceGeometry *geom;
-    PlaneFunction dirichlet_boundary_function;
 
     void keyboard_handler(KeyboardEvent e);
     void mouse_handler(MouseEvent e);
@@ -353,6 +448,10 @@ struct Demo : public IBehaviour {
     float f_screenshot_bly;
     float f_screenshot_trx;
     float f_screenshot_try;
+
+    // Test manufactured solutions.
+    std::vector<ManufacturedSolution> manufactured_solutions;
+    int sol_index;
 };
 
 
@@ -377,6 +476,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_Z) {
             linear_mode = !linear_mode;
+        }
+        if (e.key.code == KEY_V) {
+            sol_index = (sol_index + 1) % manufactured_solutions.size();
         }
         static int counter = 0;
         std::string pre = linear_mode ? "linear_approx_" : "quadratic_approx_";
@@ -405,8 +507,7 @@ void Demo::mouse_handler(MouseEvent e)
     }
 }
 
-Demo::Demo(PlaneFunction _dirichlet_boundary_function) :
-    dirichlet_boundary_function{_dirichlet_boundary_function}
+Demo::Demo()
 {
     mesh_N = 2;
     random = false;
@@ -429,6 +530,34 @@ Demo::Demo(PlaneFunction _dirichlet_boundary_function) :
     f_screenshot_bly = 0;
     f_screenshot_trx = 0.01;
     f_screenshot_try = 0.01;
+
+    sol_index = 0;
+
+    manufactured_solutions.push_back({
+        [](double x, double y)->double {
+            return x*x - y*y + 1.3;
+        },
+        [](double x, double y)->double {
+            return 0.;
+        }
+    });
+    manufactured_solutions.push_back({
+        [](double x, double y)->double {
+            return exp(-2*(x*x + y*y));
+        },
+        [](double x, double y)->double {
+            return (8 - 16*x*x - 16*y*y) * exp(-2*(x*x + y*y));
+        }
+    });
+    manufactured_solutions.push_back({
+        [](double x, double y)->double {
+            return 0.5*cos(8*x)*y + exp(-x*x)*0.5*y*y+1.3;
+        },
+        [](double x, double y)->double {
+            return -y*(2.0*x*x*y*exp(-x*x) - 1.0*y*exp(-x*x) - 32.0*cos(8*x)) - 1.0*exp(-x*x);
+        }
+    });
+
 }
 
 void Demo::update()
@@ -453,15 +582,13 @@ void Demo::post_render_update()
     // Recreate the mesh.
     if (geom != nullptr) delete geom;
     srand(230192301);
-    if (render_exact_solution) geom = circle_mesh(50, random);
-    else {
-        if (linear_mode) {
-            geom = circle_mesh(mesh_N*2, random);
-        } else {
-            geom = circle_mesh(mesh_N, random);
-        }
+    if (linear_mode) {
+        // geom = circle_mesh(mesh_N*2, random);
+        geom = square_mesh(mesh_N*2);
+    } else {
+        // geom = circle_mesh(mesh_N, random);
+        geom = square_mesh(mesh_N);
     }
-    // geom = square_mesh(mesh_N);
     // Compute Edge midpoints.
     auto midpoints = EdgeAttachment<Eigen::Vector3f>(geom->mesh);
     for (auto edge : geom->mesh.edges()) {
@@ -472,10 +599,8 @@ void Demo::post_render_update()
 
     // Solve the system.
     auto solver = Solver(*geom);
-    solver.set_dirichlet_boundary(dirichlet_boundary_function);
-    solver.set_source([&](double x, double y)->double {
-        return 0.0;
-    });
+    solver.set_dirichlet_boundary(manufactured_solutions[sol_index].dirichlet_boundary_function);
+    solver.set_source(manufactured_solutions[sol_index].source_function);
     solver.solve();
 
     // for (auto vertex : geom->mesh.vertices()) {
@@ -496,26 +621,27 @@ void Demo::post_render_update()
         for (int i = 0; i <= circ_N; i++) {
             float theta = i*2.f*M_PI/circ_N;
             ps.push_back(vec3(cos(theta), 0, sin(theta)));
-            ps_lift.push_back(vec3(cos(theta), dirichlet_boundary_function(cos(theta), sin(theta)), sin(theta)));
+            ps_lift.push_back(vec3(cos(theta), solver.dirichlet_boundary_function(cos(theta), sin(theta)), sin(theta)));
         }
         world->graphics.paint.chain(ps, 0.001, vec4(0,0,0,1));
         world->graphics.paint.chain(ps_lift, 0.001, vec4(0,0,0,1));
     }
     
-    // auto vertex_u = VertexAttachment<double>(geom->mesh);
-    // for (auto v : geom->mesh.vertices()) {
-    //     auto p = geom->position[v];
-    //     vertex_u[v] = dirichlet_boundary_function(p.x(), p.z());
-    // }
-    // auto edge_u = EdgeAttachment<double>(geom->mesh);
-    // for (auto e : geom->mesh.edges()) {
-    //     auto p = midpoints[e];
-    //     edge_u[e] = dirichlet_boundary_function(p.x(), p.z());
-    // }
-    auto &vertex_u = solver.vertex_u;
-    auto &edge_u = solver.midpoint_u;
+    // Exact solution assumes that the Dirichlet boundary function is of a manufactured solution.
+    auto exact_vertex_u = VertexAttachment<double>(geom->mesh);
+    for (auto v : geom->mesh.vertices()) {
+        auto p = geom->position[v];
+        exact_vertex_u[v] = solver.dirichlet_boundary_function(p.x(), p.z());
+    }
+    auto exact_edge_u = EdgeAttachment<double>(geom->mesh);
+    for (auto e : geom->mesh.edges()) {
+        auto p = midpoints[e];
+        exact_edge_u[e] = solver.dirichlet_boundary_function(p.x(), p.z());
+    }
+    auto &vertex_u = render_exact_solution ? exact_vertex_u : solver.vertex_u;
+    auto &edge_u = render_exact_solution ? exact_edge_u : solver.midpoint_u;
     
-
+#if 0
 if (!render_exact_solution) {
     float linewid = 0.00035;
     if (!linear_mode) {
@@ -536,6 +662,7 @@ if (!render_exact_solution) {
         // world->graphics.paint.line(p, p_lift, linewid, vec4(0,0,0,1));
     }
 }
+#endif
 
     // Upload and render the quadratic surface mesh.
     //--------------------------------------------------------------------------------
@@ -606,8 +733,6 @@ if (!render_exact_solution) {
     glDeleteBuffers(1, &q_values);
     //--------------------------------------------------------------------------------
     
-#if 1
-if (!render_exact_solution) {
     // Draw the lines of the wireframe.
     int line_N = 25;
     for (auto edge : geom->mesh.edges()) {
@@ -617,9 +742,9 @@ if (!render_exact_solution) {
         auto ps = std::vector<vec3>(line_N);
 
         // Evaluate basis functions restricted to this edge.
-        float val_a = dirichlet_boundary_function(p.x(), p.z());
-        float val_b = dirichlet_boundary_function(midpoint.x(), midpoint.z());
-        float val_c = dirichlet_boundary_function(pp.x(), pp.z());
+        float val_a = solver.vertex_u[edge.a().vertex()];
+        float val_b = solver.midpoint_u[edge];
+        float val_c = solver.vertex_u[edge.b().vertex()];
 
         for (int i = 0; i < line_N; i++) {
             auto x = p.x() + (i*1.f/(line_N-1)) * (pp - p).x();
@@ -640,9 +765,6 @@ if (!render_exact_solution) {
         }
         world->graphics.paint.chain(ps, 0.0021, vec4(0,0,0,1));
     }
-}
-#endif
-
 }
 
 
@@ -687,17 +809,7 @@ App::App(World &_world) : world{_world}
     
     // Create the demo.
     demo_e = world.entities.add();
-    auto demo = world.add<Demo>(demo_e, [](double x, double y)->double {
-        // return x*x - y*y + 1.13;
-        // return 0.5*sin(5*x)*y + 1.13;
-        // return 0.5*(x*x - y*y) + 0.2*sin(8*x)*y + 1.13;
-        // return 0.5*(x*x - y*y)+1.13 + cos(8*x)*0.28;
-        
-        // return 0.5*(x*x - y*y)+1.23 + cos(4*x)*0.3;
-        // return x*x - y*y + 1.3;
-        
-        return 0.5*cos(8*x)*y + exp(-x*x)*0.5*y*y+1.3;
-    });
+    auto demo = world.add<Demo>(demo_e);
     demo_b = demo_e.get<Behaviour>();
 
 }
