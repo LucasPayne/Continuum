@@ -78,4 +78,4 @@
 \contentsline {subsubsection}{The linear system}{48}{section*.49}
 \contentsline {subsection}{\numberline {3.5.4}Computing the linear system for the piecewise quadratic scheme}{48}{subsection.3.5.4}
 \contentsline {chapter}{\chapternumberline {4}Solving the Navier-Stokes equations}{53}{chapter.4}
-\contentsline {chapter}{Bibliography}{55}{section*.53}
+\contentsline {chapter}{Bibliography}{55}{section*.54}

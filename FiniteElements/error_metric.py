@@ -39,7 +39,9 @@ plt.legend([r"$\log(error)$", r"$\log(r)$ + const", r"$\log(r^2)$ + const"])
 plt.xlabel(r"$r$ (labels), $\log(r)$ (scale)")
 plt.title("Log-log plot of the $L^2$ error for varying $r$.")
 
-figures_directory = Path("/home/lucas/Continuum/document/figures")
-fig_path = figures_directory / Path("graphs") / Path(Path(filename).name).with_suffix(".png")
-plt.savefig(fig_path, dpi=300)
-subprocess.call(["convert", fig_path, "-trim", fig_path])
+plt.show()
+
+# figures_directory = Path("/home/lucas/Continuum/document/figures")
+# fig_path = figures_directory / Path("graphs") / Path(Path(filename).name).with_suffix(".png")
+# plt.savefig(fig_path, dpi=300)
+# subprocess.call(["convert", fig_path, "-trim", fig_path])

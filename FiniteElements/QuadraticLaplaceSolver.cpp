@@ -6,6 +6,9 @@
 
 #include "mesh_generators.cpp"
 
+FILE *error_metric_file = nullptr;
+
+
 
 using PlaneFunction = std::function<double(double x, double y)>; // Function of the XY plane.
 using PlaneFunctionNL1 = std::function<double(double x, double y, double u)>; // First-order non-linear plane function.
@@ -438,6 +441,7 @@ struct Demo : public IBehaviour {
 
     
     GLShaderProgram quadratic_mesh_shader;
+    GLShaderProgram quadratic_function_shader;
 
 
     int screenshot_blx;
@@ -452,6 +456,11 @@ struct Demo : public IBehaviour {
     // Test manufactured solutions.
     std::vector<ManufacturedSolution> manufactured_solutions;
     int sol_index;
+
+    // Error metrics.
+    GLuint sample_geometry_fbo;
+    GLuint sample_geometry_texture;
+    GLuint sample_geometry_depth_texture;
 };
 
 
@@ -522,6 +531,13 @@ Demo::Demo()
     quadratic_mesh_shader.add_shader(GLShader(FragmentShader, SHADERS "quadratic_mesh/quadratic_mesh.frag"));
     quadratic_mesh_shader.link();
 
+    quadratic_function_shader.add_shader(GLShader(VertexShader, SHADERS "quadratic_function/quadratic_function.vert"));
+    quadratic_function_shader.add_shader(GLShader(TessControlShader, SHADERS "quadratic_function/quadratic_function.tcs"));
+    quadratic_function_shader.add_shader(GLShader(TessEvaluationShader, SHADERS "quadratic_function/quadratic_function.tes"));
+    quadratic_function_shader.add_shader(GLShader(FragmentShader, SHADERS "quadratic_function/quadratic_function.frag"));
+    quadratic_function_shader.link();
+
+
     screenshot_blx = 0;
     screenshot_bly = 0;
     screenshot_trx = 10;
@@ -533,14 +549,6 @@ Demo::Demo()
 
     sol_index = 0;
 
-    manufactured_solutions.push_back({
-        [](double x, double y)->double {
-            return x*x - y*y + 1.3;
-        },
-        [](double x, double y)->double {
-            return 0.;
-        }
-    });
     manufactured_solutions.push_back({
         [](double x, double y)->double {
             return exp(-2*(x*x + y*y));
@@ -557,7 +565,37 @@ Demo::Demo()
             return -y*(2.0*x*x*y*exp(-x*x) - 1.0*y*exp(-x*x) - 32.0*cos(8*x)) - 1.0*exp(-x*x);
         }
     });
+    manufactured_solutions.push_back({
+        [](double x, double y)->double {
+            return x*x - y*y + 1.3;
+        },
+        [](double x, double y)->double {
+            return 0.;
+        }
+    });
 
+
+    glGenFramebuffers(1, &sample_geometry_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, sample_geometry_fbo);
+
+    glGenTextures(1, &sample_geometry_texture);
+    glBindTexture(GL_TEXTURE_2D, sample_geometry_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1024, 1024, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);  
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sample_geometry_texture, 0);
+
+    glGenTextures(1, &sample_geometry_depth_texture);
+    glBindTexture(GL_TEXTURE_2D, sample_geometry_depth_texture);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 1024, 1024, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, sample_geometry_depth_texture, 0);
+
+    GLenum framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if(framebuffer_status != GL_FRAMEBUFFER_COMPLETE) {
+        fprintf(stderr, "Framebuffer incomplete.\n");
+        exit(EXIT_FAILURE);
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Demo::update()
@@ -640,6 +678,14 @@ void Demo::post_render_update()
     }
     auto &vertex_u = render_exact_solution ? exact_vertex_u : solver.vertex_u;
     auto &edge_u = render_exact_solution ? exact_edge_u : solver.midpoint_u;
+
+
+    // // Compute the error.
+    // // Compute square norms of each basis function.
+    // VertexAttachment<double> vertex_square_norms(geom->mesh);
+    // VertexAttachment<double> vertex_square_norms(geom->mesh);
+
+
     
 #if 0
 if (!render_exact_solution) {
@@ -715,17 +761,66 @@ if (!render_exact_solution) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Render the quadratic surface.
-    quadratic_mesh_shader.bind();
-        mat4x4 mvp_matrix = main_camera->view_projection_matrix();
+    glClear(GL_DEPTH_BUFFER_BIT); //...
+    glEnable(GL_DEPTH_TEST);
+    #if 1
+    GLShaderProgram *quadratic_shaders[2] = {&quadratic_mesh_shader, &quadratic_function_shader};
+    #else
+    GLShaderProgram *quadratic_shaders[1] = {&quadratic_mesh_shader};
+    #endif
+    mat4x4 mvp_matrix = main_camera->view_projection_matrix();
+    for (auto *shader : quadratic_shaders) {
+        shader->bind();
 
-        glClear(GL_DEPTH_BUFFER_BIT); //...
-        glEnable(GL_DEPTH_TEST);
-        glUniformMatrix4fv(quadratic_mesh_shader.uniform_location("mvp_matrix"), 1, GL_FALSE, (const GLfloat *) &mvp_matrix);
-        glUniform1i(quadratic_mesh_shader.uniform_location("linear_mode"), linear_mode ? 1 : 0);
-        glPatchParameteri(GL_PATCH_VERTICES, 6);
-        glDrawArrays(GL_PATCHES, 0, q_position_data.size());
+            glUniformMatrix4fv(shader->uniform_location("mvp_matrix"), 1, GL_FALSE, (const GLfloat *) &mvp_matrix);
+            glUniform1i(shader->uniform_location("linear_mode"), linear_mode ? 1 : 0);
+            glPatchParameteri(GL_PATCH_VERTICES, 6);
+            glDrawArrays(GL_PATCHES, 0, q_position_data.size());
+        shader->unbind();
+    }
 
-    quadratic_mesh_shader.unbind();
+    // // Draw into sample texture, for error calculation.
+    quadratic_function_shader.bind();
+    glUniformMatrix4fv(quadratic_function_shader.uniform_location("mvp_matrix"), 1, GL_FALSE, (const GLfloat *) &mvp_matrix);
+    glUniform1i(quadratic_function_shader.uniform_location("linear_mode"), linear_mode ? 1 : 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, sample_geometry_fbo);
+    glDisable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glPatchParameteri(GL_PATCH_VERTICES, 6);
+    glDrawArrays(GL_PATCHES, 0, q_position_data.size());
+    glEnable(GL_DEPTH_TEST);
+    glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
+    quadratic_function_shader.unbind();
+
+    // Read in the result.
+    glBindFramebuffer(GL_FRAMEBUFFER, sample_geometry_fbo);
+    auto geometry_sample_pixels = std::vector<float>(4*1024*1024);
+    glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &geometry_sample_pixels[0]);
+    glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
+
+    float coeff = 1.f/(1024*1024); //----------should be for [-1,1]^2
+    float total = 0.f;
+    for (int i = 0; i < 1024; i++) {
+        for (int j = 0; j < 1024; j++) {
+            float val = geometry_sample_pixels[4*(1024*j + i)];
+            total += val * coeff;
+        }
+    }
+    // Compute the mesh parameter.
+    float h = 0.f;
+    float h_coeff = 1.f / geom->mesh.num_edges();
+    for (auto edge : geom->mesh.edges()) {
+        auto a = geom->position[edge.a().vertex()];
+        auto b = geom->position[edge.b().vertex()];
+        h += h_coeff * (a - b).norm();
+    }
+
+    // float error = sqrt(total);
+    // fprintf(error_metric_file, "%d %.10f %.10f\n", mesh_N, h, error);
+    // printf("%d %.10f %.10f\n", mesh_N, h, error);
+
+
+
 
     // Clean up.
     glDeleteVertexArrays(1, &q_vao);
@@ -764,6 +859,23 @@ if (!render_exact_solution) {
             ps[i] = vec3(x, val + 0.003, z);
         }
         world->graphics.paint.chain(ps, 0.0021, vec4(0,0,0,1));
+    }
+
+    // Draw boundary condition
+    // Square
+    int num = 300;
+    for (int t = -1; t <= 1; t += 2) {
+        for (int axis = 0; axis <= 1; axis++) {
+            auto bc = std::vector<vec3>();
+            for (int i = 0; i <= num; i++) {
+                double val = -1+i*2.f/num;
+                vec2 v;
+                if (axis == 0) v = vec2(t, val);
+                else v = vec2(val, t);
+                bc.push_back(vec3(v.x(), solver.dirichlet_boundary_function(v.x(), v.y()), v.y()));
+            }
+            world->graphics.paint.chain(bc, 0.01, vec4(0,0,0,1));
+        }
     }
 }
 
@@ -840,6 +952,8 @@ void App::mouse_handler(MouseEvent e)
 
 int main(int argc, char *argv[])
 {
+    error_metric_file = fopen(DATA "error_metric_file.txt", "w+");
+
     printf("[main] Creating context...\n");
     IGC::Context context("A world");
     printf("[main] Creating world...\n");
@@ -853,4 +967,6 @@ int main(int argc, char *argv[])
     printf("[main] Entering loop...\n");
     context.enter_loop();
     context.close();
+
+    fclose(error_metric_file);
 }
