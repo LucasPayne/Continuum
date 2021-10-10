@@ -45,8 +45,9 @@ def grad_int(a,b,c, i,j,k):
     g2 = ps_ref_gradients[basis_index(i,j,k)]
     f = (K1*g1[0] + K2*g1[1])*(K1*g2[0] + K2*g2[1])
     inte = comp_int(f)
-    print(inte.simplify().subs(-K1-K2,K3))
+    print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), inte.simplify().subs(-K1-K2,K3))
 
+print("vertex integrals")
 grad_int(0,0,2,  0,0,2)
 grad_int(0,0,2,  2,0,0)
 grad_int(0,0,2,  0,2,0)
