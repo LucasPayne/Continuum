@@ -225,8 +225,8 @@ void Solver::solve()
             // printf("self midpoint\n");
             double val = 0.;
             // 110, 110
-            // val = 4.*C/3. * (K3.dot(K3) - K1.dot(K2));
-            val = 4.*C/3. * (K1.dot(K1) + K1.dot(K2) + K2.dot(K2));
+            val = 4.*C/3. * (K3.dot(K3) - K1.dot(K2));
+            // val = 4.*C/3. * (K1.dot(K1) + K1.dot(K2) + K2.dot(K2));
             add_entry(num_interior_vertices + midpoint_index, num_interior_vertices + midpoint_index, val);
 
             // printf("boundary midpoints\n");

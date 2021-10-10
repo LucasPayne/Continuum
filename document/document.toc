@@ -74,5 +74,8 @@
 \contentsline {subsubsection}{Computing the linear system by closed form integration}{43}{section*.43}
 \contentsline {subsubsection}{Integrating the source function}{46}{section*.44}
 \contentsline {subsection}{\numberline {3.5.3}A piecewise quadratic finite element triangulation scheme}{46}{subsection.3.5.3}
-\contentsline {chapter}{\chapternumberline {4}Solving the Navier-Stokes equations}{49}{chapter.4}
-\contentsline {chapter}{Bibliography}{51}{section*.49}
+\contentsline {subsubsection}{The piecewise quadratic basis functions}{47}{section*.45}
+\contentsline {subsubsection}{The linear system}{48}{section*.49}
+\contentsline {subsection}{\numberline {3.5.4}Computing the linear system for the piecewise quadratic scheme}{48}{subsection.3.5.4}
+\contentsline {chapter}{\chapternumberline {4}Solving the Navier-Stokes equations}{53}{chapter.4}
+\contentsline {chapter}{Bibliography}{55}{section*.53}
