@@ -272,10 +272,10 @@ void Solver::solve()
     mass_matrix.setFromTriplets(coefficients.begin(), coefficients.end());
     mass_matrix.makeCompressed();
 
-    std::cout << "mass matrix:\n" << Eigen::MatrixXd(mass_matrix) << "\n";
-    printf("rhs: ");
-    for (int i = 0; i < N; i++) printf("%.5g, ", rhs[i]);
-    printf("\n");
+    // std::cout << "mass matrix:\n" << Eigen::MatrixXd(mass_matrix) << "\n";
+    // printf("rhs: ");
+    // for (int i = 0; i < N; i++) printf("%.5g, ", rhs[i]);
+    // printf("\n");
     /*--------------------------------------------------------------------------------
         Solve the system.
     --------------------------------------------------------------------------------*/
@@ -478,12 +478,12 @@ void Demo::post_render_update()
     });
     solver.solve();
 
-    for (auto vertex : geom->mesh.vertices()) {
-        printf("vertex: %.5g\n", solver.vertex_u[vertex]);
-    }
-    for (auto midpoint : geom->mesh.edges()) {
-        printf("midpoint: %.5g\n", solver.midpoint_u[midpoint]);
-    }
+    // for (auto vertex : geom->mesh.vertices()) {
+    //     printf("vertex: %.5g\n", solver.vertex_u[vertex]);
+    // }
+    // for (auto midpoint : geom->mesh.edges()) {
+    //     printf("midpoint: %.5g\n", solver.midpoint_u[midpoint]);
+    // }
 
     
     if (!render_exact_solution) {

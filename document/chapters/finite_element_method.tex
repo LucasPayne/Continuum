@@ -1506,9 +1506,24 @@ The function $\textbf{integrate\_gradients}(a,b,c, i,j,k)$ computes a symbolic d
     = \int_{x=0}^{x=1}\int_{y=0}^{y=1-x} (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,dy\,dx,
 \end{equation}
 where $\Phi^\reftri_{abc}$ is the nodal basis function $\Phi_{abc}$ in reference triangle coordinates, with $z$ replaced by $1-x-y$.
+As a rough outline, the resulting matrix assembly algorithm (for constructing $A$ and $\hat{f}$), like in the pseudocode \ref{alg:assembly},
+simply
+\begin{itemize}
+    \item iterates over each trial basis function $\psi \in \Psi$,
+    \item determines the basis functions $\phi^* \in \Psi^*$ which have domain overlapping $\psi$'s domain (by some mesh traversal),
+    \item splits the domain of integration into triangles (where the restricted basis functions are quadratic --- previously they were linear),
+    \item computes the integrals in closed form on this triangle (where these integrals could be derived using computer algebra),
+    \item updates the matrix and RHS values, depending on whether $\phi^*$'s node is on the boundary or not.
+\end{itemize}
+The new matrix assembly algorithm is given in listing \ref{alg:quadratic_assembly}.
+The fully expanded algorithm, with mesh traversals and closed form integrals hard-coded, is becoming nigh unreadable.
+Clearly there is a simple coherent structure underlying all of these steps. We could easily generalise to piecewise cubics
+by having $10 = 1 + 2 + 3 + 4$ nodes per triangle --- just find a nodal basis for cubics on a reference triangle,
+and plug them into the same Python script \ref{sympy_quadratic} to derive coefficients of closed form integrals (which, again,
+will be in terms of dot products between $K_1$, $K_2$, and $K_3$). We then would need to write out the whole mesh traversal
+and index manipulations required, in order to implement what conceptually is a trivial increase of order from $2$ to $3$.
+This process (the derivation and implementation of a finite element algorithm) is clearly a good candidate for automation.
 
-% \begin{lstlisting}[language=Python]
-% \end{lstlisting}
 \begin{figure}
 \begin{mintedbox}[mathescape=true]{python}
 import sympy as sym
@@ -1571,6 +1586,8 @@ def integrate_gradients(a,b,c, i,j,k):
 
 
 
+
+
 \newpage
 \begin{algorithm}\label{alg:quadratic_assembly}
 \tiny
@@ -1607,10 +1624,10 @@ def integrate_gradients(a,b,c, i,j,k):
         Let $v$ denote the interior vertex $p_j$.\\
         Let $v_1,\cdots,v_k$ denote the vertices adjacent to $v$.\\
         Let $T^v_1,\cdots,T^v_k$ denote the triangles adjacent to $v$.\\
-        (Triangle $T_t$ joins vertices $v,v_t,v_{t+1}$.)\\
+        (Triangle $T^v_t$ joins vertices $v,v_t,v_{t+1}$.)\\
         Let $e^v_1,\cdots,e^v_k$ denote the edges from $v$ to each $v_1,\cdots,v_k$.\\
         \For{$t = 1,\cdots, k$}{
-            $C \leftarrow \frac{1}{4\text{Area}(T)}$\;
+            $C \leftarrow \frac{1}{4\text{Area}(T^v_t)}$\;
             $K_1 \leftarrow (v - v_{t+1})^\perp, \quad
             K_2 \leftarrow (v_t - v)^\perp, \quad
             K_3 \leftarrow (v_{t+1} - v_t)^\perp$\;
@@ -1636,7 +1653,9 @@ def integrate_gradients(a,b,c, i,j,k):
         Let $e$ denote the interior edge $e_j$.\\
         Denote by $T_0^e$ and $T_1^e$ the two triangles incident to $e$.\\
         \For{$t = 0,1$}{
+            $C \leftarrow \frac{1}{4\text{Area}(T_t^e)}$\;
             Let $v,v^\pr,v^\ppr$ be the anticlockwise vertices of $T^e_t$, where $v$ is the vertex opposite to $e$.\\
+            Let $e^\pr$ and $e^\ppr$ be the edges from $v$ to $v^\pr$ and from $v$ to $v^\ppr$, respectively.\\
             $K_1 \leftarrow (v - v^\ppr)^\perp,\quad
                 K_2 \leftarrow (v^\pr - v)^\perp,\quad
                 K_3 \leftarrow (v^\ppr - v^\pr)^\perp$\;
@@ -1663,9 +1682,47 @@ def integrate_gradients(a,b,c, i,j,k):
             } \Else {
                 $A[n+j, I(e^\ppr)] \leftarrow A[n+j, I(e^\ppr)] + \frac{4}{3} C K_1\cdot K_3$\;
             }
+            % // 110, 101
+            % val = 4.*C/3. * (K2.dot(K3));
+            % if (midpoint_vp.on_boundary()) {
+            %     double bv = dirichlet_boundary_function(midpoint_vp_pos.x(), midpoint_vp_pos.z());
+            %     rhs[num_interior_vertices + midpoint_index] -= bv * val;
+            % } else {
+            %     add_entry(num_interior_vertices + midpoint_index, num_interior_vertices + midpoint_vp_index, val);
+            % }
+            \uIf{$e^\pr$ is on the boundary}{
+                $b[n+j] \leftarrow b[n+j] - \frac{4}{3} h_\Gamma(e^\pr \text{midpoint}) C K_2\cdot K_3$\;
+            } \Else {
+                $A[n+j, I(e^\pr)] \leftarrow A[n+j, I(e^\pr)] + \frac{4}{3} C K_2\cdot K_3$\;
+            }
 
+            % // printf("vertices\n");
+            % // 110, 200
+            % val = 2.*C/3. * (K1.dot(K2));
+            % if (vp.on_boundary()) {
+            %     double bv = dirichlet_boundary_function(vp_pos.x(), vp_pos.z());
+            %     rhs[num_interior_vertices + midpoint_index] -= bv * val;
+            % } else {
+            %     add_entry(num_interior_vertices + midpoint_index, vp_index, val);
+            % }
+            \uIf{$v^\pr$ is on the boundary}{
+                $b[n+j] \leftarrow b[n+j] - \frac{2}{3} h_\Gamma(v^\pr) C K_1\cdot K_2$\;
+            } \Else {
+                $A[n+j, I(v^\pr)] \leftarrow A[n+j, I(v^\pr)] + \frac{2}{3} C K_1\cdot K_2$\;
+            }
 
-
+            % // 110, 020
+            % if (vpp.on_boundary()) {
+            %     double bv = dirichlet_boundary_function(vpp_pos.x(), vpp_pos.z());
+            %     rhs[num_interior_vertices + midpoint_index] -= bv * val;
+            % } else {
+            %     add_entry(num_interior_vertices + midpoint_index, vpp_index, val);
+            % }
+            \uIf{$v^\ppr$ is on the boundary}{
+                $b[n+j] \leftarrow b[n+j] - \frac{2}{3} h_\Gamma(v^\ppr) C K_1\cdot K_2$\;
+            } \Else {
+                $A[n+j, I(v^\ppr)] \leftarrow A[n+j, I(v^\ppr)] + \frac{2}{3} C K_1\cdot K_2$\;
+            }
         }
     }
     \Return{$(A, \hat{f})$}\;
