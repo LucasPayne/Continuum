@@ -1511,7 +1511,7 @@ As a rough outline, the resulting matrix assembly algorithm (for constructing $A
 simply
 \begin{itemize}
     \item iterates over each trial basis function $\psi \in \Psi$,
-    \item determines the basis functions $\phi^* \in \Psi^*$ which have domain overlapping $\psi$'s domain (by some mesh traversal),
+    \item determines the basis functions $\phi^* \in \Phi^*$ which have domain overlapping $\psi$'s domain (by some mesh traversal),
     \item splits the domain of integration into triangles (where the restricted basis functions are quadratic --- previously they were linear),
     \item computes the integrals in closed form on this triangle (where these integrals could be derived using computer algebra),
     \item updates the matrix and RHS values, depending on whether $\phi^*$'s node is on the boundary or not.
@@ -1524,6 +1524,10 @@ and plug them into the same Python script \ref{sympy_quadratic} to derive coeffi
 will be in terms of dot products between $K_1$, $K_2$, and $K_3$). We then would need to write out the whole mesh traversal
 and index manipulations required, in order to implement what conceptually is a trivial increase of order from $2$ to $3$.
 This process (the derivation and implementation of a finite element algorithm) is clearly a good candidate for automation.
+
+\subsection{The resulting matrix assembly algorithm}
+\subsection{The resulting finite element algorithm}
+\subsection{Validation and results}
 
 \begin{figure}
 \begin{mintedbox}[mathescape=true]{python}

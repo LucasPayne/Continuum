@@ -45,5 +45,12 @@
 \BOOKMARK [2][-]{subsection.3.5.2}{A piecewise linear finite element triangulation scheme}{section.3.5}% 45
 \BOOKMARK [2][-]{subsection.3.5.3}{A piecewise quadratic finite element triangulation scheme}{section.3.5}% 46
 \BOOKMARK [2][-]{subsection.3.5.4}{Computing the linear system for the piecewise quadratic scheme}{section.3.5}% 47
-\BOOKMARK [0][-]{chapter.4}{Solving the Navier-Stokes equations}{}% 48
-\BOOKMARK [0][-]{section*.54}{Bibliography}{}% 49
+\BOOKMARK [2][-]{subsection.3.5.5}{The resulting matrix assembly algorithm}{section.3.5}% 48
+\BOOKMARK [2][-]{subsection.3.5.6}{The resulting finite element algorithm}{section.3.5}% 49
+\BOOKMARK [2][-]{subsection.3.5.7}{Validation and results}{section.3.5}% 50
+\BOOKMARK [0][-]{chapter.4}{Solving the Stokes equations with the finite element method}{}% 51
+\BOOKMARK [1][-]{section.4.1}{Introduction}{chapter.4}% 52
+\BOOKMARK [2][-]{subsection.4.1.1}{The lid-driven cavity flow problem}{section.4.1}% 53
+\BOOKMARK [2][-]{subsection.4.1.2}{The weak form of the steady Stokes equations}{section.4.1}% 54
+\BOOKMARK [2][-]{subsection.4.1.3}{Discretizing the weak form}{section.4.1}% 55
+\BOOKMARK [0][-]{section*.54}{Bibliography}{}% 56

@@ -276,16 +276,27 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5.4}Computing the linear system for the piecewise quadratic scheme}{48}{subsection.3.5.4}}
 \citation{sympy}
 \citation{sympy}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.5}The resulting matrix assembly algorithm}{49}{subsection.3.5.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.6}The resulting finite element algorithm}{49}{subsection.3.5.6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.7}Validation and results}{49}{subsection.3.5.7}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces  Python code to compute the closed form expressions required when forming the linear system. This code uses the SymPy library \cite  {sympy}. \relax }}{50}{figure.caption.50}}
 \newlabel{sympy_quadratic}{{\M@TitleReference {3.15}{ Python code to compute the closed form expressions required when forming the linear system. This code uses the SymPy library \cite  {sympy}. \relax }}{50}{ Python code to compute the closed form expressions required when forming the linear system. This code uses the SymPy library \cite {sympy}. \relax }{figure.caption.50}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces  Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{51}{figure.caption.52}}
 \newlabel{quadratic_fem_error_page}{{\M@TitleReference {3.16}{ Approximate solutions to the test problem \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {fvm_test_equation_2}\unskip \@@italiccorr )}} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }}{51}{ Approximate solutions to the test problem \eqref {fvm_test_equation_2} with varying $r$. The middle squares contain plots of the exact solution (on the left rectangle), and the approximate solution (on the right rectangle). Black is $h = 0$, and white is $h = 1$. On the right, a 3D view of the solution and mesh is shown. \relax }{figure.caption.52}{}}
-\newlabel{alg:quadratic_assembly}{{\M@TitleReference {\caption@xref {alg:quadratic_assembly}{ on input line 1593}}{Computing the linear system for the piecewise quadratic scheme}}{52}{Computing the linear system for the piecewise quadratic scheme}{algocf.caption.51}{}}
+\newlabel{alg:quadratic_assembly}{{\M@TitleReference {\caption@xref {alg:quadratic_assembly}{ on input line 1597}}{Validation and results}}{52}{Validation and results}{algocf.caption.51}{}}
 \@writefile{loa}{\contentsline {algocf}{\numberline {2}{\ignorespaces Text\relax }}{52}{algocf.2}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {4}Solving the Navier-Stokes equations}{53}{chapter.4}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {4}Solving the Stokes equations with the finite element method}{53}{chapter.4}}
 \@writefile{loa}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Introduction}{53}{section.4.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}The lid-driven cavity flow problem}{53}{subsection.4.1.1}}
+\newlabel{lid_driven_boundary_condition}{{4.1}{53}{The lid-driven cavity flow problem}{equation.4.1.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}The weak form of the steady Stokes equations}{53}{subsection.4.1.2}}
+\newlabel{steady_stokes_weak}{{4.2}{54}{The weak form of the steady Stokes equations}{equation.4.1.2}{}}
+\newlabel{steady_stokes_bilinear_form}{{4.3}{54}{The weak form of the steady Stokes equations}{equation.4.1.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}Discretizing the weak form}{54}{subsection.4.1.3}}
+\newlabel{steady_stokes_linear_system}{{4.6}{55}{Discretizing the weak form}{equation.4.1.6}{}}
 \bibcite{newton}{1}
 \bibcite{johann_bernoulli}{2}
 \bibcite{dirichlet_principle}{3}
@@ -307,7 +318,7 @@
 \bibcite{DOLFIN}{19}
 \bibcite{fenics_book}{20}
 \bibcite{fenics_tutorial}{21}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{55}{section*.54}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{57}{section*.54}}
 \bibcite{approximation_theory}{22}
 \bibcite{stam}{23}
 \bibcite{ham_fem}{24}
@@ -330,9 +341,10 @@
 \bibcite{firedrake}{41}
 \bibcite{sympy}{42}
 \bibcite{automating_fem}{43}
+\bibcite{taylor_hood_fenics}{44}
 \gdef\minted@oldcachelist{,
   default-pyg-prefix.pygstyle,
   default.pygstyle,
   44E264053836E3C280C136C5401B4798184697E0BBEB04804400AB7E25E4285F.pygtex}
-\memsetcounter{lastsheet}{56}
-\memsetcounter{lastpage}{56}
+\memsetcounter{lastsheet}{59}
+\memsetcounter{lastpage}{59}

@@ -1,19 +1,28 @@
-% 
-% \section{Solving the Stokes equations}
-% --- Lid-driven cavity flow.
-% 
-% % <<<
-% % Introduction 
-% % <<<
-% The Stokes equations \eqref{unsteady_stokes}, which are solved for a stable incompressible Navier-Stokes flow,
-% assume the Reynolds number is $Re \ll 1$ and thus convective processes are neglible in comparison to viscous processes.
-% We will begin with the steady-state form \eqref{steady_stokes}.
-% Due to this simplification, the Steady stokes equations \eqref{steady_stokes}, repeated here:
-% \begin{align*}
-%     \mu\Delta u + \rho g - \nabla p = 0,\quad \nabla\cdot u = 0,
-% \end{align*}
-% form a constrained linear equation. As we saw in section \ref{pressure_derivation}, the pressure term $p$ is a Lagrange multiplier introduced
-% with the constraint $\nabla\cdot u = 0$. We will begin by discretizing the \textit{unconstrained} steady Stokes equations,
+\section{Introduction}
+% Introduction 
+% <<<
+The Stokes equations \eqref{unsteady_stokes}, which are solved for an incompressible Navier-Stokes flow,
+assume the Reynolds number is $Re \ll 1$ and thus convective processes are neglible in comparison to viscous processes.
+We will begin with the steady-state form \eqref{steady_stokes}.
+Due to this simplification, the Steady stokes equations \eqref{steady_stokes}, repeated here:
+\begin{align*}
+    -\mu\Delta u + \nabla p = \rho g, \quad \nabla\cdot u = 0,
+\end{align*}
+form a constrained linear equation. As we saw in section \ref{pressure_derivation}, the pressure term $p$ is a Lagrange multiplier introduced
+with the constraint $\nabla\cdot u = 0$.
+\subsection{The lid-driven cavity flow problem}
+A standard test case in computational fluid dynamics is the \textit{lid-driven cavity flow} problem.
+We let the domain be is $\Omega = [-1,1]^2$ and define a Dirichlet boundary condition:
+\begin{equation}\label{lid_driven_boundary_condition}
+    \left.u\right|_\Gamma = u_\Gamma(x,y) =
+    \left\{\begin{array}{lr}
+        \left(1, 0\right)^T &\text{if $y = 1$,}\\
+        \left(0, 0\right)^T &\text{otherwise}.\\
+        \end{array}\right.
+\end{equation}
+We will use a finite element method to solve the steady Stokes flow \eqref{steady_stokes} with this domain and boundary condition.
+
+% We will begin by discretizing the \textit{unconstrained} steady Stokes equations,
 % which are a vector Poisson equation:
 % \begin{equation}\label{steady_stokes_unconstrained}
 %     -\mu\Delta u = \rho g.
@@ -32,7 +41,7 @@
 %     \quad\equiv\quad
 %     \int_\Omega -\mu\nabla u : \nabla v\,dx = \int_\Omega \rho g\cdot v\,dx.
 % \end{equation}
-% 
+
 % Noting that the left-hand-side of \eqref{steady_stokes_unconstrained_weak} is a bilinear form in $u$ and $v$, and the right-hand-side
 % is a linear functional in $\psi$, it is standard practice (ref) to write this kind of equation as
 % \begin{equation}
@@ -70,42 +79,139 @@
 % We can solve \eqref{elliptic_bilinear_form_matrix} to get a velocity field $\sum_{i=1}^n u_i\phi_i$, although in general this will not satisfy $\nabla\cdot u = 0$.
 % As some preliminary analysis, if $\Phi = \Psi$ and have the same basis functions, we have a symmetric-positive-definite system. This form of linear system is known to be stably solvable,
 % for example by the conjugate gradient method.
-% % >>>
-% \subsection{Discretizing the steady Stokes equations}\label{discretizing_steady_stokes}
-% % <<<
-% As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
-% when solving the optimization problem \eqref{stokes_flow_optimization}:
-% \begin{equation*}
-% \begin{aligned}
-% & \underset{u}{\text{minimize}}
-% & & E(u) =  \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g}\\
-% & \text{subject to}
-% & & \nabla\cdot u = 0.
-% \end{aligned}
-% \end{equation*}
-% 
-% \newcommand{\trialconstraint}{{\Psi_{\text{constraint}}}}
-% \newcommand{\testpressure}{{\Phi_{\text{pressure}}}}
-% As a first idea, we can introduce $p$ as a variable to solve for. Solving for the pressure (the ``dual variable'') simultaneously with the velocity
-% (the ``primal variable'')
-% is called a primal-dual method for the optimization \eqref{stokes_flow_optimization}, and the resulting finite element method is called \textit{mixed}.
-% Pressure then needs to be discretized, so we introduce another test space $\testpressure$.
-% To get a weak form of the steady Stokes equations \eqref{steady_stokes}, which are two equations including the constraint $\nabla\cdot u = 0$, we introduce
-% another trial space $\trialconstraint$, whose functions will be integrated against $\nabla\cdot u$. The weak form is then
-% \begin{equation*}
-% \begin{split}
-%     &\int_\om \left(\mu\Delta u + \rho g - \nabla p\right)\cdot v\,dx = 0,\\
-%     &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$},
-% \end{split}
-% \end{equation*}
-% which by integration by parts can be written as
-% \begin{equation}\label{steady_stokes_weak}
-% \begin{split}
-%     &\int_\om -\mu\nabla u : \nabla v - \left(\nabla\cdot v\right)p\,dx = \int_\om \rho g\cdot v\,dx,\\
-%     &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $v \in \Psi, q \in \trialconstraint$}.
-% \end{split}
-% \end{equation}
-% As in section \ref{discretizing_vector_poisson}, we introduce notation for the bilinear and linear forms in \eqref{steady_stokes_weak}:
+% >>>
+
+
+\subsection{The weak form of the steady Stokes equations}
+% <<<
+As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
+when solving the optimization problem \eqref{stokes_flow_optimization}:
+\begin{equation*}
+\begin{aligned}
+& \underset{u}{\text{minimize}}
+& & E(u) =  \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g}\\
+& \text{subject to}
+& & \nabla\cdot u = 0.
+\end{aligned}
+\end{equation*}
+
+\newcommand{\trialconstraint}{{\Psi_{\text{constraint}}}}
+\newcommand{\testpressure}{{\Phi_{\text{pressure}}}}
+As a first idea, we can introduce $p$ as a variable to solve for. Solving for the pressure (the ``dual variable'') simultaneously with the velocity
+(the ``primal variable'')
+is called a primal-dual method for the optimization \eqref{stokes_flow_optimization}, and the resulting finite element method is called \textit{mixed}.
+Pressure then needs to be discretized, so we introduce another test space $\testpressure$.
+To get a weak form of the steady Stokes equations \eqref{steady_stokes}, which are two equations including the constraint $\nabla\cdot u = 0$, we introduce
+another trial space $\trialconstraint$, whose functions will be integrated against $\nabla\cdot u$. The weak form is then
+\begin{equation*}
+\begin{split}
+    &\int_\om \left(-\mu\Delta u + \nabla p\right)\psi\,dx = \int_\Omega \rho g\cdot\psi\,dx,\\
+    &\int_\om \left(\nabla\cdot u\right) q\,dx = 0, \quad\text{where $\psi \in \Psi, q \in \trialconstraint$},
+\end{split}
+\end{equation*}
+which by integration by parts can be written as
+\begin{equation}\label{steady_stokes_weak}
+\begin{split}
+    &\int_\om \mu\nabla u : \nabla \psi - p\nabla\cdot \psi\,dx = \int_\om \rho g\cdot \psi\,dx,\\
+    &\int_\om -\left(\nabla\cdot u\right)q\,dx = 0, \quad\text{where $\psi \in \Psi, q \in \trialconstraint$}.
+\end{split}
+\end{equation}
+% We will be using a Bubnov--Galerkin method, so $\Psi = \Phi$ and $\Psi_{\text{constraint}} = \Phi_{\text{constraint}}$.
+To simplify notation, we can introduce the ``mixed spaces''
+\begin{align*}
+    \Phi_{\text{mixed}} = \Phi \times \Phi_{\text{constraint}}
+    \text{\quad and \quad}
+    \Psi_{\text{mixed}} = \Psi \times \Psi_{\text{constraint}}
+\end{align*}
+and, using the notation of \ref{taylor_hood_fenics}, \eqref{steady_stokes_weak} can be rewritten as
+\begin{equation}\label{steady_stokes_bilinear_form}
+    a((u, p), (\psi, q)) = L((v, q)), \quad\quad (u,p) \in \Phi_{\text{mixed}},\quad (\psi, q) \in \Psi_{\text{mixed}},
+\end{equation}
+where $a$ is a bilinear form defined by
+\begin{align*}
+    a((u, p), (\psi, q)) = \int_\Omega \nabla u : \nabla\psi - p\nabla\cdot \psi - \left(\nabla\cdot u\right)q\,dx
+\end{align*}
+and $f$ is a linear functional defined by
+\begin{align*}
+    L((v, q)) = \int_\Omega \rho g\cdot\psi\,dx.
+\end{align*}
+
+---todo: Use $H^1$, $L^2$, discretize spaces later.
+\subsection{Discretizing the weak form}
+
+In the derivations of chapter (), many of the manipulations were trivial applications of linearity and splitting of
+boundary and interior terms, and is standard in the finite element literature to define forms such as the $a$ and $L$ above.
+If we discretize to $n$ (interior) basis functions
+there are $2n$ basis functions for the mixed test and trial spaces, which are the natural choice:
+\begin{equation}
+\begin{split}
+    \Phi_{\text{mixed}} &= \text{span}\left(
+        (\phi_1, 0),\cdots,(\phi_n, 0), (0,\phi_1^p),\cdots,(0,\phi_n^p)
+    \right),\\
+    \Psi_{\text{mixed}} &= \text{span}\left(
+        (\psi_1, 0),\cdots,(\psi_n, 0), (0,\psi_1^p),\cdots,(0,\psi_n^p).
+    \right)
+\end{split}
+\end{equation}
+
+As in chapter (), we let $u$ be approximated by
+    $$\tilde{u} = \tilde{u}_\Gamma + \tilde{u}_\text{interior} = \tilde{u}_\Gamma + \sum_{i=1}^n u_i\phi_i,$$
+where $\tilde{u}_\Gamma \in \Phi^*$ approximates the Dirichlet boundary function $\left.u\right|_\Gamma = u_\Gamma$,
+and $\tilde{u}_{\text{interior}} \in \Phi$ is the ``interior variation''. A boundary condition for pressure is not given
+(---todo: Should the pressure have a Dirichlet boundary set to $0$?)
+    $$\tilde{p} = \sum_{i=1}^n p_i\phi^p_i.$$
+
+
+All we must do is plug these approximation definitions into the weak form \eqref{steady_stokes_bilinear_form}, resulting in the
+$2n \times 2n$ linear system of equations:
+\begin{equation}
+\begin{split}
+    a((\tilde{u}, \tilde{p}), (\psi_j, 0)) &= L((\psi_j, 0)), \quad j = 1,\cdots,n\\
+    a((\tilde{u}, \tilde{p}), (0, \psi^p_j)) &= L((0, \psi^p_j)), \quad j = 1,\cdots,n.
+\end{split}
+\end{equation}
+
+% The approximated pressure is $\tilde{p} \in \Phi_{\text{pressure}}$ where
+%     $$\Phi_{\text{pressure}} = \text{span}(\phi_{pi},\cdots,\phi_{pn}).$$
+% The pressure is zero on the boundary ($\left.p\right|_\Gamma = 0$), as it is only meaningful with respect to
+% integrals over interior control volumes,
+% so we have
+%     $$\tilde{p} = \sum_{i=1}^n p_i \phi_{pi}.$$
+% The velocity vector field $u$ is discretized as
+%     $$\tilde{u} =  \phi_\Gamma + \phi = \phi_\Gamma + \sum_{i=1}^n u_i\phi_i$$
+% where $\phi_\Gamma$ is the boundary approximation in $\Phi^*$, as in chapter ().
+
+We simply plug these approximation definitions into the weak form \eqref{steady_stokes_weak}, resulting in the
+linear system of equations:
+\begin{equation}\label{steady_stokes_linear_system}
+\begin{split}
+&\sum_{i=1}^n \left[u_i\int_\Omega -\mu\nabla\phi_i : \nabla\psi_j\,d\hat{x}
+        + p_i\int_{\Omega} -\psi_j \cdot \nabla\phi_{pi}\,d\hat{x}\right]
+    = \int_\Omega \rho g\cdot\psi_j
+        + \mu\nabla\phi_\Gamma :\nabla\psi_j \,d\hat{x},\\
+&\sum_{i=1}^n u_i \int_\Omega -\phi_i \cdot \nabla q_j \,d\hat{x}
+    = \int_\Omega \phi_\Gamma \cdot \nabla q_j \,d\hat{x},
+\quad\quad j=1,\cdots,n.
+\end{split}
+\end{equation}
+To simplify matters, we let the vector field test and trial spaces be direct sums of scalar function spaces:
+$$
+    \Phi^* = \Phi^*_s \oplus \Phi^*_s,
+    \quad
+    \Psi^* = \Psi^*_s \oplus \Psi^*_s,
+$$
+where the $s$ subscript denotes ``scalar''. This means
+that the first equation in \eqref{steady_stokes_linear_system} splits into
+two equations, for the $x$ and $y$ components of the velocity $u$.
+Equation \eqref{steady_stokes_linear_system} is a $3n \times 3n$ linear system which (with the right choice of test and trial spaces) will be rank $3n - 1$,
+as the pressure is defined up to a constant.
+
+% Taylor-Hood elements
+% https://fenicsproject.org/olddocs/dolfin/1.5.0/python/demo/documented/stokes-taylor-hood/python/documentation.html
+
+
+
+% We introduce notation for the bilinear and linear forms in \eqref{steady_stokes_weak}:
 % \begin{equation}
 % \begin{split}
 %     a(u, v) &\coloneqq \int_\om-\mu\nabla u : \nabla v\,dx,\quad\text{for $u \in \Phi, v \in \Psi$},\\
@@ -247,7 +353,7 @@
 % This is the standard Gramian matrix construction for projection in approximation theory \cite{approximation_theory}.
 % 
 % % >>>
-% % >>>
+% >>>
 % 
 % \section{Solving non-linear equations}
 % % <<<

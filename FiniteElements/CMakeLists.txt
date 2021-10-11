@@ -24,6 +24,7 @@ message(STATUS "cg_sandbox include: " ${cg_include_path})
 message(STATUS "mesh_processing include: " ${mp_include_path})
 
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${cg_include_path}
     ${mp_include_path}
     ${eigen3_include_path}
@@ -61,3 +62,9 @@ target_link_libraries(basis_quadratic_figure PRIVATE common)
 
 add_executable(QuadraticLaplaceSolver QuadraticLaplaceSolver.cpp)
 target_link_libraries(QuadraticLaplaceSolver PRIVATE common)
+
+add_executable(LidDrivenCavity
+    LidDrivenCavity/LidDrivenCavity.cpp
+    LidDrivenCavity/solver.cpp
+)
+target_link_libraries(LidDrivenCavity PRIVATE common)
