@@ -76,6 +76,8 @@ Solver::Solver(SurfaceGeometry &_geom) :
     source_function([](double,double)->double { return 0.0; }),
     dirichlet_boundary_function([](double,double)->double { return 0.0; })
 {
+    assert(geom->mesh.locked());
+
     num_boundary_vertices = 0;
     num_interior_vertices = 0;
     num_boundary_midpoints = 0;

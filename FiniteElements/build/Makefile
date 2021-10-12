@@ -517,30 +517,6 @@ LidDrivenCavity/LidDrivenCavity.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/LidDrivenCavity/LidDrivenCavity.cpp.s
 .PHONY : LidDrivenCavity/LidDrivenCavity.cpp.s
 
-LidDrivenCavity/solver.o: LidDrivenCavity/solver.cpp.o
-.PHONY : LidDrivenCavity/solver.o
-
-# target to build an object file
-LidDrivenCavity/solver.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/LidDrivenCavity/solver.cpp.o
-.PHONY : LidDrivenCavity/solver.cpp.o
-
-LidDrivenCavity/solver.i: LidDrivenCavity/solver.cpp.i
-.PHONY : LidDrivenCavity/solver.i
-
-# target to preprocess a source file
-LidDrivenCavity/solver.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/LidDrivenCavity/solver.cpp.i
-.PHONY : LidDrivenCavity/solver.cpp.i
-
-LidDrivenCavity/solver.s: LidDrivenCavity/solver.cpp.s
-.PHONY : LidDrivenCavity/solver.s
-
-# target to generate assembly for a file
-LidDrivenCavity/solver.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/LidDrivenCavity/solver.cpp.s
-.PHONY : LidDrivenCavity/solver.cpp.s
-
 QuadraticLaplaceSolver.o: QuadraticLaplaceSolver.cpp.o
 .PHONY : QuadraticLaplaceSolver.o
 
@@ -681,9 +657,6 @@ help:
 	@echo "... LidDrivenCavity/LidDrivenCavity.o"
 	@echo "... LidDrivenCavity/LidDrivenCavity.i"
 	@echo "... LidDrivenCavity/LidDrivenCavity.s"
-	@echo "... LidDrivenCavity/solver.o"
-	@echo "... LidDrivenCavity/solver.i"
-	@echo "... LidDrivenCavity/solver.s"
 	@echo "... QuadraticLaplaceSolver.o"
 	@echo "... QuadraticLaplaceSolver.i"
 	@echo "... QuadraticLaplaceSolver.s"

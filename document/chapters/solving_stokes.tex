@@ -119,13 +119,13 @@ which by integration by parts can be written as
 % We will be using a Bubnov--Galerkin method, so $\Psi = \Phi$ and $\Psi_{\text{constraint}} = \Phi_{\text{constraint}}$.
 To simplify notation, we can introduce the ``mixed spaces''
 \begin{align*}
-    \Phi_{\text{mixed}} = \Phi \times \Phi_{\text{constraint}}
+    \Phi^\mathcal{M} = \Phi \times \Phi_{\text{constraint}}
     \text{\quad and \quad}
-    \Psi_{\text{mixed}} = \Psi \times \Psi_{\text{constraint}}
+    \Psi^\mathcal{M} = \Psi \times \Psi_{\text{constraint}}
 \end{align*}
-and, using the notation of \ref{taylor_hood_fenics}, \eqref{steady_stokes_weak} can be rewritten as
+and, using the notation of \cite{taylor_hood_fenics}, \eqref{steady_stokes_weak} can be rewritten as
 \begin{equation}\label{steady_stokes_bilinear_form}
-    a((u, p), (\psi, q)) = L((v, q)), \quad\quad (u,p) \in \Phi_{\text{mixed}},\quad (\psi, q) \in \Psi_{\text{mixed}},
+    a((u, p), (\psi, q)) = L((v, q)), \quad\quad (u,p) \in \Phi^\mathcal{M},\quad (\psi, q) \in \Psi^\mathcal{M}
 \end{equation}
 where $a$ is a bilinear form defined by
 \begin{align*}
@@ -137,39 +137,141 @@ and $f$ is a linear functional defined by
 \end{align*}
 
 ---todo: Use $H^1$, $L^2$, discretize spaces later.
-\subsection{Discretizing the weak form}
+\subsection{Taylor-Hood mixed finite elements for the Stokes problem}
 
 In the derivations of chapter (), many of the manipulations were trivial applications of linearity and splitting of
 boundary and interior terms, and is standard in the finite element literature to define forms such as the $a$ and $L$ above.
 If we discretize to $n$ (interior) basis functions
 there are $2n$ basis functions for the mixed test and trial spaces, which are the natural choice:
-\begin{equation}
+\begin{equation}\label{mixed_space_basis_functions}
 \begin{split}
-    \Phi_{\text{mixed}} &= \text{span}\left(
+    \Phi^\mathcal{M} &= \text{span}\left(
         (\phi_1, 0),\cdots,(\phi_n, 0), (0,\phi_1^p),\cdots,(0,\phi_n^p)
     \right),\\
-    \Psi_{\text{mixed}} &= \text{span}\left(
+    \Psi^\mathcal{M} &= \text{span}\left(
         (\psi_1, 0),\cdots,(\psi_n, 0), (0,\psi_1^p),\cdots,(0,\psi_n^p).
     \right)
 \end{split}
 \end{equation}
 
+
+All we must do is plug approximations, from finite dimensional function spaces, into the weak form \eqref{steady_stokes_bilinear_form}, 
+while performing trial integrals only over the basis functions in the a finite dimensional mixed trial space, resulting in the
+linear system of equations
+\begin{equation}\label{stokes_flow_mixed_equations_1}
+\begin{split}
+    a((\tilde{u}, \tilde{p}), (\psi_j, 0)) &= L((\psi_j, 0)), \quad j = 1,\cdots,n\\
+    a((\tilde{u}, \tilde{p}), (0, \psi^p_j)) &= L((0, \psi^p_j)), \quad j = 1,\cdots,n,
+\end{split}
+\end{equation}
+We must choose the finite-dimensional spaces $\Phi,\Psi,\Phi_{\text{constraint}},$ and $\Psi_{\text{constraint}}$.
+The algorithm for the Stokes problem, with Dirichlet boundary conditions, will then consist of forming the matrix and right-hand side of
+\eqref{stokes_flow_abstract_linear_system}, then passing it to a linear solver.
+
+We will use the Bubnov--Galerkin method (letting $\Psi = \Phi$), and make a standard choice of mixed finite element space,
+    $$\Phi^\mathcal{M} = \Phi \times \Phi_{\text{constraint}} = P^2_2 \times P^1,$$
+where $P_2$ and $P_1$ denote, respectively, the piecewise quadratic and piecewise linear elements derived in chapter ().
+This mixed space is formed from the ``Taylor-Hood elements'', and is known to result in a stable method for the Stokes problem\footnote{
+While we could choose just about any spaces for the non-mixed method for the Poisson problem, which is elliptic, the Stokes flow problem
+inherently involves a Lagrange multiplier, and is known as a ``saddle point problem''. The resulting finite element matrix is hyperbolic.
+The Taylor-Hood elements satisfy the Ladyzhenskaya--Babu\v ska--Brezzi (LBB) condition, which
+is a theoretical result which guarantees that the resulting linear system for the Stokes problem will be well-conditioned.
+If we took $P^1 \times P^1$ instead, for example, this condition would not hold.
+}.
+
+So we don't have to repeat the equations for each kind of mixed trial function, as we do in \eqref{stokes_flow_mixed_equations_1}, we can use the mixed basis order \eqref{mixed_space_basis_functions} and define $\phi^\mathcal{M}_l$ to be the $l$'th mixed basis
+function in this order (e.g. $\psi^\mathcal{M}_1 = (\psi_1, 0)$ and $\psi^\mathcal{M}_{n+1} = (0, \psi^p_1)$).
+
+\begin{aside}
+\textit{A note on tensor notation for the vector field space}
+\vskip 0.1in
+
+The space $P^2_2$ here is a space of piecewise quadratic vector fields formed as $P^2_2 = P^2 \times P^2$.
+This represents the velocity field by two functions in the usual scalar quadratic space $P^2$.
+This is the simplest way to construct a finite element space of vector fields, although others (not based on a product construction) are possible.
+We define $\partial x$ and $\partial y$ to be the unit vector fields on the domain $\Omega$.
+The basis functions for $P^2_2$ are the natural choice of vector fields $\phi^\text{scalar}_1\partial x$, $\phi^\text{scalar}_1\partial y$, $\cdots$, $\phi^\text{scalar}_n\partial x$, $\phi^\text{scalar}_n\partial y$.
+However, we would like to think of the velocity coefficients as vector samples, rather than scalar coefficients
+of this array of $2n$ basis vector fields. We can do this by letting $\phi_1,\cdots,\phi_n$ be aggregates of axis-aligned vector fields:
+    $$
+        \phi_i = \begin{bmatrix}
+        \phi_{ix} \coloneqq \phi^\text{scalar}_{i}\partial x\\
+        \phi_{iy} \coloneqq \phi^\text{scalar}_{i}\partial y\end{bmatrix}.
+    $$
+We can then represent the interior variation as
+    $$\tilde{u}_\text{interior} = \sum_{i=1}^n u_i \cdot \phi_i.$$
+It is important to keep this in mind, as although this notation is natural, it may cause confusion:
+While $a$ is a bilinear form, the value $a((\phi_1, 0), \psi^\mathcal{M}_4)$, for example, is actually ``vectorized''
+into
+    $$
+        \begin{bmatrix}
+            a((\phi_{1x}, 0), \psi^\mathcal{M}_4)\\
+            a((\phi_{1y}, 0), \psi^\mathcal{M}_4)
+        \end{bmatrix}.
+    $$
+This is contracted with the vector coefficient $u^1$ to get a scalar:
+    $$
+        u^1 \cdot a((\phi_1, 0), \psi^\mathcal{M}_4)
+    = u^1_x a((\phi_{1x},0), \psi^\mathcal{M}_4)
+        + u^1_y a((\phi_{1y},0), \psi^\mathcal{M}_4).
+    $$
+\end{aside}
+
 As in chapter (), we let $u$ be approximated by
-    $$\tilde{u} = \tilde{u}_\Gamma + \tilde{u}_\text{interior} = \tilde{u}_\Gamma + \sum_{i=1}^n u_i\phi_i,$$
+    $$\tilde{u} = \tilde{u}_\Gamma + \tilde{u}_\text{interior} = \tilde{u}_\Gamma + \sum_{i=1}^n u_i\cdot \phi_i,$$
 where $\tilde{u}_\Gamma \in \Phi^*$ approximates the Dirichlet boundary function $\left.u\right|_\Gamma = u_\Gamma$,
 and $\tilde{u}_{\text{interior}} \in \Phi$ is the ``interior variation''. A boundary condition for pressure is not given
 (---todo: Should the pressure have a Dirichlet boundary set to $0$?)
     $$\tilde{p} = \sum_{i=1}^n p_i\phi^p_i.$$
 
-
-All we must do is plug these approximation definitions into the weak form \eqref{steady_stokes_bilinear_form}, resulting in the
-$2n \times 2n$ linear system of equations:
-\begin{equation}
+Now \eqref{stokes_flow_mixed_equations_1} expands to,
+rearranging constants to the right-hand side,
+\begin{equation}\label{stokes_flow_abstract_linear_system}
 \begin{split}
-    a((\tilde{u}, \tilde{p}), (\psi_j, 0)) &= L((\psi_j, 0)), \quad j = 1,\cdots,n\\
-    a((\tilde{u}, \tilde{p}), (0, \psi^p_j)) &= L((0, \psi^p_j)), \quad j = 1,\cdots,n.
+    \sum_{i=1}^n u_i\cdot a((\phi_i, 0), \psi^\mathcal{M}_l) + \sum_{i=1}^n p_ia((0, \phi_i^p), \psi^\mathcal{M}_l)
+        = L(\psi^\mathcal{M}_l) - a((\tilde{u}_\Gamma, 0), \psi^\mathcal{M}_l),\\
+    l = 1,\cdots,2n.
 \end{split}
 \end{equation}
+As explained in the note on tensor notation, the left-most summation is over contractions of $u^i$ with the ``vectorized''
+bilinear form $a$, as $\phi_i$ is an aggregate of vector fields, $\phi_i = (\phi_{ix}, \phi_{iy})^T$.
+
+The $\psi_l^\mathcal{M}$ mixed trial function ranges over all basis trial functions, \ref{mixed_space_basis_functions}.
+Suppose $\psi_l^\mathcal{M} = (\psi_1, 0)$. We have $\psi_1 = \phi_1$ (due to using Bubnov--Galerkin), which is the aggregate of vector fields defined in the note on tensor notation. Therefore this one apparent equation, with $\psi_l^\mathcal{M} = (\psi_1, 0)$ actually defines two equations,
+\begin{align*}
+    \sum_{i=1}^n u_i\cdot a((\phi_i, 0), (\psi_{1x}, 0)) + \sum_{i=1}^n p_ia((0, \phi_i^p), (\psi_{1x}))
+        = L((\psi_{1x}, 0)) - a((\tilde{u}_\Gamma, 0), (\psi_{1x}, 0)),\\
+    \sum_{i=1}^n u_i\cdot a((\phi_i, 0), (\psi_{1y}, 0)) + \sum_{i=1}^n p_ia((0, \phi_i^p), (\psi_{1y}))
+        = L((\psi_{1y}, 0)) - a((\tilde{u}_\Gamma, 0), (\psi_{1y}, 0)).
+\end{align*}
+
+Therefore equation \eqref{stokes_flow_abstract_linear_system}
+forms a $(2n + n_p) \times (2n + n_p)$ linear system (with $2n$ coefficients for the velocity, $n_p$ for the pressure).
+
+\begin{aside}
+\textit{Automation}
+\vskip 0.1in
+
+It has been very beneficial to go from the weak form of our specific Stokes problem
+\eqref{steady_stokes_weak} to the abstract form \eqref{steady_stokes_bilinear_form} in terms of the forms $a$ and $L$.
+When the approximating solutions $\tilde{u}$ and $\tilde{p}$ are plugged in, all that
+takes place is a linear expansion and rearrangement, accounting for boundary terms.
+
+It is feasible that this process could be automated, as in, we could pass a symbolic representation of the weak form
+\eqref{steady_stokes_weak}, a mesh discretizing the domain, a specification of the finite element function spaces
+(in some symbolic notation such as ``\texttt{P1 x P2\_2}''),
+and boundary conditions. This is all the data specific to our problem --- with this data, the finite element algorithm
+is fully specified, and it is a routine task to do all the expansions and rearrangements to specify the linear system,
+then to write a matrix assembly algorithm to traverse the mesh and construct this system.
+
+This in fact has been done
+\cite{fenics_book} \cite{DOLFIN} \cite{firedrake} \cite{automating_fem},
+and is an active area of research.
+
+\end{aside}
+
+
+
 
 % The approximated pressure is $\tilde{p} \in \Phi_{\text{pressure}}$ where
 %     $$\Phi_{\text{pressure}} = \text{span}(\phi_{pi},\cdots,\phi_{pn}).$$
@@ -181,30 +283,31 @@ $2n \times 2n$ linear system of equations:
 %     $$\tilde{u} =  \phi_\Gamma + \phi = \phi_\Gamma + \sum_{i=1}^n u_i\phi_i$$
 % where $\phi_\Gamma$ is the boundary approximation in $\Phi^*$, as in chapter ().
 
-We simply plug these approximation definitions into the weak form \eqref{steady_stokes_weak}, resulting in the
-linear system of equations:
-\begin{equation}\label{steady_stokes_linear_system}
-\begin{split}
-&\sum_{i=1}^n \left[u_i\int_\Omega -\mu\nabla\phi_i : \nabla\psi_j\,d\hat{x}
-        + p_i\int_{\Omega} -\psi_j \cdot \nabla\phi_{pi}\,d\hat{x}\right]
-    = \int_\Omega \rho g\cdot\psi_j
-        + \mu\nabla\phi_\Gamma :\nabla\psi_j \,d\hat{x},\\
-&\sum_{i=1}^n u_i \int_\Omega -\phi_i \cdot \nabla q_j \,d\hat{x}
-    = \int_\Omega \phi_\Gamma \cdot \nabla q_j \,d\hat{x},
-\quad\quad j=1,\cdots,n.
-\end{split}
-\end{equation}
-To simplify matters, we let the vector field test and trial spaces be direct sums of scalar function spaces:
-$$
-    \Phi^* = \Phi^*_s \oplus \Phi^*_s,
-    \quad
-    \Psi^* = \Psi^*_s \oplus \Psi^*_s,
-$$
-where the $s$ subscript denotes ``scalar''. This means
-that the first equation in \eqref{steady_stokes_linear_system} splits into
-two equations, for the $x$ and $y$ components of the velocity $u$.
-Equation \eqref{steady_stokes_linear_system} is a $3n \times 3n$ linear system which (with the right choice of test and trial spaces) will be rank $3n - 1$,
-as the pressure is defined up to a constant.
+% We simply plug these approximation definitions into the weak form \eqref{steady_stokes_weak}, resulting in the
+% linear system of equations:
+% \begin{equation}\label{steady_stokes_linear_system}
+% \begin{split}
+% &\sum_{i=1}^n \left[u_i\int_\Omega -\mu\nabla\phi_i : \nabla\psi_j\,d\hat{x}
+%         + p_i\int_{\Omega} -\psi_j \cdot \nabla\phi_{pi}\,d\hat{x}\right]
+%     = \int_\Omega \rho g\cdot\psi_j
+%         + \mu\nabla\phi_\Gamma :\nabla\psi_j \,d\hat{x},\\
+% &\sum_{i=1}^n u_i \int_\Omega -\phi_i \cdot \nabla q_j \,d\hat{x}
+%     = \int_\Omega \phi_\Gamma \cdot \nabla q_j \,d\hat{x},
+% \quad\quad j=1,\cdots,n.
+% \end{split}
+% \end{equation}
+
+% To simplify matters, we let the vector field test and trial spaces be direct sums of scalar function spaces:
+% $$
+%     \Phi^* = \Phi^*_s \oplus \Phi^*_s,
+%     \quad
+%     \Psi^* = \Psi^*_s \oplus \Psi^*_s,
+% $$
+% where the $s$ subscript denotes ``scalar''. This means
+% that the first equation in \eqref{steady_stokes_linear_system} splits into
+% two equations, for the $x$ and $y$ components of the velocity $u$.
+% Equation \eqref{steady_stokes_linear_system} is a $3n \times 3n$ linear system which (with the right choice of test and trial spaces) will be rank $3n - 1$,
+% as the pressure is defined up to a constant.
 
 % Taylor-Hood elements
 % https://fenicsproject.org/olddocs/dolfin/1.5.0/python/demo/documented/stokes-taylor-hood/python/documentation.html

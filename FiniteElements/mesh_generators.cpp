@@ -82,8 +82,6 @@ SurfaceGeometry *circle_mesh(int N, bool random)
     return geom;
 }
 
-
-
 // [-1,1]^2
 SurfaceGeometry *square_mesh(int N)
 {
@@ -115,3 +113,49 @@ SurfaceGeometry *square_mesh(int N)
     mesh->lock();
     return geom;
 }
+
+
+// Return with a data structure which can be used to access the square mesh with rectangular indexing.
+class SquareMesh
+{
+public:
+    SquareMesh(int _N) :
+        N{_N}
+    {
+        SurfaceMesh *mesh = new SurfaceMesh();
+        geom = new SurfaceGeometry(*mesh);
+        
+        vertices = std::vector<Vertex>((N+1)*(N+1));
+        // Create vertices.
+        for (int i = 0; i <= N; i++) {
+            double x = -1 + i*2.f/N;
+            for (int j = 0; j <= N; j++) {
+                double y = -1 + j*2.f/N;
+                auto v = mesh->add_vertex();
+                geom->position[v] = Eigen::Vector3f(x, 0, y);
+                vertices[i*(N+1) + j] = v;
+            }
+        }
+        // Create triangles.
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                Vertex a = vertices[i*(N+1) + j];
+                Vertex b = vertices[(i+1)*(N+1) + j];
+                Vertex c = vertices[(i+1)*(N+1) + j+1];
+                Vertex d = vertices[i*(N+1) + j+1];
+                mesh->add_triangle(a,b,d);
+                mesh->add_triangle(b,c,d);
+            }
+        }
+        mesh->lock();
+    }
+
+    inline Vertex vertex(int i, int j) {
+        return vertices[i*(N+1) + j];
+    }
+
+    SurfaceGeometry *geom;
+private:
+    int N;
+    std::vector<Vertex> vertices;
+};

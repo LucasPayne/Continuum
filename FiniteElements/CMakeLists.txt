@@ -65,6 +65,5 @@ target_link_libraries(QuadraticLaplaceSolver PRIVATE common)
 
 add_executable(LidDrivenCavity
     LidDrivenCavity/LidDrivenCavity.cpp
-    LidDrivenCavity/solver.cpp
 )
 target_link_libraries(LidDrivenCavity PRIVATE common)
