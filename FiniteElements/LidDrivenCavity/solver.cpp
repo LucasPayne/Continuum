@@ -38,7 +38,7 @@ struct Solver {
     // Solution (initializes to 0).
     //------------------------------------------------------------
     // P2 coefficients for velocity u.
-    P2Attachment<double> u;
+    P2Attachment<vec2> u;
     // P1 coefficients for pressure p.
     VertexAttachment<double> p;
 
@@ -143,8 +143,10 @@ void Solver::solve()
     auto rhs = Eigen::VectorXd(system_N);
     for (int i = 0; i < system_N; i++) rhs[i] = 0.;
     std::vector<EigenTriplet> coefficients;
+
     auto add_entry = [&](int i, int j, double value) {
         // Add the value to entry (i,j) in the resulting matrix.
+        printf("%d %d %.6f\n", i,j,value);
         coefficients.push_back(EigenTriplet(i, j, value));
     };
 
@@ -174,11 +176,13 @@ void Solver::solve()
             Edge vpp_edge = he.next().next().edge(); // contains midpoint_vpp
             auto vp_pos = geom.position[vp];
             auto vpp_pos = geom.position[vpp];
-            double C = 1.0/(4.0*geom.triangle_area(tri));
             // Triangle side vectors.
             auto K1 = v_pos - vpp_pos;
             auto K2 = vp_pos - v_pos;
             auto K3 = vpp_pos - vp_pos;
+
+            // Note: Multiplication by mu is here.
+            double C = mu * 1.0/(4.0*geom.triangle_area(tri));
 
             double val = 0.;
             // Diagonal term.
@@ -231,7 +235,6 @@ void Solver::solve()
             // Define terms.
             auto he = hes[t];
             auto tri = he.face();
-            double C = 1.0/(4.0*geom.triangle_area(tri));
             // Triangle vertices.
             auto v = he.next().tip(); // v is the opposite vertex.
             auto vp = he.vertex();
@@ -254,6 +257,9 @@ void Solver::solve()
             auto K1 = v_pos - vpp_pos;
             auto K2 = vp_pos - v_pos;
             auto K3 = vpp_pos - vp_pos;
+
+            // Note: Multiplication by mu is here.
+            double C = mu * 1.0/(4.0*geom.triangle_area(tri));
 
             double val = 0.;
             // 110, 110
@@ -314,6 +320,7 @@ void Solver::solve()
     for (auto edge : geom.mesh.edges()) {
         if (edge.on_boundary()) continue;
         int midpoint_index = midpoint_indices[edge];
+        int rhs_edge_index = num_interior_vertices + midpoint_index; // index into the RHS.
         Halfedge hes[2] = {edge.a(), edge.b()};
 
         // For the two incident triangles.
@@ -351,17 +358,23 @@ void Solver::solve()
             // Integrate psi^u at edge against phi^p at v.
             val_x = R * K1.dot(K3);
             val_y = R * K2.dot(K3);
-            insert_top_right_block(v_index, v_index, val_x, val_y);
+            if (v.on_boundary()) {
+                vec2 bv = u_boundary[v];
+                rhs[2*rhs_edge_index+0] -= bv.x() * val_x;
+                rhs[2*rhs_edge_index+1] -= bv.y() * val_y;
+            } else {
+                insert_top_right_block(rhs_edge_index, v_index, val_x, val_y);
+            }
             
             // Integrate psi^u at edge against phi^p at vp.
             val_x = R * K1.dot(K1);
             val_y = R * K2.dot(K1);
             if (vp.on_boundary()) {
                 vec2 bv = u_boundary[vp];
-                rhs[2*v_index+0] -= bv.x() * val_x;
-                rhs[2*v_index+1] -= bv.y() * val_y;
+                rhs[2*rhs_edge_index+0] -= bv.x() * val_x;
+                rhs[2*rhs_edge_index+1] -= bv.y() * val_y;
             } else {
-                insert_top_right_block(v_index, vp_index, val_x, val_y);
+                insert_top_right_block(rhs_edge_index, vp_index, val_x, val_y);
             }
             
             // Integrate psi^u at edge against phi^p at vpp.
@@ -369,24 +382,173 @@ void Solver::solve()
             val_y = R * K2.dot(K2);
             if (vpp.on_boundary()) {
                 vec2 bv = u_boundary[vpp];
-                rhs[2*v_index+0] -= bv.x() * val_x;
-                rhs[2*v_index+1] -= bv.y() * val_y;
+                rhs[2*rhs_edge_index+0] -= bv.x() * val_x;
+                rhs[2*rhs_edge_index+1] -= bv.y() * val_y;
             } else {
-                insert_top_right_block(v_index, vpp_index, val_x, val_y);
+                insert_top_right_block(rhs_edge_index, vpp_index, val_x, val_y);
             }
         }
     }
     // Construct the bottom-left block, consisting of 1x2 vectors.
     //================================================================================
+    auto insert_bottom_left_block = [&](int psi_p_index, int phi_u_index, double val_x, double val_y) {
+        add_entry(2*N_u + psi_p_index, 2*phi_u_index + 0, val_x);
+        add_entry(2*N_u + psi_p_index, 2*phi_u_index + 1, val_x);
+    };
+    // For each basis trial function psi^p ...
+    //------------------------------------------------------------
+    // The psi^p are only based on vertices.
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = vertex_indices[v]; // Global interior vertex index.
+        auto v_pos = geom.position[v];
+
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            // Define terms.
+            Face tri = he.face();
+            Vertex vp = he.next().vertex();
+            Vertex vpp = he.next().tip();
+            Edge vp_edge = he.edge(); // contains midpoint_vp
+            Edge opposite_edge = he.next().edge(); // contains opposite_midpoint
+            Edge vpp_edge = he.next().next().edge(); // contains midpoint_vpp
+            int vp_edge_index = midpoint_indices[vp_edge];
+            int opposite_edge_index = midpoint_indices[opposite_edge];
+            int vpp_edge_index = midpoint_indices[vpp_edge];
+            auto vp_pos = geom.position[vp];
+            auto vpp_pos = geom.position[vpp];
+            // Triangle side vectors.
+            auto K1 = v_pos - vpp_pos;
+            auto K2 = vp_pos - v_pos;
+            auto K3 = vpp_pos - vp_pos;
+
+            const double coeff = 1./6.; // Integral of quadratic phi_110, phi_011, phi_101 on the reference triangle.
+                                        // (integral of phi_002, phi_020, phi_200 is zero).
+            double R = coeff * 0.5/geom.triangle_area(tri);
+
+            double val_x = 0.;
+            double val_y = 0.;
+            // Integrate psi^p at v against phi^u at vp_edge.
+            val_x = R * K1.dot(K3);
+            val_y = R * K2.dot(K3);
+            if (vp_edge.on_boundary()) {
+                vec2 bv = u_boundary[vp_edge];
+                rhs[2*N_u + v_index] -= bv.x() * val_x;
+                rhs[2*N_u + v_index] -= bv.y() * val_y;
+            } else {
+                insert_bottom_left_block(v_index, num_interior_vertices + vp_edge_index, val_x, val_y);
+            }
+            // Integrate psi^p at v against phi^u at opposite_edge.
+            if (opposite_edge.on_boundary()) {
+                vec2 bv = u_boundary[opposite_edge];
+                rhs[2*N_u + v_index] -= bv.x() * val_x;
+                rhs[2*N_u + v_index] -= bv.y() * val_y;
+            } else {
+                insert_bottom_left_block(v_index, num_interior_vertices + opposite_edge_index, val_x, val_y);
+            }
+            // Integrate psi^p at v against phi^u at vpp_edge..
+            if (vpp_edge.on_boundary()) {
+                vec2 bv = u_boundary[vpp_edge];
+                rhs[2*N_u + v_index] -= bv.x() * val_x;
+                rhs[2*N_u + v_index] -= bv.y() * val_y;
+            } else {
+                insert_bottom_left_block(v_index, num_interior_vertices + vpp_edge_index, val_x, val_y);
+            }
+
+            he = he.twin().next();
+        } while (he != start);
+    }
+    
 
     // Finalize the mass matrix.
     auto mass_matrix = SparseMatrix(system_N, system_N);
     mass_matrix.setFromTriplets(coefficients.begin(), coefficients.end());
     mass_matrix.makeCompressed();
 
-    std::cout << "mass matrix:\n" << Eigen::MatrixXd(mass_matrix) << "\n";
-    printf("rhs: ");
-    for (int i = 0; i < system_N; i++) printf("%.5g, ", rhs[i]);
-    printf("\n");
+    // std::cout << "mass matrix:\n" << Eigen::MatrixXd(mass_matrix) << "\n";
+    // printf("rhs: ");
+    // for (int i = 0; i < system_N; i++) printf("%.5g, ", rhs[i]);
+    // printf("\n");
     
+    // (figure creation)
+    // Write the sparsity pattern to a PPM file.
+    #if 0
+    int num_nonzeros = 0;
+    for (int i = 0; i < system_N; i++) {
+        for (int j = 0; j < system_N; j++) {
+            if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
+                num_nonzeros += 1;
+            }
+        }
+    }
+
+    FILE *ppm_file = fopen(DATA "sparsity_pattern.ppm", "w+");
+    fprintf(ppm_file, "P3\n");
+    fprintf(ppm_file, "# %d vertices, %d triangles, %dx%d system with %d entries, %d non-zeros, fill %.4f\n",
+        geom.mesh.num_vertices(),
+        geom.mesh.num_faces(),
+        system_N, system_N,
+        system_N * system_N,
+        num_nonzeros,
+        num_nonzeros * 1.f/(system_N * system_N)
+    );
+    fprintf(ppm_file, "%d %d\n", system_N, system_N);
+    fprintf(ppm_file, "1\n");
+    for (int i = 0; i < system_N; i++) {
+        for (int j = 0; j < system_N; j++) {
+            if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
+                fprintf(ppm_file, "0 0 0 ");
+            } else {
+                fprintf(ppm_file, "1 1 1 ");
+            }
+        }
+	fprintf(ppm_file, "\n");
+    }
+    fclose(ppm_file);
+    exit(EXIT_SUCCESS);
+    #endif
+
+    /*--------------------------------------------------------------------------------
+        Solve the system.
+    --------------------------------------------------------------------------------*/
+    //--------------------------------------------------------------------------------
+    // https://eigen.tuxfamily.org/dox/classEigen_1_1SparseLU.html
+    //--------------------------------------------------------------------------------
+    Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > solver;
+    solver.analyzePattern(mass_matrix);
+    // Compute the numerical factorization 
+    solver.factorize(mass_matrix);
+    // Use the factors to solve the linear system 
+    Eigen::VectorXd up = solver.solve(rhs);
+    
+    /*--------------------------------------------------------------------------------
+    // Reassociate each coefficient (or boundary value) with the corresponding vertex or edge of the mesh.
+    --------------------------------------------------------------------------------*/
+    #if 1
+    int interior_vertex_index = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) {
+            u[v] = u_boundary[v];
+        } else {
+            u[v] = vec2(up[2*interior_vertex_index+0],
+		        up[2*interior_vertex_index+1]);
+            interior_vertex_index += 1;
+        }
+        // std::cout << u[v] << "\n";
+    }
+    int interior_midpoint_index = 0;
+    for (auto edge : geom.mesh.edges()) {
+        if (edge.on_boundary()) {
+            u[edge] = u_boundary[edge];
+        } else {
+            u[edge] = vec2(up[2*(num_interior_vertices + interior_midpoint_index) + 0],
+                           up[2*(num_interior_vertices + interior_midpoint_index) + 0]);
+            interior_midpoint_index += 1;
+        }
+        // std::cout << u[edge] << "\n";
+    }
+    // getchar();
+    #endif
 }

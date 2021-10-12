@@ -116,5 +116,15 @@ def integrate_scalar(a,b,c):
     f_dy = sym.integrate(f, (y, 0,1-x))
     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
     print("{}{}{}:".format(a,b,c), f_dy_dx.simplify().subs(-K1-K2,K3))
+print("top-right block")
 integrate_scalar(0,0,2)
 integrate_scalar(1,1,0)
+
+print("bottom-left block")
+integrate_scalar(0,0,2)
+integrate_scalar(0,2,0)
+integrate_scalar(2,0,0)
+integrate_scalar(1,1,0)
+integrate_scalar(1,0,1)
+integrate_scalar(0,1,1)
+
