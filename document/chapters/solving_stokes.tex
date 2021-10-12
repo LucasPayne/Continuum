@@ -283,19 +283,19 @@ and is an active area of research.
 %     $$\tilde{u} =  \phi_\Gamma + \phi = \phi_\Gamma + \sum_{i=1}^n u_i\phi_i$$
 % where $\phi_\Gamma$ is the boundary approximation in $\Phi^*$, as in chapter ().
 
-% We simply plug these approximation definitions into the weak form \eqref{steady_stokes_weak}, resulting in the
-% linear system of equations:
-% \begin{equation}\label{steady_stokes_linear_system}
-% \begin{split}
-% &\sum_{i=1}^n \left[u_i\int_\Omega -\mu\nabla\phi_i : \nabla\psi_j\,d\hat{x}
-%         + p_i\int_{\Omega} -\psi_j \cdot \nabla\phi_{pi}\,d\hat{x}\right]
-%     = \int_\Omega \rho g\cdot\psi_j
-%         + \mu\nabla\phi_\Gamma :\nabla\psi_j \,d\hat{x},\\
-% &\sum_{i=1}^n u_i \int_\Omega -\phi_i \cdot \nabla q_j \,d\hat{x}
-%     = \int_\Omega \phi_\Gamma \cdot \nabla q_j \,d\hat{x},
-% \quad\quad j=1,\cdots,n.
-% \end{split}
-% \end{equation}
+We simply plug these approximation definitions into the weak form \eqref{steady_stokes_weak}, resulting in the
+linear system of equations:
+\begin{equation}\label{steady_stokes_linear_system}
+\begin{split}
+&\sum_{i=1}^n \left[u_i\cdot \int_\Omega -\mu\nabla\phi_i : \nabla\psi_j\,d\hat{x}
+        + p_i\int_{\Omega} -\psi_j \cdot \nabla\phi_{pi}\,d\hat{x}\right]
+    = \int_\Omega \rho g\cdot\psi_j
+        + \mu\nabla\phi_\Gamma :\nabla\psi_j \,d\hat{x},\\
+&\sum_{i=1}^n u_i \cdot \int_\Omega -\phi_i \cdot \nabla q_j \,d\hat{x}
+    = \int_\Omega \phi_\Gamma \cdot \nabla q_j \,d\hat{x},
+\quad\quad j=1,\cdots,n.
+\end{split}
+\end{equation}
 
 % To simplify matters, we let the vector field test and trial spaces be direct sums of scalar function spaces:
 % $$

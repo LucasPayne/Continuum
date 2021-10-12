@@ -10,6 +10,7 @@ __mesh_processing
 __mesh_processing/
 __mesh_processing/*
 __mesh_processing/**/*
+FiniteElements/data/sparsity_pattern.ppm
 fem
 fem/
 fem/*

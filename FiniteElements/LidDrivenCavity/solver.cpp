@@ -564,14 +564,16 @@ if (BUILD_BOTTOM_LEFT) {
     /*--------------------------------------------------------------------------------
     // Reassociate each coefficient (or boundary value) with the corresponding vertex or edge of the mesh.
     --------------------------------------------------------------------------------*/
-    #if 1
+    // Velocity
     int interior_vertex_index = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) {
             u[v] = u_boundary[v];
+            p[v] = 0.; // Pressure boundary condition.
         } else {
             u[v] = vec2(up[2*interior_vertex_index+0],
 		        up[2*interior_vertex_index+1]);
+            p[v] = up[2*N_u + interior_vertex_index];
             interior_vertex_index += 1;
         }
         // std::cout << u[v] << "\n";
@@ -587,6 +589,4 @@ if (BUILD_BOTTOM_LEFT) {
         }
         // std::cout << u[edge] << "\n";
     }
-    // getchar();
-    #endif
 }
