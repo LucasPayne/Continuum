@@ -62,6 +62,9 @@ struct Solver {
     int num_interior_edges;
 
     SurfaceGeometry &geom;
+
+    // Misc. additions for debugging.
+    bool write_sparsity_pattern;
 };
 
 Solver::Solver(SurfaceGeometry &_geom, double _mu) :
@@ -105,6 +108,9 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
 
     // Zero-initialize the boundary function.
     set_u_boundary([](double,double) { return vec2(0.,0.); });
+    
+    // Misc. additions for debugging.
+    write_sparsity_pattern = false;
 }
 
 
@@ -123,6 +129,12 @@ void Solver::set_u_boundary(PlaneVectorField vf)
 
 void Solver::solve()
 {
+    // DEBUGGING FLAGS
+    const bool BUILD_TOP_LEFT = true;
+    const bool BUILD_TOP_RIGHT = true;
+    const bool BUILD_BOTTOM_LEFT = false;
+
+
     // u is approximated by P2 vector elements, which are trivial products of scalar P2 elements.
     // p is approximated by P1 elements.
 
@@ -150,6 +162,7 @@ void Solver::solve()
         coefficients.push_back(EigenTriplet(i, j, value));
     };
 
+if (BUILD_TOP_LEFT) {
     // Construct the top-left block, consisting of 2x2 multiples of the identity.
     //================================================================================
     auto insert_top_left_block = [&](int psi_u_index, int phi_u_index, double value) {
@@ -306,11 +319,17 @@ void Solver::solve()
             }
         }
     }
+} // end if (BUILD_TOP_LEFT)
+if (BUILD_TOP_RIGHT) {
     // Construct the top-right block, consisting of 2x1 vectors.
     //================================================================================
     auto insert_top_right_block = [&](int psi_u_index, int phi_p_index, double val_x, double val_y) {
         add_entry(2*psi_u_index+0, 2*N_u + phi_p_index, val_x);
         add_entry(2*psi_u_index+1, 2*N_u + phi_p_index, val_y);
+
+        //------------------------------------------------------------testing
+        add_entry(2*N_u + phi_p_index, 2*psi_u_index+0, val_x);
+        add_entry(2*N_u + phi_p_index, 2*psi_u_index+1, val_y);
     };
     // For each basis trial function psi^u ...
     //------------------------------------------------------------
@@ -389,6 +408,8 @@ void Solver::solve()
             }
         }
     }
+} // end if (BUILD_TOP_RIGHT)
+if (BUILD_BOTTOM_LEFT) {
     // Construct the bottom-left block, consisting of 1x2 vectors.
     //================================================================================
     auto insert_bottom_left_block = [&](int psi_p_index, int phi_u_index, double val_x, double val_y) {
@@ -460,6 +481,7 @@ void Solver::solve()
             he = he.twin().next();
         } while (he != start);
     }
+} // end if (BUILD_BOTTOM_LEFT)
     
 
     // Finalize the mass matrix.
@@ -474,41 +496,57 @@ void Solver::solve()
     
     // (figure creation)
     // Write the sparsity pattern to a PPM file.
-    #if 0
-    int num_nonzeros = 0;
-    for (int i = 0; i < system_N; i++) {
-        for (int j = 0; j < system_N; j++) {
-            if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
-                num_nonzeros += 1;
+    if (write_sparsity_pattern) {
+        int num_nonzeros = 0;
+        for (int i = 0; i < system_N; i++) {
+            for (int j = 0; j < system_N; j++) {
+                if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
+                    num_nonzeros += 1;
+                }
             }
         }
-    }
 
-    FILE *ppm_file = fopen(DATA "sparsity_pattern.ppm", "w+");
-    fprintf(ppm_file, "P3\n");
-    fprintf(ppm_file, "# %d vertices, %d triangles, %dx%d system with %d entries, %d non-zeros, fill %.4f\n",
-        geom.mesh.num_vertices(),
-        geom.mesh.num_faces(),
-        system_N, system_N,
-        system_N * system_N,
-        num_nonzeros,
-        num_nonzeros * 1.f/(system_N * system_N)
-    );
-    fprintf(ppm_file, "%d %d\n", system_N, system_N);
-    fprintf(ppm_file, "1\n");
-    for (int i = 0; i < system_N; i++) {
-        for (int j = 0; j < system_N; j++) {
-            if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
-                fprintf(ppm_file, "0 0 0 ");
-            } else {
-                fprintf(ppm_file, "1 1 1 ");
+        FILE *ppm_file = fopen(DATA "sparsity_pattern.ppm", "w+");
+        fprintf(ppm_file, "P3\n");
+        fprintf(ppm_file, "# %d vertices, %d triangles, %dx%d system with %d entries, %d non-zeros, fill %.4f\n",
+            geom.mesh.num_vertices(),
+            geom.mesh.num_faces(),
+            system_N, system_N,
+            system_N * system_N,
+            num_nonzeros,
+            num_nonzeros * 1.f/(system_N * system_N)
+        );
+        fprintf(ppm_file, "%d %d\n", system_N, system_N);
+        fprintf(ppm_file, "255\n");
+        for (int i = 0; i < system_N; i++) {
+            for (int j = 0; j < system_N; j++) {
+                if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
+                    if (fabs(mass_matrix.coeff(i, j) - mass_matrix.coeff(j, i)) <= 1e-4) {
+                        // signify when this entry is symmetric (equal to its corresponding transpose entry).
+                        fprintf(ppm_file, "255 0 0 ");
+                    } else {
+                        fprintf(ppm_file, "0 0 0 ");
+                    }
+                } else {
+                    if (i >= 2*N_u && j >= 2*N_u) {
+                        // signify the lower-right zero block.
+                        fprintf(ppm_file, "0 255 0 ");
+                    } else if (i >= 2*N_u || j >= 2*N_u) {
+                        // signify the top-right and bottom-left blocks.
+                        fprintf(ppm_file, "120 0 230 ");
+                    } else if (i >= 2*num_interior_vertices || j >= 2*num_interior_vertices) {
+                        // signify the midpoints division in the top-left block.
+                        fprintf(ppm_file, "245 245 245 ");
+                    } else {
+                        fprintf(ppm_file, "255 255 255 ");
+                    }
+                }
             }
+            fprintf(ppm_file, "\n");
         }
-	fprintf(ppm_file, "\n");
+        fclose(ppm_file);
+        exit(EXIT_SUCCESS);
     }
-    fclose(ppm_file);
-    exit(EXIT_SUCCESS);
-    #endif
 
     /*--------------------------------------------------------------------------------
         Solve the system.
@@ -544,7 +582,7 @@ void Solver::solve()
             u[edge] = u_boundary[edge];
         } else {
             u[edge] = vec2(up[2*(num_interior_vertices + interior_midpoint_index) + 0],
-                           up[2*(num_interior_vertices + interior_midpoint_index) + 0]);
+                           up[2*(num_interior_vertices + interior_midpoint_index) + 1]);
             interior_midpoint_index += 1;
         }
         // std::cout << u[edge] << "\n";

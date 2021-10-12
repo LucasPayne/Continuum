@@ -52,15 +52,17 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_P) {
             mesh_N += 1;
             recreate_solver();
-            solver->solve();
         }
         if (e.key.code == KEY_O) {
             mesh_N -= 1;
             if (mesh_N < 2) mesh_N = 2;
             recreate_solver();
-            solver->solve();
         }
         if (e.key.code == KEY_R) {
+            solver->solve();
+        }
+        if (e.key.code == KEY_T) {
+            solver->write_sparsity_pattern = true;
             solver->solve();
         }
     }
