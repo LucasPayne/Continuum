@@ -52,11 +52,13 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_P) {
             mesh_N += 1;
             recreate_solver();
+            solver->solve();
         }
         if (e.key.code == KEY_O) {
             mesh_N -= 1;
             if (mesh_N < 2) mesh_N = 2;
             recreate_solver();
+            solver->solve();
         }
         if (e.key.code == KEY_R) {
             solver->solve();
@@ -69,15 +71,29 @@ void Demo::post_render_update()
 {
     world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
 
-    // Draw boundary velocity.
+    double u_multiplier = 0.1;
+
+    auto draw_u_vec = [&](Eigen::Vector3f pos, vec2 u_val) {
+        world->graphics.paint.sphere(eigen_to_vec3(pos), 0.01, vec4(0,0,1,1));
+        world->graphics.paint.line(eigen_to_vec3(pos), eigen_to_vec3(pos) + u_multiplier*vec3(u_val.x(), 0.05, u_val.y()), 0.005, vec4(0,0,0,1));
+    };
+
+    // // Draw boundary velocity.
+    // for (auto v : geom->mesh.vertices()) {
+    //     vec3 pos = eigen_to_vec3(geom->position[v]);
+    //     vec2 vec = solver->u_boundary[v];
+    // }
+    // for (auto e : geom->mesh.edges()) {
+    //     vec3 pos = eigen_to_vec3(solver->midpoints[e]);
+    //     vec2 vec = solver->u_boundary[e];
+    //     world->graphics.paint.line(pos, pos + 0.06*vec3(vec.x(), 0, vec.y()), 0.01, vec4(1,0,0,1));
+    // }
+
+    // Draw the solution.
     for (auto v : geom->mesh.vertices()) {
-        vec3 pos = eigen_to_vec3(geom->position[v]);
-        vec2 vec = solver->u_boundary[v];
-        world->graphics.paint.line(pos, pos + 0.06*vec3(vec.x(), 0, vec.y()), 0.01, vec4(1,0,0,1));
+        draw_u_vec(geom->position[v], solver->u[v]);
     }
     for (auto e : geom->mesh.edges()) {
-        vec3 pos = eigen_to_vec3(solver->midpoints[e]);
-        vec2 vec = solver->u_boundary[e];
-        world->graphics.paint.line(pos, pos + 0.06*vec3(vec.x(), 0, vec.y()), 0.01, vec4(1,0,0,1));
+        draw_u_vec(solver->midpoints[e], solver->u[e]);
     }
 }
