@@ -12,6 +12,7 @@ struct Demo : public IBehaviour {
     Solver *solver;
 
     int mesh_N;
+    double mu;
 };
 
 
@@ -23,7 +24,7 @@ void Demo::recreate_solver()
     geom = sq_mesh.geom;
 
     if (solver != nullptr) delete solver;
-    solver = new Solver(*geom);
+    solver = new Solver(*geom, mu);
 
     // Set the lid boundary condition explicitly, on the vertex and midpoint sample points.
     // (This is to avoid possible errors at corners if the boundary condition was specified with a function.)
@@ -41,6 +42,7 @@ void Demo::recreate_solver()
 Demo::Demo()
 {
     mesh_N = 4;
+    mu = 1.0;
     recreate_solver();
 }
 
@@ -56,6 +58,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
             if (mesh_N < 2) mesh_N = 2;
             recreate_solver();
         }
+        if (e.key.code == KEY_R) {
+            solver->solve();
+        }
     }
 }
 
@@ -63,4 +68,16 @@ void Demo::keyboard_handler(KeyboardEvent e)
 void Demo::post_render_update()
 {
     world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
+
+    // Draw boundary velocity.
+    for (auto v : geom->mesh.vertices()) {
+        vec3 pos = eigen_to_vec3(geom->position[v]);
+        vec2 vec = solver->u_boundary[v];
+        world->graphics.paint.line(pos, pos + 0.06*vec3(vec.x(), 0, vec.y()), 0.01, vec4(1,0,0,1));
+    }
+    for (auto e : geom->mesh.edges()) {
+        vec3 pos = eigen_to_vec3(solver->midpoints[e]);
+        vec2 vec = solver->u_boundary[e];
+        world->graphics.paint.line(pos, pos + 0.06*vec3(vec.x(), 0, vec.y()), 0.01, vec4(1,0,0,1));
+    }
 }

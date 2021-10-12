@@ -108,4 +108,13 @@ def scalars():
 
 
 # grads()
-scalars()
+# scalars()
+
+# Computation for deriving values for Stokes flow assembly.
+def integrate_scalar(a,b,c):
+    f = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{}:".format(a,b,c), f_dy_dx.simplify().subs(-K1-K2,K3))
+integrate_scalar(0,0,2)
+integrate_scalar(1,1,0)

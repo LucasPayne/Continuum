@@ -10,8 +10,16 @@ using PlaneFunctionNL1 = std::function<double(double x, double y, double u)>; //
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using EigenTriplet = Eigen::Triplet<double>;
 
-Aspect<Camera> main_camera;
+vec3 eigen_to_vec3(Eigen::Vector3f v)
+{
+    return vec3(v.x(), v.y(), v.z());
+}
+Eigen::Vector3f vec3_to_eigen(vec3 v)
+{
+    return Eigen::Vector3f(v.x(), v.y(), v.z());
+}
 
+Aspect<Camera> main_camera;
 
 #include "LidDrivenCavity/solver.cpp"
 #include "LidDrivenCavity/demo.cpp"
