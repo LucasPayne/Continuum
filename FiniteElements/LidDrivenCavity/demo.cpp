@@ -23,28 +23,43 @@ struct Demo : public IBehaviour {
     GLShaderProgram sprite_shader;
     GLuint sprite_vao;
     bool wireframe;
+    bool vector_field;
 };
 
 
 void Demo::recreate_solver()
 {
     if (geom != nullptr) delete geom;
-    // geom = circle_mesh(mesh_N, false);
-    auto sq_mesh = SquareMesh(mesh_N);
-    geom = sq_mesh.geom;
 
-    if (solver != nullptr) delete solver;
-    solver = new Solver(*geom, mu);
+    int mesh_mode = 1;
 
-    // Set the lid boundary condition explicitly, on the vertex and midpoint sample points.
-    // (This is to avoid possible errors at corners if the boundary condition was specified with a function.)
-    for (int i = 0; i < mesh_N+1; i++) {
-        solver->u_boundary[sq_mesh.vertex(i,mesh_N)] = vec2(1,0); // x is inverted...
-    }
-    for (int i = 0; i < mesh_N; i++) {
-        auto v1 = sq_mesh.vertex(i,mesh_N);
-        auto v2 = sq_mesh.vertex(i+1,mesh_N);
-        solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(1,0);
+    if (mesh_mode == 0) {
+        // geom = circle_mesh(mesh_N, false);
+        auto sq_mesh = SquareMesh(mesh_N);
+        geom = sq_mesh.geom;
+
+        if (solver != nullptr) delete solver;
+        solver = new Solver(*geom, mu);
+
+        // Set the lid boundary condition explicitly, on the vertex and midpoint sample points.
+        // (This is to avoid possible errors at corners if the boundary condition was specified with a function.)
+        for (int i = 0; i < mesh_N+1; i++) {
+            solver->u_boundary[sq_mesh.vertex(i,mesh_N)] = vec2(1,0); // x is inverted...
+        }
+        for (int i = 0; i < mesh_N; i++) {
+            auto v1 = sq_mesh.vertex(i,mesh_N);
+            auto v2 = sq_mesh.vertex(i+1,mesh_N);
+            solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(1,0);
+        }
+    } else if (mesh_mode == 1) {
+        geom = circle_mesh(mesh_N, false);
+        if (solver != nullptr) delete solver;
+        solver = new Solver(*geom, mu);
+        solver->set_u_boundary(
+            [](double x, double y)->vec2 {
+                return vec2(1, 0);
+            }
+        );
     }
 }
 
@@ -100,6 +115,7 @@ Demo::Demo()
 
     // Plotting options
     wireframe = false;
+    vector_field = true;
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
@@ -126,24 +142,15 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_1) {
             wireframe = !wireframe;
         }
+        if (e.key.code == KEY_2) {
+            vector_field = !vector_field;
+        }
     }
 }
 
 
 void Demo::post_render_update()
 {
-    if (wireframe) {
-        world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
-    } else {
-        vec3 ps[4] = {
-            vec3(-1,0,-1),
-            vec3(1,0,-1), 
-            vec3(1,0,1), 
-            vec3(-1,0,1)
-        };
-        for (int i = 0; i < 4; i++) 
-            world->graphics.paint.line(ps[i], ps[(i+1)%4], 0.005, vec4(0,0,0,1));
-    }
 
     // // Draw boundary velocity.
     // for (auto v : geom->mesh.vertices()) {
@@ -216,8 +223,9 @@ void Demo::post_render_update()
     glDisable(GL_SCISSOR_TEST);
     glViewport(0,0,1024,1024);
     glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
-    glDisable(GL_DEPTH_TEST);
+    glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
 
     glPatchParameteri(GL_PATCH_VERTICES, 6);
     glDrawArrays(GL_PATCHES, 0, data_num_vertices);
@@ -234,21 +242,23 @@ void Demo::post_render_update()
     glDeleteBuffers(3, vbos);
     
     // Draw velocity field.
-    glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
-    auto solution_pixels = std::vector<float>(4*1024*1024);
-    glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
-    glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
-    for (int i = 0; i < 1024; i += 25) {
-        float x = -1 + i*2.f/(1024-1.f);
-        for (int j = 0; j < 1024; j += 25) {
-            float y = -1 + j*2.f/(1024-1.f);
-            float velocity_x = solution_pixels[4*(1024*j + i) + 0];
-            float velocity_y = solution_pixels[4*(1024*j + i) + 1];
-            const float mul = 0.12;
-            const float thickness = 0.005;
-            const vec4 color = vec4(0,0,0,1);
-            world->graphics.paint.sphere(vec3(x, 0.05, y), 0.0075, vec4(0,0,0,1));
-            world->graphics.paint.line(vec3(x, 0.05, y), vec3(x + mul*velocity_x, 0.05, y + mul*velocity_y), thickness, color);
+    if (vector_field) {
+        glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
+        auto solution_pixels = std::vector<float>(4*1024*1024);
+        glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
+        glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
+        for (int i = 0; i < 1024; i += 25) {
+            float x = -1 + i*2.f/(1024-1.f);
+            for (int j = 0; j < 1024; j += 25) {
+                float y = -1 + j*2.f/(1024-1.f);
+                float velocity_x = solution_pixels[4*(1024*j + i) + 0];
+                float velocity_y = solution_pixels[4*(1024*j + i) + 1];
+                const float mul = 0.12;
+                const float thickness = 0.005;
+                const vec4 color = vec4(0,0,0,1);
+                world->graphics.paint.sphere(vec3(x, 0.05, y), 0.0075, vec4(0,0,0,1));
+                world->graphics.paint.line(vec3(x, 0.05, y), vec3(x + mul*velocity_x, 0.05, y + mul*velocity_y), thickness, color);
+            }
         }
     }
 
@@ -310,4 +320,28 @@ void Demo::post_render_update()
     // glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     sprite_shader.unbind();
+
+
+    // Draw wireframe or base.
+    if (wireframe) {
+        world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
+        for (auto v : geom->mesh.vertices()) {
+            world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.0075, vec4(0.9,0.9,0.9,1));
+        }
+        for (auto e : geom->mesh.edges()) {
+            world->graphics.paint.sphere(eigen_to_vec3(solver->midpoints[e]), 0.0075, vec4(0.9,0.9,0.9,1));
+        }
+    } else {
+        // Draw boundaries.
+        for (auto start : geom->mesh.boundary_loops()) {
+            auto ps = std::vector<vec3>();
+            auto he = start;
+            do {
+                ps.push_back(eigen_to_vec3(geom->position[he.vertex()]));
+                he = he.next();
+            } while (he != start);
+	    ps.push_back(ps[0]);
+            world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
+        }
+    }
 }
