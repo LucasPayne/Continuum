@@ -1,5 +1,12 @@
 
 
+enum MeshModes {
+    MM_lid_driven_cavity,
+    MM_flow,
+    MM_trivial_disk,
+    MM_vector_poisson,
+    NUM_MESH_MODES
+};
 
 struct Demo : public IBehaviour {
     Demo();
@@ -15,7 +22,9 @@ struct Demo : public IBehaviour {
     double mu;
 
     // mesh generation options.
+    int mesh_mode;
     bool random;
+
 
     // Visualization.
     GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
@@ -34,9 +43,8 @@ void Demo::recreate_solver()
 {
     if (geom != nullptr) delete geom;
 
-    int mesh_mode = 1;
 
-    if (mesh_mode == 0) { // Lid-driven cavity.
+    if (mesh_mode == MM_lid_driven_cavity) { // Lid-driven cavity.
         // geom = circle_mesh(mesh_N, false);
         auto sq_mesh = SquareMesh(mesh_N);
         geom = sq_mesh.geom;
@@ -54,7 +62,7 @@ void Demo::recreate_solver()
             auto v2 = sq_mesh.vertex(i+1,mesh_N);
             solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(1,0);
         }
-    } else if (mesh_mode == 1) { // Axis-aligned flow on the disk.
+    } else if (mesh_mode == MM_trivial_disk) { // Axis-aligned flow on the disk.
         geom = circle_mesh(mesh_N, random);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
@@ -63,7 +71,7 @@ void Demo::recreate_solver()
                 return vec2(1, 0);
             }
         );
-    } else if (mesh_mode == 2) { // Testing the vector Poisson equation.
+    } else if (mesh_mode == MM_vector_poisson) { // Testing the vector Poisson equation.
         geom = circle_mesh(mesh_N, random);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
@@ -72,16 +80,40 @@ void Demo::recreate_solver()
                 return vec2(x*x - y*y, x*x*x - y*y*y);
             }
         );
+    } else if (mesh_mode == MM_flow) {
+        geom = circle_mesh(mesh_N, random);
+        if (solver != nullptr) delete solver;
+        solver = new Solver(*geom, mu);
+        solver->set_u_boundary(
+            [](double x, double y)->vec2 {
+                if (fabs(y) < 0.2) return vec2(1,0);
+                return vec2(0,0);
+            }
+        );
+        
+        // geom = square_mesh_with_square_hole(mesh_N);
+        // if (solver != nullptr) delete solver;
+        // solver = new Solver(*geom, mu);
+        // solver->set_u_boundary(
+        //     [](double x, double y)->vec2 {
+        //         if (x > 0.05 && x < 0.95 && y > 0.05 && y < 0.95) {
+        //             return vec2(0,0);
+        //         } else {
+        //             return vec2(1,0);
+        //         }
+        //     }
+        // );
     }
 }
 
 
 Demo::Demo()
 {
-    mesh_N = 4;
     mu = 1.0;
 
     // Mesh generation options
+    mesh_N = 4;
+    mesh_mode = 0;
     random = false;
     // Plotting options
     wireframe = false;
@@ -161,6 +193,16 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_2) {
             vector_field = !vector_field;
+        }
+        if (e.key.code == KEY_M) {
+            mesh_mode = (mesh_mode + 1) % NUM_MESH_MODES;
+            recreate_solver();
+            solver->solve();
+        }
+        if (e.key.code == KEY_9) {
+            mesh_N = 50;
+            recreate_solver();
+            solver->solve();
         }
     }
 }

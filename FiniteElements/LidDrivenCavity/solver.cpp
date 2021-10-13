@@ -358,6 +358,7 @@ if (BUILD_BOTTOM_LEFT) {
         auto he = start;
         do {
             auto tri = he.face();
+	    assert(!tri.null());
             auto vp = he.next().vertex();
             auto vpp = he.next().next().vertex();
             auto vp_pos = geom.position[vp];
@@ -370,7 +371,7 @@ if (BUILD_BOTTOM_LEFT) {
             auto edge_011 = he.next().next().edge(); // vpp to v
             auto edge_101 = he.edge(); // v to vp
             
-            double R = -0.5/geom.triangle_area(tri);
+            double R = 0.5/geom.triangle_area(tri);
 
             double val_x = 0.;
             double val_y = 0.;
@@ -386,7 +387,12 @@ if (BUILD_BOTTOM_LEFT) {
             // Integrate psi^p at v against phi^u_002.
             val_x = R * ((-1./6.)*K1.dot(K1) + (-1./6.)*K2.dot(K1));
             val_y = R * ((-1./6.)*K1.dot(K2) + (-1./6.)*K2.dot(K2));
-            insert_bottom_left_block(psi_p_index, phi_u_002_index, val_x, val_y);
+            if (v.on_boundary()) {
+                vec2 bv = u_boundary[v];
+                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
+            } else {
+                insert_bottom_left_block(psi_p_index, phi_u_002_index, val_x, val_y);
+            }
             
             // Integrate psi^p at v against phi^u_020.
             // zero
@@ -415,15 +421,16 @@ if (BUILD_BOTTOM_LEFT) {
             }
             
             // Integrate psi^p at v against phi^u_101.
-            val_x = R * ((-1./6.)*K1.dot(K1) + (1./6.)*K2.dot(K1));
-            val_y = R * ((-1./6.)*K1.dot(K2) + (1./6.)*K2.dot(K2));
+            val_x = R * ((1./6.)*K1.dot(K1) + (-1./6.)*K2.dot(K1));
+            val_y = R * ((1./6.)*K1.dot(K2) + (-1./6.)*K2.dot(K2));
             if (edge_101.on_boundary()) {
                 vec2 bv = u_boundary[edge_101];
                 rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
             } else {
                 insert_bottom_left_block(psi_p_index, phi_u_101_index, val_x, val_y);
             }
-        } while (!he.twin().null() && (he = he.twin().next()) != start);
+            he = he.twin().next();
+        } while (!he.face().null() && he != start);
     }
 } // end if (BUILD_TOP_RIGHT)
     
