@@ -132,7 +132,10 @@ void Solver::solve()
     // DEBUGGING FLAGS
     const bool BUILD_TOP_LEFT = true;
     const bool BUILD_TOP_RIGHT = true;
-    const bool BUILD_BOTTOM_LEFT = false;
+    
+    // Should be false. Can be set to true if testing the vector Poisson equation.
+    // (This makes pressure a dummy variable if the top-right and bottom-left blocks are disabled.)
+    const bool MAKE_BOTTOM_RIGHT_IDENTITY = false;
 
 
     // u is approximated by P2 vector elements, which are trivial products of scalar P2 elements.
@@ -158,9 +161,16 @@ void Solver::solve()
 
     auto add_entry = [&](int i, int j, double value) {
         // Add the value to entry (i,j) in the resulting matrix.
-        printf("%d %d %.6f\n", i,j,value);
+        // printf("%d %d %.6f\n", i,j,value);
         coefficients.push_back(EigenTriplet(i, j, value));
     };
+    
+    // TESTING: Make bottom-right an identity block.
+    if (MAKE_BOTTOM_RIGHT_IDENTITY) {
+        for (int i = 2*N_u; i < system_N; i++) {
+            add_entry(i,i, 1.);
+        }
+    }
 
 if (BUILD_TOP_LEFT) {
     // Construct the top-left block, consisting of 2x2 multiples of the identity.
@@ -327,7 +337,7 @@ if (BUILD_TOP_RIGHT) {
         add_entry(2*psi_u_index+0, 2*N_u + phi_p_index, val_x);
         add_entry(2*psi_u_index+1, 2*N_u + phi_p_index, val_y);
 
-        //------------------------------------------------------------testing
+        // Build bottom-left block as well, as it is the transpose.
         add_entry(2*N_u + phi_p_index, 2*psi_u_index+0, val_x);
         add_entry(2*N_u + phi_p_index, 2*psi_u_index+1, val_y);
     };
@@ -409,79 +419,6 @@ if (BUILD_TOP_RIGHT) {
         }
     }
 } // end if (BUILD_TOP_RIGHT)
-if (BUILD_BOTTOM_LEFT) {
-    // Construct the bottom-left block, consisting of 1x2 vectors.
-    //================================================================================
-    auto insert_bottom_left_block = [&](int psi_p_index, int phi_u_index, double val_x, double val_y) {
-        add_entry(2*N_u + psi_p_index, 2*phi_u_index + 0, val_x);
-        add_entry(2*N_u + psi_p_index, 2*phi_u_index + 1, val_x);
-    };
-    // For each basis trial function psi^p ...
-    //------------------------------------------------------------
-    // The psi^p are only based on vertices.
-    for (auto v : geom.mesh.vertices()) {
-        if (v.on_boundary()) continue;
-        int v_index = vertex_indices[v]; // Global interior vertex index.
-        auto v_pos = geom.position[v];
-
-        // For each adjacent triangle.
-        auto start = v.halfedge();
-        auto he = start;
-        do {
-            // Define terms.
-            Face tri = he.face();
-            Vertex vp = he.next().vertex();
-            Vertex vpp = he.next().tip();
-            Edge vp_edge = he.edge(); // contains midpoint_vp
-            Edge opposite_edge = he.next().edge(); // contains opposite_midpoint
-            Edge vpp_edge = he.next().next().edge(); // contains midpoint_vpp
-            int vp_edge_index = midpoint_indices[vp_edge];
-            int opposite_edge_index = midpoint_indices[opposite_edge];
-            int vpp_edge_index = midpoint_indices[vpp_edge];
-            auto vp_pos = geom.position[vp];
-            auto vpp_pos = geom.position[vpp];
-            // Triangle side vectors.
-            auto K1 = v_pos - vpp_pos;
-            auto K2 = vp_pos - v_pos;
-            auto K3 = vpp_pos - vp_pos;
-
-            const double coeff = 1./6.; // Integral of quadratic phi_110, phi_011, phi_101 on the reference triangle.
-                                        // (integral of phi_002, phi_020, phi_200 is zero).
-            double R = coeff * 0.5/geom.triangle_area(tri);
-
-            double val_x = 0.;
-            double val_y = 0.;
-            // Integrate psi^p at v against phi^u at vp_edge.
-            val_x = R * K1.dot(K3);
-            val_y = R * K2.dot(K3);
-            if (vp_edge.on_boundary()) {
-                vec2 bv = u_boundary[vp_edge];
-                rhs[2*N_u + v_index] -= bv.x() * val_x;
-                rhs[2*N_u + v_index] -= bv.y() * val_y;
-            } else {
-                insert_bottom_left_block(v_index, num_interior_vertices + vp_edge_index, val_x, val_y);
-            }
-            // Integrate psi^p at v against phi^u at opposite_edge.
-            if (opposite_edge.on_boundary()) {
-                vec2 bv = u_boundary[opposite_edge];
-                rhs[2*N_u + v_index] -= bv.x() * val_x;
-                rhs[2*N_u + v_index] -= bv.y() * val_y;
-            } else {
-                insert_bottom_left_block(v_index, num_interior_vertices + opposite_edge_index, val_x, val_y);
-            }
-            // Integrate psi^p at v against phi^u at vpp_edge..
-            if (vpp_edge.on_boundary()) {
-                vec2 bv = u_boundary[vpp_edge];
-                rhs[2*N_u + v_index] -= bv.x() * val_x;
-                rhs[2*N_u + v_index] -= bv.y() * val_y;
-            } else {
-                insert_bottom_left_block(v_index, num_interior_vertices + vpp_edge_index, val_x, val_y);
-            }
-
-            he = he.twin().next();
-        } while (he != start);
-    }
-} // end if (BUILD_BOTTOM_LEFT)
     
 
     // Finalize the mass matrix.
@@ -507,6 +444,7 @@ if (BUILD_BOTTOM_LEFT) {
         }
 
         FILE *ppm_file = fopen(DATA "sparsity_pattern.ppm", "w+");
+        const int rhs_pixel_width = std::max(3, system_N / 7);
         fprintf(ppm_file, "P3\n");
         fprintf(ppm_file, "# %d vertices, %d triangles, %dx%d system with %d entries, %d non-zeros, fill %.4f\n",
             geom.mesh.num_vertices(),
@@ -516,7 +454,7 @@ if (BUILD_BOTTOM_LEFT) {
             num_nonzeros,
             num_nonzeros * 1.f/(system_N * system_N)
         );
-        fprintf(ppm_file, "%d %d\n", system_N, system_N);
+        fprintf(ppm_file, "%d %d\n", system_N + rhs_pixel_width, system_N);
         fprintf(ppm_file, "255\n");
         for (int i = 0; i < system_N; i++) {
             for (int j = 0; j < system_N; j++) {
@@ -540,6 +478,14 @@ if (BUILD_BOTTOM_LEFT) {
                     } else {
                         fprintf(ppm_file, "255 255 255 ");
                     }
+                }
+            }
+            // Draw RHS.
+            for (int j = system_N; j < system_N + rhs_pixel_width; j++) {
+                if (fabs(rhs[i]) >= 1e-4) {
+		    fprintf(ppm_file, "0 0 0 ");
+                } else {
+		    fprintf(ppm_file, "255 255 255 ");
                 }
             }
             fprintf(ppm_file, "\n");

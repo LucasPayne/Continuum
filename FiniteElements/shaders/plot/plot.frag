@@ -14,7 +14,8 @@ void main(void)
     // color = vec4(1,0,0,1);
     // color = vec4(texture(tex, f_uv).rgb, 1);
 
-    vec3 val = texture(tex, f_uv).rgb;
+    // vec3 val = texture(tex, f_uv).rgb;
+    vec3 val = texture(tex, vec2(1-f_uv.x, f_uv.y)).rgb; // swap x
     vec2 velocity = val.rg;
     float pressure = val.b;
 

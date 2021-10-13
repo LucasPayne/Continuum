@@ -14,6 +14,9 @@ struct Demo : public IBehaviour {
     int mesh_N;
     double mu;
 
+    // mesh generation options.
+    bool random;
+
     // Visualization.
     GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
     GLuint solution_fbo; // For render-to-texture.
@@ -31,9 +34,9 @@ void Demo::recreate_solver()
 {
     if (geom != nullptr) delete geom;
 
-    int mesh_mode = 1;
+    int mesh_mode = 2;
 
-    if (mesh_mode == 0) {
+    if (mesh_mode == 0) { // Lid-driven cavity.
         // geom = circle_mesh(mesh_N, false);
         auto sq_mesh = SquareMesh(mesh_N);
         geom = sq_mesh.geom;
@@ -51,13 +54,22 @@ void Demo::recreate_solver()
             auto v2 = sq_mesh.vertex(i+1,mesh_N);
             solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(1,0);
         }
-    } else if (mesh_mode == 1) {
-        geom = circle_mesh(mesh_N, false);
+    } else if (mesh_mode == 1) { // Axis-aligned flow on the disk.
+        geom = circle_mesh(mesh_N, random);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
         solver->set_u_boundary(
             [](double x, double y)->vec2 {
                 return vec2(1, 0);
+            }
+        );
+    } else if (mesh_mode == 2) { // Testing the vector Poisson equation.
+        geom = circle_mesh(mesh_N, random);
+        if (solver != nullptr) delete solver;
+        solver = new Solver(*geom, mu);
+        solver->set_u_boundary(
+            [](double x, double y)->vec2 {
+                return vec2(x*x - y*y, x*x*x - y*y*y);
             }
         );
     }
@@ -68,6 +80,13 @@ Demo::Demo()
 {
     mesh_N = 4;
     mu = 1.0;
+
+    // Mesh generation options
+    random = false;
+    // Plotting options
+    wireframe = false;
+    vector_field = true;
+
     recreate_solver();
 
     // Visualization.
@@ -112,10 +131,6 @@ Demo::Demo()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
-
-    // Plotting options
-    wireframe = false;
-    vector_field = true;
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
@@ -133,6 +148,8 @@ void Demo::keyboard_handler(KeyboardEvent e)
             solver->solve();
         }
         if (e.key.code == KEY_R) {
+            random = !random;
+            recreate_solver();
             solver->solve();
         }
         if (e.key.code == KEY_T) {
