@@ -70,8 +70,8 @@ void CameraController::init()
     lift_speed = speed;
     key_view_speed_horizontal = 2;
     key_view_speed_vertical = 1.5;
-    azimuth = 0;
-    angle = 0;
+    // azimuth = 0;
+    // angle = 0;
     //min_angle = -M_PI/2.0 + 0.15;
     min_angle = -M_PI/2.0;
     max_angle = M_PI/2.0 - 0.15;

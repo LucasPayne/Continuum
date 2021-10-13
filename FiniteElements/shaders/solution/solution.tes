@@ -10,7 +10,7 @@ in TCS_OUT {
 out TES_OUT {
     vec3 barycentric;
     flat vec2 velocities[6];
-    flat float pressures[6];
+    float pressure;
 } tes_out;
 
 void main(void)
@@ -22,8 +22,8 @@ void main(void)
     // Pass all the solution data for this patch to the fragment shader.
     for (int i = 0; i < 6; i++) {
         tes_out.velocities[i] = tes_in[i].velocity;
-        tes_out.pressures[i] = tes_in[i].pressure;
     }
-    gl_Position = vec4(z*tes_in[0].position + x*tes_in[2].position + y*tes_in[4].position, 0,1);
+    gl_Position = vec4(x*tes_in[0].position + y*tes_in[2].position + z*tes_in[4].position, 0,1);
+    tes_out.pressure = x*tes_in[0].pressure + y*tes_in[2].pressure + z*tes_in[4].pressure;
 }
 

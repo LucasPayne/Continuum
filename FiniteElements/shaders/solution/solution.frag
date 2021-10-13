@@ -3,7 +3,7 @@
 in TES_OUT {
     vec3 barycentric;
     flat vec2 velocities[6];
-    flat float pressures[6];
+    float pressure;
 } fs_in;
 
 out vec4 color; // render-to-texture, (velocity_x, velocity_y, pressure, 1)
@@ -12,27 +12,27 @@ out vec4 color; // render-to-texture, (velocity_x, velocity_y, pressure, 1)
 // Quadratic basis functions
 float q0(in float x, in float y, in float z)
 {
-    return z - 2*z*x - 2*z*y;
+    return x - 2*x*y - 2*x*z;
 }
 float q1(in float x, in float y, in float z)
 {
-    return 4*z*x;
+    return 4*x*y;
 }
 float q2(in float x, in float y, in float z)
 {
-    return x - 2*x*y - 2*x*z;
+    return y - 2*y*z - 2*y*x;
 }
 float q3(in float x, in float y, in float z)
 {
-    return 4*x*y;
+    return 4*y*z;
 }
 float q4(in float x, in float y, in float z)
 {
-    return y - 2*y*z - 2*y*x;
+    return z - 2*z*x - 2*z*y;
 }
 float q5(in float x, in float y, in float z)
 {
-    return 4*y*z;
+    return 4*z*x;
 }
 
 void main(void)
@@ -54,11 +54,5 @@ void main(void)
     for (int i = 0; i < 6; i++) {
         velocity += q[i] * fs_in.velocities[i];
     }
-    // Evaluate pressure.
-    float pressure = 0;
-    pressure += z * fs_in.pressures[0];
-    pressure += x * fs_in.pressures[2];
-    pressure += y * fs_in.pressures[4];
-
-    color = vec4(velocity, pressure, 1);
+    color = vec4(velocity, fs_in.pressure, 1);
 }

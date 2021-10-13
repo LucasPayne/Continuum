@@ -19,6 +19,10 @@ struct Demo : public IBehaviour {
     GLuint solution_fbo; // For render-to-texture.
     GLuint solution_texture; // 3 components: r:velocity_x, g:velocity_y, b:pressure.
     GLuint solution_depth_texture; //--- Is this needed for completeness?
+    // Plotting.
+    GLShaderProgram sprite_shader;
+    GLuint sprite_vao;
+    bool wireframe;
 };
 
 
@@ -35,14 +39,12 @@ void Demo::recreate_solver()
     // Set the lid boundary condition explicitly, on the vertex and midpoint sample points.
     // (This is to avoid possible errors at corners if the boundary condition was specified with a function.)
     for (int i = 0; i < mesh_N+1; i++) {
-        solver->u_boundary[sq_mesh.vertex(i,0)] = vec2(1,0);
-        // solver->u_boundary[sq_mesh.vertex(i,0)] = vec2(0,-1);
+        solver->u_boundary[sq_mesh.vertex(i,mesh_N)] = vec2(1,0); // x is inverted...
     }
     for (int i = 0; i < mesh_N; i++) {
-        auto v1 = sq_mesh.vertex(i,0);
-        auto v2 = sq_mesh.vertex(i+1,0);
+        auto v1 = sq_mesh.vertex(i,mesh_N);
+        auto v2 = sq_mesh.vertex(i+1,mesh_N);
         solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(1,0);
-        // solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(0,-1);
     }
 }
 
@@ -59,6 +61,7 @@ Demo::Demo()
     solution_shader.add_shader(GLShader(TessEvaluationShader, SHADERS "solution/solution.tes"));
     solution_shader.add_shader(GLShader(FragmentShader, SHADERS "solution/solution.frag"));
     solution_shader.link();
+    
     // Create framebuffer for render-to-texture.
     glGenFramebuffers(1, &solution_fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
@@ -73,6 +76,30 @@ Demo::Demo()
     glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 1024, 1024, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, solution_depth_texture, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    // Plotting sprites.
+    sprite_shader.add_shader(GLShader(VertexShader, SHADERS "plot/plot.vert"));
+    sprite_shader.add_shader(GLShader(FragmentShader, SHADERS "plot/plot.frag"));
+    sprite_shader.link();
+    glGenVertexArrays(1, &sprite_vao);
+
+    GLuint sprite_vbo;
+    glGenBuffers(1, &sprite_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, sprite_vbo);
+    float sprite_uvs[2*4] = {
+        0,0, 1,0, 1,1, 0,1
+    };
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, sprite_uvs, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &sprite_vao);
+    glBindVertexArray(sprite_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, sprite_vbo);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+    // Plotting options
+    wireframe = false;
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
@@ -96,13 +123,27 @@ void Demo::keyboard_handler(KeyboardEvent e)
             solver->write_sparsity_pattern = true;
             solver->solve();
         }
+        if (e.key.code == KEY_1) {
+            wireframe = !wireframe;
+        }
     }
 }
 
 
 void Demo::post_render_update()
 {
-    world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
+    if (wireframe) {
+        world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
+    } else {
+        vec3 ps[4] = {
+            vec3(-1,0,-1),
+            vec3(1,0,-1), 
+            vec3(1,0,1), 
+            vec3(-1,0,1)
+        };
+        for (int i = 0; i < 4; i++) 
+            world->graphics.paint.line(ps[i], ps[(i+1)%4], 0.005, vec4(0,0,0,1));
+    }
 
     // // Draw boundary velocity.
     // for (auto v : geom->mesh.vertices()) {
@@ -170,6 +211,10 @@ void Demo::post_render_update()
 
     // Render to texture.
     solution_shader.bind();
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport); // save the viewport to restore after rendering sample geometry.
+    glDisable(GL_SCISSOR_TEST);
+    glViewport(0,0,1024,1024);
     glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
     glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -179,11 +224,34 @@ void Demo::post_render_update()
     glEnable(GL_DEPTH_TEST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
+    glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
     solution_shader.unbind();
 
     // Clean up.
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(3, vbos);
+    
+    // Draw velocity field.
+    glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
+    auto solution_pixels = std::vector<float>(4*1024*1024);
+    glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
+    glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
+    for (int i = 0; i < 1024; i += 25) {
+        float x = -1 + i*2.f/(1024-1.f);
+        for (int j = 0; j < 1024; j += 25) {
+            float y = -1 + j*2.f/(1024-1.f);
+            float velocity_x = solution_pixels[4*(1024*j + i) + 0];
+            float velocity_y = solution_pixels[4*(1024*j + i) + 1];
+            const float mul = 0.12;
+            const float thickness = 0.005;
+            const vec4 color = vec4(0,0,0,1);
+            world->graphics.paint.sphere(vec3(x, 0.05, y), 0.0075, vec4(0,0,0,1));
+            world->graphics.paint.line(vec3(x, 0.05, y), vec3(x + mul*velocity_x, 0.05, y + mul*velocity_y), thickness, color);
+        }
+    }
+
 
     
 
@@ -195,17 +263,51 @@ void Demo::post_render_update()
         world->graphics.paint.line(eigen_to_vec3(pos), eigen_to_vec3(pos) + u_multiplier*vec3(u_val.x(), 0.05, u_val.y()), 0.005, vec4(0,0,0,1));
     };
     // Velocity
-    for (auto v : geom->mesh.vertices()) {
-        draw_u_vec(geom->position[v], solver->u[v]);
-    }
-    for (auto e : geom->mesh.edges()) {
-        draw_u_vec(solver->midpoints[e], solver->u[e]);
-    }
+    // for (auto v : geom->mesh.vertices()) {
+    //     draw_u_vec(geom->position[v], solver->u[v]);
+    // }
+    // for (auto e : geom->mesh.edges()) {
+    //     draw_u_vec(solver->midpoints[e], solver->u[e]);
+    // }
     // Pressure
-    for (auto v : geom->mesh.vertices()) {
-        double p = solver->p[v];
-        vec4 color = vec4(p, p, p, 1);
-        world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.02, color);
-    }
+    // for (auto v : geom->mesh.vertices()) {
+    //     double p = solver->p[v];
+    //     vec4 color = vec4(p, p, p, 1);
+    //     world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.02, color);
+    // }
 
+    // Visual helper lines.
+    world->graphics.paint.line(vec3(-1,0,1+0.05), vec3(1,0,1+0.05), 0.01, vec4(0,0,1,1));
+
+    // Draw the solution texture.
+    const float asp = 0.566;
+    const float height = 1.f/3.f;
+    struct {
+        float bl_x;
+        float bl_y;
+        float tr_x;
+        float tr_y;
+    } img_datas[3] = {
+        {0,0, height*asp,height},
+        {0,height, height*asp,2*height},
+        {0,2*height, height*asp,3*height},
+    };
+    
+    sprite_shader.bind();
+    // glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, solution_texture);
+    glUniform1i(sprite_shader.uniform_location("tex"), 0);
+    glBindVertexArray(sprite_vao);
+    for (int i = 0; i < 3; i++) {
+        auto img_data = img_datas[i];
+        glUniform2f(sprite_shader.uniform_location("bottom_left"), img_data.bl_x,img_data.bl_y);
+        glUniform2f(sprite_shader.uniform_location("top_right"), img_data.tr_x, img_data.tr_y);
+        glUniform1i(sprite_shader.uniform_location("mode"), i);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    }
+    // glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+    sprite_shader.unbind();
 }
