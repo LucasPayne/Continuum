@@ -51,7 +51,8 @@ struct Solver {
     //------------------------------------------------------------
     // Flat index ordering of vertices and midpoints.
     VertexAttachment<int> vertex_indices;
-    EdgeAttachment<int> midpoint_indices;
+    VertexAttachment<int> interior_vertex_indices;
+    EdgeAttachment<int> interior_midpoint_indices;
     // Store precomputed midpoints for convenience.
     EdgeAttachment<Eigen::Vector3f> midpoints;
 
@@ -73,7 +74,8 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
     p(_geom.mesh),
     u_boundary(_geom.mesh),
     vertex_indices(_geom.mesh),
-    midpoint_indices(_geom.mesh),
+    interior_vertex_indices(_geom.mesh),
+    interior_midpoint_indices(_geom.mesh),
     midpoints(_geom.mesh),
     geom{_geom}
 {
@@ -81,21 +83,24 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
     num_interior_vertices = 0;
     num_boundary_edges = 0;
     num_interior_edges = 0;
+    int num_vertices = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) {
-            vertex_indices[v] = -1;
+            interior_vertex_indices[v] = -1;
             num_boundary_vertices += 1;
         } else {
-            vertex_indices[v] = num_interior_vertices;
+            interior_vertex_indices[v] = num_interior_vertices;
             num_interior_vertices += 1;
         }
+        vertex_indices[v] = num_vertices;
+        num_vertices += 1;
     }
     for (auto edge : geom.mesh.edges()) {
         if (edge.on_boundary()) {
-            midpoint_indices[edge] = -1;
+            interior_midpoint_indices[edge] = -1;
             num_boundary_edges += 1;
         } else {
-            midpoint_indices[edge] = num_interior_edges;
+            interior_midpoint_indices[edge] = num_interior_edges;
             num_interior_edges += 1;
         }
     }
@@ -131,7 +136,7 @@ void Solver::solve()
 {
     // DEBUGGING FLAGS
     const bool BUILD_TOP_LEFT = true;
-    const bool BUILD_TOP_RIGHT = true;
+    const bool BUILD_BOTTOM_LEFT = true;
     
     // Should be false. Can be set to true if testing the vector Poisson equation.
     // (This makes pressure a dummy variable if the top-right and bottom-left blocks are disabled.)
@@ -144,7 +149,7 @@ void Solver::solve()
     // N_u: The number of vector coefficients of u.
     int N_u = num_interior_vertices + num_interior_edges;
     // N_p: The number of coefficients of p.
-    int N_p = num_interior_vertices;
+    int N_p = geom.mesh.num_vertices();
 
     // system_N: The size of the linear system (system_N x system_N matrix).
     int system_N = 2*N_u + N_p;
@@ -184,7 +189,7 @@ if (BUILD_TOP_LEFT) {
     // For each psi^u based on a vertex.
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) continue;
-        int v_index = vertex_indices[v]; // Global interior vertex index.
+        int v_index = interior_vertex_indices[v]; // Global interior vertex index.
         auto v_pos = geom.position[v];
 
         // For each adjacent triangle.
@@ -219,7 +224,7 @@ if (BUILD_TOP_LEFT) {
                 rhs[2*v_index+0] -= bv.x() * val;
                 rhs[2*v_index+1] -= bv.y() * val;
             } else {
-                int vp_index = vertex_indices[vp];
+                int vp_index = interior_vertex_indices[vp];
                 insert_top_left_block(v_index, vp_index, val);
             }
             
@@ -230,18 +235,18 @@ if (BUILD_TOP_LEFT) {
                 rhs[2*v_index+0] -= bv.x() * val;
                 rhs[2*v_index+1] -= bv.y() * val;
             } else {
-                int vpp_index = vertex_indices[vpp];
+                int vpp_index = interior_vertex_indices[vpp];
                 insert_top_left_block(v_index, vpp_index, val);
             }
 
             // midpoint_vp contribution.
             val = (2./3.)*C*K1.dot(K3);
-            int midpoint_vp_index = midpoint_indices[vp_edge];
+            int midpoint_vp_index = interior_midpoint_indices[vp_edge];
             insert_top_left_block(v_index, num_interior_vertices + midpoint_vp_index, val);
             
             // midpoint_vpp contribution.
             val = (2./3.)*C*K2.dot(K3);
-            int midpoint_vpp_index = midpoint_indices[vpp_edge];
+            int midpoint_vpp_index = interior_midpoint_indices[vpp_edge];
             insert_top_left_block(v_index, num_interior_vertices + midpoint_vpp_index, val);
 
             he = he.twin().next();
@@ -250,7 +255,7 @@ if (BUILD_TOP_LEFT) {
     // For each psi^u based at an edge midpoint.
     for (auto edge : geom.mesh.edges()) {
         if (edge.on_boundary()) continue;
-        int midpoint_index = midpoint_indices[edge];
+        int midpoint_index = interior_midpoint_indices[edge];
         Halfedge hes[2] = {edge.a(), edge.b()};
 
         // For the two incident triangles.
@@ -262,17 +267,17 @@ if (BUILD_TOP_LEFT) {
             auto v = he.next().tip(); // v is the opposite vertex.
             auto vp = he.vertex();
             auto vpp = he.tip();
-            int v_index = vertex_indices[v];
-            int vp_index = vertex_indices[vp];
-            int vpp_index = vertex_indices[vpp];
+            int v_index = interior_vertex_indices[v];
+            int vp_index = interior_vertex_indices[vp];
+            int vpp_index = interior_vertex_indices[vpp];
             auto v_pos = geom.position[v];
             auto vp_pos = geom.position[vp];
             auto vpp_pos = geom.position[vpp];
             // Opposite triangle midpoints.
             auto midpoint_vp = he.next().next().edge();
             auto midpoint_vpp = he.next().edge();
-            auto midpoint_vp_index = midpoint_indices[midpoint_vp];
-            auto midpoint_vpp_index = midpoint_indices[midpoint_vpp];
+            auto midpoint_vp_index = interior_midpoint_indices[midpoint_vp];
+            auto midpoint_vpp_index = interior_midpoint_indices[midpoint_vpp];
             auto midpoint_vp_pos = midpoints[midpoint_vp];
             auto midpoint_vpp_pos = midpoints[midpoint_vpp];
 
@@ -330,93 +335,95 @@ if (BUILD_TOP_LEFT) {
         }
     }
 } // end if (BUILD_TOP_LEFT)
-if (BUILD_TOP_RIGHT) {
-    // Construct the top-right block, consisting of 2x1 vectors.
+if (BUILD_BOTTOM_LEFT) {
+    // Construct the bottom-left block, consisting of 1x2 vectors.
     //================================================================================
-    auto insert_top_right_block = [&](int psi_u_index, int phi_p_index, double val_x, double val_y) {
-        add_entry(2*psi_u_index+0, 2*N_u + phi_p_index, val_x);
-        add_entry(2*psi_u_index+1, 2*N_u + phi_p_index, val_y);
-
-        // Build bottom-left block as well, as it is the transpose.
-        add_entry(2*N_u + phi_p_index, 2*psi_u_index+0, val_x);
-        add_entry(2*N_u + phi_p_index, 2*psi_u_index+1, val_y);
+    auto insert_bottom_left_block = [&](int psi_p_index, int phi_u_index, double val_x, double val_y) {
+        add_entry(2*N_u + psi_p_index, 2*phi_u_index+0, val_x);
+        add_entry(2*N_u + psi_p_index, 2*phi_u_index+1, val_y);
+        // Build top-right block as well, as it is the transpose.
+        // (the top-right terms have no boundary terms to account for, so this is fine).
+        add_entry(2*phi_u_index+0, 2*N_u + psi_p_index, val_x);
+        add_entry(2*phi_u_index+1, 2*N_u + psi_p_index, val_y);
     };
     // For each basis trial function psi^u ...
     //------------------------------------------------------------
-    // For each psi^u based on a vertex.
-    //     All integrals happen to be zero.
-    // For each psi^u based at an edge midpoint.
-    for (auto edge : geom.mesh.edges()) {
-        if (edge.on_boundary()) continue;
-        int midpoint_index = midpoint_indices[edge];
-        int rhs_edge_index = num_interior_vertices + midpoint_index; // index into the RHS.
-        Halfedge hes[2] = {edge.a(), edge.b()};
+    // For each psi^p (based on a vertex)
+    for (auto v : geom.mesh.vertices()) {
+        auto v_pos = geom.position[v];
+        int psi_p_index = vertex_indices[v];
 
-        // For the two incident triangles.
-        for (int t = 0; t < 2; t++) {
-            // Define terms.
-            auto he = hes[t];
+        // For each triangle.
+        auto start = v.halfedge(); // If v is a boundary vertex, this should correspond to a triangle and be on the boundary.
+        auto he = start;
+        do {
             auto tri = he.face();
-            // Triangle vertices.
-            auto v = he.next().tip(); // v is the opposite vertex.
-            auto vp = he.vertex();
-            auto vpp = he.tip();
-            int v_index = vertex_indices[v];
-            int vp_index = vertex_indices[vp];
-            int vpp_index = vertex_indices[vpp];
-            auto v_pos = geom.position[v];
+            auto vp = he.next().vertex();
+            auto vpp = he.next().next().vertex();
             auto vp_pos = geom.position[vp];
             auto vpp_pos = geom.position[vpp];
-            // Opposite triangle midpoints.
-            auto midpoint_vp = he.next().next().edge();
-            auto midpoint_vpp = he.next().edge();
-            auto midpoint_vp_index = midpoint_indices[midpoint_vp];
-            auto midpoint_vpp_index = midpoint_indices[midpoint_vpp];
-            auto midpoint_vp_pos = midpoints[midpoint_vp];
-            auto midpoint_vpp_pos = midpoints[midpoint_vpp];
             // Triangle side vectors.
             auto K1 = v_pos - vpp_pos;
             auto K2 = vp_pos - v_pos;
             auto K3 = vpp_pos - vp_pos;
-
-            const double coeff = 1./6.; // Integral of quadratic phi_110 on the reference triangle.
-            double R = coeff * 0.5/geom.triangle_area(tri);
+            auto edge_110 = he.next().edge(); // vp to vpp
+            auto edge_011 = he.next().next().edge(); // vpp to v
+            auto edge_101 = he.edge(); // v to vp
+            
+            double R = -0.5/geom.triangle_area(tri);
 
             double val_x = 0.;
             double val_y = 0.;
-            // Integrate psi^u at edge against phi^p at v.
-            val_x = R * K1.dot(K3);
-            val_y = R * K2.dot(K3);
-            if (v.on_boundary()) {
-                vec2 bv = u_boundary[v];
-                rhs[2*rhs_edge_index+0] -= bv.x() * val_x;
-                rhs[2*rhs_edge_index+1] -= bv.y() * val_y;
+
+            int phi_u_002_index = interior_vertex_indices[v];
+            int phi_u_020_index = interior_vertex_indices[vp];
+            int phi_u_200_index = interior_vertex_indices[vpp];
+
+            int phi_u_110_index = num_interior_vertices + interior_midpoint_indices[edge_110];
+            int phi_u_011_index = num_interior_vertices + interior_midpoint_indices[edge_011];
+            int phi_u_101_index = num_interior_vertices + interior_midpoint_indices[edge_101];
+            
+            // Integrate psi^p at v against phi^u_002.
+            val_x = R * ((-1./6.)*K1.dot(K1) + (-1./6.)*K2.dot(K1));
+            val_y = R * ((-1./6.)*K1.dot(K2) + (-1./6.)*K2.dot(K2));
+            insert_bottom_left_block(psi_p_index, phi_u_002_index, val_x, val_y);
+            
+            // Integrate psi^p at v against phi^u_020.
+            // zero
+            
+            // Integrate psi^p at v against phi^u_200.
+            // zero
+            
+            // Integrate psi^p at v against phi^u_110.
+            val_x = R * ((1./6.)*K1.dot(K1) + (1./6.)*K2.dot(K1));
+            val_y = R * ((1./6.)*K1.dot(K2) + (1./6.)*K2.dot(K2));
+            if (edge_110.on_boundary()) {
+                vec2 bv = u_boundary[edge_110];
+                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
             } else {
-                insert_top_right_block(rhs_edge_index, v_index, val_x, val_y);
+                insert_bottom_left_block(psi_p_index, phi_u_110_index, val_x, val_y);
             }
             
-            // Integrate psi^u at edge against phi^p at vp.
-            val_x = R * K1.dot(K1);
-            val_y = R * K2.dot(K1);
-            if (vp.on_boundary()) {
-                vec2 bv = u_boundary[vp];
-                rhs[2*rhs_edge_index+0] -= bv.x() * val_x;
-                rhs[2*rhs_edge_index+1] -= bv.y() * val_y;
+            // Integrate psi^p at v against phi^u_011.
+            val_x = R * ((-1./6.)*K1.dot(K1) + (1./6.)*K2.dot(K1));
+            val_y = R * ((-1./6.)*K1.dot(K2) + (1./6.)*K2.dot(K2));
+            if (edge_011.on_boundary()) {
+                vec2 bv = u_boundary[edge_011];
+                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
             } else {
-                insert_top_right_block(rhs_edge_index, vp_index, val_x, val_y);
+                insert_bottom_left_block(psi_p_index, phi_u_011_index, val_x, val_y);
             }
             
-            // Integrate psi^u at edge against phi^p at vpp.
-            val_x = R * K1.dot(K2);
-            val_y = R * K2.dot(K2);
-            if (vpp.on_boundary()) {
-                vec2 bv = u_boundary[vpp];
-                rhs[2*rhs_edge_index+0] -= bv.x() * val_x;
-                rhs[2*rhs_edge_index+1] -= bv.y() * val_y;
+            // Integrate psi^p at v against phi^u_101.
+            val_x = R * ((-1./6.)*K1.dot(K1) + (1./6.)*K2.dot(K1));
+            val_y = R * ((-1./6.)*K1.dot(K2) + (1./6.)*K2.dot(K2));
+            if (edge_101.on_boundary()) {
+                vec2 bv = u_boundary[edge_101];
+                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
             } else {
-                insert_top_right_block(rhs_edge_index, vpp_index, val_x, val_y);
+                insert_bottom_left_block(psi_p_index, phi_u_101_index, val_x, val_y);
             }
-        }
+        } while (!he.twin().null() && (he = he.twin().next()) != start);
     }
 } // end if (BUILD_TOP_RIGHT)
     
@@ -512,17 +519,17 @@ if (BUILD_TOP_RIGHT) {
     --------------------------------------------------------------------------------*/
     // Velocity
     int interior_vertex_index = 0;
+    int vertex_index = 0;
     for (auto v : geom.mesh.vertices()) {
+        p[v] = up[2*N_u + vertex_index];
         if (v.on_boundary()) {
             u[v] = u_boundary[v];
-            p[v] = 0.; // Pressure boundary condition.
         } else {
             u[v] = vec2(up[2*interior_vertex_index+0],
 		        up[2*interior_vertex_index+1]);
-            p[v] = up[2*N_u + interior_vertex_index];
             interior_vertex_index += 1;
         }
-        // std::cout << u[v] << "\n";
+        vertex_index += 1;
     }
     int interior_midpoint_index = 0;
     for (auto edge : geom.mesh.edges()) {
@@ -533,6 +540,5 @@ if (BUILD_TOP_RIGHT) {
                            up[2*(num_interior_vertices + interior_midpoint_index) + 1]);
             interior_midpoint_index += 1;
         }
-        // std::cout << u[edge] << "\n";
     }
 }

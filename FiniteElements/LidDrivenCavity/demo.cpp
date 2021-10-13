@@ -34,7 +34,7 @@ void Demo::recreate_solver()
 {
     if (geom != nullptr) delete geom;
 
-    int mesh_mode = 2;
+    int mesh_mode = 1;
 
     if (mesh_mode == 0) { // Lid-driven cavity.
         // geom = circle_mesh(mesh_N, false);
