@@ -63,6 +63,9 @@ struct Solver {
     P2Attachment<vec2> u;
     // P1 coefficients for pressure p.
     VertexAttachment<double> p;
+    // Extra solution data that might be useful.
+    // P1 coefficients for divergence of velocity, div(u).
+    VertexAttachment<double> div_u;
 
     // Dirichlet boundary condition.
     P2Attachment<vec2> u_boundary;
@@ -96,6 +99,7 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
     mu{_mu},
     u(_geom.mesh),
     p(_geom.mesh),
+    div_u(_geom.mesh),
     u_boundary(_geom.mesh),
     vertex_indices(_geom.mesh),
     interior_vertex_indices(_geom.mesh),
@@ -210,6 +214,7 @@ void Solver::iterate()
     }
     // Compute the pressure gradient source term.
     Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
+    // Eigen::VectorXd rhs = velocity_laplacian_rhs;
 
     /*--------------------------------------------------------------------------------
         Solve the system for u_{n+1}.

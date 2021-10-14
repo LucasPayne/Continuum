@@ -45,6 +45,10 @@ void Solver::pressure_update()
 {
     int N_p = geom.mesh.num_vertices();
 
+    // While updating the pressure, the L2 projection of div(u) onto pressure space
+    // is computed. Store it in this vector (so div(u) can be reconstructed for debugging and visualization later).
+    auto u_div_l2_proj = Eigen::VectorXd(N_p);
+
     // Collect the current (to be previous) pressure into a vector.
     auto p_prev_vector = Eigen::VectorXd(N_p);
     int index = 0;
@@ -88,6 +92,8 @@ void Solver::pressure_update()
             he = he.twin().next();
         } while (!he.face().null() && he != start);
 
+        u_div_l2_proj[v_index] = integral;
+
         rhs[v_index] += C*integral;
     }
 
@@ -100,6 +106,14 @@ void Solver::pressure_update()
     index = 0;
     for (auto v : geom.mesh.vertices()) {
         p[v] = p_vector[index];
+        index += 1;
+    }
+
+    // Reconstruct the P1 divergence of u, then associate it to the mesh.
+    Eigen::VectorXd div_u_vector = solver.solve(u_div_l2_proj);
+    index = 0;
+    for (auto v : geom.mesh.vertices()) {
+        div_u[v] = div_u_vector[index];
         index += 1;
     }
 }

@@ -15,26 +15,35 @@ void main(void)
     // color = vec4(texture(tex, f_uv).rgb, 1);
 
     // vec3 val = texture(tex, f_uv).rgb;
-    vec3 val = texture(tex, vec2(1-f_uv.x, f_uv.y)).rgb; // swap x
+    vec4 val = texture(tex, vec2(1-f_uv.x, f_uv.y)).rgba;
     vec2 velocity = val.rg;
     float pressure = val.b;
+    float div_u = val.a;
 
     const float p_mul = 1.f;
     const float v_mul = 4.f;
+    const float div_mul = 1.f;
 
-    if (mode == 0) {
+    if (mode == 0) { // Pressure
         color = vec4(vec3(p_mul * pressure), 1);
-    } else if (mode == 1) {
+    } else if (mode == 1) { // Velocity x
         if (velocity.x < 0) {
             color = vec4(v_mul * abs(velocity.x), 0,0,1);
         } else {
             color = vec4(0,0, v_mul * abs(velocity.x), 1);
         }
-    } else if (mode == 2) {
+    } else if (mode == 2) { // Velocity y
         if (velocity.y < 0) {
             color = vec4(v_mul * abs(velocity.y), 0,0,1);
         } else {
             color = vec4(0,0, v_mul * abs(velocity.y), 1);
+        }
+    } else if (mode == 3) { // Velocity divergence
+        color = vec4(0,0, v_mul * abs(velocity.y), 1);
+        if (div_u < 0) {
+            color = vec4(div_mul*vec2(abs(div_u)),0,1);
+        } else {
+            color = vec4(0,div_mul*vec2(abs(div_u)),1);
         }
     }
 }

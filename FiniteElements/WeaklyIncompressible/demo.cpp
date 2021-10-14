@@ -233,6 +233,7 @@ void Demo::post_render_update()
     std::vector<vec2> position_data;
     std::vector<vec2> velocity_data;
     std::vector<float> pressure_data;
+    std::vector<float> div_u_data;
     // Create a 6-vertex patch per triangle.
     for (auto tri : geom->mesh.faces()) {
         auto start = tri.halfedge();
@@ -247,6 +248,8 @@ void Demo::post_render_update()
             velocity_data.push_back(solver->u[e]);
             pressure_data.push_back(solver->p[v]);
             pressure_data.push_back(0.f); // Dummy data, as there is no midpoint pressure.
+            div_u_data.push_back(solver->div_u[v]);
+            div_u_data.push_back(0.f); // Dummy data, as there is no midpoint div(u).
 
             he = he.next();
         } while (he != start);
@@ -260,20 +263,21 @@ void Demo::post_render_update()
     GLuint vao;
     glCreateVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    GLuint vbos[3]; // position, velocity, pressure
-    glGenBuffers(3, vbos);
+    GLuint vbos[4]; // position, velocity, pressure
+    glGenBuffers(4, vbos);
     struct {
         const void *data;
         size_t data_size;
         size_t gl_data_number;
         GLenum gl_data_type;
-    } data_to_upload[3] = {
+    } data_to_upload[4] = {
         {&position_data[0], sizeof(vec2), 2, GL_FLOAT}, // position
-        {&velocity_data[0], sizeof(vec2), 2, GL_FLOAT}, // velocity
-        {&pressure_data[0], sizeof(float), 1, GL_FLOAT} // pressure
+        {&velocity_data[0], sizeof(vec2), 2, GL_FLOAT}, // velocity (P2)
+        {&pressure_data[0], sizeof(float), 1, GL_FLOAT}, // pressure (P1)
+        {&div_u_data[0], sizeof(float), 1, GL_FLOAT} // divergence of velocity (P1)
     };
     // Upload the data.
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
         auto metadata = data_to_upload[i];
         glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
         glBufferData(GL_ARRAY_BUFFER, data_num_vertices * metadata.data_size, metadata.data, GL_DYNAMIC_DRAW);
@@ -327,45 +331,22 @@ void Demo::post_render_update()
         }
     }
 
-
-    
-
-
-    // Draw the solution.
-    double u_multiplier = 0.1;
-    auto draw_u_vec = [&](Eigen::Vector3f pos, vec2 u_val) {
-        // world->graphics.paint.sphere(eigen_to_vec3(pos), 0.01, vec4(0,0,1,1));
-        world->graphics.paint.line(eigen_to_vec3(pos), eigen_to_vec3(pos) + u_multiplier*vec3(u_val.x(), 0.05, u_val.y()), 0.005, vec4(0,0,0,1));
-    };
-    // Velocity
-    // for (auto v : geom->mesh.vertices()) {
-    //     draw_u_vec(geom->position[v], solver->u[v]);
-    // }
-    // for (auto e : geom->mesh.edges()) {
-    //     draw_u_vec(solver->midpoints[e], solver->u[e]);
-    // }
-    // Pressure
-    // for (auto v : geom->mesh.vertices()) {
-    //     double p = solver->p[v];
-    //     vec4 color = vec4(p, p, p, 1);
-    //     world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.02, color);
-    // }
-
     // Visual helper lines.
     world->graphics.paint.line(vec3(-1,0,1+0.05), vec3(1,0,1+0.05), 0.01, vec4(0,0,1,1));
 
     // Draw the solution texture.
     const float asp = 0.566;
-    const float height = 1.f/3.f;
+    const float height = 1.f/4.f;
     struct {
         float bl_x;
         float bl_y;
         float tr_x;
         float tr_y;
-    } img_datas[3] = {
+    } img_datas[4] = {
         {0,0, height*asp,height},
         {0,height, height*asp,2*height},
         {0,2*height, height*asp,3*height},
+        {0,3*height, height*asp,4*height},
     };
     
     sprite_shader.bind();
@@ -375,7 +356,7 @@ void Demo::post_render_update()
     glBindTexture(GL_TEXTURE_2D, solution_texture);
     glUniform1i(sprite_shader.uniform_location("tex"), 0);
     glBindVertexArray(sprite_vao);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
         auto img_data = img_datas[i];
         glUniform2f(sprite_shader.uniform_location("bottom_left"), img_data.bl_x,img_data.bl_y);
         glUniform2f(sprite_shader.uniform_location("top_right"), img_data.tr_x, img_data.tr_y);

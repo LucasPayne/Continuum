@@ -5,12 +5,14 @@ in TCS_OUT {
     vec2 position;
     vec2 velocity;
     float pressure;
+    float divergence;
 } tes_in[];
 
 out TES_OUT {
     vec3 barycentric;
     flat vec2 velocities[6];
     float pressure;
+    float divergence;
 } tes_out;
 
 void main(void)
@@ -25,5 +27,6 @@ void main(void)
     }
     gl_Position = vec4(x*tes_in[0].position + y*tes_in[2].position + z*tes_in[4].position, 0,1);
     tes_out.pressure = x*tes_in[0].pressure + y*tes_in[2].pressure + z*tes_in[4].pressure;
+    tes_out.divergence = x*tes_in[0].divergence + y*tes_in[2].divergence + z*tes_in[4].divergence;
 }
 
