@@ -42,12 +42,15 @@ struct Solver {
     // Divergence elimination parameter.
     double C;
 
+    bool solving; // When one iteration is made, some options (like setting the boundary) are locked.
     void iterate(); // Make one WI algorithm iteration.
     void velocity_laplacian_system(SparseMatrix &mass_matrix, Eigen::VectorXd &rhs);
     Eigen::VectorXd pressure_gradient_source();
     SparseMatrix compute_pressure_gramian_matrix();
     SparseMatrix pressure_gramian_matrix;
     void pressure_update();
+    SparseMatrix velocity_laplacian_matrix;
+    Eigen::VectorXd velocity_laplacian_rhs;
     
     int wi_iteration_number; // Start at n=0.
     // N_u: The number of vector coefficients of u.
@@ -100,6 +103,8 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
     midpoints(_geom.mesh),
     geom{_geom}
 {
+    solving = false;
+
     num_boundary_vertices = 0;
     num_interior_vertices = 0;
     num_boundary_edges = 0;
@@ -164,6 +169,7 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
 
 void Solver::set_u_boundary(PlaneVectorField vf)
 {
+    assert(!solving);
     for (auto v : geom.mesh.vertices()) {
         auto pos = geom.position[v];
         u_boundary[v] = vf(pos.x(), pos.z());
@@ -194,12 +200,16 @@ void Solver::set_pressure(PlaneFunction _pressure)
 
 void Solver::iterate()
 {
-    // Compute the Laplacian matrix and boundary terms.
-    SparseMatrix velocity_laplacian_matrix;
-    Eigen::VectorXd rhs;
-    velocity_laplacian_system(velocity_laplacian_matrix, rhs);
+    if (!solving) {
+        // Initialize.
+        
+        // Compute the Laplacian matrix and boundary terms.
+        velocity_laplacian_system(velocity_laplacian_matrix, velocity_laplacian_rhs);
+
+        solving = true;
+    }
     // Compute the pressure gradient source term.
-    rhs += pressure_gradient_source();
+    Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
 
     /*--------------------------------------------------------------------------------
         Solve the system for u_{n+1}.
