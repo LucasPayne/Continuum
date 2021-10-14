@@ -162,6 +162,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named WeaklyIncompressible
+
+# Build rule for target.
+WeaklyIncompressible: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 WeaklyIncompressible
+.PHONY : WeaklyIncompressible
+
+# fast build rule for target.
+WeaklyIncompressible/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/build
+.PHONY : WeaklyIncompressible/fast
+
+#=============================================================================
 # Target rules for targets named LidDrivenCavity
 
 # Build rule for target.
@@ -541,6 +554,30 @@ QuadraticLaplaceSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/QuadraticLaplaceSolver.cpp.s
 .PHONY : QuadraticLaplaceSolver.cpp.s
 
+WeaklyIncompressible/WeaklyIncompressible.o: WeaklyIncompressible/WeaklyIncompressible.cpp.o
+.PHONY : WeaklyIncompressible/WeaklyIncompressible.o
+
+# target to build an object file
+WeaklyIncompressible/WeaklyIncompressible.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.o
+.PHONY : WeaklyIncompressible/WeaklyIncompressible.cpp.o
+
+WeaklyIncompressible/WeaklyIncompressible.i: WeaklyIncompressible/WeaklyIncompressible.cpp.i
+.PHONY : WeaklyIncompressible/WeaklyIncompressible.i
+
+# target to preprocess a source file
+WeaklyIncompressible/WeaklyIncompressible.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.i
+.PHONY : WeaklyIncompressible/WeaklyIncompressible.cpp.i
+
+WeaklyIncompressible/WeaklyIncompressible.s: WeaklyIncompressible/WeaklyIncompressible.cpp.s
+.PHONY : WeaklyIncompressible/WeaklyIncompressible.s
+
+# target to generate assembly for a file
+WeaklyIncompressible/WeaklyIncompressible.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.s
+.PHONY : WeaklyIncompressible/WeaklyIncompressible.cpp.s
+
 basis_quadratic_figure.o: basis_quadratic_figure.cpp.o
 .PHONY : basis_quadratic_figure.o
 
@@ -632,6 +669,7 @@ help:
 	@echo "... LaplaceSolver"
 	@echo "... LidDrivenCavity"
 	@echo "... QuadraticLaplaceSolver"
+	@echo "... WeaklyIncompressible"
 	@echo "... basic_application"
 	@echo "... basis_quadratic_figure"
 	@echo "... cg_sandbox"
@@ -660,6 +698,9 @@ help:
 	@echo "... QuadraticLaplaceSolver.o"
 	@echo "... QuadraticLaplaceSolver.i"
 	@echo "... QuadraticLaplaceSolver.s"
+	@echo "... WeaklyIncompressible/WeaklyIncompressible.o"
+	@echo "... WeaklyIncompressible/WeaklyIncompressible.i"
+	@echo "... WeaklyIncompressible/WeaklyIncompressible.s"
 	@echo "... basis_quadratic_figure.o"
 	@echo "... basis_quadratic_figure.i"
 	@echo "... basis_quadratic_figure.s"

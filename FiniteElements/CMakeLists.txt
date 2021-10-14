@@ -67,3 +67,8 @@ add_executable(LidDrivenCavity
     LidDrivenCavity/LidDrivenCavity.cpp
 )
 target_link_libraries(LidDrivenCavity PRIVATE common)
+
+add_executable(WeaklyIncompressible
+    WeaklyIncompressible/WeaklyIncompressible.cpp
+)
+target_link_libraries(WeaklyIncompressible PRIVATE common)

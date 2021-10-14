@@ -1,0 +1,62 @@
+    // For each basis trial function psi^u ...
+    //------------------------------------------------------------
+    // For each psi^u based on a vertex.
+    //     All integrals happen to be zero.
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = vertex_indices[v]; // Global interior vertex index.
+        auto v_pos = geom.position[v];
+
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            double coeff = 0.; //... all of this cancels
+            // Define terms.
+            Face tri = he.face();
+            Vertex vp = he.next().vertex();
+            Edge vp_edge = he.edge(); // contains midpoint_vp
+            Vertex vpp = he.next().tip();
+            Edge vpp_edge = he.next().next().edge(); // contains midpoint_vpp
+            auto vp_pos = geom.position[vp];
+            auto vpp_pos = geom.position[vpp];
+            int vp_index = vertex_indices[vp];
+            int vpp_index = vertex_indices[vpp];
+            // Triangle side vectors.
+            auto K1 = v_pos - vpp_pos;
+            auto K2 = vp_pos - v_pos;
+            auto K3 = vpp_pos - vp_pos;
+
+            double R = 0.5/geom.triangle_area(tri);
+
+            double val_x = 0.;
+            double val_y = 0.;
+            // Integrate psi^u at v against phi^p at v.
+            val_x = coeff * R * K1.dot(K3);
+            val_y = coeff * R * K2.dot(K3);
+            insert_top_right_block(v_index, v_index, val_x, val_y);
+
+            // Integrate psi^u at v against phi^p at vp.
+            val_x = coeff * R * K1.dot(K1);
+            val_y = coeff * R * K2.dot(K1);
+            if (vp.on_boundary()) {
+                vec2 bv = u_boundary[vp];
+                rhs[2*v_index+0] -= bv.x() * val_x;
+                rhs[2*v_index+1] -= bv.y() * val_y;
+            } else {
+                insert_top_right_block(v_index, vp_index, val_x, val_y);
+            }
+            
+            // Integrate psi^u at v against phi^p at vpp.
+            val_x = coeff * R * K1.dot(K2);
+            val_y = cofff * R * K2.dot(K2);
+            if (vpp.on_boundary()) {
+                vec2 bv = u_boundary[vpp];
+                rhs[2*v_index+0] -= bv.x() * val_x;
+                rhs[2*v_index+1] -= bv.y() * val_y;
+            } else {
+                insert_top_right_block(v_index, vpp_index, val_x, val_y);
+            }
+            he = he.twin().next();
+        } while (he != start);
+    }
