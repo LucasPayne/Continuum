@@ -165,9 +165,22 @@ def integrate_scalar(a,b,c):
 
 print("vertex")
 integrate_scalar(0,0,2)
-integrate_scalar(0,0,2)
-integrate_scalar(0,0,2)
+integrate_scalar(2,0,0)
+integrate_scalar(0,2,0)
 print("midpoint")
 integrate_scalar(1,1,0)
-integrate_scalar(1,1,0)
-integrate_scalar(1,1,0)
+integrate_scalar(0,1,1)
+integrate_scalar(1,0,1)
+
+
+print("gramian")
+def gramian_integrate(i,j):
+    phi_i = pressure_basis_functions[i]
+    psi_j = pressure_basis_functions[j]
+    f = phi_i * psi_j
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{},{}: {}".format(i,j,f_dy_dx))
+gramian_integrate(0,0)
+gramian_integrate(0,1)
+gramian_integrate(0,2)

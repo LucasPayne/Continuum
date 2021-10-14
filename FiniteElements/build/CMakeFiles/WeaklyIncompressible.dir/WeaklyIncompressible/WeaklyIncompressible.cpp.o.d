@@ -498,4 +498,5 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h \
   /home/lucas/Continuum/FiniteElements/mesh_generators.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/solver.cpp \
+  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/sparsity_pattern.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/demo.cpp

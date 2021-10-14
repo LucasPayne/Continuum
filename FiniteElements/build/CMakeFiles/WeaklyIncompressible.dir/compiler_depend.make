@@ -516,6 +516,7 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h \
   ../mesh_generators.cpp \
   ../WeaklyIncompressible/solver.cpp \
+  ../WeaklyIncompressible/sparsity_pattern.cpp \
   ../WeaklyIncompressible/demo.cpp
 
 
@@ -1010,6 +1011,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 /usr/include/eigen3/Eigen/src/plugins/CommonCwiseUnaryOps.h:
 
 /usr/include/c++/8/bits/nested_exception.h:
+
+../WeaklyIncompressible/sparsity_pattern.cpp:
 
 /usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector.h:
 
