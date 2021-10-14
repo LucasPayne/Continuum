@@ -117,21 +117,57 @@ pressure_basis_functions = [
     y
 ] # v, v', v''
 
-def integrate_scalar(psi_p_index, phi_u_i, phi_u_j, phi_u_k):
-    for velocity_component in [x,y]:
-        psi_p = pressure_basis_functions[psi_p_index]
-        phi_u = nodal_basis_functions[barycentric_index_to_linear(phi_u_i, phi_u_j, phi_u_k)]
-        diff_phi_u = sym.diff(phi_u, velocity_component)
-        f = psi_p * diff_phi_u
-        f_dy = sym.integrate(f, (y, 0,1-x))
-        f_dy_dx = sym.integrate(f_dy, (x, 0,1))
-        print("{}, v{}, {}{}{}: {}".format(velocity_component, '\''*psi_p_index, phi_u_i,phi_u_j,phi_u_k, f_dy_dx))
+# def integrate_scalar(psi_p_index, phi_u_i, phi_u_j, phi_u_k):
+#     for velocity_component in [x,y]:
+#         psi_p = pressure_basis_functions[psi_p_index]
+#         phi_u = nodal_basis_functions[barycentric_index_to_linear(phi_u_i, phi_u_j, phi_u_k)]
+#         diff_phi_u = sym.diff(phi_u, velocity_component)
+#         f = psi_p * diff_phi_u
+#         f_dy = sym.integrate(f, (y, 0,1-x))
+#         f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#         print("{}, v{}, {}{}{}: {}".format(velocity_component, '\''*psi_p_index, phi_u_i,phi_u_j,phi_u_k, f_dy_dx))
+# 
+# print("vertex")
+# integrate_scalar(0, 0,0,2)
+# integrate_scalar(0, 2,0,0)
+# integrate_scalar(0, 0,2,0)
+# print("midpoint")
+# integrate_scalar(0, 1,1,0)
+# integrate_scalar(0, 0,1,1)
+# integrate_scalar(0, 1,0,1)
+
+
+
+# def integrate_scalar(a,b,c,  phi_p_index):
+#     for velocity_component in [x,y]:
+#         psi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+#         phi_p = pressure_basis_functions[phi_p_index]
+#         diff_phi_p = sym.diff(phi_p, velocity_component)
+#         f = diff_phi_p * psi_u
+#         f_dy = sym.integrate(f, (y, 0,1-x))
+#         f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#         print("{}, {}{}{}, {}: {}".format(velocity_component, a,b,c, phi_p_index, f_dy_dx))
+# 
+# print("vertex")
+# integrate_scalar(0,0,2, 0)
+# integrate_scalar(0,0,2, 1)
+# integrate_scalar(0,0,2, 2)
+# print("midpoint")
+# integrate_scalar(1,1,0, 0)
+# integrate_scalar(1,1,0, 1)
+# integrate_scalar(1,1,0, 2)
+
+def integrate_scalar(a,b,c):
+    f = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{}, {}".format(a,b,c, f_dy_dx))
 
 print("vertex")
-integrate_scalar(0, 0,0,2)
-integrate_scalar(0, 2,0,0)
-integrate_scalar(0, 0,2,0)
+integrate_scalar(0,0,2)
+integrate_scalar(0,0,2)
+integrate_scalar(0,0,2)
 print("midpoint")
-integrate_scalar(0, 1,1,0)
-integrate_scalar(0, 0,1,1)
-integrate_scalar(0, 1,0,1)
+integrate_scalar(1,1,0)
+integrate_scalar(1,1,0)
+integrate_scalar(1,1,0)
