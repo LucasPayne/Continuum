@@ -144,7 +144,7 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
 
 
 
-    set_pressure([](double x,double y) { return 0.5*(x+1); });
+    set_pressure([](double x,double y) { return 0.5*(x+1) + 0.5*(y+1); });
 }
 
 
@@ -251,37 +251,32 @@ Eigen::VectorXd Solver::pressure_gradient_source()
             vec2 K1 = vec2_extract(v_pos - vpp_pos);
             vec2 K2 = vec2_extract(vp_pos - v_pos);
             vec2 K3 = vec2_extract(vpp_pos - vp_pos);
-            double R = -0.5/geom.triangle_area(tri);
+            //double R = -1./(12*geom.triangle_area(tri));
+            double R = 1./(12*geom.triangle_area(tri)); // ?
 
             printf("pressure: %.6f %.6f %.6f\n", p[v], p[vp], p[vpp]);
 
             vec2 val_v = vec2(0.,0.);
             // Integrate psi_u at edge_110 against phi_p at 002 (v).
-            val_v = p[v] * R * ((-1./6.)*K1 + (-1./6.)*K2);
+            val_v = p[v] * R * K3.perp();
             std::cout << "phi_p v " << val_v << "\n";
-            printf("x, y %.6f %.6f\n", vec2::dot(val_v, K1), vec2::dot(val_v, K2));
-            integral_x += vec2::dot(val_v, K1);
-            integral_y += vec2::dot(val_v, K2);
+            integral_x += val_v.x();
+            integral_y += val_v.y();
             printf("integral: %.6f %.6f\n", integral_x, integral_y);
-            getchar();
 
             // Integrate psi_u at edge_110 against phi_p at 200 (vp).
-            val_v = p[vp] * R * ((1./6.)*K1);
+            val_v = p[vp] * R * K1.perp();
             std::cout << "phi_p vp " << val_v << "\n";
-            printf("x, y %.6f %.6f\n", vec2::dot(val_v, K1), vec2::dot(val_v, K2));
-            integral_x += vec2::dot(val_v, K1);
-            integral_y += vec2::dot(val_v, K2);
+            integral_x += val_v.x();
+            integral_y += val_v.y();
             printf("integral: %.6f %.6f\n", integral_x, integral_y);
-            getchar();
             
             // Integrate psi_u at edge_110 against phi_p at 002 (vpp).
-            val_v = p[vpp] * R * ((1./6.)*K2);
+            val_v = p[vpp] * R * K2.perp();
             std::cout << "phi_p_vpp" << val_v << "\n";
-            printf("x, y %.6f %.6f\n", vec2::dot(val_v, K1), vec2::dot(val_v, K2));
-            integral_x += vec2::dot(val_v, K1);
-            integral_y += vec2::dot(val_v, K2);
+            integral_x += val_v.x();
+            integral_y += val_v.y();
             printf("integral: %.6f %.6f\n", integral_x, integral_y);
-            getchar();
         }
         int index = num_interior_vertices + interior_midpoint_indices[edge];
         printf("integral x,y %.6f %.6f\n", integral_x, integral_y);
