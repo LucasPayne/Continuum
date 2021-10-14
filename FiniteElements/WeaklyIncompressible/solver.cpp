@@ -213,8 +213,8 @@ void Solver::iterate()
         solving = true;
     }
     // Compute the pressure gradient source term.
-    Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
-    // Eigen::VectorXd rhs = velocity_laplacian_rhs;
+    // Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
+    Eigen::VectorXd rhs = velocity_laplacian_rhs;
 
     /*--------------------------------------------------------------------------------
         Solve the system for u_{n+1}.
