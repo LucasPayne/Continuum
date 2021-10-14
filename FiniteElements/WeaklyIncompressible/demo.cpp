@@ -25,6 +25,7 @@ struct Demo : public IBehaviour {
     int mesh_mode;
     bool random;
 
+    bool flow_mode;
 
     // Visualization.
     GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
@@ -110,6 +111,7 @@ void Demo::recreate_solver()
 Demo::Demo()
 {
     mu = 1.0;
+    flow_mode = false;
 
     // Mesh generation options
     mesh_N = 4;
@@ -201,6 +203,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_I) {
             solver->iterate();
         }
+        if (e.key.code == KEY_U) {
+            flow_mode = !flow_mode;
+        }
     }
 }
 
@@ -218,7 +223,11 @@ void Demo::post_render_update()
     //     vec2 vec = solver->u_boundary[e];
     //     world->graphics.paint.line(pos, pos + 0.06*vec3(vec.x(), 0, vec.y()), 0.01, vec4(1,0,0,1));
     // }
-
+    
+    if (flow_mode) {
+        solver->C = 0.05*dt;
+        solver->iterate();
+    }
 
     // Render the solution textures.
     std::vector<vec2> position_data;

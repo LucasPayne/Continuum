@@ -499,4 +499,7 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   /home/lucas/Continuum/FiniteElements/mesh_generators.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/solver.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/sparsity_pattern.cpp \
+  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/pressure_gradient_source.cpp \
+  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/pressure_update.cpp \
+  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/velocity_laplacian_system.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/demo.cpp

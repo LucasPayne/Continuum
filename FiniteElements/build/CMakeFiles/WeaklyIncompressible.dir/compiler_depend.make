@@ -517,10 +517,15 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   ../mesh_generators.cpp \
   ../WeaklyIncompressible/solver.cpp \
   ../WeaklyIncompressible/sparsity_pattern.cpp \
+  ../WeaklyIncompressible/pressure_gradient_source.cpp \
+  ../WeaklyIncompressible/pressure_update.cpp \
+  ../WeaklyIncompressible/velocity_laplacian_system.cpp \
   ../WeaklyIncompressible/demo.cpp
 
 
 ../WeaklyIncompressible/demo.cpp:
+
+../WeaklyIncompressible/pressure_update.cpp:
 
 ../mesh_generators.cpp:
 
@@ -1162,6 +1167,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 
 /usr/include/x86_64-linux-gnu/bits/fp-fast.h:
 
+../WeaklyIncompressible/pressure_gradient_source.cpp:
+
 /usr/include/eigen3/Eigen/src/plugins/BlockMethods.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
@@ -1319,6 +1326,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 /usr/include/c++/8/ext/atomicity.h:
 
 /usr/include/c++/8/bits/hashtable.h:
+
+../WeaklyIncompressible/velocity_laplacian_system.cpp:
 
 /usr/include/eigen3/Eigen/src/plugins/ArrayCwiseUnaryOps.h:
 
