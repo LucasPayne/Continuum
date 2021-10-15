@@ -107,7 +107,7 @@ void Solver::project_divergence()
     SparseMatrix matrix;
     Eigen::VectorXd rhs;
     scalar_poisson_system(matrix, rhs,
-                          [&](double, double) { return alpha; },
+                          [&](double, double) { return -alpha; }, // Negation?
                           [&](double, double) { return 0.; });
 
     // printf("%.6g\n", alpha);
@@ -183,9 +183,9 @@ void Solver::project_divergence()
             integral += (-1./30.)*K3.perp() * gamma_020;
             integral += (-1./30.)*K3.perp() * gamma_200;
 
-            integral += (-1./10.)*K3.perp() * gamma_011;
-            integral += (1./30.)*K3.perp() * gamma_110;
-            integral += (-1./10.)*K3.perp() * gamma_101;
+            integral += (1./10.)*K3.perp() * gamma_011;
+            integral += (-1./30.)*K3.perp() * gamma_110;
+            integral += (1./10.)*K3.perp() * gamma_101;
 
             he = he.twin().next();
         } while (he != start);
@@ -272,21 +272,28 @@ void Solver::project_divergence()
     // Project.
     for (auto v : geom.mesh.vertices()) {
         if (!v.on_boundary()) {
-            u[v] += grad_gamma[v];
+            u[v] -= grad_gamma[v];
             std::cout << grad_gamma[v] << "\n";
+            // u[v] = grad_gamma[v];
+        } else {
+            u[v] = vec2(0,0);
         }
     }
     for (auto e : geom.mesh.edges()) {
         if (!e.on_boundary()) {
-            u[e] += grad_gamma[e];
+            u[e] -= grad_gamma[e];
             std::cout << grad_gamma[e] << "\n";
+            // u[e] = grad_gamma[e];
+        } else {
+            u[e] = vec2(0,0);
         }
     }
     // printf("nice\n");
     // getchar();
-    for (auto v : geom.mesh.vertices()) {
-        p[v] = gamma[v];
-    }
+    // for (auto v : geom.mesh.vertices()) {
+    //     // p[v] = gamma[v];
+    //     // p[v] = 0.5 + 0.5*grad_gamma[v].x();
+    // }
     pressure_update(true);
 }
 

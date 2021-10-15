@@ -251,3 +251,27 @@ scalar_velocity_gramian(1,1,0,  2,0,0)
 scalar_velocity_gramian(1,1,0,  0,1,1)
 scalar_velocity_gramian(1,1,0,  1,1,0)
 scalar_velocity_gramian(1,1,0,  1,0,1)
+
+
+def vel(i,j,k, a,b,c):
+    psi_u = nodal_basis_functions[barycentric_index_to_linear(i,j,k)]
+    phi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+    f = -phi_u * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{}, {}{}{}: {}".format(i,j,k, a,b,c, f_dy_dx))
+print("------------------------------------------------------------")
+print("vertex")
+vel(0,0,2,  0,0,2)
+vel(0,0,2,  0,2,0)
+vel(0,0,2,  2,0,0)
+vel(0,0,2,  0,1,1)
+vel(0,0,2,  1,1,0)
+vel(0,0,2,  1,0,1)
+print("midpoint")
+vel(1,1,0,  0,0,2)
+vel(1,1,0,  0,2,0)
+vel(1,1,0,  2,0,0)
+vel(1,1,0,  0,1,1)
+vel(1,1,0,  1,1,0)
+vel(1,1,0,  1,0,1)

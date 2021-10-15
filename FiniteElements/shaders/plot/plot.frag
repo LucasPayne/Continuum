@@ -20,8 +20,8 @@ void main(void)
     float pressure = val.b;
     float div_u = val.a;
 
-    const float p_mul = 4.f;
-    const float v_mul = 4.f;
+    const float p_mul = 1.f;
+    const float v_mul = 10.f;
     const float div_mul = 4.f;
 
     if (mode == 3) { // Pressure
@@ -46,5 +46,5 @@ void main(void)
             color = vec4(0,div_mul*vec2(abs(div_u)),1);
         }
     }
-    if (val.a == 0) color = vec4(1); //...
+    // if (val.a == 0) color = vec4(1); //...
 }
