@@ -84,11 +84,29 @@ void Solver::pressure_update()
             vec2 K1 = vec2_extract(v_pos - vpp_pos);
             vec2 K2 = vec2_extract(vp_pos - v_pos);
             vec2 K3 = vec2_extract(vpp_pos - vp_pos);
-            
+
+            #if 0
+            //------------------------------------------------------------
+            // integrate dot(grad(psi_p), u)
+            //------------------------------------------------------------
             vec2 u110 = u[edge_110];
             vec2 u011 = u[edge_011];
             vec2 u101 = u[edge_101];
             integral += (1./6.) * vec2::dot(K3.perp(), u110 + u011 + u101);
+            #else
+            //------------------------------------------------------------
+            // integrate psi_p * div(u)
+            //------------------------------------------------------------
+            vec2 u110 = u[edge_110];
+            vec2 u011 = u[edge_011];
+            vec2 u101 = u[edge_101];
+            vec2 u002 = u[v];
+            integral += (1./6.) * vec2::dot(K3.perp(), u002);
+            integral += (-1./6.) * vec2::dot(K3.perp(), u110);
+            integral += (1./6.) * vec2::dot((K2 - K1).perp(), u011);
+            integral += (1./6.) * vec2::dot((K1 - K2).perp(), u101);
+            
+            #endif
             
             he = he.twin().next();
         } while (!he.face().null() && he != start);
@@ -113,8 +131,8 @@ void Solver::pressure_update()
 
     // Reconstruct the P1 divergence of u, then associate it to the mesh.
     std::cout << Eigen::MatrixXd(pressure_gramian_matrix) << "\n";
-    // Eigen::VectorXd div_u_vector = solver.solve(u_div_l2_proj);
-    Eigen::VectorXd div_u_vector = u_div_l2_proj;
+    Eigen::VectorXd div_u_vector = solver.solve(u_div_l2_proj);
+    // Eigen::VectorXd div_u_vector = u_div_l2_proj;
     index = 0;
     for (auto v : geom.mesh.vertices()) {
         div_u[v] = div_u_vector[index];

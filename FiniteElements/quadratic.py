@@ -184,3 +184,23 @@ def gramian_integrate(i,j):
 gramian_integrate(0,0)
 gramian_integrate(0,1)
 gramian_integrate(0,2)
+
+
+
+print("grads")
+def grads(a,b,c):
+    phi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+    # print("{}{}{}: (X: {}, Y: {})".format(a,b,c, sym.diff(phi_u, x), sym.diff(phi_u, y)))
+    psi_p = pressure_basis_functions[0]
+    f = (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y)) * psi_p
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{}: {}".format(a,b,c, f_dy_dx))
+grads(0,0,2)
+grads(0,2,0)
+grads(2,0,0)
+grads(0,1,1)
+grads(1,1,0)
+grads(1,0,1)
+    
+
