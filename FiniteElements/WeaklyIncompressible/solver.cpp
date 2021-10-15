@@ -48,7 +48,7 @@ struct Solver {
     Eigen::VectorXd pressure_gradient_source();
     SparseMatrix compute_pressure_gramian_matrix();
     SparseMatrix pressure_gramian_matrix;
-    void pressure_update();
+    void pressure_update(bool dont_actually_update = false);
     SparseMatrix velocity_laplacian_matrix;
     Eigen::VectorXd velocity_laplacian_rhs;
     
@@ -210,11 +210,10 @@ void Solver::iterate()
         // Compute the Laplacian matrix and boundary terms.
         velocity_laplacian_system(velocity_laplacian_matrix, velocity_laplacian_rhs);
 
-        solving = true;
+        // solving is set to true at the end.
     }
     // Compute the pressure gradient source term.
-    // Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
-    Eigen::VectorXd rhs = velocity_laplacian_rhs;
+    Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
 
     /*--------------------------------------------------------------------------------
         Solve the system for u_{n+1}.
@@ -253,7 +252,8 @@ void Solver::iterate()
     }
 
     // Update the pressure.
-    pressure_update();
+    pressure_update(!solving); // don't actually update the pressure for the first iteration.
+    solving = true;
 }
 
 

@@ -10,8 +10,10 @@ enum MeshModes {
 
 struct Demo : public IBehaviour {
     Demo();
+    void update();
     void post_render_update();
     void keyboard_handler(KeyboardEvent e);
+    void mouse_handler(MouseEvent e);
 
     void recreate_solver();
 
@@ -37,6 +39,17 @@ struct Demo : public IBehaviour {
     GLuint sprite_vao;
     bool wireframe;
     bool vector_field;
+
+    // Screenshot
+    int screenshot_blx;
+    int screenshot_bly;
+    int screenshot_trx;
+    int screenshot_try;
+    float f_screenshot_blx;
+    float f_screenshot_bly;
+    float f_screenshot_trx;
+    float f_screenshot_try;
+
 };
 
 
@@ -63,6 +76,14 @@ void Demo::recreate_solver()
             auto v2 = sq_mesh.vertex(i+1,mesh_N);
             solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(1,0);
         }
+        // for (int i = 0; i < mesh_N+1; i++) {
+        //     solver->u_boundary[sq_mesh.vertex(i,0)] = vec2(-1,0); // x is inverted...
+        // }
+        // for (int i = 0; i < mesh_N; i++) {
+        //     auto v1 = sq_mesh.vertex(i,0);
+        //     auto v2 = sq_mesh.vertex(i+1,0);
+        //     solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(-1,0);
+        // }
     } else if (mesh_mode == MM_trivial_disk) { // Axis-aligned flow on the disk.
         geom = circle_mesh(mesh_N, random);
         if (solver != nullptr) delete solver;
@@ -85,9 +106,38 @@ void Demo::recreate_solver()
         geom = circle_mesh(mesh_N, random);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
+        // solver->set_u_boundary(
+        //     [](double x, double y)->vec2 {
+        //         // if (fabs(y) < 0.2) return vec2(1,0);
+        //         // return vec2(0,0);
+        //         if (fabs(y) < 0.25) {
+        //             return vec2(1,0);
+        //         }
+        //         if (fabs(x) < 0.25) {
+        //             return vec2(0,1);
+        //         }
+        //         return vec2(0,0);
+        //     }
+        // );
         solver->set_u_boundary(
             [](double x, double y)->vec2 {
-                if (fabs(y) < 0.2) return vec2(1,0);
+                float angles[6];
+                float c = 2*M_PI * 30;
+                for (int i = 0; i < 6; i++) {
+                    angles[i] = c + i*2*M_PI/6;
+                }
+                float flows[6] = {
+                    1,
+                    -2,
+                    1,
+                    2,
+                    -1,
+                    -1,
+                };
+                float theta = atan2(y,x) + M_PI;
+                for (int i = 0; i < 6; i++) {
+                    if (fabs(c + theta - angles[i]) < (2*M_PI/6) / 4) return flows[i]*vec2(cos(angles[i]), sin(angles[i]));
+                }
                 return vec2(0,0);
             }
         );
@@ -110,7 +160,7 @@ void Demo::recreate_solver()
 
 Demo::Demo()
 {
-    mu = 1.0;
+    mu = 1;
     flow_mode = false;
 
     // Mesh generation options
@@ -183,9 +233,6 @@ void Demo::keyboard_handler(KeyboardEvent e)
             random = !random;
             recreate_solver();
         }
-        if (e.key.code == KEY_T) {
-            solver->write_sparsity_pattern = true;
-        }
         if (e.key.code == KEY_1) {
             wireframe = !wireframe;
         }
@@ -201,11 +248,37 @@ void Demo::keyboard_handler(KeyboardEvent e)
             recreate_solver();
         }
         if (e.key.code == KEY_I) {
+            solver->C = 0.0008;
             solver->iterate();
         }
         if (e.key.code == KEY_U) {
             flow_mode = !flow_mode;
         }
+        // if (e.key.code == KEY_T) {
+        //     solver->write_sparsity_pattern = true;
+        // }
+        static int counter = 0;
+        std::string pre = DATA + ("stokes_" + std::to_string(mesh_mode) + "_" + (wireframe ? "wireframe" : "velocity") + "_" + std::to_string(counter));
+        if (e.key.code == KEY_T) {
+            world->graphics.screenshot(pre + ".ppm",
+        			      screenshot_blx, screenshot_bly, screenshot_trx - screenshot_blx, screenshot_try - screenshot_bly);
+            counter += 1;
+        }
+    }
+}
+
+void Demo::update()
+{
+    if (world->input.keyboard.down(KEY_G)) {
+        // Draw the screenshot rectangle.
+        std::vector<vec2> ps = {
+            vec2(f_screenshot_blx, f_screenshot_bly),
+            vec2(f_screenshot_trx, f_screenshot_bly),
+            vec2(f_screenshot_trx, f_screenshot_try),
+            vec2(f_screenshot_blx, f_screenshot_try),
+            vec2(f_screenshot_blx, f_screenshot_bly)
+        };
+        world->graphics.paint.chain_2D(ps, 1, vec4(1,0,0,1));
     }
 }
 
@@ -316,17 +389,17 @@ void Demo::post_render_update()
         auto solution_pixels = std::vector<float>(4*1024*1024);
         glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
         glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
-        for (int i = 0; i < 1024; i += 25) {
+        for (int i = 0; i < 1024; i += 28) {
             float x = -1 + i*2.f/(1024-1.f);
-            for (int j = 0; j < 1024; j += 25) {
+            for (int j = 0; j < 1024; j += 28) {
                 float y = -1 + j*2.f/(1024-1.f);
                 float velocity_x = solution_pixels[4*(1024*j + i) + 0];
                 float velocity_y = solution_pixels[4*(1024*j + i) + 1];
                 const float mul = 0.12;
                 const float thickness = 0.005;
                 const vec4 color = vec4(0,0,0,1);
-                world->graphics.paint.sphere(vec3(x, 0.05, y), 0.0075, vec4(0,0,0,1));
-                world->graphics.paint.line(vec3(x, 0.05, y), vec3(x + mul*velocity_x, 0.05, y + mul*velocity_y), thickness, color);
+                world->graphics.paint.sphere(vec3(x, 0, y), 0.0075, vec4(0,0,0,1));
+                world->graphics.paint.line(vec3(x, 0, y), vec3(x + mul*velocity_x, 0, y + mul*velocity_y), thickness, color);
             }
         }
     }
@@ -337,6 +410,7 @@ void Demo::post_render_update()
     // Draw the solution texture.
     const float asp = 0.566;
     const float height = 1.f/4.f;
+    const float width = height * asp;
     struct {
         float bl_x;
         float bl_y;
@@ -347,6 +421,11 @@ void Demo::post_render_update()
         {0,height, height*asp,2*height},
         {0,2*height, height*asp,3*height},
         {0,3*height, height*asp,4*height},
+
+        // {0,0, width,height},
+        // {width,0, 2*width,height},
+        // {2*width,0, 3*width,height},
+        // {3*width,0, 4*width,height},
     };
     
     sprite_shader.bind();
@@ -388,6 +467,26 @@ void Demo::post_render_update()
             } while (he != start);
 	    ps.push_back(ps[0]);
             world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
+        }
+    }
+}
+
+
+
+void Demo::mouse_handler(MouseEvent e)
+{
+    if (e.action == MOUSE_BUTTON_PRESS) {
+        if (e.button.code == MOUSE_LEFT) {
+            screenshot_blx = int(world->graphics.window_viewport.w * e.cursor.x);
+            screenshot_bly = int(world->graphics.window_viewport.h * e.cursor.y);
+            f_screenshot_blx = e.cursor.x;
+            f_screenshot_bly = e.cursor.y;
+        }
+        if (e.button.code == MOUSE_RIGHT) {
+            screenshot_trx = int(world->graphics.window_viewport.w * e.cursor.x);
+            screenshot_try = int(world->graphics.window_viewport.h * e.cursor.y);
+            f_screenshot_trx = e.cursor.x;
+            f_screenshot_try = e.cursor.y;
         }
     }
 }

@@ -41,7 +41,7 @@ SparseMatrix Solver::compute_pressure_gramian_matrix()
 }
 
 
-void Solver::pressure_update()
+void Solver::pressure_update(bool dont_actually_update)
 {
     int N_p = geom.mesh.num_vertices();
 
@@ -101,10 +101,10 @@ void Solver::pressure_update()
             vec2 u011 = u[edge_011];
             vec2 u101 = u[edge_101];
             vec2 u002 = u[v];
-            integral += (1./6.) * vec2::dot(K3.perp(), u002);
-            integral += (-1./6.) * vec2::dot(K3.perp(), u110);
-            integral += (1./6.) * vec2::dot((K2 - K1).perp(), u011);
-            integral += (1./6.) * vec2::dot((K1 - K2).perp(), u101);
+            integral += (-1./6.) * vec2::dot(K3.perp(), u002);
+            integral += (1./6.) * vec2::dot(K3.perp(), u110);
+            integral += (-1./6.) * vec2::dot((K2 - K1).perp(), u011);
+            integral += (-1./6.) * vec2::dot((K1 - K2).perp(), u101);
             
             #endif
             
@@ -122,25 +122,25 @@ void Solver::pressure_update()
     solver.factorize(pressure_gramian_matrix);
     Eigen::VectorXd p_vector = solver.solve(rhs);
 
-    // Reassociate each p value to the mesh.
-    index = 0;
-    for (auto v : geom.mesh.vertices()) {
-        p[v] = p_vector[index];
-        index += 1;
+    if (!dont_actually_update) {
+        // Reassociate each p value to the mesh.
+        index = 0;
+        for (auto v : geom.mesh.vertices()) {
+            p[v] = p_vector[index];
+            index += 1;
+        }
     }
 
     // Reconstruct the P1 divergence of u, then associate it to the mesh.
-    std::cout << Eigen::MatrixXd(pressure_gramian_matrix) << "\n";
+    // std::cout << Eigen::MatrixXd(pressure_gramian_matrix) << "\n";
     Eigen::VectorXd div_u_vector = solver.solve(u_div_l2_proj);
-    // Eigen::VectorXd div_u_vector = u_div_l2_proj;
     index = 0;
     for (auto v : geom.mesh.vertices()) {
         div_u[v] = div_u_vector[index];
         index += 1;
     }
-    for (auto v : geom.mesh.vertices()) {
-        printf("%.6g\n", div_u[v]);
-        std::cout << u[v] << "\n";
-    }
-    getchar();
+    // for (auto v : geom.mesh.vertices()) {
+    //     printf("%.6g\n", div_u[v]);
+    //     std::cout << u[v] << "\n";
+    // }
 }

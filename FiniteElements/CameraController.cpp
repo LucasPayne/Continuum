@@ -64,7 +64,7 @@ void CameraController::mouse_handler(MouseEvent e)
 
 void CameraController::init()
 {
-    float speed = 4;
+    float speed = 2;
     strafe_speed = speed;
     forward_speed = speed;
     lift_speed = speed;

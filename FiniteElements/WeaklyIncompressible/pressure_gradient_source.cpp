@@ -82,36 +82,26 @@ Eigen::VectorXd Solver::pressure_gradient_source()
             //double R = -1./(12*geom.triangle_area(tri));
             double R = 1./(12*geom.triangle_area(tri)); // ?--------------------------------------------------------------------------------
 
-            // printf("pressure: %.6f %.6f %.6f\n", p[v], p[vp], p[vpp]);
-
             vec2 val_v = vec2(0.,0.);
             // Integrate psi_u at edge_110 against phi_p at 002 (v).
             val_v = p[v] * R * K3.perp();
-            // std::cout << "phi_p v " << val_v << "\n";
             integral_x += val_v.x();
             integral_y += val_v.y();
-            // printf("integral: %.6f %.6f\n", integral_x, integral_y);
 
             // Integrate psi_u at edge_110 against phi_p at 200 (vp).
             val_v = p[vp] * R * K1.perp();
-            // std::cout << "phi_p vp " << val_v << "\n";
             integral_x += val_v.x();
             integral_y += val_v.y();
-            // printf("integral: %.6f %.6f\n", integral_x, integral_y);
             
             // Integrate psi_u at edge_110 against phi_p at 002 (vpp).
             val_v = p[vpp] * R * K2.perp();
-            // std::cout << "phi_p_vpp" << val_v << "\n";
             integral_x += val_v.x();
             integral_y += val_v.y();
-            // printf("integral: %.6f %.6f\n", integral_x, integral_y);
         }
         int index = num_interior_vertices + interior_midpoint_indices[edge];
-        // printf("integral x,y %.6f %.6f\n", integral_x, integral_y);
         source[2*index + 0] = integral_x;
         source[2*index + 1] = integral_y;
     }
-    // std::cout << source << "\n"; getchar();
 
     return source;
 }

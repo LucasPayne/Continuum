@@ -495,7 +495,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         std::string pre = linear_mode ? "linear_approx_" : "quadratic_approx_";
         if (e.key.code == KEY_T) {
             world->graphics.screenshot(pre + std::to_string(mesh_N) + ".ppm",
-        			      screenshot_blx, screenshot_bly, screenshot_trx - screenshot_blx, screenshot_try - screenshot_bly);
+        			       screenshot_blx, screenshot_bly, screenshot_trx - screenshot_blx, screenshot_try - screenshot_bly);
             counter += 1;
         }
     }
