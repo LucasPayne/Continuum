@@ -251,6 +251,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
             solver->C = 0.0008;
             solver->iterate();
         }
+        if (e.key.code == KEY_Y) {
+            solver->project_divergence();
+        }
         if (e.key.code == KEY_U) {
             flow_mode = !flow_mode;
         }

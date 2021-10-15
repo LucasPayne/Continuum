@@ -520,10 +520,14 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   ../WeaklyIncompressible/pressure_gradient_source.cpp \
   ../WeaklyIncompressible/pressure_update.cpp \
   ../WeaklyIncompressible/velocity_laplacian_system.cpp \
+  ../WeaklyIncompressible/scalar_poisson_system.cpp \
+  ../WeaklyIncompressible/project_divergence.cpp \
   ../WeaklyIncompressible/demo.cpp
 
 
 ../WeaklyIncompressible/demo.cpp:
+
+../WeaklyIncompressible/project_divergence.cpp:
 
 ../WeaklyIncompressible/pressure_update.cpp:
 
@@ -568,6 +572,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 /usr/include/eigen3/Eigen/src/SparseCore/SparseSelfAdjointView.h:
 
 /usr/include/eigen3/Eigen/src/SparseCore/SparseProduct.h:
+
+../WeaklyIncompressible/scalar_poisson_system.cpp:
 
 /usr/include/eigen3/Eigen/src/SparseCore/SparseSparseProductWithPruning.h:
 

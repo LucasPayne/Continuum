@@ -44,6 +44,8 @@ struct Solver {
 
     bool solving; // When one iteration is made, some options (like setting the boundary) are locked.
     void iterate(); // Make one WI algorithm iteration.
+    void project_divergence(); // Once the fixed point iteration is stable, project out a velocity component to make the divergence zero.
+
     void velocity_laplacian_system(SparseMatrix &mass_matrix, Eigen::VectorXd &rhs);
     Eigen::VectorXd pressure_gradient_source();
     SparseMatrix compute_pressure_gramian_matrix();
@@ -51,6 +53,9 @@ struct Solver {
     void pressure_update(bool dont_actually_update = false);
     SparseMatrix velocity_laplacian_matrix;
     Eigen::VectorXd velocity_laplacian_rhs;
+    
+    // Poisson subproblem (different boundary conditions)
+    void scalar_poisson_system(SparseMatrix &mass_matrix, Eigen::VectorXd &rhs, PlaneFunction source, PlaneFunction dirichlet_boundary_function);
     
     int wi_iteration_number; // Start at n=0.
     // N_u: The number of vector coefficients of u.
@@ -200,6 +205,8 @@ void Solver::set_pressure(PlaneFunction _pressure)
 #include "WeaklyIncompressible/pressure_gradient_source.cpp"
 #include "WeaklyIncompressible/pressure_update.cpp"
 #include "WeaklyIncompressible/velocity_laplacian_system.cpp"
+#include "WeaklyIncompressible/scalar_poisson_system.cpp"
+#include "WeaklyIncompressible/project_divergence.cpp"
 
 
 void Solver::iterate()
