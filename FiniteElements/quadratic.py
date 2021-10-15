@@ -227,3 +227,27 @@ grads(1,1,0,  2,0,0)
 grads(1,1,0,  0,1,1)
 grads(1,1,0,  1,1,0)
 grads(1,1,0,  1,0,1)
+
+
+def scalar_velocity_gramian(i,j,k, a,b,c):
+    phi_u = nodal_basis_functions[barycentric_index_to_linear(i,j,k)]
+    psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+    f = phi_u * psi_u
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{}, {}{}{}: {}".format(i,j,k, a,b,c, f_dy_dx))
+print("scalar velocity gramian")
+print("vertex")
+scalar_velocity_gramian(0,0,2,  0,0,2)
+scalar_velocity_gramian(0,0,2,  0,2,0)
+scalar_velocity_gramian(0,0,2,  2,0,0)
+scalar_velocity_gramian(0,0,2,  0,1,1)
+scalar_velocity_gramian(0,0,2,  1,1,0)
+scalar_velocity_gramian(0,0,2,  1,0,1)
+print("midpoint")
+scalar_velocity_gramian(1,1,0,  0,0,2)
+scalar_velocity_gramian(1,1,0,  0,2,0)
+scalar_velocity_gramian(1,1,0,  2,0,0)
+scalar_velocity_gramian(1,1,0,  0,1,1)
+scalar_velocity_gramian(1,1,0,  1,1,0)
+scalar_velocity_gramian(1,1,0,  1,0,1)

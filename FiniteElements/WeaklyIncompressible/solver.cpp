@@ -49,7 +49,9 @@ struct Solver {
     void velocity_laplacian_system(SparseMatrix &mass_matrix, Eigen::VectorXd &rhs);
     Eigen::VectorXd pressure_gradient_source();
     SparseMatrix compute_pressure_gramian_matrix();
+    SparseMatrix compute_scalar_velocity_gramian_matrix();
     SparseMatrix pressure_gramian_matrix;
+    SparseMatrix scalar_velocity_gramian_matrix;
     void pressure_update(bool dont_actually_update = false);
     SparseMatrix velocity_laplacian_matrix;
     Eigen::VectorXd velocity_laplacian_rhs;
@@ -173,6 +175,7 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
     // set_pressure([](double x,double y) { return 100; });
 
     pressure_gramian_matrix = compute_pressure_gramian_matrix();
+    scalar_velocity_gramian_matrix = compute_scalar_velocity_gramian_matrix();
 }
 
 
