@@ -249,7 +249,7 @@ void Solver::project_divergence()
 
     // Associate grad(gamma) to the mesh.
     P2Attachment<vec2> grad_gamma(geom.mesh);
-    int interior_vertex_index = 0;
+    interior_vertex_index = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) {
             grad_gamma[v] = vec2(0,0);
@@ -258,7 +258,7 @@ void Solver::project_divergence()
             interior_vertex_index += 1;
         }
     }
-    int interior_midpoint_index = 0;
+    interior_midpoint_index = 0;
     for (auto edge : geom.mesh.edges()) {
         if (edge.on_boundary()) {
             grad_gamma[edge] = vec2(0,0);
@@ -267,5 +267,26 @@ void Solver::project_divergence()
             interior_midpoint_index += 1;
         }
     }
+    
+
+    // Project.
+    for (auto v : geom.mesh.vertices()) {
+        if (!v.on_boundary()) {
+            u[v] += grad_gamma[v];
+            std::cout << grad_gamma[v] << "\n";
+        }
+    }
+    for (auto e : geom.mesh.edges()) {
+        if (!e.on_boundary()) {
+            u[e] += grad_gamma[e];
+            std::cout << grad_gamma[e] << "\n";
+        }
+    }
+    // printf("nice\n");
+    // getchar();
+    for (auto v : geom.mesh.vertices()) {
+        p[v] = gamma[v];
+    }
+    pressure_update(true);
 }
 
