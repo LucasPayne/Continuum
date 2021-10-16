@@ -220,9 +220,26 @@ void Solver::iterate()
         // Compute the Laplacian matrix and boundary terms.
         velocity_laplacian_system(velocity_laplacian_matrix, velocity_laplacian_rhs);
 
+        // Initialize the pressure.
+        // for (auto v : geom.mesh.vertices()) {
+        //     // p[v] = frand();
+        //     p[v] = -100;
+        // }
+        
+        // // Initialize the velocity.
+        // for (auto v : geom.mesh.vertices()) {
+        //     if (v.on_boundary()) u[v] = u_boundary[v];
+        //     else u[v] = vec2(0,0);
+        // }
+        // for (auto e : geom.mesh.edges()) {
+        //     if (e.on_boundary()) u[e] = u_boundary[e];
+        //     else u[e] = vec2(0,0);
+        // }
+        // return;
         // solving is set to true at the end.
     }
     // Compute the pressure gradient source term.
+    // Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
     Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
 
     /*--------------------------------------------------------------------------------

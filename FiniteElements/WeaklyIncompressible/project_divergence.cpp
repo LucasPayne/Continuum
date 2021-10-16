@@ -137,7 +137,10 @@ void Solver::project_divergence()
             interior_midpoint_index += 1;
         }
     }
-    
+
+    for (auto v : geom.mesh.vertices()) {
+        printf("%.6f\n", gamma[v]);
+    }    getchar();
     
     // Project grad(gamma) to P2.
     int N = num_interior_vertices + num_interior_edges;
@@ -291,8 +294,7 @@ void Solver::project_divergence()
     // printf("nice\n");
     // getchar();
     // for (auto v : geom.mesh.vertices()) {
-    //     // p[v] = gamma[v];
-    //     // p[v] = 0.5 + 0.5*grad_gamma[v].x();
+    //     // p[v] = -4*gamma[v];
     // }
     pressure_update(true);
 }

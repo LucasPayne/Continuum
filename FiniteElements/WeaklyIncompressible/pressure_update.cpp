@@ -121,6 +121,10 @@ void Solver::pressure_update(bool dont_actually_update)
     solver.analyzePattern(pressure_gramian_matrix);
     solver.factorize(pressure_gramian_matrix);
     Eigen::VectorXd p_vector = solver.solve(rhs);
+    double zeroize_pressure = p_vector[0];
+    p_vector[0] = 0.;
+    for (int i = 1; i < N_p; i++) p_vector[i] -= zeroize_pressure;
+    std::cout << p_vector << "\n";
 
     if (!dont_actually_update) {
         // Reassociate each p value to the mesh.
@@ -139,6 +143,7 @@ void Solver::pressure_update(bool dont_actually_update)
         div_u[v] = div_u_vector[index];
         index += 1;
     }
+    
     // for (auto v : geom.mesh.vertices()) {
     //     printf("%.6g\n", div_u[v]);
     //     std::cout << u[v] << "\n";
