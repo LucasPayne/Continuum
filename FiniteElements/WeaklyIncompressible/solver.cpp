@@ -111,6 +111,9 @@ struct Solver {
     SparseMatrix gramian_matrix_P2_0();
     void div_P2_P2(P2Attachment<vec2> &vf, P2Attachment<double> &div); // Compute the divergence of vf in P2^2 projected into P2_0.
     Eigen::VectorXd _u_div_l2_proj; //...
+
+    // Taylor-Hood mixed finite elements.
+    void solve_taylor_hood();
 };
 
 Solver::Solver(SurfaceGeometry &_geom, double _mu) :
@@ -228,6 +231,8 @@ void Solver::set_pressure(PlaneFunction _pressure)
 #include "WeaklyIncompressible/project_divergence.cpp"
 
 #include "WeaklyIncompressible/div_P2_P2.cpp"
+
+#include "WeaklyIncompressible/TaylorHood.cpp"
 
 
 // void Solver::scalar_poisson_chorin(SparseMatrix &matrix, Eigen::VectorXd &rhs, P2Attachment)

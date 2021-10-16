@@ -1,6 +1,7 @@
 
 
 enum MeshModes {
+    MM_cylinder,
     MM_lid_driven_cavity,
     MM_flow,
     MM_trivial_disk,
@@ -60,7 +61,19 @@ void Demo::recreate_solver()
     if (geom != nullptr) delete geom;
 
 
-    if (mesh_mode == MM_lid_driven_cavity) { // Lid-driven cavity.
+    if (mesh_mode == MM_cylinder) { // Flow around a cylinder.
+        geom = square_minus_circle(0.28);
+        if (solver != nullptr) delete solver;
+        solver = new Solver(*geom, mu);
+        solver->set_u_boundary(
+            [](double x, double y)->vec2 {
+                // if (fabs(y) > 0.25) return vec2(0,0);
+                if (x < -0.99) return vec2(1,0);
+                if (x > 0.99) return vec2(1,0);
+                return vec2(0,0);
+            }
+        );
+    } else if (mesh_mode == MM_lid_driven_cavity) { // Lid-driven cavity.
         // geom = circle_mesh(mesh_N, false);
         auto sq_mesh = SquareMesh(mesh_N);
         geom = sq_mesh.geom;
@@ -267,15 +280,18 @@ void Demo::keyboard_handler(KeyboardEvent e)
             solver->C = C;
             solver->iterate();
         }
+        if (e.key.code == KEY_7) {
+            solver->solve_taylor_hood();
+        }
         if (e.key.code == KEY_Y) {
             solver->project_divergence();
         }
         if (e.key.code == KEY_U) {
             flow_mode = !flow_mode;
         }
-        // if (e.key.code == KEY_T) {
-        //     solver->write_sparsity_pattern = true;
-        // }
+        if (e.key.code == KEY_8) {
+            solver->write_sparsity_pattern = true;
+        }
         static int counter = 0;
         std::string pre = DATA + ("stokes_" + std::to_string(mesh_mode) + "_" + (wireframe ? "wireframe" : "velocity") + "_" + std::to_string(counter));
         if (e.key.code == KEY_T) {

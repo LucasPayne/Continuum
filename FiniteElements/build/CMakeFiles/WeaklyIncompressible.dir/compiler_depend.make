@@ -514,6 +514,18 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_pruneL.h \
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Utils.h \
   /usr/include/eigen3/Eigen/src/SparseLU/SparseLU.h \
+  /usr/include/eigen3/Eigen/IterativeLinearSolvers \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/SolveWithGuess.h \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/IterativeSolverBase.h \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/BasicPreconditioners.h \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/ConjugateGradient.h \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/LeastSquareConjugateGradient.h \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/BiCGSTAB.h \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/IncompleteLUT.h \
+  /usr/include/eigen3/Eigen/src/IterativeLinearSolvers/IncompleteCholesky.h \
+  /usr/include/c++/8/list \
+  /usr/include/c++/8/bits/stl_list.h \
+  /usr/include/c++/8/bits/list.tcc \
   ../mesh_generators.cpp \
   ../WeaklyIncompressible/solver.cpp \
   ../WeaklyIncompressible/sparsity_pattern.cpp \
@@ -523,6 +535,7 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   ../WeaklyIncompressible/scalar_poisson_system.cpp \
   ../WeaklyIncompressible/project_divergence.cpp \
   ../WeaklyIncompressible/div_P2_P2.cpp \
+  ../WeaklyIncompressible/TaylorHood.cpp \
   ../WeaklyIncompressible/demo.cpp
 
 
@@ -536,7 +549,21 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 
 ../mesh_generators.cpp:
 
+/usr/include/c++/8/bits/list.tcc:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/IncompleteCholesky.h:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/IncompleteLUT.h:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/BiCGSTAB.h:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/IterativeSolverBase.h:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/SolveWithGuess.h:
+
 /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/LeastSquareConjugateGradient.h:
 
 /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_column_dfs.h:
 
@@ -597,6 +624,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 /usr/include/eigen3/Eigen/SparseCore:
 
 ../dependencies/triangle/triangle/triangle.h:
+
+/usr/include/c++/8/list:
 
 /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/subdivision/subdivision.h:
 
@@ -790,6 +819,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 
 /usr/include/x86_64-linux-gnu/bits/timex.h:
 
+../WeaklyIncompressible/TaylorHood.cpp:
+
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
 /usr/include/time.h:
@@ -815,6 +846,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 /usr/include/linux/errno.h:
 
 /usr/include/c++/8/bits/move.h:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/ConjugateGradient.h:
 
 /usr/include/eigen3/Eigen/src/LU/FullPivLU.h:
 
@@ -1060,6 +1093,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 
 /usr/include/wchar.h:
 
+/usr/include/c++/8/bits/stl_list.h:
+
 /usr/include/eigen3/Eigen/src/Core/arch/SSE/Complex.h:
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
@@ -1242,6 +1277,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 
 /usr/include/c++/8/bits/cpp_type_traits.h:
 
+/usr/include/eigen3/Eigen/IterativeLinearSolvers:
+
 /usr/include/eigen3/Eigen/src/Core/Diagonal.h:
 
 /usr/include/c++/8/vector:
@@ -1337,6 +1374,8 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
 /usr/include/c++/8/bits/hashtable.h:
 
 ../WeaklyIncompressible/velocity_laplacian_system.cpp:
+
+/usr/include/eigen3/Eigen/src/IterativeLinearSolvers/BasicPreconditioners.h:
 
 /usr/include/eigen3/Eigen/src/plugins/ArrayCwiseUnaryOps.h:
 

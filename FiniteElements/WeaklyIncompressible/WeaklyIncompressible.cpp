@@ -3,6 +3,7 @@
 #include "CameraController.cpp"
 #include <Eigen/SparseCore>
 #include <Eigen/SparseLU>
+#include <Eigen/IterativeLinearSolvers>
 #include "mesh_generators.cpp"
 using PlaneFunction = std::function<double(double x, double y)>; // Function of the XY plane.
 using PlaneVectorField = std::function<vec2(double x, double y)>;
