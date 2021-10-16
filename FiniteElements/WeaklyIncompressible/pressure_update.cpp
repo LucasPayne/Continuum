@@ -125,6 +125,8 @@ void Solver::pressure_update(bool dont_actually_update)
     solver.factorize(pressure_gramian_matrix);
     Eigen::VectorXd p_vector = solver.solve(rhs);
 
+    _u_div_l2_proj = u_div_l2_proj; //...
+
     double zeroize_pressure = p_vector[0];
     p_vector[0] = 0.;
     for (int i = 1; i < N_p; i++) p_vector[i] -= zeroize_pressure;

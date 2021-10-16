@@ -272,3 +272,60 @@ void Solver::scalar_poisson_system(SparseMatrix &mass_matrix, Eigen::VectorXd &r
     mass_matrix.setFromTriplets(coefficients.begin(), coefficients.end());
     mass_matrix.makeCompressed();
 }
+
+
+SparseMatrix Solver::laplacian_matrix_P1()
+{
+    std::vector<EigenTriplet> coefficients;
+    auto add_entry = [&](int i, int j, double value) {
+        coefficients.push_back(EigenTriplet(i, j, value));
+    };
+
+    /*--------------------------------------------------------------------------------
+        Construct the system.
+    --------------------------------------------------------------------------------*/
+    for (Vertex v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = vertex_indices[v]; // Global interior vertex index.
+        auto v_pos = geom.position[v];
+
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            // Define terms.
+            Face tri = he.face();
+            Vertex vp = he.next().vertex();
+            Vertex vpp = he.next().tip();
+            auto vp_pos = geom.position[vp];
+            auto vpp_pos = geom.position[vpp];
+            double C = 1.0/(4.0*geom.triangle_area(tri));
+
+            // Diagonal term.
+            double diagonal_term = C*(vpp_pos - vp_pos).dot(vpp_pos - vp_pos);
+            add_entry(v_index, v_index, diagonal_term);
+
+            // vp contribution.
+            if (vp.on_boundary()) {
+            } else {
+                double vp_term = C*(v_pos - vpp_pos).dot(vpp_pos - vp_pos);
+                int vp_index = vertex_indices[vp];
+                add_entry(v_index, vp_index, vp_term);
+            }
+            
+            // vpp contribution.
+            if (vpp.on_boundary()) {
+            } else {
+                double vpp_term = C*(vp_pos - v_pos).dot(vpp_pos - vp_pos);
+                int vpp_index = vertex_indices[vpp];
+                add_entry(v_index, vpp_index, vpp_term);
+            }
+
+            he = he.twin().next();
+        } while (he != start);
+    }
+    auto matrix = SparseMatrix(num_interior_vertices, num_interior_vertices);
+    matrix.setFromTriplets(coefficients.begin(), coefficients.end());
+    matrix.makeCompressed();
+    return matrix;
+}

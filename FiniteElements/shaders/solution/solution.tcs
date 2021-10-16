@@ -7,6 +7,7 @@ in VS_OUT {
     vec2 velocity;
     float pressure;
     float divergence;
+    float divergence_P2;
 } tcs_in[];
 
 out TCS_OUT {
@@ -14,6 +15,7 @@ out TCS_OUT {
     vec2 velocity;
     float pressure;
     float divergence;
+    float divergence_P2;
 } tcs_out[];
 
 
@@ -28,5 +30,6 @@ void main(void)
     tcs_out[gl_InvocationID].velocity = tcs_in[gl_InvocationID].velocity;
     tcs_out[gl_InvocationID].pressure = tcs_in[gl_InvocationID].pressure;
     tcs_out[gl_InvocationID].divergence = tcs_in[gl_InvocationID].divergence;
+    tcs_out[gl_InvocationID].divergence_P2 = tcs_in[gl_InvocationID].divergence_P2;
 }
 

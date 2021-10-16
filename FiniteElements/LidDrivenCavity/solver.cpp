@@ -338,13 +338,13 @@ if (BUILD_TOP_LEFT) {
 if (BUILD_BOTTOM_LEFT) {
     // Construct the bottom-left block, consisting of 1x2 vectors.
     //================================================================================
-    auto insert_bottom_left_block = [&](int psi_p_index, int phi_u_index, double val_x, double val_y) {
-        add_entry(2*N_u + psi_p_index, 2*phi_u_index+0, val_x);
-        add_entry(2*N_u + psi_p_index, 2*phi_u_index+1, val_y);
+    auto insert_bottom_left_block = [&](int psi_p_index, int phi_u_index, vec2 val) {
+        add_entry(2*N_u + psi_p_index, 2*phi_u_index+0, val.x());
+        add_entry(2*N_u + psi_p_index, 2*phi_u_index+1, val.y());
         // Build top-right block as well, as it is the transpose.
         // (the top-right terms have no boundary terms to account for, so this is fine).
-        add_entry(2*phi_u_index+0, 2*N_u + psi_p_index, val_x);
-        add_entry(2*phi_u_index+1, 2*N_u + psi_p_index, val_y);
+        add_entry(2*phi_u_index+0, 2*N_u + psi_p_index, val.x());
+        add_entry(2*phi_u_index+1, 2*N_u + psi_p_index, val.y());
     };
     // For each basis trial function psi^u ...
     //------------------------------------------------------------
@@ -364,9 +364,11 @@ if (BUILD_BOTTOM_LEFT) {
             auto vp_pos = geom.position[vp];
             auto vpp_pos = geom.position[vpp];
             // Triangle side vectors.
-            auto K1 = v_pos - vpp_pos;
-            auto K2 = vp_pos - v_pos;
-            auto K3 = vpp_pos - vp_pos;
+            auto vec2_extract = [](Eigen::Vector3f evec) { return vec2(evec.x(), evec.z()); };
+            vec2 K1 = vec2_extract(v_pos - vpp_pos);
+            vec2 K2 = vec2_extract(vp_pos - v_pos);
+            vec2 K3 = vec2_extract(vpp_pos - vp_pos);
+
             auto edge_110 = he.next().edge(); // vp to vpp
             auto edge_011 = he.next().next().edge(); // vpp to v
             auto edge_101 = he.edge(); // v to vp
@@ -383,56 +385,47 @@ if (BUILD_BOTTOM_LEFT) {
             int phi_u_110_index = num_interior_vertices + interior_midpoint_indices[edge_110];
             int phi_u_011_index = num_interior_vertices + interior_midpoint_indices[edge_011];
             int phi_u_101_index = num_interior_vertices + interior_midpoint_indices[edge_101];
-            
-            // Integrate psi^p at v against phi^u_002.
-            val_x = R * ((-1./6.)*K1.dot(K1) + (-1./6.)*K2.dot(K1));
-            val_y = R * ((-1./6.)*K1.dot(K2) + (-1./6.)*K2.dot(K2));
+
+
+            vec2 val = vec2(0,0);
+            val = (-1./6.) * K3.perp();
             if (v.on_boundary()) {
                 vec2 bv = u_boundary[v];
-                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
+                rhs[2*N_u + psi_p_index] -= vec2::dot(bv, val);
             } else {
-                insert_bottom_left_block(psi_p_index, phi_u_002_index, val_x, val_y);
+                insert_bottom_left_block(psi_p_index, phi_u_002_index, val);
             }
-            
-            // Integrate psi^p at v against phi^u_020.
-            // zero
-            
-            // Integrate psi^p at v against phi^u_200.
-            // zero
-            
-            // Integrate psi^p at v against phi^u_110.
-            val_x = R * ((1./6.)*K1.dot(K1) + (1./6.)*K2.dot(K1));
-            val_y = R * ((1./6.)*K1.dot(K2) + (1./6.)*K2.dot(K2));
+
+
+            val = (1./6.) * K3.perp();
             if (edge_110.on_boundary()) {
                 vec2 bv = u_boundary[edge_110];
-                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
+                rhs[2*N_u + psi_p_index] -= vec2::dot(bv, val);
             } else {
-                insert_bottom_left_block(psi_p_index, phi_u_110_index, val_x, val_y);
+                insert_bottom_left_block(psi_p_index, phi_u_110_index, val);
             }
-            
-            // Integrate psi^p at v against phi^u_011.
-            val_x = R * ((-1./6.)*K1.dot(K1) + (1./6.)*K2.dot(K1));
-            val_y = R * ((-1./6.)*K1.dot(K2) + (1./6.)*K2.dot(K2));
+
+            val = (-1./6.) * (K2 - K1).perp();
             if (edge_011.on_boundary()) {
                 vec2 bv = u_boundary[edge_011];
-                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
+                rhs[2*N_u + psi_p_index] -= vec2::dot(bv, val);
             } else {
-                insert_bottom_left_block(psi_p_index, phi_u_011_index, val_x, val_y);
+                insert_bottom_left_block(psi_p_index, phi_u_011_index, val);
             }
-            
+
             // Integrate psi^p at v against phi^u_101.
-            val_x = R * ((1./6.)*K1.dot(K1) + (-1./6.)*K2.dot(K1));
-            val_y = R * ((1./6.)*K1.dot(K2) + (-1./6.)*K2.dot(K2));
+            val = (-1./6.) * (K1 - K2).perp();
             if (edge_101.on_boundary()) {
                 vec2 bv = u_boundary[edge_101];
-                rhs[2*N_u + psi_p_index] -= bv.x()*val_x + bv.y()*val_y;
+                rhs[2*N_u + psi_p_index] -= vec2::dot(bv, val);
             } else {
-                insert_bottom_left_block(psi_p_index, phi_u_101_index, val_x, val_y);
+                insert_bottom_left_block(psi_p_index, phi_u_101_index, val);
             }
+            
             he = he.twin().next();
         } while (!he.face().null() && he != start);
     }
-} // end if (BUILD_TOP_RIGHT)
+} // end if (BUILD_BOTTOM_LEFT)
     
 
     // Finalize the mass matrix.

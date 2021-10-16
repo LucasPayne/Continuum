@@ -58,6 +58,7 @@ struct Solver {
     
     // Poisson subproblem (different boundary conditions)
     void scalar_poisson_system(SparseMatrix &mass_matrix, Eigen::VectorXd &rhs, PlaneFunction source, PlaneFunction dirichlet_boundary_function);
+    SparseMatrix laplacian_matrix_P1();
     
     int wi_iteration_number; // Start at n=0.
     // N_u: The number of vector coefficients of u.
@@ -105,9 +106,11 @@ struct Solver {
     //================================================================================
     // Chorin projection
     // void scalar_poisson_chorin(SparseMatrix &matrix, Eigen::VectorXd &rhs, VertexAttachment<double> source);
-
+    P2Attachment<double> div_u_P2;
     SparseMatrix gramian_matrix_P2();
-    void div_P2_P2(P2Attachment<vec2> &vf, P2Attachment<double> &div); // Compute the divergence of vf in P2_2 projected into P2.
+    SparseMatrix gramian_matrix_P2_0();
+    void div_P2_P2(P2Attachment<vec2> &vf, P2Attachment<double> &div); // Compute the divergence of vf in P2^2 projected into P2_0.
+    Eigen::VectorXd _u_div_l2_proj; //...
 };
 
 Solver::Solver(SurfaceGeometry &_geom, double _mu) :
@@ -121,7 +124,8 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
     interior_vertex_indices(_geom.mesh),
     interior_midpoint_indices(_geom.mesh),
     midpoints(_geom.mesh),
-    geom{_geom}
+    geom{_geom},
+    div_u_P2{_geom.mesh}
 {
     solving = false;
 
@@ -237,20 +241,13 @@ void Solver::iterate()
 {
     // Compute the Laplacian matrix and boundary terms.
     velocity_laplacian_system(velocity_laplacian_matrix, velocity_laplacian_rhs);
-
-    for (auto v : geom.mesh.vertices()) {
-        p[v] = 0.;
-    }
-    // Compute the pressure gradient source term.
-    Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
-
+    // Solve for the non-pressure u*.
     Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > solver;
     solver.analyzePattern(velocity_laplacian_matrix);
     solver.factorize(velocity_laplacian_matrix);
-    Eigen::VectorXd u_vector = solver.solve(rhs);
-    /*--------------------------------------------------------------------------------
-    // Reassociate each velocity coefficient (or boundary value) with the corresponding vertex or edge of the mesh.
-    --------------------------------------------------------------------------------*/
+    Eigen::VectorXd u_vector = solver.solve(velocity_laplacian_rhs);
+
+    // Reassociate each velocity coefficient to the P2 mesh.
     int interior_vertex_index = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) {
@@ -271,12 +268,30 @@ void Solver::iterate()
             interior_midpoint_index += 1;
         }
     }
-    pressure_update(true); // compute div(u)
+    // Compute _u_div_l2_proj.
+    pressure_update(true);
 
-    // Solve -Laplacian(gamma) = -
-    SparseMatrix gamma_matrix;
-    Eigen::VectorXd gamma_rhs;
-    scalar_poisson_chorin(gamma_matrix, gamma_rhs, div_u);
+    // Solve -Laplacian(gamma) = -div(u).
+    SparseMatrix laplacian = laplacian_matrix_P1();
+    Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > laplacian_solver;
+    solver.analyzePattern(laplacian);
+    solver.factorize(laplacian);
+    Eigen::VectorXd gamma_vector = solver.solve(_u_div_l2_proj);
+
+    // Reassociate each gamma value to the P1 mesh.
+    interior_vertex_index = 0;
+    VertexAttachment<double> gamma(geom.mesh);
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) {
+            gamma[v] = 0.;
+        } else {
+            gamma[v] = gamma_vector[interior_vertex_index];
+            interior_vertex_index += 1;
+        }
+    }
+
+    // Project grad(gamma) to P2.
+    
 
 }
 #else

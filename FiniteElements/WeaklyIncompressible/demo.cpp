@@ -39,6 +39,7 @@ struct Demo : public IBehaviour {
     GLuint sprite_vao;
     bool wireframe;
     bool vector_field;
+    bool show_div_P2; // plot the divergence in P2 space
 
     // Screenshot
     int screenshot_blx;
@@ -172,6 +173,7 @@ Demo::Demo()
     // Plotting options
     wireframe = false;
     vector_field = true;
+    show_div_P2 = false;
 
     recreate_solver();
 
@@ -240,6 +242,18 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_2) {
             vector_field = !vector_field;
+        }
+        if (e.key.code == KEY_5) {
+            solver->div_P2_P2(solver->u, solver->div_u_P2);
+            
+            // test for zero divergence
+            // P2Attachment<vec2> vf(solver->geom.mesh);
+            // for (auto v : solver->geom.mesh.vertices()) vf[v] = vec2(1,0);
+            // for (auto e : solver->geom.mesh.edges()) vf[e] = vec2(1,0);
+            // solver->div_P2_P2(vf, solver->div_u_P2);
+        }
+        if (e.key.code == KEY_6) {
+            show_div_P2 = !show_div_P2;
         }
         if (e.key.code == KEY_M) {
             mesh_mode = (mesh_mode + 1) % NUM_MESH_MODES;
@@ -315,6 +329,7 @@ void Demo::post_render_update()
     std::vector<vec2> velocity_data;
     std::vector<float> pressure_data;
     std::vector<float> div_u_data;
+    std::vector<float> div_u_P2_data;
     // Create a 6-vertex patch per triangle.
     for (auto tri : geom->mesh.faces()) {
         auto start = tri.halfedge();
@@ -331,6 +346,8 @@ void Demo::post_render_update()
             pressure_data.push_back(0.f); // Dummy data, as there is no midpoint pressure.
             div_u_data.push_back(solver->div_u[v]);
             div_u_data.push_back(0.f); // Dummy data, as there is no midpoint div(u).
+            div_u_P2_data.push_back(solver->div_u_P2[v]);
+            div_u_P2_data.push_back(solver->div_u_P2[e]);
 
             he = he.next();
         } while (he != start);
@@ -344,21 +361,22 @@ void Demo::post_render_update()
     GLuint vao;
     glCreateVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    GLuint vbos[4]; // position, velocity, pressure
-    glGenBuffers(4, vbos);
+    GLuint vbos[5]; // position, velocity, pressure
+    glGenBuffers(5, vbos);
     struct {
         const void *data;
         size_t data_size;
         size_t gl_data_number;
         GLenum gl_data_type;
-    } data_to_upload[4] = {
+    } data_to_upload[5] = {
         {&position_data[0], sizeof(vec2), 2, GL_FLOAT}, // position
         {&velocity_data[0], sizeof(vec2), 2, GL_FLOAT}, // velocity (P2)
         {&pressure_data[0], sizeof(float), 1, GL_FLOAT}, // pressure (P1)
-        {&div_u_data[0], sizeof(float), 1, GL_FLOAT} // divergence of velocity (P1)
+        {&div_u_data[0], sizeof(float), 1, GL_FLOAT}, // divergence of velocity (P1)
+        {&div_u_P2_data[0], sizeof(float), 1, GL_FLOAT} // divergence of velocity (P2)
     };
     // Upload the data.
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         auto metadata = data_to_upload[i];
         glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
         glBufferData(GL_ARRAY_BUFFER, data_num_vertices * metadata.data_size, metadata.data, GL_DYNAMIC_DRAW);
@@ -368,6 +386,7 @@ void Demo::post_render_update()
 
     // Render to texture.
     solution_shader.bind();
+    glUniform1i(solution_shader.uniform_location("show_div_P2"), show_div_P2 ? 1 : 0);
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport); // save the viewport to restore after rendering sample geometry.
     glDisable(GL_SCISSOR_TEST);

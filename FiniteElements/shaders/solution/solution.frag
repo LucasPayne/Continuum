@@ -5,9 +5,12 @@ in TES_OUT {
     flat vec2 velocities[6];
     float pressure;
     float divergence;
+    float divergence_P2[6];
 } fs_in;
 
 out vec4 color; // render-to-texture, (velocity_x, velocity_y, pressure, 1)
+
+uniform int show_div_P2;
 
 
 void main(void)
@@ -32,4 +35,15 @@ void main(void)
         velocity += q[i] * fs_in.velocities[i];
     }
     color = vec4(velocity, fs_in.pressure, fs_in.divergence);
+
+    // Evaluate P2 divergence.
+    float divergence_P2 = 0.;
+    for (int i = 0; i < 6; i++) {
+        divergence_P2 += q[i] * fs_in.divergence_P2[i];
+    }
+    if (show_div_P2 == 1) {
+        color = vec4(velocity, fs_in.pressure, divergence_P2);
+    } else {
+        color = vec4(velocity, fs_in.pressure, fs_in.divergence);
+    }
 }
