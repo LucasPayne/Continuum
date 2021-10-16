@@ -115,12 +115,16 @@ void Solver::pressure_update(bool dont_actually_update)
         // u_div_l2_proj[v_index] = 0.5;
 
         rhs[v_index] += C*integral;
+        
+        // rhs[v_index] += (1 + (1.2*cos(total_time*3.13231+2*M_PI*frand()))*v_pos.x()*v_pos.x() + (1.167*cos(total_time*5.1212222 + 0.2131 + 2*M_PI*frand()))*v_pos.y()*v_pos.y())*C*integral;
+        // rhs[v_index] += (2 - v_pos.x()*v_pos.x() - v_pos.z()*v_pos.z()) * C*integral;
     }
 
     Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > solver;
     solver.analyzePattern(pressure_gramian_matrix);
     solver.factorize(pressure_gramian_matrix);
     Eigen::VectorXd p_vector = solver.solve(rhs);
+
     double zeroize_pressure = p_vector[0];
     p_vector[0] = 0.;
     for (int i = 1; i < N_p; i++) p_vector[i] -= zeroize_pressure;

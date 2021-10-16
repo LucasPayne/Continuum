@@ -522,10 +522,13 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   ../WeaklyIncompressible/velocity_laplacian_system.cpp \
   ../WeaklyIncompressible/scalar_poisson_system.cpp \
   ../WeaklyIncompressible/project_divergence.cpp \
+  ../WeaklyIncompressible/div_P2_P2.cpp \
   ../WeaklyIncompressible/demo.cpp
 
 
 ../WeaklyIncompressible/demo.cpp:
+
+../WeaklyIncompressible/div_P2_P2.cpp:
 
 ../WeaklyIncompressible/project_divergence.cpp:
 

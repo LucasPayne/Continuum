@@ -504,4 +504,5 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/velocity_laplacian_system.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/scalar_poisson_system.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/project_divergence.cpp \
+  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/div_P2_P2.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/demo.cpp

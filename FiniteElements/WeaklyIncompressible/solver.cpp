@@ -85,6 +85,7 @@ struct Solver {
     //------------------------------------------------------------
     // Flat index ordering of vertices and midpoints.
     VertexAttachment<int> vertex_indices;
+    EdgeAttachment<int> midpoint_indices;
     VertexAttachment<int> interior_vertex_indices;
     EdgeAttachment<int> interior_midpoint_indices;
     // Store precomputed midpoints for convenience.
@@ -100,6 +101,13 @@ struct Solver {
 
     // Misc. additions for debugging.
     bool write_sparsity_pattern;
+
+    //================================================================================
+    // Chorin projection
+    // void scalar_poisson_chorin(SparseMatrix &matrix, Eigen::VectorXd &rhs, VertexAttachment<double> source);
+
+    SparseMatrix gramian_matrix_P2();
+    void div_P2_P2(P2Attachment<vec2> &vf, P2Attachment<double> &div); // Compute the divergence of vf in P2_2 projected into P2.
 };
 
 Solver::Solver(SurfaceGeometry &_geom, double _mu) :
@@ -109,6 +117,7 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
     div_u(_geom.mesh),
     u_boundary(_geom.mesh),
     vertex_indices(_geom.mesh),
+    midpoint_indices(_geom.mesh),
     interior_vertex_indices(_geom.mesh),
     interior_midpoint_indices(_geom.mesh),
     midpoints(_geom.mesh),
@@ -132,6 +141,7 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
         vertex_indices[v] = num_vertices;
         num_vertices += 1;
     }
+    int num_midpoints = 0;
     for (auto edge : geom.mesh.edges()) {
         if (edge.on_boundary()) {
             interior_midpoint_indices[edge] = -1;
@@ -140,6 +150,8 @@ Solver::Solver(SurfaceGeometry &_geom, double _mu) :
             interior_midpoint_indices[edge] = num_interior_edges;
             num_interior_edges += 1;
         }
+        midpoint_indices[edge] = num_midpoints;
+        num_midpoints += 1;
     }
     // Compute midpoints.
     for (auto edge : geom.mesh.edges()) {
@@ -211,7 +223,63 @@ void Solver::set_pressure(PlaneFunction _pressure)
 #include "WeaklyIncompressible/scalar_poisson_system.cpp"
 #include "WeaklyIncompressible/project_divergence.cpp"
 
+#include "WeaklyIncompressible/div_P2_P2.cpp"
 
+
+// void Solver::scalar_poisson_chorin(SparseMatrix &matrix, Eigen::VectorXd &rhs, P2Attachment)
+// {
+//     
+// }
+
+
+#if 0
+void Solver::iterate()
+{
+    // Compute the Laplacian matrix and boundary terms.
+    velocity_laplacian_system(velocity_laplacian_matrix, velocity_laplacian_rhs);
+
+    for (auto v : geom.mesh.vertices()) {
+        p[v] = 0.;
+    }
+    // Compute the pressure gradient source term.
+    Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
+
+    Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > solver;
+    solver.analyzePattern(velocity_laplacian_matrix);
+    solver.factorize(velocity_laplacian_matrix);
+    Eigen::VectorXd u_vector = solver.solve(rhs);
+    /*--------------------------------------------------------------------------------
+    // Reassociate each velocity coefficient (or boundary value) with the corresponding vertex or edge of the mesh.
+    --------------------------------------------------------------------------------*/
+    int interior_vertex_index = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) {
+            u[v] = u_boundary[v];
+        } else {
+            u[v] = vec2(u_vector[2*interior_vertex_index+0],
+		        u_vector[2*interior_vertex_index+1]);
+            interior_vertex_index += 1;
+        }
+    }
+    int interior_midpoint_index = 0;
+    for (auto edge : geom.mesh.edges()) {
+        if (edge.on_boundary()) {
+            u[edge] = u_boundary[edge];
+        } else {
+            u[edge] = vec2(u_vector[2*(num_interior_vertices + interior_midpoint_index) + 0],
+                           u_vector[2*(num_interior_vertices + interior_midpoint_index) + 1]);
+            interior_midpoint_index += 1;
+        }
+    }
+    pressure_update(true); // compute div(u)
+
+    // Solve -Laplacian(gamma) = -
+    SparseMatrix gamma_matrix;
+    Eigen::VectorXd gamma_rhs;
+    scalar_poisson_chorin(gamma_matrix, gamma_rhs, div_u);
+
+}
+#else
 void Solver::iterate()
 {
     if (!solving) {
@@ -219,27 +287,34 @@ void Solver::iterate()
         
         // Compute the Laplacian matrix and boundary terms.
         velocity_laplacian_system(velocity_laplacian_matrix, velocity_laplacian_rhs);
-
-        // Initialize the pressure.
-        // for (auto v : geom.mesh.vertices()) {
-        //     // p[v] = frand();
-        //     p[v] = -100;
-        // }
         
         // // Initialize the velocity.
-        // for (auto v : geom.mesh.vertices()) {
-        //     if (v.on_boundary()) u[v] = u_boundary[v];
-        //     else u[v] = vec2(0,0);
-        // }
-        // for (auto e : geom.mesh.edges()) {
-        //     if (e.on_boundary()) u[e] = u_boundary[e];
-        //     else u[e] = vec2(0,0);
-        // }
+        for (auto v : geom.mesh.vertices()) {
+            if (v.on_boundary()) u[v] = u_boundary[v];
+            else u[v] = vec2(0,0);
+        }
+        for (auto e : geom.mesh.edges()) {
+            if (e.on_boundary()) u[e] = u_boundary[e];
+            else u[e] = vec2(0,0);
+        }
+
+        // Initialize the pressure.
+        // pressure_update(false);
+        for (auto v : geom.mesh.vertices()) {
+            // p[v] = 0.;
+            // p[v] = frand();
+            // if (v.on_boundary()) {
+            //     p[v] = -2;
+            // } else {
+            //     p[v] = 2;
+            // }
+        }
+        pressure_update(true); // compute div(u)
+
+        solving = true;
         // return;
-        // solving is set to true at the end.
     }
     // Compute the pressure gradient source term.
-    // Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
     Eigen::VectorXd rhs = velocity_laplacian_rhs + pressure_gradient_source();
 
     /*--------------------------------------------------------------------------------
@@ -282,5 +357,5 @@ void Solver::iterate()
     pressure_update(!solving); // don't actually update the pressure for the first iteration.
     solving = true;
 }
-
+#endif
 

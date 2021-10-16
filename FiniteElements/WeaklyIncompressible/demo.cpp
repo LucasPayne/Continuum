@@ -50,6 +50,7 @@ struct Demo : public IBehaviour {
     float f_screenshot_trx;
     float f_screenshot_try;
 
+    float C; // Iteration parameter.
 };
 
 
@@ -162,6 +163,7 @@ Demo::Demo()
 {
     mu = 1;
     flow_mode = false;
+    C = 0.008;
 
     // Mesh generation options
     mesh_N = 4;
@@ -248,7 +250,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
             recreate_solver();
         }
         if (e.key.code == KEY_I) {
-            solver->C = 0.0008;
+            solver->C = C;
             solver->iterate();
         }
         if (e.key.code == KEY_Y) {
@@ -283,6 +285,9 @@ void Demo::update()
         };
         world->graphics.paint.chain_2D(ps, 1, vec4(1,0,0,1));
     }
+    const float sp = 3;
+    if (world->input.keyboard.down(KEY_3)) C *= 1 - sp*dt;
+    if (world->input.keyboard.down(KEY_4)) C *= 1 + sp*dt;
 }
 
 
@@ -301,7 +306,7 @@ void Demo::post_render_update()
     // }
     
     if (flow_mode) {
-        solver->C = 0.05*dt;
+        solver->C = (0.05/0.008)*C*dt;
         solver->iterate();
     }
 
