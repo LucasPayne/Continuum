@@ -561,10 +561,16 @@ Demo::Demo()
     });
     manufactured_solutions.push_back({
         [](double x, double y)->double {
-            return 0.5*cos(8*x)*y + exp(-x*x)*0.5*y*y+1.3;
+            if (x < 0 && fabs(y) < 0.5) return 1.5;
+            return 0.5*cos(8*x)*y + exp(-x*x)*0.5*y*y+0.5;
+            // if (x < 0) {
+            //     if (y < 0.75) return 1+0.6;
+            // }
+            // return 0.25*(0.5*cos(7*x)*y + exp(-x*x)*0.5*y*y+0.5) + 0.6 + (1-y)*(1-y)*0.3;
         },
         [](double x, double y)->double {
-            return -y*(2.0*x*x*y*exp(-x*x) - 1.0*y*exp(-x*x) - 32.0*cos(8*x)) - 1.0*exp(-x*x);
+            // return -y*(2.0*x*x*y*exp(-x*x) - 1.0*y*exp(-x*x) - 32.0*cos(8*x)) - 1.0*exp(-x*x);
+            return 0;
         }
     });
     manufactured_solutions.push_back({
@@ -621,13 +627,13 @@ void Demo::post_render_update()
 {
     // Recreate the mesh.
     if (geom != nullptr) delete geom;
-    srand(230192301);
+    srand(2302131);
     if (linear_mode) {
-        // geom = circle_mesh(mesh_N*2, random);
-        geom = square_mesh(mesh_N*2);
+        geom = circle_mesh(mesh_N*2, random);
+        // geom = square_mesh(mesh_N*2);
     } else {
-        // geom = circle_mesh(mesh_N, random);
-        geom = square_mesh(mesh_N);
+        geom = circle_mesh(mesh_N, random);
+        // geom = square_mesh(mesh_N);
     }
     // Compute Edge midpoints.
     auto midpoints = EdgeAttachment<Eigen::Vector3f>(geom->mesh);
@@ -765,7 +771,7 @@ if (!render_exact_solution) {
     // Render the quadratic surface.
     glClear(GL_DEPTH_BUFFER_BIT); //...
     glEnable(GL_DEPTH_TEST);
-    #if 1
+    #if 0
     GLShaderProgram *quadratic_shaders[2] = {&quadratic_mesh_shader, &quadratic_function_shader};
     #else
     GLShaderProgram *quadratic_shaders[1] = {&quadratic_mesh_shader};
@@ -865,6 +871,7 @@ if (!render_exact_solution) {
 
     // Draw boundary condition
     // Square
+#if 0
     int num = 300;
     for (int t = -1; t <= 1; t += 2) {
         for (int axis = 0; axis <= 1; axis++) {
@@ -879,6 +886,16 @@ if (!render_exact_solution) {
             world->graphics.paint.chain(bc, 0.01, vec4(0,0,0,1));
         }
     }
+#endif
+    // Circle
+    int num = 300;
+    auto bc = std::vector<vec3>();
+    for (int i = 0; i <= num; i++) {
+        float theta = i*2*M_PI/num;
+	vec2 v = vec2(cos(theta), sin(theta));
+	bc.push_back(vec3(v.x(), solver.dirichlet_boundary_function(v.x(), v.y()), v.y()));
+    }
+    world->graphics.paint.chain(bc, 0.01, vec4(0,0,0,1));
 }
 
 

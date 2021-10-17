@@ -1752,3 +1752,36 @@ def integrate_gradients(a,b,c, i,j,k):
     \label{quadratic_fem_error_page}
 \end{figure}
 
+
+\begin{align*}
+    \begin{bmatrix}
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+    \end{bmatrix}\begin{bmatrix}
+        u_{1x}\\
+        u_{1y}\\
+        \vdots\\
+        u_{n_ux}\\
+        u_{n_uy}\\
+        p_1\\
+        \vdots\\
+        p_{n_p - 1}
+    \end{bmatrix}
+    = \begin{bmatrix}
+        u_{1x}\\
+        u_{1y}\\
+        \vdots\\
+        u_{n_ux}\\
+        u_{n_uy}\\
+        p_1\\
+        \vdots\\
+        p_{n_p - 1}
+    \end{bmatrix}
+\end{align*}

@@ -53,15 +53,6 @@ App::App(World &_world) : world{_world}
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     //------------------------------------------------------------
 
-    auto cameraman = world.entities.add();
-    auto camera = cameraman.add<Camera>(0.1, 300, 0.1, 0.566);
-    camera->background_color = vec4(1,1,1,1);
-    auto t = cameraman.add<Transform>(0,2,0);
-    main_camera = camera;
-    auto controller = world.add<CameraController>(cameraman);
-    controller->angle = -M_PI/2;
-    controller->azimuth = M_PI;
-    
     // Create the demo.
     demo_e = world.entities.add();
     auto demo = world.add<Demo>(demo_e);

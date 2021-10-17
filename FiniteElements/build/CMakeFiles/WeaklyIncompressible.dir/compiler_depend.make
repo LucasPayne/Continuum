@@ -536,8 +536,11 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   ../WeaklyIncompressible/project_divergence.cpp \
   ../WeaklyIncompressible/div_P2_P2.cpp \
   ../WeaklyIncompressible/TaylorHood.cpp \
-  ../WeaklyIncompressible/demo.cpp
+  ../WeaklyIncompressible/demo.cpp \
+  ../WeaklyIncompressible/take_high_res_screenshots.cpp
 
+
+../WeaklyIncompressible/take_high_res_screenshots.cpp:
 
 ../WeaklyIncompressible/demo.cpp:
 

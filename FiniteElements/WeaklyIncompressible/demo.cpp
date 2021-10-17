@@ -13,6 +13,10 @@ enum MeshModes {
 
 struct Demo : public IBehaviour {
     Demo();
+    void init();
+
+    CameraController* controller;
+
     void update();
     void post_render_update();
     void keyboard_handler(KeyboardEvent e);
@@ -58,8 +62,14 @@ struct Demo : public IBehaviour {
     float f_screenshot_trx;
     float f_screenshot_try;
 
+    // Screenshots for specific figures.
+    void take_high_res_screenshot(int n);
+    int high_res_screenshot_n;
+
     float C; // Iteration parameter.
 };
+
+#include "WeaklyIncompressible/take_high_res_screenshots.cpp"
 
 
 void Demo::recreate_solver()
@@ -204,6 +214,7 @@ void Demo::recreate_solver()
 
 Demo::Demo()
 {
+    // Set solver parameters.
     mu = 1;
     flow_mode = false;
     C = 0.008;
@@ -220,6 +231,8 @@ Demo::Demo()
     vector_field = true;
     show_div_P2 = false;
     many_sample_curve = false;
+
+    high_res_screenshot_n = 0;
 
     recreate_solver();
 
@@ -265,6 +278,20 @@ Demo::Demo()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
+}
+
+void Demo::init()
+{
+    // Create a camera controller.
+    auto cameraman = world->entities.add();
+    auto camera = cameraman.add<Camera>(0.1, 300, 0.1, 0.566);
+    camera->background_color = vec4(1,1,1,1);
+    auto t = cameraman.add<Transform>(0,2,0);
+    main_camera = camera;
+    controller = world->add<CameraController>(cameraman);
+    controller->angle = -M_PI/2;
+    controller->azimuth = M_PI;
+
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
@@ -314,10 +341,10 @@ void Demo::keyboard_handler(KeyboardEvent e)
             mesh_N = 50;
             recreate_solver();
         }
-        if (e.key.code == KEY_I) {
-            solver->C = C;
-            solver->iterate();
-        }
+        // if (e.key.code == KEY_I) {
+        //     solver->C = C;
+        //     solver->iterate();
+        // }
         if (e.key.code == KEY_7) {
             solver->solve_taylor_hood();
             solver->pressure_update(true);
@@ -337,6 +364,10 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_0) {
             many_sample_curve = !many_sample_curve;
             recreate_solver();
+        }
+        if (e.key.code == KEY_I) {
+            take_high_res_screenshot(high_res_screenshot_n);
+            high_res_screenshot_n = (high_res_screenshot_n+1)%4;
         }
         static int counter = 0;
         std::string pre = DATA + ("stokes_" + std::to_string(mesh_mode) + "_" + (wireframe ? "wireframe" : "velocity") + "_" + std::to_string(counter));
@@ -534,23 +565,50 @@ void Demo::post_render_update()
         auto solution_pixels = std::vector<float>(4*1024*1024);
         glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
         glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
-        const int skip = 20;
+        std::vector<float> pressures;
+        // const int skip = 20;
+        const int skip = 14;
         // const int skip = 35;
+	std::vector<vec2> positions_2D;
         for (int i = 0; i < 1024; i += skip) {
             float x = -1 + i*2.f/(1024-1.f);
             for (int j = 0; j < 1024; j += skip) {
                 float y = -1 + j*2.f/(1024-1.f);
                 float velocity_x = solution_pixels[4*(1024*j + i) + 0];
                 float velocity_y = solution_pixels[4*(1024*j + i) + 1];
+                float pressure = solution_pixels[4*(1024*j + i) + 2];
                 const float thickness = 0.005;
                 const vec4 color = vec4(0,0,0,1);
                 const float epsilon = 1e-5;
                 if (fabs(velocity_x) < epsilon && fabs(velocity_y) < epsilon) {
                 } else {
-                    world->graphics.paint.sphere(vec3(x, 0, y), 0.0075, vec4(0,0,0,1));
-                    world->graphics.paint.line(vec3(x, 0, y), vec3(x + velocity_mul*velocity_x, 0, y + velocity_mul*velocity_y), thickness, color);
+                    // world->graphics.paint.sphere(vec3(x, 0.005, y), 0.003, vec4(0,0,0,1));
+                    world->graphics.paint.line(vec3(x, 0.005, y), vec3(x + velocity_mul*velocity_x, 0, y + velocity_mul*velocity_y), thickness, color);
+	            pressures.push_back(pressure);
+                    positions_2D.push_back(vec2(x,y));
                 }
             }
+        }
+        const float circle_wid = 0.006;
+        float x_half_wid = 1.25;
+        float extent = 1.05*x_half_wid/4;
+        float w = extent;
+        float h = 0.566*extent;
+        vec2 screenshot_positions[4] = {
+            vec2(5*x_half_wid/8, 0),
+            vec2(x_half_wid/4, 0),
+            vec2(-x_half_wid/4, 0),
+            vec2(-5*x_half_wid/8, 0)
+        };
+        for (int i = 0; i < positions_2D.size(); i++) {
+            positions_2D[i].x() = 0.5*(positions_2D[i].x() - screenshot_positions[(high_res_screenshot_n+3)%4].x())/w + 0.5;
+            positions_2D[i].y() = 1 - (0.5*(positions_2D[i].y() - screenshot_positions[(high_res_screenshot_n+3)%4].y())/h + 0.5);
+        }
+        
+        std::vector<vec2> pos(1);
+        for (int i = 0; i < positions_2D.size(); i++) {
+            pos[0] = positions_2D[i] - vec2(0,0.0038);
+            world->graphics.paint.circles(main_camera, pos, circle_wid, vec4(pressures[i],pressures[i],pressures[i],1), 0.3, vec4(0,0,0,1));
         }
     }
 
@@ -578,6 +636,8 @@ void Demo::post_render_update()
         // {3*width,0, 4*width,height},
     };
     
+    // Show solution sprites.
+#if 0
     sprite_shader.bind();
     // glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -595,11 +655,11 @@ void Demo::post_render_update()
     // glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     sprite_shader.unbind();
-
+#endif
 
     // Draw wireframe or base.
     if (wireframe) {
-        float thickness = 0.003;
+        float thickness = 0.00125;
         world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
         for (auto v : geom->mesh.vertices()) {
             // world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.0075, vec4(0.9,0.9,0.9,1));
@@ -621,36 +681,38 @@ void Demo::post_render_update()
             world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
         }
     // Draw boundary condition.
-    for (auto start : geom->mesh.boundary_loops()) {
-        auto ps = std::vector<vec3>();
-        auto he = start;
-        do {
-            auto v = he.vertex();
-            auto e = he.edge();
-            vec3 bv[2] = {
-                vec3(solver->u_boundary[v].x(), 0, solver->u_boundary[v].y()),
-                vec3(solver->u_boundary[e].x(), 0, solver->u_boundary[e].y()) };
-            vec3 pos[2] = {eigen_to_vec3(geom->position[v]),
-                        eigen_to_vec3(solver->midpoints[e])};
-            vec3 shift = vec3(0,0.0001,0);
-            const float epsilon = 1e-5;
-            for (int i = 0; i < 2; i++) {
-                if (bv[i].length() > epsilon) {
-                    // world->graphics.paint.sphere(pos[i]+shift, 0.016, vec4(1,0.6,0.6,1));
-                    const float line_wid = 0.005;
-                    world->graphics.paint.line(pos[i]+shift, shift+pos[i] + bv[i]*velocity_mul, line_wid, vec4(1,0.6,0.6,1));
-                    // arrow head
-                    const float arrow_wid = 0.015;
-                    vec3 tip = 1.0001*shift+pos[i]+bv[i]*velocity_mul;
-                    vec3 bv_perp = vec3(-bv[i].z(), 0, bv[i].x());
-                    vec3 arrow_bit_1 = tip - arrow_wid*bv[i].normalized() + arrow_wid*bv_perp.normalized();
-                    vec3 arrow_bit_2 = tip - arrow_wid*bv[i].normalized() - arrow_wid*bv_perp.normalized();
-                    world->graphics.paint.line(tip, arrow_bit_1, line_wid, vec4(1,0.6,0.6,1));
-                    world->graphics.paint.line(tip, arrow_bit_2, line_wid, vec4(1,0.6,0.6,1));
+    if (many_sample_curve) { //drawing specific figure
+        for (auto start : geom->mesh.boundary_loops()) {
+            auto ps = std::vector<vec3>();
+            auto he = start;
+            do {
+                auto v = he.vertex();
+                auto e = he.edge();
+                vec3 bv[2] = {
+                    vec3(solver->u_boundary[v].x(), 0, solver->u_boundary[v].y()),
+                    vec3(solver->u_boundary[e].x(), 0, solver->u_boundary[e].y()) };
+                vec3 pos[2] = {eigen_to_vec3(geom->position[v]),
+                            eigen_to_vec3(solver->midpoints[e])};
+                vec3 shift = vec3(0,0.04,0);
+                const float epsilon = 1e-5;
+                for (int i = 0; i < 2; i++) {
+                    if (bv[i].length() > epsilon) {
+                        world->graphics.paint.sphere(pos[i]+shift, 0.003, vec4(1,0.6,0.6,1));
+                        const float line_wid = 0.005;
+                        world->graphics.paint.line(pos[i]+shift, shift+pos[i] + bv[i]*velocity_mul, line_wid, vec4(1,0.6,0.6,1));
+                        // arrow head
+                        const float arrow_wid = 0.015;
+                        vec3 tip = 1.0001*shift+pos[i]+bv[i]*velocity_mul;
+                        vec3 bv_perp = vec3(-bv[i].z(), 0, bv[i].x());
+                        vec3 arrow_bit_1 = tip - arrow_wid*bv[i].normalized() + arrow_wid*bv_perp.normalized();
+                        vec3 arrow_bit_2 = tip - arrow_wid*bv[i].normalized() - arrow_wid*bv_perp.normalized();
+                        world->graphics.paint.line(tip, arrow_bit_1, line_wid, vec4(1,0.6,0.6,1));
+                        world->graphics.paint.line(tip, arrow_bit_2, line_wid, vec4(1,0.6,0.6,1));
+                    }
                 }
-            }
-            he = he.next();
-        } while (he != start);
+                he = he.next();
+            } while (he != start);
+        }
     }
 }
 

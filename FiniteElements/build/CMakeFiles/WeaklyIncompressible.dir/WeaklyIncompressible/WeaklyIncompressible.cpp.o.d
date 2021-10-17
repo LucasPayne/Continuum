@@ -518,4 +518,5 @@ CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cp
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/project_divergence.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/div_P2_P2.cpp \
   /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/TaylorHood.cpp \
-  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/demo.cpp
+  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/demo.cpp \
+  /home/lucas/Continuum/FiniteElements/WeaklyIncompressible/take_high_res_screenshots.cpp
