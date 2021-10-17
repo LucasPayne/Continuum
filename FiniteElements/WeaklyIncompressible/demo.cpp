@@ -27,6 +27,7 @@ struct Demo : public IBehaviour {
     double mu;
     float theta0; // for cylinder flow demos.
     bool solving_while_moving; // for visualizing the flow around the object.
+    bool many_sample_curve; // for getting a figure of the real curve
 
     // mesh generation options.
     int mesh_mode;
@@ -67,7 +68,7 @@ void Demo::recreate_solver()
 
 
     if (mesh_mode == MM_cylinder) { // Flow around a cylinder.
-        geom = square_minus_circle(0.28, theta0, 1, 1, mesh_N);
+        geom = square_minus_circle(0.28 / 3, theta0, 1, 1, mesh_N, false, vec2(0,0), many_sample_curve, 1,1/1.61803);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
         solver->set_u_boundary(
@@ -79,13 +80,14 @@ void Demo::recreate_solver()
             }
         );
     } else if (mesh_mode == MM_cylinder_2) {
-        geom = square_minus_circle(0.28, theta0, 0.3, 2.5, mesh_N, true);
+        // geom = square_minus_circle(0.28 / 6, theta0, 1, 1, mesh_N, false, vec2(0,0), many_sample_curve, 1,0.25/1.61803);
+        geom = square_minus_circle(0.28 / 6, theta0, 0.7, 2.2*1.5, mesh_N, true, vec2(0,0), many_sample_curve, 1,0.25/1.61803);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
         solver->set_u_boundary(
             [](double x, double y)->vec2 {
-                if (x < -0.99) return vec2(1,0);
-                if (x > 0.99) return vec2(1,0);
+                if (x < -0.99) return vec2(0.25,0);
+                if (x > 0.99) return vec2(0.25,0);
                 return vec2(0,0);
             }
         );
@@ -100,12 +102,12 @@ void Demo::recreate_solver()
         // Set the lid boundary condition explicitly, on the vertex and midpoint sample points.
         // (This is to avoid possible errors at corners if the boundary condition was specified with a function.)
         for (int i = 0; i < mesh_N+1; i++) {
-            solver->u_boundary[sq_mesh.vertex(i,mesh_N)] = vec2(1,0); // x is inverted...
+            solver->u_boundary[sq_mesh.vertex(i,mesh_N)] = vec2(-1,0); // x is inverted...
         }
         for (int i = 0; i < mesh_N; i++) {
             auto v1 = sq_mesh.vertex(i,mesh_N);
             auto v2 = sq_mesh.vertex(i+1,mesh_N);
-            solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(1,0);
+            solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(-1,0);
         }
         // for (int i = 0; i < mesh_N+1; i++) {
         //     solver->u_boundary[sq_mesh.vertex(i,0)] = vec2(-1,0); // x is inverted...
@@ -116,12 +118,13 @@ void Demo::recreate_solver()
         //     solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(-1,0);
         // }
     } else if (mesh_mode == MM_lid_driven_cavity_2) { // Lid-driven cavity with an obstruction.
-        geom = square_minus_circle(0.12, theta0, 1, 1, mesh_N, false, obstruction_position);
+        geom = square_minus_circle(0.25, theta0, 1, 1, mesh_N, false, obstruction_position, many_sample_curve);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
         solver->set_u_boundary(
             [](double x, double y)->vec2 {
-                if (y > 0.99) return vec2(3,0);
+                if (y > 0.99) return vec2(-3,0);
+                // if (y < -0.99) return vec2(-3,0);
                 return vec2(0,0);
             }
         );
@@ -216,6 +219,7 @@ Demo::Demo()
     wireframe = false;
     vector_field = true;
     show_div_P2 = false;
+    many_sample_curve = false;
 
     recreate_solver();
 
@@ -303,7 +307,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_N) {
             mesh_mode -= 1;
-            if (mesh_mode < 0) mesh_mode = 0;
+            if (mesh_mode < 0) mesh_mode = NUM_MESH_MODES-1;
             recreate_solver();
         }
         if (e.key.code == KEY_9) {
@@ -329,6 +333,10 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_Z) {
             solving_while_moving = !solving_while_moving;
+        }
+        if (e.key.code == KEY_0) {
+            many_sample_curve = !many_sample_curve;
+            recreate_solver();
         }
         static int counter = 0;
         std::string pre = DATA + ("stokes_" + std::to_string(mesh_mode) + "_" + (wireframe ? "wireframe" : "velocity") + "_" + std::to_string(counter));
@@ -526,9 +534,11 @@ void Demo::post_render_update()
         auto solution_pixels = std::vector<float>(4*1024*1024);
         glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
         glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
-        for (int i = 0; i < 1024; i += 28) {
+        const int skip = 20;
+        // const int skip = 35;
+        for (int i = 0; i < 1024; i += skip) {
             float x = -1 + i*2.f/(1024-1.f);
-            for (int j = 0; j < 1024; j += 28) {
+            for (int j = 0; j < 1024; j += skip) {
                 float y = -1 + j*2.f/(1024-1.f);
                 float velocity_x = solution_pixels[4*(1024*j + i) + 0];
                 float velocity_y = solution_pixels[4*(1024*j + i) + 1];
@@ -589,26 +599,27 @@ void Demo::post_render_update()
 
     // Draw wireframe or base.
     if (wireframe) {
-        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), 0.001);
+        float thickness = 0.003;
+        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
         for (auto v : geom->mesh.vertices()) {
-            world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.0075, vec4(0.9,0.9,0.9,1));
+            // world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.0075, vec4(0.9,0.9,0.9,1));
         }
         for (auto e : geom->mesh.edges()) {
-            world->graphics.paint.sphere(eigen_to_vec3(solver->midpoints[e]), 0.0075, vec4(0.9,0.9,0.9,1));
+            // world->graphics.paint.sphere(eigen_to_vec3(solver->midpoints[e]), 0.0075, vec4(0.9,0.9,0.9,1));
         }
-    } else {
+    }
         // Draw boundaries.
         for (auto start : geom->mesh.boundary_loops()) {
             auto ps = std::vector<vec3>();
             auto he = start;
             do {
-                ps.push_back(eigen_to_vec3(geom->position[he.vertex()]));
+                ps.push_back(vec3(0,0.0001,0)+eigen_to_vec3(geom->position[he.vertex()]));
                 he = he.next();
             } while (he != start);
-	    ps.push_back(ps[0]);
+            if (wireframe) ps.push_back(ps[0]);
+            else ps.push_back(ps[0]);
             world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
         }
-    }
     // Draw boundary condition.
     for (auto start : geom->mesh.boundary_loops()) {
         auto ps = std::vector<vec3>();
@@ -616,13 +627,28 @@ void Demo::post_render_update()
         do {
             auto v = he.vertex();
             auto e = he.edge();
-            auto v_bv = vec3(solver->u_boundary[v].x(), 0, solver->u_boundary[v].y());
-            auto e_bv = vec3(solver->u_boundary[e].x(), 0, solver->u_boundary[e].y());
-            vec3 v_pos = eigen_to_vec3(geom->position[v]);
-            vec3 e_pos = eigen_to_vec3(solver->midpoints[e]);
-            vec3 shift = vec3(0,0.02,0);
-            world->graphics.paint.line(v_pos+shift, shift+v_pos + v_bv*velocity_mul, 0.008, vec4(1,0.6,0.6,1));
-            world->graphics.paint.line(e_pos+shift, shift+e_pos + e_bv*velocity_mul, 0.008, vec4(1,0.6,0.6,1));
+            vec3 bv[2] = {
+                vec3(solver->u_boundary[v].x(), 0, solver->u_boundary[v].y()),
+                vec3(solver->u_boundary[e].x(), 0, solver->u_boundary[e].y()) };
+            vec3 pos[2] = {eigen_to_vec3(geom->position[v]),
+                        eigen_to_vec3(solver->midpoints[e])};
+            vec3 shift = vec3(0,0.0001,0);
+            const float epsilon = 1e-5;
+            for (int i = 0; i < 2; i++) {
+                if (bv[i].length() > epsilon) {
+                    // world->graphics.paint.sphere(pos[i]+shift, 0.016, vec4(1,0.6,0.6,1));
+                    const float line_wid = 0.005;
+                    world->graphics.paint.line(pos[i]+shift, shift+pos[i] + bv[i]*velocity_mul, line_wid, vec4(1,0.6,0.6,1));
+                    // arrow head
+                    const float arrow_wid = 0.015;
+                    vec3 tip = 1.0001*shift+pos[i]+bv[i]*velocity_mul;
+                    vec3 bv_perp = vec3(-bv[i].z(), 0, bv[i].x());
+                    vec3 arrow_bit_1 = tip - arrow_wid*bv[i].normalized() + arrow_wid*bv_perp.normalized();
+                    vec3 arrow_bit_2 = tip - arrow_wid*bv[i].normalized() - arrow_wid*bv_perp.normalized();
+                    world->graphics.paint.line(tip, arrow_bit_1, line_wid, vec4(1,0.6,0.6,1));
+                    world->graphics.paint.line(tip, arrow_bit_2, line_wid, vec4(1,0.6,0.6,1));
+                }
+            }
             he = he.next();
         } while (he != start);
     }
