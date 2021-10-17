@@ -406,7 +406,7 @@ void Solver::solve_taylor_hood()
         } else {
             p[v] = up[2*N_u + vertex_index];
         }
-        printf("%.6g\n", p[v]);
+        // printf("%.6g\n", p[v]);
         if (v.on_boundary()) {
             u[v] = u_boundary[v];
         } else {

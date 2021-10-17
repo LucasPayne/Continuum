@@ -235,8 +235,8 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
     #else
     std::vector<vec2> all_points;
 
-    int circle_N = 2*square_N;
-    std::vector<int> all_segments;
+    int circle_N = 8*square_N;
+    std::vector<int> segment_pieces;
 
     // float theta0 = 1.2;
     // float a = 0.7;
@@ -250,10 +250,11 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
         if (misc_curve) {
             all_points.push_back(r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
         } else {
-            all_points.push_back(r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
+            double c = 1 + 0.7*pow(sin(theta*2), 4);
+            all_points.push_back(c*r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
         }
-        all_segments.push_back(i);
-        all_segments.push_back((i+1)%circle_N);
+        segment_pieces.push_back(i);
+        segment_pieces.push_back((i+1)%circle_N);
     }
 
     for (int i = 0; i <= square_N; i++) {
@@ -282,8 +283,8 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
         p_mem[2*i] = all_points[i].x();
         p_mem[2*i+1] = all_points[i].y();
     }
-    int *segment_mem = (int *) malloc(sizeof(int)*all_segments.size());
-    for (int i = 0; i < all_segments.size(); i++) segment_mem[i] = all_segments[i];
+    int *segment_mem = (int *) malloc(sizeof(int)*segment_pieces.size());
+    for (int i = 0; i < segment_pieces.size(); i++) segment_mem[i] = segment_pieces[i];
 
     struct triangulateio in = {0};
     memset(&in, 0, sizeof(struct triangulateio));
@@ -292,12 +293,13 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
     in.numberofpointattributes = 0;
     in.pointmarkerlist = nullptr;
 
-    in.numberofsegments = all_segments.size();
+    in.numberofsegments = segment_pieces.size()/2;
     in.segmentlist = segment_mem;
     in.segmentmarkerlist = nullptr;
     // in.numberofholes = 0;
+    double *hole_mem = (double *) malloc(sizeof(double)*2);
     in.numberofholes = 1;
-    in.holelist = (double *) malloc(sizeof(double)*2);
+    in.holelist = hole_mem;
     in.holelist[0] = 0.;
     in.holelist[1] = 0.;
     
@@ -327,10 +329,10 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
         geom->mesh.add_triangle(vertices[a], vertices[b], vertices[c]);
     }
     // getchar();
-    geom->mesh.lock();
-    return geom;
 
+    geom->mesh.lock();
     free(p_mem);
     free(segment_mem);
+    free(hole_mem);
     return geom;
 }

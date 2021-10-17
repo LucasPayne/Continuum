@@ -25,6 +25,7 @@ struct Demo : public IBehaviour {
     int mesh_N;
     double mu;
     float theta0; // for cylinder flow demos.
+    bool solving_while_moving; // for visualizing the flow around the object.
 
     // mesh generation options.
     int mesh_mode;
@@ -64,7 +65,7 @@ void Demo::recreate_solver()
 
 
     if (mesh_mode == MM_cylinder) { // Flow around a cylinder.
-        geom = square_minus_circle(0.28, theta0, 0.7, 1.34, mesh_N);
+        geom = square_minus_circle(0.28, theta0, 1, 1, mesh_N);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
         solver->set_u_boundary(
@@ -197,6 +198,7 @@ Demo::Demo()
     mesh_mode = 0;
     random = false;
     theta0 = 1.2;
+    solving_while_moving = false;
     // Plotting options
     wireframe = false;
     vector_field = true;
@@ -307,6 +309,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_8) {
             solver->write_sparsity_pattern = true;
         }
+        if (e.key.code == KEY_Z) {
+            solving_while_moving = !solving_while_moving;
+        }
         static int counter = 0;
         std::string pre = DATA + ("stokes_" + std::to_string(mesh_mode) + "_" + (wireframe ? "wireframe" : "velocity") + "_" + std::to_string(counter));
         if (e.key.code == KEY_T) {
@@ -337,10 +342,18 @@ void Demo::update()
     if (world->input.keyboard.down(KEY_X)) {
         theta0 -= dt;
         recreate_solver();
+        if (solving_while_moving) {
+            solver->solve_taylor_hood();
+            solver->pressure_update(true);
+        }
     }
     if (world->input.keyboard.down(KEY_C)) {
         theta0 += dt;
         recreate_solver();
+        if (solving_while_moving) {
+            solver->solve_taylor_hood();
+            solver->pressure_update(true);
+        }
     }
 }
 
@@ -364,6 +377,28 @@ void Demo::post_render_update()
         solver->iterate();
     }
 
+    // Scale the pressure.
+    VertexAttachment<double> scaled_pressure(geom->mesh);
+    double min_pressure = std::numeric_limits<double>::infinity();
+    double max_pressure = 0;
+    for (auto v : geom->mesh.vertices()) {
+        if (solver->p[v] < min_pressure) {
+            min_pressure = solver->p[v];
+        }
+        if (solver->p[v] > max_pressure) {
+            max_pressure = solver->p[v];
+        }
+    }
+    if (max_pressure != min_pressure) {
+        for (auto v : geom->mesh.vertices()) {
+            scaled_pressure[v] = (solver->p[v] - min_pressure) / (max_pressure - min_pressure);
+        }
+    } else {
+        for (auto v : geom->mesh.vertices()) {
+            scaled_pressure[v] = 0;
+        }
+    }
+
     // Render the solution textures.
     std::vector<vec2> position_data;
     std::vector<vec2> velocity_data;
@@ -382,7 +417,7 @@ void Demo::post_render_update()
             }
             velocity_data.push_back(solver->u[v]);
             velocity_data.push_back(solver->u[e]);
-            pressure_data.push_back(solver->p[v]);
+            pressure_data.push_back(scaled_pressure[v]);
             pressure_data.push_back(0.f); // Dummy data, as there is no midpoint pressure.
             div_u_data.push_back(solver->div_u[v]);
             div_u_data.push_back(0.f); // Dummy data, as there is no midpoint div(u).
