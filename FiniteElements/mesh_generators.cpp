@@ -195,7 +195,7 @@ private:
 
 
 
-SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, int square_N, bool misc_curve=false)
+SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, int square_N, bool misc_curve=false, vec2 obstruction_position=vec2(0,0))
 {
     SurfaceMesh *mesh = new SurfaceMesh();
     SurfaceGeometry *geom = new SurfaceGeometry(*mesh);
@@ -248,10 +248,10 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
         float theta = (i*2.f*M_PI)/circle_N;
         // all_points.push_back(r*vec2(cos(theta), sin(theta)));
         if (misc_curve) {
-            all_points.push_back(r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
+            all_points.push_back(obstruction_position + r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
         } else {
             double c = 1 + 0.7*pow(sin(theta*2), 4);
-            all_points.push_back(c*r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
+            all_points.push_back(obstruction_position + c*r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
         }
         segment_pieces.push_back(i);
         segment_pieces.push_back((i+1)%circle_N);
@@ -300,8 +300,8 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
     double *hole_mem = (double *) malloc(sizeof(double)*2);
     in.numberofholes = 1;
     in.holelist = hole_mem;
-    in.holelist[0] = 0.;
-    in.holelist[1] = 0.;
+    in.holelist[0] = obstruction_position.x();
+    in.holelist[1] = obstruction_position.y();
     
     in.numberofregions = 0;
 

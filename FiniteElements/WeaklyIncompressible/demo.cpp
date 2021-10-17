@@ -4,6 +4,7 @@ enum MeshModes {
     MM_cylinder,
     MM_cylinder_2,
     MM_lid_driven_cavity,
+    MM_lid_driven_cavity_2,
     MM_flow,
     MM_trivial_disk,
     MM_vector_poisson,
@@ -32,6 +33,7 @@ struct Demo : public IBehaviour {
     bool random;
 
     bool flow_mode;
+    vec2 obstruction_position;
 
     // Visualization.
     GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
@@ -113,6 +115,16 @@ void Demo::recreate_solver()
         //     auto v2 = sq_mesh.vertex(i+1,0);
         //     solver->u_boundary[geom->mesh.vertices_to_edge(v1, v2)] = vec2(-1,0);
         // }
+    } else if (mesh_mode == MM_lid_driven_cavity_2) { // Lid-driven cavity with an obstruction.
+        geom = square_minus_circle(0.12, theta0, 1, 1, mesh_N, false, obstruction_position);
+        if (solver != nullptr) delete solver;
+        solver = new Solver(*geom, mu);
+        solver->set_u_boundary(
+            [](double x, double y)->vec2 {
+                if (y > 0.99) return vec2(3,0);
+                return vec2(0,0);
+            }
+        );
     } else if (mesh_mode == MM_trivial_disk) { // Axis-aligned flow on the disk.
         geom = circle_mesh(mesh_N, random);
         if (solver != nullptr) delete solver;
@@ -199,6 +211,7 @@ Demo::Demo()
     random = false;
     theta0 = 1.2;
     solving_while_moving = false;
+    obstruction_position = vec2(0,0);
     // Plotting options
     wireframe = false;
     vector_field = true;
@@ -288,6 +301,11 @@ void Demo::keyboard_handler(KeyboardEvent e)
             mesh_mode = (mesh_mode + 1) % NUM_MESH_MODES;
             recreate_solver();
         }
+        if (e.key.code == KEY_N) {
+            mesh_mode -= 1;
+            if (mesh_mode < 0) mesh_mode = 0;
+            recreate_solver();
+        }
         if (e.key.code == KEY_9) {
             mesh_N = 50;
             recreate_solver();
@@ -349,6 +367,22 @@ void Demo::update()
     }
     if (world->input.keyboard.down(KEY_C)) {
         theta0 += dt;
+        recreate_solver();
+        if (solving_while_moving) {
+            solver->solve_taylor_hood();
+            solver->pressure_update(true);
+        }
+    }
+    const float ob_speed = 1.f;
+    if (world->input.keyboard.down(KEY_LEFT_ARROW)) obstruction_position.x() += ob_speed * dt; // swapped
+    if (world->input.keyboard.down(KEY_RIGHT_ARROW)) obstruction_position.x() -= ob_speed * dt;
+    if (world->input.keyboard.down(KEY_DOWN_ARROW)) obstruction_position.y() -= ob_speed * dt;
+    if (world->input.keyboard.down(KEY_UP_ARROW)) obstruction_position.y() += ob_speed * dt;
+
+    if (world->input.keyboard.down(KEY_LEFT_ARROW)
+            || world->input.keyboard.down(KEY_UP_ARROW)
+            || world->input.keyboard.down(KEY_DOWN_ARROW)
+            || world->input.keyboard.down(KEY_RIGHT_ARROW)) {
         recreate_solver();
         if (solving_while_moving) {
             solver->solve_taylor_hood();
@@ -486,6 +520,7 @@ void Demo::post_render_update()
     glDeleteBuffers(3, vbos);
     
     // Draw velocity field.
+    const float velocity_mul = 0.12;
     if (vector_field) {
         glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
         auto solution_pixels = std::vector<float>(4*1024*1024);
@@ -497,11 +532,14 @@ void Demo::post_render_update()
                 float y = -1 + j*2.f/(1024-1.f);
                 float velocity_x = solution_pixels[4*(1024*j + i) + 0];
                 float velocity_y = solution_pixels[4*(1024*j + i) + 1];
-                const float mul = 0.12;
                 const float thickness = 0.005;
                 const vec4 color = vec4(0,0,0,1);
-                world->graphics.paint.sphere(vec3(x, 0, y), 0.0075, vec4(0,0,0,1));
-                world->graphics.paint.line(vec3(x, 0, y), vec3(x + mul*velocity_x, 0, y + mul*velocity_y), thickness, color);
+                const float epsilon = 1e-5;
+                if (fabs(velocity_x) < epsilon && fabs(velocity_y) < epsilon) {
+                } else {
+                    world->graphics.paint.sphere(vec3(x, 0, y), 0.0075, vec4(0,0,0,1));
+                    world->graphics.paint.line(vec3(x, 0, y), vec3(x + velocity_mul*velocity_x, 0, y + velocity_mul*velocity_y), thickness, color);
+                }
             }
         }
     }
@@ -570,6 +608,23 @@ void Demo::post_render_update()
 	    ps.push_back(ps[0]);
             world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
         }
+    }
+    // Draw boundary condition.
+    for (auto start : geom->mesh.boundary_loops()) {
+        auto ps = std::vector<vec3>();
+        auto he = start;
+        do {
+            auto v = he.vertex();
+            auto e = he.edge();
+            auto v_bv = vec3(solver->u_boundary[v].x(), 0, solver->u_boundary[v].y());
+            auto e_bv = vec3(solver->u_boundary[e].x(), 0, solver->u_boundary[e].y());
+            vec3 v_pos = eigen_to_vec3(geom->position[v]);
+            vec3 e_pos = eigen_to_vec3(solver->midpoints[e]);
+            vec3 shift = vec3(0,0.02,0);
+            world->graphics.paint.line(v_pos+shift, shift+v_pos + v_bv*velocity_mul, 0.008, vec4(1,0.6,0.6,1));
+            world->graphics.paint.line(e_pos+shift, shift+e_pos + e_bv*velocity_mul, 0.008, vec4(1,0.6,0.6,1));
+            he = he.next();
+        } while (he != start);
     }
 }
 
