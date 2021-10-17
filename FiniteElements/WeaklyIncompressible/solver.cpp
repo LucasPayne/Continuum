@@ -235,11 +235,6 @@ void Solver::set_pressure(PlaneFunction _pressure)
 #include "WeaklyIncompressible/TaylorHood.cpp"
 
 
-// void Solver::scalar_poisson_chorin(SparseMatrix &matrix, Eigen::VectorXd &rhs, P2Attachment)
-// {
-//     
-// }
-
 
 #if 0
 void Solver::iterate()

@@ -195,7 +195,7 @@ private:
 
 
 
-SurfaceGeometry *square_minus_circle(float r)
+SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, int square_N, bool misc_curve=false)
 {
     SurfaceMesh *mesh = new SurfaceMesh();
     SurfaceGeometry *geom = new SurfaceGeometry(*mesh);
@@ -235,16 +235,27 @@ SurfaceGeometry *square_minus_circle(float r)
     #else
     std::vector<vec2> all_points;
 
-    int circle_N = 16;
+    int circle_N = 2*square_N;
     std::vector<int> all_segments;
+
+    // float theta0 = 1.2;
+    // float a = 0.7;
+    // float b = 1.34;
+    float cos_theta0 = cos(theta0);
+    float sin_theta0 = sin(theta0);
+
     for (int i = 0; i < circle_N; i++) {
         float theta = (i*2.f*M_PI)/circle_N;
-        all_points.push_back(r*vec2(cos(theta), sin(theta)));
+        // all_points.push_back(r*vec2(cos(theta), sin(theta)));
+        if (misc_curve) {
+            all_points.push_back(r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
+        } else {
+            all_points.push_back(r*vec2(a*cos_theta0*cos(theta) - b*sin_theta0*sin(theta), a*sin_theta0*cos(theta) + b*cos_theta0*sin(theta)));
+        }
         all_segments.push_back(i);
         all_segments.push_back((i+1)%circle_N);
     }
 
-    int square_N = 10;
     for (int i = 0; i <= square_N; i++) {
         float x = -1+(i*2.f)/square_N;
         for (int j = 0; j <= square_N; j++) {

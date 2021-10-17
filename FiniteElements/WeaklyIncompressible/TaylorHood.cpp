@@ -2,12 +2,12 @@
 void Solver::solve_taylor_hood()
 {
     // DEBUGGING FLAGS
-    const bool BUILD_TOP_LEFT = true;
-    const bool BUILD_BOTTOM_LEFT = true;
+    #define BUILD_TOP_LEFT  true
+    #define BUILD_BOTTOM_LEFT true
     
     // Should be false. Can be set to true if testing the vector Poisson equation.
     // (This makes pressure a dummy variable if the top-right and bottom-left blocks are disabled.)
-    const bool MAKE_BOTTOM_RIGHT_IDENTITY = false;
+    #define MAKE_BOTTOM_RIGHT_IDENTITY false
 
 
     // u is approximated by P2 vector elements, which are trivial products of scalar P2 elements.
@@ -19,7 +19,8 @@ void Solver::solve_taylor_hood()
     int N_p = geom.mesh.num_vertices();
 
     // system_N: The size of the linear system (system_N x system_N matrix).
-    int system_N = 2*N_u + N_p;
+    // int system_N = 2*N_u + N_p;
+    int system_N = 2*N_u + N_p - 1; // -1: The last pressure node is set to 0.
 
     // Linear system ordering:
     // - Firstly, 2*N_u basis functions for Phi^u, alternating between the x component and y component of
@@ -38,13 +39,13 @@ void Solver::solve_taylor_hood()
     };
     
     // TESTING: Make bottom-right an identity block.
-    if (MAKE_BOTTOM_RIGHT_IDENTITY) {
-        for (int i = 2*N_u; i < system_N; i++) {
-            add_entry(i,i, 1.);
-        }
+#if MAKE_BOTTOM_RIGHT_IDENTITY
+    for (int i = 2*N_u; i < system_N; i++) {
+        add_entry(i,i, 1.);
     }
+#endif
 
-if (BUILD_TOP_LEFT) {
+#if BUILD_TOP_LEFT
     // Construct the top-left block, consisting of 2x2 multiples of the identity.
     //================================================================================
     auto insert_top_left_block = [&](int psi_u_index, int phi_u_index, double value) {
@@ -201,8 +202,8 @@ if (BUILD_TOP_LEFT) {
             }
         }
     }
-} // end if (BUILD_TOP_LEFT)
-if (BUILD_BOTTOM_LEFT) {
+#endif // BUILD_TOP_LEFT
+#if BUILD_BOTTOM_LEFT
     // Construct the bottom-left block, consisting of 1x2 vectors.
     //================================================================================
     auto insert_bottom_left_block = [&](int psi_p_index, int phi_u_index, vec2 val) {
@@ -213,10 +214,15 @@ if (BUILD_BOTTOM_LEFT) {
         add_entry(2*phi_u_index+0, 2*N_u + psi_p_index, val.x());
         add_entry(2*phi_u_index+1, 2*N_u + psi_p_index, val.y());
     };
-    // For each basis trial function psi^u ...
+    // For each basis trial function psi^p ...
     //------------------------------------------------------------
     // For each psi^p (based on a vertex)
+    Vertex last_vertex;
     for (auto v : geom.mesh.vertices()) {
+        last_vertex = v;
+    }
+    for (auto v : geom.mesh.vertices()) {
+        if (v == last_vertex) continue;
         auto v_pos = geom.position[v];
         int psi_p_index = vertex_indices[v];
 
@@ -292,7 +298,7 @@ if (BUILD_BOTTOM_LEFT) {
             he = he.twin().next();
         } while (!he.face().null() && he != start);
     }
-} // end if (BUILD_BOTTOM_LEFT)
+#endif // BUILD_BOTTOM_LEFT
     
 
     // Finalize the mass matrix.
@@ -335,20 +341,21 @@ if (BUILD_BOTTOM_LEFT) {
                 if (fabs(mass_matrix.coeff(i, j)) >= 1e-4) {
                     if (fabs(mass_matrix.coeff(i, j) - mass_matrix.coeff(j, i)) <= 1e-4) {
                         // signify when this entry is symmetric (equal to its corresponding transpose entry).
-                        fprintf(ppm_file, "255 0 0 ");
+                        // fprintf(ppm_file, "255 0 0 ");
+                        fprintf(ppm_file, "0 0 0 ");
                     } else {
                         fprintf(ppm_file, "0 0 0 ");
                     }
                 } else {
                     if (i >= 2*N_u && j >= 2*N_u) {
                         // signify the lower-right zero block.
-                        fprintf(ppm_file, "0 255 0 ");
+                        fprintf(ppm_file, "255 255 255 ");
                     } else if (i >= 2*N_u || j >= 2*N_u) {
                         // signify the top-right and bottom-left blocks.
-                        fprintf(ppm_file, "120 0 230 ");
+                        fprintf(ppm_file, "240 240 255 ");
                     } else if (i >= 2*num_interior_vertices || j >= 2*num_interior_vertices) {
                         // signify the midpoints division in the top-left block.
-                        fprintf(ppm_file, "245 245 245 ");
+                        fprintf(ppm_file, "248 248 248 ");
                     } else {
                         fprintf(ppm_file, "255 255 255 ");
                     }
@@ -385,15 +392,21 @@ if (BUILD_BOTTOM_LEFT) {
     Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > solver;
     solver.compute(mass_matrix);
     Eigen::VectorXd up = solver.solve(rhs);
+    std::cout << up << "\n";
+    // getchar();
     
     /*--------------------------------------------------------------------------------
     // Reassociate each coefficient (or boundary value) with the corresponding vertex or edge of the mesh.
     --------------------------------------------------------------------------------*/
-    // Velocity
     int interior_vertex_index = 0;
     int vertex_index = 0;
     for (auto v : geom.mesh.vertices()) {
-        p[v] = up[2*N_u + vertex_index];
+        if (v == last_vertex) {
+            p[v] = 0.; // Fix this pressure node.
+        } else {
+            p[v] = up[2*N_u + vertex_index];
+        }
+        printf("%.6g\n", p[v]);
         if (v.on_boundary()) {
             u[v] = u_boundary[v];
         } else {
@@ -413,4 +426,5 @@ if (BUILD_BOTTOM_LEFT) {
             interior_midpoint_index += 1;
         }
     }
+    // getchar();
 }

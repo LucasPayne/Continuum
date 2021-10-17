@@ -2,6 +2,7 @@
 
 enum MeshModes {
     MM_cylinder,
+    MM_cylinder_2,
     MM_lid_driven_cavity,
     MM_flow,
     MM_trivial_disk,
@@ -23,6 +24,7 @@ struct Demo : public IBehaviour {
 
     int mesh_N;
     double mu;
+    float theta0; // for cylinder flow demos.
 
     // mesh generation options.
     int mesh_mode;
@@ -62,12 +64,23 @@ void Demo::recreate_solver()
 
 
     if (mesh_mode == MM_cylinder) { // Flow around a cylinder.
-        geom = square_minus_circle(0.28);
+        geom = square_minus_circle(0.28, theta0, 0.7, 1.34, mesh_N);
         if (solver != nullptr) delete solver;
         solver = new Solver(*geom, mu);
         solver->set_u_boundary(
             [](double x, double y)->vec2 {
                 // if (fabs(y) > 0.25) return vec2(0,0);
+                if (x < -0.99) return vec2(1,0);
+                if (x > 0.99) return vec2(1,0);
+                return vec2(0,0);
+            }
+        );
+    } else if (mesh_mode == MM_cylinder_2) {
+        geom = square_minus_circle(0.28, theta0, 0.3, 2.5, mesh_N, true);
+        if (solver != nullptr) delete solver;
+        solver = new Solver(*geom, mu);
+        solver->set_u_boundary(
+            [](double x, double y)->vec2 {
                 if (x < -0.99) return vec2(1,0);
                 if (x > 0.99) return vec2(1,0);
                 return vec2(0,0);
@@ -183,6 +196,7 @@ Demo::Demo()
     mesh_N = 4;
     mesh_mode = 0;
     random = false;
+    theta0 = 1.2;
     // Plotting options
     wireframe = false;
     vector_field = true;
@@ -282,6 +296,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_7) {
             solver->solve_taylor_hood();
+            solver->pressure_update(true);
         }
         if (e.key.code == KEY_Y) {
             solver->project_divergence();
@@ -318,6 +333,15 @@ void Demo::update()
     const float sp = 3;
     if (world->input.keyboard.down(KEY_3)) C *= 1 - sp*dt;
     if (world->input.keyboard.down(KEY_4)) C *= 1 + sp*dt;
+
+    if (world->input.keyboard.down(KEY_X)) {
+        theta0 -= dt;
+        recreate_solver();
+    }
+    if (world->input.keyboard.down(KEY_C)) {
+        theta0 += dt;
+        recreate_solver();
+    }
 }
 
 
@@ -448,7 +472,7 @@ void Demo::post_render_update()
     }
 
     // Visual helper lines.
-    world->graphics.paint.line(vec3(-1,0,1+0.05), vec3(1,0,1+0.05), 0.01, vec4(0,0,1,1));
+    // world->graphics.paint.line(vec3(-1,0,1+0.05), vec3(1,0,1+0.05), 0.01, vec4(0,0,1,1));
 
     // Draw the solution texture.
     const float asp = 0.566;
@@ -492,7 +516,7 @@ void Demo::post_render_update()
 
     // Draw wireframe or base.
     if (wireframe) {
-        world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
+        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), 0.001);
         for (auto v : geom->mesh.vertices()) {
             world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.0075, vec4(0.9,0.9,0.9,1));
         }
