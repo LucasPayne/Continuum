@@ -124,8 +124,8 @@ residual minimisation, and solution reconstruction, can be automated. The finite
 \noindent
 The solution {\large $(u,p)$} has infinite degrees of freedom.
 The conservation laws are quantified over arbitrary pieces of the domain,
-giving an infinite number of equations, as integrals equated to $0$. These residuals can be thought of
-as ``trials'', testing if a supposed solution satisfies the conservation laws.
+giving an infinite number of residual equations. These residuals can be thought of
+as ``trials'', which check if a supposed solution satisfies the conservation laws.
 Why not choose finite degrees of freedom for approximate {\large $(\tilde{u}, \tilde{p})$},
 and the same number of trial equations to go with them?
 Suppose $\tilde{u} \in \Phi^u$ and $\tilde{p} \in \Phi^p$, where
@@ -138,12 +138,13 @@ are, respectively, spaces of vector velocity fields and of scalar pressure field
 % Another finite number of pieces $\Omega^{p}_1,\cdots,\Omega^p_{n_p}$ could also be chosen to check that ``$\tilde{u}$ is approximately
 % incompressible''. This is called a finite volume method, and is a good idea for conservation laws such as Poisson's equation)
 % but a pure FVM, as just described, turns out not to lead to a stable method for the Stokes equations.
-A finite number of pieces $\Omega_0$ could be chosen.
-If the residual for the linearized momentum equation is zero for all of these,
-and the residual for the incompressibility constraint is zero, this can be taken to mean ``momentum is approximately conserved'',
-and ``$\tilde{u}$ is approximately non-compressing''.
-This is called a finite volume method, and is a good idea for conservation laws such as Poisson's equation.
-A pure FVM, as just described, turns out not to lead to a stable method for the Stokes equations.
+
+% A finite number of pieces $\Omega_0$ could be chosen.
+% If the residual for the linearized momentum equation is zero for all of these,
+% and the residual for the incompressibility constraint is zero, this can be taken to mean ``momentum is approximately conserved'',
+% and ``$\tilde{u}$ is approximately non-compressing''.
+% This is called a finite volume method, and is a good idea for conservation laws such as Poisson's equation.
+% A pure FVM, as just described, turns out not to lead to a stable method for the Stokes equations.
 
 In an attempt to find an alternative finite set of equations, the Stokes equations can be written in the \textit{weak form}
 \begin{equation}\label{steady_stokes_weak_form}
@@ -162,7 +163,7 @@ For example, for the discretized method, why not choose $\Psi^u = \Phi^u$ and $\
 
 \newpage
 \vskip 0.2in
-{\large The Taylor-Hood mixed finite element method}
+{\large A mixed finite element method}
 \vskip 0.2in
 The Stokes flow problem at the top of this poster is a Dirichlet boundary value problem, with a no-slip condition ($u = (0,0)$) on the top
 and bottom walls, and unit-speed in-flow and out-flow $u = (-1,0)$ at the left and right boundaries. This approximates the effect of motion
@@ -195,13 +196,35 @@ and restricting $\Phi^u$ to be zero on the boundary. The resulting linear system
     \sum_{i=1}^{n_p} p_i\int_\Omega \phi_i^p\nabla\cdot\psi^u_j\,d\hat{x}
     =
     \int_\Omega\nabla\tilde{u}_\Gamma:\nabla\psi_j^u\,d\hat{x},\\
-    \text{\quad $j=1,\cdots,n_u$}.
+    \text{\quad for $j=1,\cdots,2n_u$}.\\
+    \sum_{i=1}^{n_u}\left[
+        u_{ix}\int_\Omega\psi_k^p\nabla\cdot\phi_{ix}^u\,d\hat{x}
+        +
+        u_{iy}\int_\Omega\psi_k^p\nabla\cdot\phi_{iy}^u\,d\hat{x}
+    \right]
+    =
+    \int_\Omega\psi_k^p\nabla\cdot\tilde{u}_\Gamma\,d\hat{x},\\
+    \text{\quad for $k=1,\cdots,n_p$}.\\
 \end{split}
 \end{equation}
+Since pressure is defined up to a constant, this linear system will have at most rank $2n_u + p_n - 1$,
+but, if it is well-formed, it can be solved in the least-squares sense for a valid solution.
+This is a \textit{mixed finite element method}, as the solution is solved for a function in a ``mixed finite element space'' $\Phi^u \times \Phi^p$.
+This method is also an instance of a primal-dual method, as the mixed space is introduced in order to approximate the primal variable $u$
+and the Lagrange multiplier $p$ simultaneously.
 
 
-
-
+\newpage
+\vskip 0.2in
+{\large Taylor-Hood mixed finite elements and implementation}
+\vskip 0.2in
+One possible stable finite element scheme uses piecewise quadratic velocity fields
+and piecewise linear pressure fields, called \textit{Taylor-Hood elements}.
+The velocity field is sampled at midpoints of a triangulation as well as at vertices.
+In a routine manner, the linear system is calculated by traversing a mesh data structure to find
+overlapping domains (as each basis function has compact support), separating the integrals into polynomial integrals over triangles,
+performing a change of variables to a ``reference triangle'', and analytically integrating over each triangle.
+Once the sparse linear system is formed, it is sent to a sparse linear solver.
 
 
 
