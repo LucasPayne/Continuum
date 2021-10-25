@@ -1,8 +1,11 @@
 #include "NavierStokes/demo.h"
+#include "NavierStokes/mesh_generators.h"
 
 
 Demo::Demo()
 {
+    solver = nullptr;
+    geom = nullptr;
 }
 
 void Demo::init()
@@ -16,6 +19,11 @@ void Demo::init()
     controller = world->add<CameraController>(cameraman);
     controller->angle = -M_PI/2;
     controller->azimuth = M_PI;
+
+
+    geom = square_mesh(10);
+    double kinematic_viscosity = 1.;
+    solver = new NavierStokesSolver(*geom, kinematic_viscosity);
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
@@ -32,6 +40,8 @@ void Demo::update()
 
 void Demo::post_render_update()
 {
+    double thickness = 0.005;
+    world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
 }
 
 

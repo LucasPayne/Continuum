@@ -1,6 +1,7 @@
 #ifndef HEADER_DEFINED_DEMO
 #define HEADER_DEFINED_DEMO
 #include "NavierStokes/core.h"
+#include "NavierStokes/NavierStokesSolver.h"
 
 /*
  * CameraController behaviour.
@@ -48,6 +49,9 @@ struct Demo : public IBehaviour {
     void post_render_update();
     void keyboard_handler(KeyboardEvent e);
     void mouse_handler(MouseEvent e);
+
+    NavierStokesSolver *solver;
+    SurfaceGeometry *geom;
 };
 
 #endif // HEADER_DEFINED_DEMO

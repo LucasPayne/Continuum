@@ -1,5 +1,4 @@
 #include "NavierStokes/core.h"
-#include "mesh_generators.cpp"
 #include "NavierStokes/demo.h"
 
 Aspect<Camera> main_camera;

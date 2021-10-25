@@ -76,8 +76,11 @@ target_link_libraries(WeaklyIncompressible PRIVATE common)
 
 add_executable(NavierStokes
     NavierStokes/main.cpp
+
     NavierStokes/demo.cpp
+    NavierStokes/mesh_generators.cpp
     NavierStokes/CameraController.cpp
+
     NavierStokes/NavierStokesSolver.cpp
     NavierStokes/compute_velocity_residual.cpp
     NavierStokes/compute_pressure_residual.cpp

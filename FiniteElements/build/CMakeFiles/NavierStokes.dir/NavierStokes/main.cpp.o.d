@@ -508,5 +508,6 @@ CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.o: \
   /usr/bin/../lib/gcc/x86_64-linux-gnu/8/../../../../include/c++/8/list \
   /usr/bin/../lib/gcc/x86_64-linux-gnu/8/../../../../include/c++/8/bits/stl_list.h \
   /usr/bin/../lib/gcc/x86_64-linux-gnu/8/../../../../include/c++/8/bits/list.tcc \
-  /home/lucas/Continuum/FiniteElements/mesh_generators.cpp \
-  /home/lucas/Continuum/FiniteElements/NavierStokes/demo.h
+  /home/lucas/Continuum/FiniteElements/NavierStokes/demo.h \
+  /home/lucas/Continuum/FiniteElements/NavierStokes/NavierStokesSolver.h \
+  /home/lucas/Continuum/FiniteElements/NavierStokes/P2_P1.h
