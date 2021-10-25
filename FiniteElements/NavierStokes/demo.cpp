@@ -24,12 +24,22 @@ void Demo::init()
     geom = square_mesh(10);
     double kinematic_viscosity = 1.;
     solver = new NavierStokesSolver(*geom, kinematic_viscosity);
+    solver->set_source(
+        [&](double x, double y)->vec2 {
+            const double r = 0.175;
+            if (x*x + y*y <= r*r) return vec2(1,0);
+            return vec2(0,0);
+        }
+    );
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
 {
     if (e.action == KEYBOARD_PRESS) {
         if (e.key.code == KEY_Q) exit(EXIT_SUCCESS);
+        if (e.key.code == KEY_I) solver->start_time_step(0.1);
+        if (e.key.code == KEY_O) solver->newton_iteration();
+        if (e.key.code == KEY_P) solver->end_time_step();
     }
 }
 

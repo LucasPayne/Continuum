@@ -131,7 +131,28 @@ void NavierStokesSolver::newton_iteration()
     linear_solver.compute(J);
     Eigen::VectorXd velocity_pressure_variation_vector = linear_solver.solve(residual);
 
-    m_velocity_pressure_vector -= velocity_pressure_variation_vector;
+    // Update the current velocity and pressure.
+    // The vector of variations has to be reassociated to the mesh.
+    auto residual = Eigen::VectorXd(m_system_N);;
+    int counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        velocity[v].x() -= velocity_pressure_variation_vector[2*counter+0];
+        velocity[v].y() -= velocity_pressure_variation_vector[2*counter+1];
+        counter += 1;
+    }
+    counter = 0;
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) continue;
+        velocity[e].x() -= velocity_pressure_variation_vector[2*geom.mesh.num_interior_vertices() + 2*counter+0];
+        velocity[e].y() -= velocity_pressure_variation_vector[2*geom.mesh.num_interior_vertices() + 2*counter+1];
+        counter += 1;
+    }
+    counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        pressure[v] -= velocity_pressure_variation_vector[2*num_velocity_variation_nodes() + counter];
+        counter += 1;
+    }
 }
 
 
@@ -172,7 +193,6 @@ Eigen::VectorXd NavierStokesSolver::compute_residual()
     }
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
-        if (v.on_boundary()) continue;
         residual[2*num_velocity_variation_nodes() + counter] = pressure_residual[v];
         counter += 1;
     }
