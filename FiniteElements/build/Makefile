@@ -65,37 +65,6 @@ CMAKE_BINARY_DIR = /home/lucas/Continuum/FiniteElements/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target install/strip
 install/strip: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
@@ -130,6 +99,37 @@ edit_cache:
 edit_cache/fast: edit_cache
 .PHONY : edit_cache/fast
 
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+.PHONY : rebuild_cache/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucas/Continuum/FiniteElements/build/CMakeFiles /home/lucas/Continuum/FiniteElements/build//CMakeFiles/progress.marks
@@ -162,82 +162,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named WeaklyIncompressible
+# Target rules for targets named QuadraticLaplaceSolver
 
 # Build rule for target.
-WeaklyIncompressible: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 WeaklyIncompressible
-.PHONY : WeaklyIncompressible
+QuadraticLaplaceSolver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 QuadraticLaplaceSolver
+.PHONY : QuadraticLaplaceSolver
 
 # fast build rule for target.
-WeaklyIncompressible/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/build
-.PHONY : WeaklyIncompressible/fast
-
-#=============================================================================
-# Target rules for targets named LidDrivenCavity
-
-# Build rule for target.
-LidDrivenCavity: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LidDrivenCavity
-.PHONY : LidDrivenCavity
-
-# fast build rule for target.
-LidDrivenCavity/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/build
-.PHONY : LidDrivenCavity/fast
-
-#=============================================================================
-# Target rules for targets named basis_quadratic_figure
-
-# Build rule for target.
-basis_quadratic_figure: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 basis_quadratic_figure
-.PHONY : basis_quadratic_figure
-
-# fast build rule for target.
-basis_quadratic_figure/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/build
-.PHONY : basis_quadratic_figure/fast
-
-#=============================================================================
-# Target rules for targets named LaplaceSolver
-
-# Build rule for target.
-LaplaceSolver: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LaplaceSolver
-.PHONY : LaplaceSolver
-
-# fast build rule for target.
-LaplaceSolver/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/build
-.PHONY : LaplaceSolver/fast
-
-#=============================================================================
-# Target rules for targets named HeatSolver
-
-# Build rule for target.
-HeatSolver: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HeatSolver
-.PHONY : HeatSolver
-
-# fast build rule for target.
-HeatSolver/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
-.PHONY : HeatSolver/fast
-
-#=============================================================================
-# Target rules for targets named FiniteVolumes
-
-# Build rule for target.
-FiniteVolumes: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FiniteVolumes
-.PHONY : FiniteVolumes
-
-# fast build rule for target.
-FiniteVolumes/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/build
-.PHONY : FiniteVolumes/fast
+QuadraticLaplaceSolver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/build
+.PHONY : QuadraticLaplaceSolver/fast
 
 #=============================================================================
 # Target rules for targets named discretization_figure
@@ -253,19 +188,6 @@ discretization_figure/fast:
 .PHONY : discretization_figure/fast
 
 #=============================================================================
-# Target rules for targets named QuadraticLaplaceSolver
-
-# Build rule for target.
-QuadraticLaplaceSolver: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 QuadraticLaplaceSolver
-.PHONY : QuadraticLaplaceSolver
-
-# fast build rule for target.
-QuadraticLaplaceSolver/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/build
-.PHONY : QuadraticLaplaceSolver/fast
-
-#=============================================================================
 # Target rules for targets named quadratic_figure
 
 # Build rule for target.
@@ -277,6 +199,97 @@ quadratic_figure: cmake_check_build_system
 quadratic_figure/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/quadratic_figure.dir/build.make CMakeFiles/quadratic_figure.dir/build
 .PHONY : quadratic_figure/fast
+
+#=============================================================================
+# Target rules for targets named FiniteVolumes
+
+# Build rule for target.
+FiniteVolumes: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FiniteVolumes
+.PHONY : FiniteVolumes
+
+# fast build rule for target.
+FiniteVolumes/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/build
+.PHONY : FiniteVolumes/fast
+
+#=============================================================================
+# Target rules for targets named LaplaceSolver
+
+# Build rule for target.
+LaplaceSolver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LaplaceSolver
+.PHONY : LaplaceSolver
+
+# fast build rule for target.
+LaplaceSolver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/build
+.PHONY : LaplaceSolver/fast
+
+#=============================================================================
+# Target rules for targets named LidDrivenCavity
+
+# Build rule for target.
+LidDrivenCavity: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LidDrivenCavity
+.PHONY : LidDrivenCavity
+
+# fast build rule for target.
+LidDrivenCavity/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/build
+.PHONY : LidDrivenCavity/fast
+
+#=============================================================================
+# Target rules for targets named WeaklyIncompressible
+
+# Build rule for target.
+WeaklyIncompressible: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 WeaklyIncompressible
+.PHONY : WeaklyIncompressible
+
+# fast build rule for target.
+WeaklyIncompressible/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/build
+.PHONY : WeaklyIncompressible/fast
+
+#=============================================================================
+# Target rules for targets named NavierStokes
+
+# Build rule for target.
+NavierStokes: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NavierStokes
+.PHONY : NavierStokes
+
+# fast build rule for target.
+NavierStokes/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/build
+.PHONY : NavierStokes/fast
+
+#=============================================================================
+# Target rules for targets named HeatSolver
+
+# Build rule for target.
+HeatSolver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HeatSolver
+.PHONY : HeatSolver
+
+# fast build rule for target.
+HeatSolver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
+.PHONY : HeatSolver/fast
+
+#=============================================================================
+# Target rules for targets named basis_quadratic_figure
+
+# Build rule for target.
+basis_quadratic_figure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 basis_quadratic_figure
+.PHONY : basis_quadratic_figure
+
+# fast build rule for target.
+basis_quadratic_figure/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/build
+.PHONY : basis_quadratic_figure/fast
 
 #=============================================================================
 # Target rules for targets named basic_application
@@ -530,6 +543,150 @@ LidDrivenCavity/LidDrivenCavity.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/LidDrivenCavity/LidDrivenCavity.cpp.s
 .PHONY : LidDrivenCavity/LidDrivenCavity.cpp.s
 
+NavierStokes/CameraController.o: NavierStokes/CameraController.cpp.o
+.PHONY : NavierStokes/CameraController.o
+
+# target to build an object file
+NavierStokes/CameraController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o
+.PHONY : NavierStokes/CameraController.cpp.o
+
+NavierStokes/CameraController.i: NavierStokes/CameraController.cpp.i
+.PHONY : NavierStokes/CameraController.i
+
+# target to preprocess a source file
+NavierStokes/CameraController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.i
+.PHONY : NavierStokes/CameraController.cpp.i
+
+NavierStokes/CameraController.s: NavierStokes/CameraController.cpp.s
+.PHONY : NavierStokes/CameraController.s
+
+# target to generate assembly for a file
+NavierStokes/CameraController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.s
+.PHONY : NavierStokes/CameraController.cpp.s
+
+NavierStokes/NavierStokesSolver.o: NavierStokes/NavierStokesSolver.cpp.o
+.PHONY : NavierStokes/NavierStokesSolver.o
+
+# target to build an object file
+NavierStokes/NavierStokesSolver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o
+.PHONY : NavierStokes/NavierStokesSolver.cpp.o
+
+NavierStokes/NavierStokesSolver.i: NavierStokes/NavierStokesSolver.cpp.i
+.PHONY : NavierStokes/NavierStokesSolver.i
+
+# target to preprocess a source file
+NavierStokes/NavierStokesSolver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.i
+.PHONY : NavierStokes/NavierStokesSolver.cpp.i
+
+NavierStokes/NavierStokesSolver.s: NavierStokes/NavierStokesSolver.cpp.s
+.PHONY : NavierStokes/NavierStokesSolver.s
+
+# target to generate assembly for a file
+NavierStokes/NavierStokesSolver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.s
+.PHONY : NavierStokes/NavierStokesSolver.cpp.s
+
+NavierStokes/compute_pressure_residual.o: NavierStokes/compute_pressure_residual.cpp.o
+.PHONY : NavierStokes/compute_pressure_residual.o
+
+# target to build an object file
+NavierStokes/compute_pressure_residual.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.o
+.PHONY : NavierStokes/compute_pressure_residual.cpp.o
+
+NavierStokes/compute_pressure_residual.i: NavierStokes/compute_pressure_residual.cpp.i
+.PHONY : NavierStokes/compute_pressure_residual.i
+
+# target to preprocess a source file
+NavierStokes/compute_pressure_residual.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.i
+.PHONY : NavierStokes/compute_pressure_residual.cpp.i
+
+NavierStokes/compute_pressure_residual.s: NavierStokes/compute_pressure_residual.cpp.s
+.PHONY : NavierStokes/compute_pressure_residual.s
+
+# target to generate assembly for a file
+NavierStokes/compute_pressure_residual.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.s
+.PHONY : NavierStokes/compute_pressure_residual.cpp.s
+
+NavierStokes/compute_velocity_residual.o: NavierStokes/compute_velocity_residual.cpp.o
+.PHONY : NavierStokes/compute_velocity_residual.o
+
+# target to build an object file
+NavierStokes/compute_velocity_residual.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.o
+.PHONY : NavierStokes/compute_velocity_residual.cpp.o
+
+NavierStokes/compute_velocity_residual.i: NavierStokes/compute_velocity_residual.cpp.i
+.PHONY : NavierStokes/compute_velocity_residual.i
+
+# target to preprocess a source file
+NavierStokes/compute_velocity_residual.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.i
+.PHONY : NavierStokes/compute_velocity_residual.cpp.i
+
+NavierStokes/compute_velocity_residual.s: NavierStokes/compute_velocity_residual.cpp.s
+.PHONY : NavierStokes/compute_velocity_residual.s
+
+# target to generate assembly for a file
+NavierStokes/compute_velocity_residual.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.s
+.PHONY : NavierStokes/compute_velocity_residual.cpp.s
+
+NavierStokes/demo.o: NavierStokes/demo.cpp.o
+.PHONY : NavierStokes/demo.o
+
+# target to build an object file
+NavierStokes/demo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.o
+.PHONY : NavierStokes/demo.cpp.o
+
+NavierStokes/demo.i: NavierStokes/demo.cpp.i
+.PHONY : NavierStokes/demo.i
+
+# target to preprocess a source file
+NavierStokes/demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.i
+.PHONY : NavierStokes/demo.cpp.i
+
+NavierStokes/demo.s: NavierStokes/demo.cpp.s
+.PHONY : NavierStokes/demo.s
+
+# target to generate assembly for a file
+NavierStokes/demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.s
+.PHONY : NavierStokes/demo.cpp.s
+
+NavierStokes/main.o: NavierStokes/main.cpp.o
+.PHONY : NavierStokes/main.o
+
+# target to build an object file
+NavierStokes/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.o
+.PHONY : NavierStokes/main.cpp.o
+
+NavierStokes/main.i: NavierStokes/main.cpp.i
+.PHONY : NavierStokes/main.i
+
+# target to preprocess a source file
+NavierStokes/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.i
+.PHONY : NavierStokes/main.cpp.i
+
+NavierStokes/main.s: NavierStokes/main.cpp.s
+.PHONY : NavierStokes/main.s
+
+# target to generate assembly for a file
+NavierStokes/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.s
+.PHONY : NavierStokes/main.cpp.s
+
 QuadraticLaplaceSolver.o: QuadraticLaplaceSolver.cpp.o
 .PHONY : QuadraticLaplaceSolver.o
 
@@ -668,6 +825,7 @@ help:
 	@echo "... HeatSolver"
 	@echo "... LaplaceSolver"
 	@echo "... LidDrivenCavity"
+	@echo "... NavierStokes"
 	@echo "... QuadraticLaplaceSolver"
 	@echo "... WeaklyIncompressible"
 	@echo "... basic_application"
@@ -695,6 +853,24 @@ help:
 	@echo "... LidDrivenCavity/LidDrivenCavity.o"
 	@echo "... LidDrivenCavity/LidDrivenCavity.i"
 	@echo "... LidDrivenCavity/LidDrivenCavity.s"
+	@echo "... NavierStokes/CameraController.o"
+	@echo "... NavierStokes/CameraController.i"
+	@echo "... NavierStokes/CameraController.s"
+	@echo "... NavierStokes/NavierStokesSolver.o"
+	@echo "... NavierStokes/NavierStokesSolver.i"
+	@echo "... NavierStokes/NavierStokesSolver.s"
+	@echo "... NavierStokes/compute_pressure_residual.o"
+	@echo "... NavierStokes/compute_pressure_residual.i"
+	@echo "... NavierStokes/compute_pressure_residual.s"
+	@echo "... NavierStokes/compute_velocity_residual.o"
+	@echo "... NavierStokes/compute_velocity_residual.i"
+	@echo "... NavierStokes/compute_velocity_residual.s"
+	@echo "... NavierStokes/demo.o"
+	@echo "... NavierStokes/demo.i"
+	@echo "... NavierStokes/demo.s"
+	@echo "... NavierStokes/main.o"
+	@echo "... NavierStokes/main.i"
+	@echo "... NavierStokes/main.s"
 	@echo "... QuadraticLaplaceSolver.o"
 	@echo "... QuadraticLaplaceSolver.i"
 	@echo "... QuadraticLaplaceSolver.s"

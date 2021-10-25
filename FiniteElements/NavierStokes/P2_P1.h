@@ -1,10 +1,13 @@
 #ifndef HEADER_DEFINED_P2_P1
 #define HEADER_DEFINED_P2_P1
+#include "NavierStokes/core.h"
 
 
 // A P2 triangle mesh discretization has nodal points at vertices and edge midpoints.
 // Functions on these nodes are aggregated into a P2Attachment.
 // Wrapper for both Vertex and Edge, for accessing a P2Attachment.
+template <typename T>
+class P2Attachment;
 class P2Element {
 public:
     P2Element(Vertex v) :
@@ -14,13 +17,14 @@ public:
         edge{e}, m_is_vertex{false}
     {}
     inline bool is_vertex() const { return m_is_vertex; }
-private:
+    inline bool on_boundary() {
+        if (is_vertex()) return vertex.on_boundary();
+        return edge.on_boundary();
+    }
+// private: //how can a template class be made a friend?
     Vertex vertex;
     Edge edge;
     bool m_is_vertex;
-
-    template <typename T>
-    friend class P2Attachment<T>;
 };
 template <typename T>
 class P2Attachment {
@@ -66,6 +70,6 @@ private:
 // A P1 triangle mesh discretization has nodal points at vertices.
 // Functions on these nodes are aggregated into a P1Attachment.
 template <typename T>
-using P1Attachment<T> = VertexAttachment<T>;
+using P1Attachment = VertexAttachment<T>;
 
 #endif // HEADER_DEFINED_P2_P1

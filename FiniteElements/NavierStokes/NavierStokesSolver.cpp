@@ -4,20 +4,32 @@
     
     The boundary condition is no-slip for the entire boundary.
 ================================================================================*/
+#include "NavierStokes/NavierStokesSolver.h"
+#include "NavierStokes/core.h"
+
+// utilities
+vec3 eigen_to_vec3(Eigen::Vector3f v)
+{
+    return vec3(v.x(), v.y(), v.z());
+}
+Eigen::Vector3f vec3_to_eigen(vec3 v)
+{
+    return Eigen::Vector3f(v.x(), v.y(), v.z());
+}
 
 
 /*--------------------------------------------------------------------------------
     Initialize the solver.
 --------------------------------------------------------------------------------*/
-NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic_viscosity) :
+NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic_viscosity) :
     geom{_geom},
-    velocity(_geom),
-    pressure(_geom),
-    velocity_prev(_geom),
-    pressure_prev(_geom),
-    source_samples(_geom),
-    velocity_node_indices(_geom),
-    pressure_node_indices(_geom),
+    velocity(_geom.mesh),
+    pressure(_geom.mesh),
+    velocity_prev(_geom.mesh),
+    pressure_prev(_geom.mesh),
+    velocity_node_indices(_geom.mesh),
+    pressure_node_indices(_geom.mesh),
+    source_samples_P2(_geom.mesh)
 {
     m_solving = false;
     m_iterating = false;
@@ -73,6 +85,14 @@ void NavierStokesSolver::set_source(PlaneVectorField vf)
 {
     assert(!solving());
     source_function = vf;
+    for (auto v : geom.mesh.vertices()) {
+        auto pos = geom.position[v];
+        source_samples_P2[v] = vf(pos.x(), pos.z());
+    }
+    for (auto e : geom.mesh.edges()) {
+        auto pos = 0.5*geom.position[e.a().vertex()] + 0.5*geom.position[e.b().vertex()];
+        source_samples_P2[e] = vf(pos.x(), pos.z());
+    }
 }
 
 
@@ -84,6 +104,16 @@ void NavierStokesSolver::start_time_step(double dt)
     assert(!iterating());
     if (!solving()) {
         m_solving = true;
+    }
+
+    // Initialize the previous state.
+    // (The start of the Newton iteration is at the previous state.)
+    for (auto v : geom.mesh.vertices()) {
+        velocity_prev[v] = velocity[v];
+        pressure_prev[v] = pressure[v];
+    }
+    for (auto e : geom.mesh.edges()) {
+        velocity_prev[e] = velocity[e];
     }
 
     m_current_time_step_dt = dt;
@@ -99,9 +129,9 @@ void NavierStokesSolver::newton_iteration()
     
     Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
     linear_solver.compute(J);
-    Eigen::VectorXd velocity_pressure_variation_vector = solver.solve(residual);
+    Eigen::VectorXd velocity_pressure_variation_vector = linear_solver.solve(residual);
 
-    velocity_pressure_vector -= velocity_pressure_variation_vector;
+    m_velocity_pressure_vector -= velocity_pressure_variation_vector;
 }
 
 
@@ -119,39 +149,10 @@ void NavierStokesSolver::end_time_step()
 --------------------------------------------------------------------------------*/
 Eigen::VectorXd NavierStokesSolver::compute_residual()
 {
-    auto velocity_residual = P2Attachment<vec2>(geom);
-    auto pressure_residual = P1Attachment<double>(geom);
-
-    /*--------------------------------------------------------------------------------
-        Time-step update term.
-    dot((u - u_prev)/dt, psi^u)
-    --------------------------------------------------------------------------------*/
-    add_velocity_residual_time_step(velocity_residual);
-    
-    /*--------------------------------------------------------------------------------
-        Source term.
-    dot(-source_function, psi^u)
-    --------------------------------------------------------------------------------*/
-    add_velocity_residual_source(velocity_residual);
-
-    /*--------------------------------------------------------------------------------
-        Pressure term.
-    -p * div(psi^u)
-    --------------------------------------------------------------------------------*/
-    add_velocity_residual_pressure(velocity_residual);
-
-    /*--------------------------------------------------------------------------------
-        Viscosity term.
-    kinematic_viscosity * grad(u):grad(psi^u)
-    --------------------------------------------------------------------------------*/
-    add_velocity_residual_viscosity(velocity_residual);
-
-    /*--------------------------------------------------------------------------------
-        Advection term.
-    dot(dot(u, grad(u)), psi^u)
-    --------------------------------------------------------------------------------*/
-    add_velocity_residual_advection(velocity_residual);
-
+    auto velocity_residual = P2Attachment<vec2>(geom.mesh);
+    auto pressure_residual = P2Attachment<double>(geom.mesh);
+    compute_velocity_residual(velocity_residual);
+    compute_pressure_residual(pressure_residual);
 
     // Put these residual attachments into a length (2*N_u + N_p) vector.
     auto residual = Eigen::VectorXd(m_system_N);;
@@ -181,15 +182,15 @@ Eigen::VectorXd NavierStokesSolver::compute_residual()
 SparseMatrix NavierStokesSolver::compute_gateaux_matrix()
 {
     struct TopLeftEntry {
-        Element velocity_trial_node;
+        P2Element velocity_trial_node;
         int trial_component; // x: 0, y: 1
-        Element velocity_test_node;
+        P2Element velocity_test_node;
         int test_component;  // x: 0, y: 1
         double value;
     };
     struct BottomLeftEntry {
         Vertex pressure_trial_node;
-        Element velocity_test_node;
+        P2Element velocity_test_node;
         int test_component;  // x: 0, y: 1
         double value;
     };
@@ -203,21 +204,21 @@ SparseMatrix NavierStokesSolver::compute_gateaux_matrix()
     auto eigen_coefficients = std::vector<EigenTriplet>();
     for (auto coeff : top_left_coefficients) {
         eigen_coefficients.push_back(EigenTriplet(
-            2*P2_indices[coeff.velocity_trial_node] + coeff.trial_component,
-            2*P2_indices[coeff.velocity_test_node] + coeff.test_component,
+            2*velocity_node_indices[coeff.velocity_trial_node] + coeff.trial_component,
+            2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
             coeff.value
         ));
     }
     for (auto coeff : bottom_left_coefficients) {
         eigen_coefficients.push_back(EigenTriplet(
-            2*m_num_velocity_variation_nodes + P1_indices[coeff.pressure_trial_node],
-            2*P2_indices[coeff.velocity_test_node] + coeff.test_component,
+            2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
+            2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
             coeff.value
         ));
         // The matrix should be symmetric, so also set the top-right block.
         eigen_coefficients.push_back(EigenTriplet(
-            2*P2_indices[coeff.velocity_test_node] + coeff.test_component,
-            2*m_num_velocity_variation_nodes + P1_indices[coeff.pressure_trial_node],
+            2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
+            2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
             coeff.value
         ));
     }
@@ -226,107 +227,4 @@ SparseMatrix NavierStokesSolver::compute_gateaux_matrix()
     gateaux_matrix.setFromTriplets(eigen_coefficients.begin(), eigen_coefficients.end());
     gateaux_matrix.makeCompressed();
     return gateaux_matrix;
-}
-
-
-
-/*--------------------------------------------------------------------------------
-    Compute the residual.
---------------------------------------------------------------------------------*/
-
-void NavierStokesSolver::add_velocity_residual_time_step(P2Attachment<vec2> &velocity_residual)
-{
-    /*--------------------------------------------------------------------------------
-        Time-step update term.
-    dot((u - u_prev)/dt, psi^u)
-    --------------------------------------------------------------------------------*/
-    double inv_dt = 1./m_current_time_step_dt;
-
-    // For each velocity trial function on a vertex node.
-    for (auto v : geom.mesh.vertices()) {
-        if (v.on_boundary()) continue;
-
-        vec2 integral = vec2(0., 0.);
-
-        // For each adjacent triangle.
-        auto start = v.halfedge();
-        auto he = start;
-        do {
-            // Define terms.
-            Face tri = he.face();
-            Vertex vp = he.next().vertex();
-            Vertex vpp = he.next().tip();
-            Edge edge_101 = he.edge();
-            Edge edge_110 = he.next().edge();
-            Edge edge_011 = he.next().next().edge();
-            double tri_area = geom.triangle_area(tri);
-
-            const Element elements[6] = {
-                v, vp, vpp, edge_110, edge_011, edge_101
-            };
-            const double element_weights[6] = {
-                1./60., -1./360., -1./360., -1./90., 0, 0
-            };
-            for (int i = 0; i < 6; i++) {
-                if (elements[i].on_boundary()) continue;
-                integral += 2 * tri_area * element_weights[i] * inv_dt * (velocity[elements[i]] - velocity_prev[elements[i]]);
-            }
-
-            he = he.twin().next();
-        } while (he != start);
-
-        velocity_residual[v] += integral;
-    }
-    
-    // For each velocity trial function on an edge node.
-    for (auto edge : geom.mesh.edges()) {
-        if (edge.on_boundary()) continue;
-        Halfedge hes[2] = {edge.a(), edge.b()};
-
-        vec2 integral = vec2(0., 0.);
-
-        // For the two incident triangles.
-        for (int t = 0; t < 2; t++) {
-            auto he = hes[t];
-            auto tri = he.face();
-            // Triangle vertices.
-            auto v = he.next().tip(); // v is the opposite vertex.
-            auto vp = he.tip();
-            auto vpp = he.vertex();
-            Edge edge_110 = he.edge();
-            Edge edge_011 = he.next().edge();
-            Edge edge_101 = he.next().next().edge();
-            double tri_area = geom.triangle_area(tri);
-
-            const Element elements[6] = {
-                v, vp, vpp, edge_110, edge_011, edge_101
-            };
-            const double element_weights[6] = {
-                -1./90., 0, 0, 4./45., 2./45., 2./45.
-            };
-            for (int i = 0; i < 6; i++) {
-                if (elements[i].on_boundary()) continue;
-                integral += 2 * tri_area * element_weights[i] * inv_dt * (velocity[elements[i]] - velocity_prev[elements[i]]);
-            }
-        }
-
-        velocity_residual[edge] += integral;
-    }
-    
-}
-void NavierStokesSolver::add_velocity_residual_source(P2Attachment<vec2> &velocity_residual)
-{
-
-}
-void NavierStokesSolver::add_velocity_residual_pressure(P2Attachment<vec2> &velocity_residual)
-{
-
-}
-void NavierStokesSolver::add_velocity_residual_viscosity(P2Attachment<vec2> &velocity_residual)
-{
-
-}
-void NavierStokesSolver::add_velocity_residual_advection(P2Attachment<vec2> &velocity_residual
-{
-
 }

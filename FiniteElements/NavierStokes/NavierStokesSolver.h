@@ -6,7 +6,8 @@
 ================================================================================*/
 #ifndef HEADER_DEFINED_NAVIER_STOKES_SOLVER
 #define HEADER_DEFINED_NAVIER_STOKES_SOLVER
-#include "P2_P1.h"
+#include "NavierStokes/P2_P1.h"
+#include "NavierStokes/core.h"
 
 
 struct NavierStokesSolver
@@ -21,12 +22,15 @@ public:
     void set_source(PlaneVectorField vf);
 
     inline bool solving() const { return m_solving; }
+    inline bool iterating() const { return m_iterating; }
     inline int num_velocity_variation_nodes() const { return m_num_velocity_variation_nodes; }
     inline int num_pressure_variation_nodes() const { return m_num_pressure_variation_nodes; }
     inline double kinematic_viscosity() const { return m_kinematic_viscosity; }
     inline double time() const { return m_time; }
 
 private:
+    SurfaceGeometry &geom;
+
     // The velocity and pressure are changed during Newton iteration.
     P2Attachment<vec2> velocity;
     P1Attachment<double> pressure;
@@ -34,17 +38,21 @@ private:
     P2Attachment<vec2> velocity_prev;
     P1Attachment<double> pressure_prev;
 
-    P1Attachment<int> P1_indices; // 
-    P2Attachment<int> P2_indices; // 
+    P2Attachment<int> velocity_node_indices;
+    P1Attachment<int> pressure_node_indices;
 
     inline int system_N() const { return m_system_N; } // The size of the velocity-pressure vectors and Gateaux matrix.
     SparseMatrix compute_gateaux_matrix();
     Eigen::VectorXd compute_residual();
+    void compute_velocity_residual(P2Attachment<vec2> &velocity_residual);
+    void compute_pressure_residual(P2Attachment<double> &pressure_residual);
 
-    PlaneFunction<vec2> source_function; // The source form is an exact function, not sampled.
+    PlaneVectorField source_function; // Exact function.
+    P2Attachment<vec2> source_samples_P2; // Samples for approximate integration.
 
     int m_num_velocity_variation_nodes;
     int m_num_pressure_variation_nodes;
+    int m_system_N;
     Eigen::VectorXd m_velocity_pressure_vector;
 
     double m_kinematic_viscosity;

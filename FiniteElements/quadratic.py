@@ -32,6 +32,7 @@ def linear_index_to_barycentric(index):
     if index == 5:
         return (1,0,1)
 
+
 # Define algebraic symbols for the variables.
 x,y,z = sym.symbols("x y z")
 
@@ -59,6 +60,11 @@ nodal_basis_functions = [p.subs(z,1-x-y).expand() for p in nodal_basis_functions
 # Compute the gradients of the nodal basis functions on the reference triangle.
 nodal_basis_gradients = [(sym.diff(p, x), sym.diff(p, y)) for p in nodal_basis_functions]
 
+pressure_basis_functions = [
+    1-x-y,
+    x,
+    y
+] # v, v', v''
 
 # # Compute the integral
 # def integrate_gradients(a,b,c, i,j,k):
@@ -126,11 +132,6 @@ nodal_basis_gradients = [(sym.diff(p, x), sym.diff(p, y)) for p in nodal_basis_f
 # # scalars()
 # 
 # # Computation for deriving values for Stokes flow assembly.
-# pressure_basis_functions = [
-#     1-x-y,
-#     x,
-#     y
-# ] # v, v', v''
 # 
 # # def integrate_scalar(psi_p_index, phi_u_i, phi_u_j, phi_u_k):
 # #     for velocity_component in [x,y]:
@@ -356,3 +357,56 @@ print("midpoint")
 for n in range(6):
     gramian_integrate(1,1,0, n)
 
+
+print("vertex grads u to u")
+def grads(i,j,k, a,b,c):
+    psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+    phi_u = nodal_basis_functions[barycentric_index_to_linear(i,j,k)]
+    f = (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y)) * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{}, {}{}{}: {}".format(i,j,k, a,b,c, f_dy_dx))
+grads(0,0,2,  0,0,2)
+grads(0,0,2,  0,2,0)
+grads(0,0,2,  2,0,0)
+grads(0,0,2,  0,1,1)
+grads(0,0,2,  1,1,0)
+grads(0,0,2,  1,0,1)
+    
+
+print("midpoint grads u to u")
+grads(1,1,0,  0,0,2)
+grads(1,1,0,  0,2,0)
+grads(1,1,0,  2,0,0)
+grads(1,1,0,  0,1,1)
+grads(1,1,0,  1,1,0)
+grads(1,1,0,  1,0,1)
+
+
+
+def integrate(a,b,c, n):
+    psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+    phi_p = pressure_basis_functions[n]
+    f = -phi_p * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{},{},{} {}: {}".format(a,b,c, n,  f_dy_dx))
+print("vertex")
+for n in range(3):
+    integrate(0,0,2, n)
+print("midpoint")
+for n in range(3):
+    integrate(1,1,0, n)
+
+
+def integrate(n, m):
+    psi_p = pressure_basis_functions[n]
+    phi_u = nodal_basis_functions[m]
+    f = -psi_p * (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y))
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    i,j,k = linear_index_to_barycentric(m)
+    print("{} {},{},{}: {}".format(n, i,j,k, f_dy_dx))
+print("vertex")
+for m in range(6):
+    integrate(0, m)
