@@ -27,8 +27,10 @@ public:
     inline double time() const { return m_time; }
 
 private:
+    // The velocity and pressure are changed during Newton iteration.
     P2Attachment<vec2> velocity;
     P1Attachment<double> pressure;
+    // The previous velocity and pressure are only changed after a time step.
     P2Attachment<vec2> velocity_prev;
     P1Attachment<double> pressure_prev;
 
@@ -50,6 +52,13 @@ private:
     bool m_iterating; // Is the algorithm in the middle of a Newton iteration?
     double m_current_time_step_dt;
     double m_time;
+
+    // Helper functions for building up the residual vector.
+    void add_velocity_residual_advection(P2Attachment<vec2> &velocity_residual);
+    void add_velocity_residual_viscosity(P2Attachment<vec2> &velocity_residual);
+    void add_velocity_residual_pressure(P2Attachment<vec2> &velocity_residual);
+    void add_velocity_residual_source(P2Attachment<vec2> &velocity_residual);
+    void add_velocity_residual_time_step(P2Attachment<vec2> &velocity_residual);
 };
 
 #endif // HEADER_DEFINED_NAVIER_STOKES_SOLVER
