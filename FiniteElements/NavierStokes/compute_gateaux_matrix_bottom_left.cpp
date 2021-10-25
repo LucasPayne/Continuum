@@ -4,6 +4,5 @@ std::vector<BottomLeftEntry> NavierStokesSolver::compute_gateaux_matrix_bottom_l
 {
     auto coeffs = std::vector<BottomLeftEntry>();
 
-
     return coeffs;
 }

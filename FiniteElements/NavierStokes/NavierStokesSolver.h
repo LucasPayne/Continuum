@@ -16,6 +16,9 @@ struct TopLeftEntry {
     P2Element velocity_test_node;
     int test_component;  // x: 0, y: 1
     double value;
+    TopLeftEntry(P2Element _vtrialn, int _trial_c, P2Element _vtestn, int _tc, double val) :
+        velocity_trial_node{_vtrialn}, trial_component{_trial_c}, velocity_test_node{_vtestn}, test_component{_tc}, value{val}
+    {}
 };
 struct BottomLeftEntry {
     Vertex pressure_trial_node;
