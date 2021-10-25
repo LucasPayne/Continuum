@@ -72,3 +72,11 @@ add_executable(WeaklyIncompressible
     WeaklyIncompressible/WeaklyIncompressible.cpp
 )
 target_link_libraries(WeaklyIncompressible PRIVATE common)
+
+
+add_executable(NavierStokes
+    NavierStokes/main.cpp
+    NavierStokes/demo.cpp
+    NavierStokes/NavierStokesSolver.cpp
+)
+target_link_libraries(NavierStokes PRIVATE common)

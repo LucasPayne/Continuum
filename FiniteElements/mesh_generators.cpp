@@ -260,7 +260,8 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
         segment_pieces.push_back((i+1)%circle_N);
     }
 
-    int square_N_x = 4*1.6108*square_N;
+    // int square_N_x = 4*1.6108*square_N;
+    int square_N_x = 1*square_N;
     int square_N_y = 1*square_N;
     for (int i = 0; i <= square_N_x; i++) {
         float x = -1+(i*2.f)/square_N_x;

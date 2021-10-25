@@ -567,8 +567,8 @@ void Demo::post_render_update()
         glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
         std::vector<float> pressures;
         // const int skip = 20;
-        const int skip = 14;
-        // const int skip = 35;
+        // const int skip = 14;
+        const int skip = 35;
 	std::vector<vec2> positions_2D;
         for (int i = 0; i < 1024; i += skip) {
             float x = -1 + i*2.f/(1024-1.f);
@@ -605,11 +605,13 @@ void Demo::post_render_update()
             positions_2D[i].y() = 1 - (0.5*(positions_2D[i].y() - screenshot_positions[(high_res_screenshot_n+3)%4].y())/h + 0.5);
         }
         
+        #if 0
         std::vector<vec2> pos(1);
         for (int i = 0; i < positions_2D.size(); i++) {
             pos[0] = positions_2D[i] - vec2(0,0.0038);
             world->graphics.paint.circles(main_camera, pos, circle_wid, vec4(pressures[i],pressures[i],pressures[i],1), 0.3, vec4(0,0,0,1));
         }
+        #endif
     }
 
     // Visual helper lines.
@@ -637,7 +639,7 @@ void Demo::post_render_update()
     };
     
     // Show solution sprites.
-#if 0
+#if 1
     sprite_shader.bind();
     // glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
