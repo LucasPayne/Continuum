@@ -84,5 +84,7 @@ add_executable(NavierStokes
     NavierStokes/NavierStokesSolver.cpp
     NavierStokes/compute_velocity_residual.cpp
     NavierStokes/compute_pressure_residual.cpp
+    NavierStokes/compute_gateaux_matrix_top_left.cpp
+    NavierStokes/compute_gateaux_matrix_bottom_left.cpp
 )
 target_link_libraries(NavierStokes PRIVATE common)

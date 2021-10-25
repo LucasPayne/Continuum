@@ -167,6 +167,34 @@ CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.s: cmake_
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/NavierStokes/compute_pressure_residual.cpp -o CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.s
 
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o: CMakeFiles/NavierStokes.dir/flags.make
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o: ../NavierStokes/compute_gateaux_matrix_top_left.cpp
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o: CMakeFiles/NavierStokes.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o -MF CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o.d -o CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o -c /home/lucas/Continuum/FiniteElements/NavierStokes/compute_gateaux_matrix_top_left.cpp
+
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/NavierStokes/compute_gateaux_matrix_top_left.cpp > CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.i
+
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/NavierStokes/compute_gateaux_matrix_top_left.cpp -o CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.s
+
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o: CMakeFiles/NavierStokes.dir/flags.make
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o: ../NavierStokes/compute_gateaux_matrix_bottom_left.cpp
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o: CMakeFiles/NavierStokes.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o -MF CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o.d -o CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o -c /home/lucas/Continuum/FiniteElements/NavierStokes/compute_gateaux_matrix_bottom_left.cpp
+
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/NavierStokes/compute_gateaux_matrix_bottom_left.cpp > CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.i
+
+CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/NavierStokes/compute_gateaux_matrix_bottom_left.cpp -o CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.s
+
 # Object files for target NavierStokes
 NavierStokes_OBJECTS = \
 "CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.o" \
@@ -175,7 +203,9 @@ NavierStokes_OBJECTS = \
 "CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o" \
 "CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o" \
 "CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.o" \
-"CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.o"
+"CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.o" \
+"CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o" \
+"CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o"
 
 # External object files for target NavierStokes
 NavierStokes_EXTERNAL_OBJECTS =
@@ -187,6 +217,8 @@ NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.o
+NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o
+NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/build.make
 NavierStokes: dependencies/triangle/libtriangle.a
 NavierStokes: /home/lucas/computer_graphics/cg_sandbox/build/src/libcg_sandbox.a
@@ -202,7 +234,7 @@ NavierStokes: /usr/lib/x86_64-linux-gnu/librt.so
 NavierStokes: /usr/lib/x86_64-linux-gnu/libm.so
 NavierStokes: /home/lucas/computer_graphics/assimp/bin/libassimp.so
 NavierStokes: CMakeFiles/NavierStokes.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable NavierStokes"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable NavierStokes"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/NavierStokes.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

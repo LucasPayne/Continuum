@@ -133,7 +133,6 @@ void NavierStokesSolver::newton_iteration()
 
     // Update the current velocity and pressure.
     // The vector of variations has to be reassociated to the mesh.
-    auto residual = Eigen::VectorXd(m_system_N);;
     int counter = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) continue;
@@ -201,23 +200,10 @@ Eigen::VectorXd NavierStokesSolver::compute_residual()
 
 SparseMatrix NavierStokesSolver::compute_gateaux_matrix()
 {
-    struct TopLeftEntry {
-        P2Element velocity_trial_node;
-        int trial_component; // x: 0, y: 1
-        P2Element velocity_test_node;
-        int test_component;  // x: 0, y: 1
-        double value;
-    };
-    struct BottomLeftEntry {
-        Vertex pressure_trial_node;
-        P2Element velocity_test_node;
-        int test_component;  // x: 0, y: 1
-        double value;
-    };
-    auto top_left_coefficients = std::vector<TopLeftEntry>();
-    auto bottom_left_coefficients = std::vector<BottomLeftEntry>();
-
-    // ...
+    // auto top_left_coefficients = std::vector<TopLeftEntry>();
+    // auto bottom_left_coefficients = std::vector<BottomLeftEntry>();
+    auto top_left_coefficients = compute_gateaux_matrix_top_left();
+    auto bottom_left_coefficients = compute_gateaux_matrix_bottom_left();
 
     // Construct the sparse matrix by converting the coefficient lists (which are in terms of the mesh)
     // into a list of triplets indexing into a matrix.

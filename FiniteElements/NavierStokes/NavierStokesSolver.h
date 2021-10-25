@@ -9,6 +9,21 @@
 #include "NavierStokes/P2_P1.h"
 #include "NavierStokes/core.h"
 
+// Helper structs for building the Gateaux matrix.
+struct TopLeftEntry {
+    P2Element velocity_trial_node;
+    int trial_component; // x: 0, y: 1
+    P2Element velocity_test_node;
+    int test_component;  // x: 0, y: 1
+    double value;
+};
+struct BottomLeftEntry {
+    Vertex pressure_trial_node;
+    P2Element velocity_test_node;
+    int test_component;  // x: 0, y: 1
+    double value;
+};
+
 
 struct NavierStokesSolver
 {
@@ -46,6 +61,8 @@ private:
     Eigen::VectorXd compute_residual();
     void compute_velocity_residual(P2Attachment<vec2> &velocity_residual);
     void compute_pressure_residual(P2Attachment<double> &pressure_residual);
+    std::vector<TopLeftEntry> compute_gateaux_matrix_top_left();
+    std::vector<BottomLeftEntry> compute_gateaux_matrix_bottom_left();
 
     PlaneVectorField source_function; // Exact function.
     P2Attachment<vec2> source_samples_P2; // Samples for approximate integration.
@@ -60,13 +77,6 @@ private:
     bool m_iterating; // Is the algorithm in the middle of a Newton iteration?
     double m_current_time_step_dt;
     double m_time;
-
-    // Helper functions for building up the residual vector.
-    void add_velocity_residual_advection(P2Attachment<vec2> &velocity_residual);
-    void add_velocity_residual_viscosity(P2Attachment<vec2> &velocity_residual);
-    void add_velocity_residual_pressure(P2Attachment<vec2> &velocity_residual);
-    void add_velocity_residual_source(P2Attachment<vec2> &velocity_residual);
-    void add_velocity_residual_time_step(P2Attachment<vec2> &velocity_residual);
 };
 
 #endif // HEADER_DEFINED_NAVIER_STOKES_SOLVER
