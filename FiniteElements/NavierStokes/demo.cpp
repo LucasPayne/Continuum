@@ -17,7 +17,7 @@ void Demo::recreate_solver()
 {
     if (solver != nullptr) delete solver;
     if (geom != nullptr) delete geom;
-    double kinematic_viscosity = 1.;
+    double kinematic_viscosity = 0.35;
 
     if (mesh_mode == MM_square) {
         geom = square_mesh(8);
@@ -43,7 +43,7 @@ void Demo::recreate_solver()
                 // const double r = 0.175;
                 // if (x*x + y*y <= r*r) return vec2(25,0);
                 const double r = 0.125;
-                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(-25, 0);
+                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(0, 50);
                 if ((x+0.5)*(x+0.5) + y*y <= r*r) return vec2(25, 0);
                 return vec2(0,0);
             }

@@ -1,6 +1,8 @@
 #include "NavierStokes/NavierStokesSolver.h"
 #include "NavierStokes/core.h"
 
+#define ADVECTION 1
+
 void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &velocity_residual)
 {
     double inv_dt = 1./m_current_time_step_dt;
@@ -32,7 +34,7 @@ void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &vel
             vec2 K3 = vec2_extract(vpp_pos - vp_pos);
             double tri_area = geom.triangle_area(tri);
             P2Element elements[6] = {
-                v, vp, vpp, edge_110, edge_011, edge_101
+                vp, vpp, v, edge_110, edge_011, edge_101
             };
             auto element_weights = std::array<double,6>();
             /*--------------------------------------------------------------------------------
@@ -40,7 +42,7 @@ void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &vel
             dot(-u_prev/dt, psi^u)
             --------------------------------------------------------------------------------*/
             element_weights = {
-                1./60., -1./360., -1./360., -1./90., 0, 0
+                -1./360., -1./360., 1./60., -1./90., 0, 0
             };
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;
@@ -53,17 +55,37 @@ void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &vel
                 Approximate integration by samples.
             --------------------------------------------------------------------------------*/
             element_weights = {
-                1./60., -1./360., -1./360., -1./90., 0, 0
+                -1./360., -1./360., 1./60., -1./90., 0, 0
             };
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;
                 integral += -2 * tri_area * element_weights[i] * source_samples_P2[elements[i]];
             }
 
+#if ADVECTION
             /*--------------------------------------------------------------------------------
                 Advection term.
-            dot(dot(u, grad(u)), psi^u)
+            u * dot(grad(u), psi^u)
             --------------------------------------------------------------------------------*/
+            vec2 advection_weights[6*6] = {
+//generated================================================================================
+K1/140 + K2/140, -11*K1/2520 - 11*K2/2520, K1/280 + K2/280, 2*K1/315 + 2*K2/315, K1/126 + K2/126, 4*K1/315 + 4*K2/315,
+-11*K1/2520 - 11*K2/2520, K1/140 + K2/140, K1/280 + K2/280, 2*K1/315 + 2*K2/315, 4*K1/315 + 4*K2/315, K1/126 + K2/126,
+K1/280 + K2/280, K1/280 + K2/280, -13*K1/420 - 13*K2/420, -K1/210 - K2/210, -2*K1/105 - 2*K2/105, -2*K1/105 - 2*K2/105,
+2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315, -K1/210 - K2/210, 4*K1/105 + 4*K2/105, -2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315,
+K1/126 + K2/126, 4*K1/315 + 4*K2/315, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315, -4*K1/63 - 4*K2/63, -2*K1/63 - 2*K2/63,
+4*K1/315 + 4*K2/315, K1/126 + K2/126, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315, -2*K1/63 - 2*K2/63, -4*K1/63 - 4*K2/63,
+//=========================================================================================
+            };
+            for (int i = 0; i < 6; i++) {
+                for (int k = 0; k < 6; k++) {
+                    double term = vec2::dot(velocity[elements[k]], advection_weights[6*i + k]);
+                    integral += velocity[elements[i]] * term;
+                }
+            }
+#endif
+
+
 
             he = he.twin().next();
         } while (he != start);
@@ -100,7 +122,7 @@ void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &vel
             vec2 K3 = vec2_extract(vpp_pos - vp_pos);
 
             P2Element elements[6] = {
-                v, vp, vpp, edge_110, edge_011, edge_101
+                vp, vpp, v, edge_110, edge_011, edge_101
             };
             auto element_weights = std::array<double,6>();
             /*--------------------------------------------------------------------------------
@@ -108,7 +130,7 @@ void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &vel
             dot(-u_prev/dt, psi^u)
             --------------------------------------------------------------------------------*/
             element_weights = {
-                -1./90., 0, 0, 4./45., 2./45., 2./45.
+                0, 0, -1./90., 4./45., 2./45., 2./45.
             };
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;
@@ -121,12 +143,35 @@ void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &vel
                 Approximate integration by samples.
             --------------------------------------------------------------------------------*/
             element_weights = {
-                -1./90., 0, 0, 4./45., 2./45., 2./45.
+                0, 0, -1./90., 4./45., 2./45., 2./45.
             };
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;
                 integral += -2 * tri_area * element_weights[i] * source_samples_P2[elements[i]];
             }
+
+#if ADVECTION
+            /*--------------------------------------------------------------------------------
+                Advection term.
+            u * dot(grad(u), psi^u)
+            --------------------------------------------------------------------------------*/
+            vec2 advection_weights[6*6] = {
+//generated================================================================================
+K1/105 + K2/21, -2*K1/315 - 2*K2/315, K1/630 - 2*K2/315, -4*K1/315 + 2*K2/105, -2*K1/105 - 2*K2/315, -2*K1/315 + 2*K2/105,
+-2*K1/315 - 2*K2/315, K1/21 + K2/105, -2*K1/315 + K2/630, 2*K1/105 - 4*K2/315, 2*K1/105 - 2*K2/315, -2*K1/315 - 2*K2/105,
+K1/630 - 2*K2/315, -2*K1/315 + K2/630, K1/105 + K2/105, -2*K1/105 - 2*K2/105, -4*K1/315 - 2*K2/315, -2*K1/315 - 4*K2/315,
+-4*K1/315 + 2*K2/105, 2*K1/105 - 4*K2/315, -2*K1/105 - 2*K2/105, 16*K1/105 + 16*K2/105, 8*K1/105 + 16*K2/315, 16*K1/315 + 8*K2/105,
+-2*K1/105 - 2*K2/315, 2*K1/105 - 2*K2/315, -4*K1/315 - 2*K2/315, 8*K1/105 + 16*K2/315, 16*K1/105 + 16*K2/315, 16*K1/315 + 16*K2/315,
+-2*K1/315 + 2*K2/105, -2*K1/315 - 2*K2/105, -2*K1/315 - 4*K2/315, 16*K1/315 + 8*K2/105, 16*K1/315 + 16*K2/315, 16*K1/315 + 16*K2/105,
+//=========================================================================================
+            };
+            for (int i = 0; i < 6; i++) {
+                for (int k = 0; k < 6; k++) {
+                    double term = vec2::dot(velocity[elements[k]], advection_weights[6*i + k]);
+                    integral += velocity[elements[i]] * term;
+                }
+            }
+#endif
         }
         velocity_residual[edge] += integral;
     }

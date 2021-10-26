@@ -342,71 +342,101 @@ pressure_basis_functions = [
 # # div2(1,1,0,  1,1,0)
 # # div2(1,1,0,  1,0,1)
 
-def gramian_integrate(a,b,c, n):
-    psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
-    phi_u = nodal_basis_functions[n]
-    f = phi_u * psi_u
-    f_dy = sym.integrate(f, (y, 0,1-x))
-    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
-    i,j,k = linear_index_to_barycentric(n)
-    print("{},{},{} {},{},{}: {}".format(a,b,c, i,j,k,  f_dy_dx))
-print("vertex")
-for n in range(6):
-    gramian_integrate(0,0,2, n)
-print("midpoint")
-for n in range(6):
-    gramian_integrate(1,1,0, n)
+#--------------------------------------------------------------------------------
+
+# def gramian_integrate(a,b,c, n):
+#     psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+#     phi_u = nodal_basis_functions[n]
+#     f = phi_u * psi_u
+#     f_dy = sym.integrate(f, (y, 0,1-x))
+#     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#     i,j,k = linear_index_to_barycentric(n)
+#     print("{},{},{} {},{},{}: {}".format(a,b,c, i,j,k,  f_dy_dx))
+# print("vertex")
+# for n in range(6):
+#     gramian_integrate(0,0,2, n)
+# print("midpoint")
+# for n in range(6):
+#     gramian_integrate(1,1,0, n)
+# 
+# 
+# print("vertex grads u to u")
+# def grads(i,j,k, a,b,c):
+#     psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+#     phi_u = nodal_basis_functions[barycentric_index_to_linear(i,j,k)]
+#     f = (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y)) * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+#     f_dy = sym.integrate(f, (y, 0,1-x))
+#     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#     print("{}{}{}, {}{}{}: {}".format(i,j,k, a,b,c, f_dy_dx))
+# grads(0,0,2,  0,0,2)
+# grads(0,0,2,  0,2,0)
+# grads(0,0,2,  2,0,0)
+# grads(0,0,2,  0,1,1)
+# grads(0,0,2,  1,1,0)
+# grads(0,0,2,  1,0,1)
+#     
+# 
+# print("midpoint grads u to u")
+# grads(1,1,0,  0,0,2)
+# grads(1,1,0,  0,2,0)
+# grads(1,1,0,  2,0,0)
+# grads(1,1,0,  0,1,1)
+# grads(1,1,0,  1,1,0)
+# grads(1,1,0,  1,0,1)
+# 
+# 
+# 
+# def integrate(a,b,c, n):
+#     psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
+#     phi_p = pressure_basis_functions[n]
+#     f = -phi_p * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+#     f_dy = sym.integrate(f, (y, 0,1-x))
+#     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#     print("{},{},{} {}: {}".format(a,b,c, n,  f_dy_dx))
+# print("vertex")
+# for n in range(3):
+#     integrate(0,0,2, n)
+# print("midpoint")
+# for n in range(3):
+#     integrate(1,1,0, n)
+# 
+# 
+# def integrate(n, m):
+#     psi_p = pressure_basis_functions[n]
+#     phi_u = nodal_basis_functions[m]
+#     f = -psi_p * (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y))
+#     f_dy = sym.integrate(f, (y, 0,1-x))
+#     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#     i,j,k = linear_index_to_barycentric(m)
+#     print("{} {},{},{}: {}".format(n, i,j,k, f_dy_dx))
+# print("vertex")
+# for m in range(6):
+#     integrate(0, m)
 
 
-print("vertex grads u to u")
-def grads(i,j,k, a,b,c):
-    psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
-    phi_u = nodal_basis_functions[barycentric_index_to_linear(i,j,k)]
-    f = (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y)) * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
-    f_dy = sym.integrate(f, (y, 0,1-x))
-    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
-    print("{}{}{}, {}{}{}: {}".format(i,j,k, a,b,c, f_dy_dx))
-grads(0,0,2,  0,0,2)
-grads(0,0,2,  0,2,0)
-grads(0,0,2,  2,0,0)
-grads(0,0,2,  0,1,1)
-grads(0,0,2,  1,1,0)
-grads(0,0,2,  1,0,1)
-    
+def advection_residual_array(psi_a, psi_b, psi_c):
+    psi = nodal_basis_functions[barycentric_index_to_linear(psi_a, psi_b, psi_c)]
+    array = sym.zeros(6,6)
+    for i in range(6):
+        for k in range(6):
+            print(i, k)
+            a,b,c = linear_index_to_barycentric(i)
+            ap,bp,cp = linear_index_to_barycentric(k)
+            phi_abc = nodal_basis_functions[i]
+            phi_apbpcp = nodal_basis_functions[k]
+            psi_grad_transformed = (K1*sym.diff(psi, x) + K2*sym.diff(psi, y))
+            f = phi_abc * phi_apbpcp * psi_grad_transformed
+            f_dy = sym.integrate(f, (y, 0,1-x))
+            f_dy_dx = sym.integrate(f_dy, (x, 0,1))
 
-print("midpoint grads u to u")
-grads(1,1,0,  0,0,2)
-grads(1,1,0,  0,2,0)
-grads(1,1,0,  2,0,0)
-grads(1,1,0,  0,1,1)
-grads(1,1,0,  1,1,0)
-grads(1,1,0,  1,0,1)
+            poly = f_dy_dx.as_poly([K1, K2])
+            coeffs = sym.Matrix([poly.coeff_monomial(K1), poly.coeff_monomial(K2)])
 
+            array[i, k] = f_dy_dx
+    return array
 
-
-def integrate(a,b,c, n):
-    psi_u = nodal_basis_functions[barycentric_index_to_linear(a,b,c)]
-    phi_p = pressure_basis_functions[n]
-    f = -phi_p * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
-    f_dy = sym.integrate(f, (y, 0,1-x))
-    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
-    print("{},{},{} {}: {}".format(a,b,c, n,  f_dy_dx))
-print("vertex")
-for n in range(3):
-    integrate(0,0,2, n)
-print("midpoint")
-for n in range(3):
-    integrate(1,1,0, n)
-
-
-def integrate(n, m):
-    psi_p = pressure_basis_functions[n]
-    phi_u = nodal_basis_functions[m]
-    f = -psi_p * (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y))
-    f_dy = sym.integrate(f, (y, 0,1-x))
-    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
-    i,j,k = linear_index_to_barycentric(m)
-    print("{} {},{},{}: {}".format(n, i,j,k, f_dy_dx))
-print("vertex")
-for m in range(6):
-    integrate(0, m)
+# arr = advection_residual_array(0,0,2)
+arr = advection_residual_array(1,1,0)
+for i in range(6):
+    for k in range(6):
+        print("{},".format(arr[i, k]) + ("\n" if k == 5 else " "), end="")
