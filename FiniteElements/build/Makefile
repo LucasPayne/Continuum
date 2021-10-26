@@ -591,6 +591,30 @@ NavierStokes/NavierStokesSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.s
 .PHONY : NavierStokes/NavierStokesSolver.cpp.s
 
+NavierStokes/add_nonlinear_velocity_residual.o: NavierStokes/add_nonlinear_velocity_residual.cpp.o
+.PHONY : NavierStokes/add_nonlinear_velocity_residual.o
+
+# target to build an object file
+NavierStokes/add_nonlinear_velocity_residual.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/add_nonlinear_velocity_residual.cpp.o
+.PHONY : NavierStokes/add_nonlinear_velocity_residual.cpp.o
+
+NavierStokes/add_nonlinear_velocity_residual.i: NavierStokes/add_nonlinear_velocity_residual.cpp.i
+.PHONY : NavierStokes/add_nonlinear_velocity_residual.i
+
+# target to preprocess a source file
+NavierStokes/add_nonlinear_velocity_residual.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/add_nonlinear_velocity_residual.cpp.i
+.PHONY : NavierStokes/add_nonlinear_velocity_residual.cpp.i
+
+NavierStokes/add_nonlinear_velocity_residual.s: NavierStokes/add_nonlinear_velocity_residual.cpp.s
+.PHONY : NavierStokes/add_nonlinear_velocity_residual.s
+
+# target to generate assembly for a file
+NavierStokes/add_nonlinear_velocity_residual.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/add_nonlinear_velocity_residual.cpp.s
+.PHONY : NavierStokes/add_nonlinear_velocity_residual.cpp.s
+
 NavierStokes/compute_gateaux_matrix_bottom_left.o: NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o
 .PHONY : NavierStokes/compute_gateaux_matrix_bottom_left.o
 
@@ -638,54 +662,6 @@ NavierStokes/compute_gateaux_matrix_top_left.s: NavierStokes/compute_gateaux_mat
 NavierStokes/compute_gateaux_matrix_top_left.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.s
 .PHONY : NavierStokes/compute_gateaux_matrix_top_left.cpp.s
-
-NavierStokes/compute_pressure_residual.o: NavierStokes/compute_pressure_residual.cpp.o
-.PHONY : NavierStokes/compute_pressure_residual.o
-
-# target to build an object file
-NavierStokes/compute_pressure_residual.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.o
-.PHONY : NavierStokes/compute_pressure_residual.cpp.o
-
-NavierStokes/compute_pressure_residual.i: NavierStokes/compute_pressure_residual.cpp.i
-.PHONY : NavierStokes/compute_pressure_residual.i
-
-# target to preprocess a source file
-NavierStokes/compute_pressure_residual.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.i
-.PHONY : NavierStokes/compute_pressure_residual.cpp.i
-
-NavierStokes/compute_pressure_residual.s: NavierStokes/compute_pressure_residual.cpp.s
-.PHONY : NavierStokes/compute_pressure_residual.s
-
-# target to generate assembly for a file
-NavierStokes/compute_pressure_residual.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_pressure_residual.cpp.s
-.PHONY : NavierStokes/compute_pressure_residual.cpp.s
-
-NavierStokes/compute_velocity_residual.o: NavierStokes/compute_velocity_residual.cpp.o
-.PHONY : NavierStokes/compute_velocity_residual.o
-
-# target to build an object file
-NavierStokes/compute_velocity_residual.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.o
-.PHONY : NavierStokes/compute_velocity_residual.cpp.o
-
-NavierStokes/compute_velocity_residual.i: NavierStokes/compute_velocity_residual.cpp.i
-.PHONY : NavierStokes/compute_velocity_residual.i
-
-# target to preprocess a source file
-NavierStokes/compute_velocity_residual.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.i
-.PHONY : NavierStokes/compute_velocity_residual.cpp.i
-
-NavierStokes/compute_velocity_residual.s: NavierStokes/compute_velocity_residual.cpp.s
-.PHONY : NavierStokes/compute_velocity_residual.s
-
-# target to generate assembly for a file
-NavierStokes/compute_velocity_residual.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_velocity_residual.cpp.s
-.PHONY : NavierStokes/compute_velocity_residual.cpp.s
 
 NavierStokes/demo.o: NavierStokes/demo.cpp.o
 .PHONY : NavierStokes/demo.o
@@ -931,18 +907,15 @@ help:
 	@echo "... NavierStokes/NavierStokesSolver.o"
 	@echo "... NavierStokes/NavierStokesSolver.i"
 	@echo "... NavierStokes/NavierStokesSolver.s"
+	@echo "... NavierStokes/add_nonlinear_velocity_residual.o"
+	@echo "... NavierStokes/add_nonlinear_velocity_residual.i"
+	@echo "... NavierStokes/add_nonlinear_velocity_residual.s"
 	@echo "... NavierStokes/compute_gateaux_matrix_bottom_left.o"
 	@echo "... NavierStokes/compute_gateaux_matrix_bottom_left.i"
 	@echo "... NavierStokes/compute_gateaux_matrix_bottom_left.s"
 	@echo "... NavierStokes/compute_gateaux_matrix_top_left.o"
 	@echo "... NavierStokes/compute_gateaux_matrix_top_left.i"
 	@echo "... NavierStokes/compute_gateaux_matrix_top_left.s"
-	@echo "... NavierStokes/compute_pressure_residual.o"
-	@echo "... NavierStokes/compute_pressure_residual.i"
-	@echo "... NavierStokes/compute_pressure_residual.s"
-	@echo "... NavierStokes/compute_velocity_residual.o"
-	@echo "... NavierStokes/compute_velocity_residual.i"
-	@echo "... NavierStokes/compute_velocity_residual.s"
 	@echo "... NavierStokes/demo.o"
 	@echo "... NavierStokes/demo.i"
 	@echo "... NavierStokes/demo.s"
