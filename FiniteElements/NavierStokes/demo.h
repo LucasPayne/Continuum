@@ -60,6 +60,7 @@ struct Demo : public IBehaviour {
     // Visualization
     bool show_wireframe;
     bool show_vector_field;
+    bool show_source;
     
     GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
     GLuint solution_fbo; // For render-to-texture.

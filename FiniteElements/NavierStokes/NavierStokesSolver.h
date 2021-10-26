@@ -57,6 +57,7 @@ public:
     P2Attachment<vec2> velocity;
     P1Attachment<double> pressure;
 
+    PlaneVectorField source_function; // Exact function.
 private:
     // The previous velocity and pressure are only changed after a time step.
     P2Attachment<vec2> velocity_prev;
@@ -72,7 +73,6 @@ private:
     std::vector<TopLeftEntry> compute_gateaux_matrix_top_left();
     std::vector<BottomLeftEntry> compute_gateaux_matrix_bottom_left();
 
-    PlaneVectorField source_function; // Exact function.
     P2Attachment<vec2> source_samples_P2; // Samples for approximate integration.
 
     int m_num_velocity_variation_nodes;

@@ -27,7 +27,8 @@ void Demo::recreate_solver()
                 // const double r = 0.175;
                 // if (x*x + y*y <= r*r) return vec2(25,0);
                 const double r = 0.125;
-                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(-25, 0);
+                // if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(-25, 0);
+                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(0, 50);
                 if ((x+0.5)*(x+0.5) + y*y <= r*r) return vec2(25, 0);
                 return vec2(0,0);
             }
@@ -96,6 +97,7 @@ void Demo::init()
 
     show_wireframe = true;
     show_vector_field = true;
+    show_source = true;
     filming = false;
 }
 
@@ -142,6 +144,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_2) {
             show_vector_field = !show_vector_field;
         }
+        if (e.key.code == KEY_3) {
+            show_source = !show_source;
+        }
     }
 }
 
@@ -183,17 +188,17 @@ void Demo::post_render_update()
         double thickness = 0.005;
         world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
     }
-        // Draw boundaries.
-        for (auto start : geom->mesh.boundary_loops()) {
-            auto ps = std::vector<vec3>();
-            auto he = start;
-            do {
-                ps.push_back(vec3(0,0.0001,0)+eigen_to_vec3(geom->position[he.vertex()]));
-                he = he.next();
-            } while (he != start);
-            ps.push_back(ps[0]);
-            world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
-        }
+    // Draw boundaries.
+    for (auto start : geom->mesh.boundary_loops()) {
+        auto ps = std::vector<vec3>();
+        auto he = start;
+        do {
+            ps.push_back(vec3(0,0.0001,0)+eigen_to_vec3(geom->position[he.vertex()]));
+            he = he.next();
+        } while (he != start);
+        ps.push_back(ps[0]);
+        world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
+    }
     
     // Scale the pressure.
     VertexAttachment<double> scaled_pressure(geom->mesh);
@@ -307,8 +312,8 @@ void Demo::post_render_update()
     glDeleteBuffers(3, vbos);
     
     // Draw velocity field.
+    // Also draw source velocity field.
     if (show_vector_field) {
-        const float velocity_mul = 0.12;
         glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
         auto solution_pixels = std::vector<float>(4*1024*1024);
         glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
@@ -328,12 +333,24 @@ void Demo::post_render_update()
                 const float thickness = 0.002;
                 const vec4 color = vec4(0,0,0,1);
                 const float epsilon = 1e-5;
-                if (fabs(velocity_x) < epsilon && fabs(velocity_y) < epsilon) {
-                } else {
-                    // world->graphics.paint.sphere(vec3(x, 0.005, y), 0.003, vec4(0,0,0,1));
+
+                // Draw velocity vector.
+                const float velocity_mul = 0.12;
+                if (fabs(velocity_x) >= epsilon || fabs(velocity_y) >= epsilon) {
                     world->graphics.paint.line(vec3(x, 0.005, y), vec3(x + velocity_mul*velocity_x, 0, y + velocity_mul*velocity_y), thickness, color);
 	            pressures.push_back(pressure);
                     positions_2D.push_back(vec2(x,y));
+                }
+                // Draw source vector.
+                if (show_source) {
+                    const float source_mul = velocity_mul / 25.f;
+                    vec2 source_velocity = solver->source_function(x,y);
+                    const vec4 source_color = vec4(0,0,1,1);
+                    if (fabs(source_velocity.x()) >= epsilon || fabs(source_velocity.y()) >= epsilon) {
+                        world->graphics.paint.line(vec3(x, 0.005, y),
+                                                   vec3(x + source_mul*source_velocity.x(), 0, y + source_mul*source_velocity.y()),
+                                                    thickness*0.6, source_color);
+                    }
                 }
             }
         }
