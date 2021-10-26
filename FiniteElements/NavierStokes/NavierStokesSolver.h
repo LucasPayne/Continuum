@@ -40,6 +40,8 @@ public:
     void newton_iteration();
     void end_time_step();
 
+    void time_step(double dt);
+
     void set_source(PlaneVectorField vf);
 
     inline bool solving() const { return m_solving; }
@@ -65,9 +67,8 @@ private:
 
     inline int system_N() const { return m_system_N; } // The size of the velocity-pressure vectors and Gateaux matrix.
     SparseMatrix compute_gateaux_matrix();
-    Eigen::VectorXd compute_residual();
-    void compute_velocity_residual(P2Attachment<vec2> &velocity_residual);
-    void compute_pressure_residual(P2Attachment<double> &pressure_residual);
+    Eigen::VectorXd compute_residual(SparseMatrix &linear_term_matrix);
+    void add_nonlinear_velocity_residual(P2Attachment<vec2> &velocity_residual);
     std::vector<TopLeftEntry> compute_gateaux_matrix_top_left();
     std::vector<BottomLeftEntry> compute_gateaux_matrix_bottom_left();
 

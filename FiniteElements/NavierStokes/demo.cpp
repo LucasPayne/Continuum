@@ -21,13 +21,13 @@ void Demo::init()
     controller->azimuth = M_PI;
 
 
-    geom = square_mesh(7);
+    geom = square_mesh(8);
     double kinematic_viscosity = 1.;
     solver = new NavierStokesSolver(*geom, kinematic_viscosity);
     solver->set_source(
         [&](double x, double y)->vec2 {
             const double r = 0.175;
-            if (x*x + y*y <= r*r) return vec2(1,0);
+            if (x*x + y*y <= r*r) return vec2(25,0);
             return vec2(0,0);
         }
     );
@@ -55,27 +55,85 @@ void Demo::init()
     glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 1024, 1024, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, solution_depth_texture, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    show_wireframe = true;
+    show_vector_field = true;
+    filming = false;
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
 {
     if (e.action == KEYBOARD_PRESS) {
         if (e.key.code == KEY_Q) exit(EXIT_SUCCESS);
+        // Separate Newton iterations for debugging.
         if (e.key.code == KEY_I) solver->start_time_step(0.01);
         if (e.key.code == KEY_O) solver->newton_iteration();
         if (e.key.code == KEY_P) solver->end_time_step();
+
+        // One iteration.
+        if (e.key.code == KEY_R) solver->time_step(0.025);
+
+        // Take a screenshot.
+        if (e.key.code == KEY_T) {
+            take_screenshot();
+        }
+        // Take a sequence of screenshots, to be converted to a video.
+        if (e.key.code == KEY_9) {
+            film_seconds = 5;
+            film_dt = 1./25.;
+            film_num_frames = ceil(film_seconds / film_dt);
+            film_frame = 0;
+            filming = true;
+        }
+        
+        // Rendering toggles.
+        if (e.key.code == KEY_1) {
+            show_wireframe = !show_wireframe;
+        }
+        if (e.key.code == KEY_2) {
+            show_vector_field = !show_vector_field;
+        }
     }
 }
 
 void Demo::update()
 {
+    if (world->input.keyboard.down(KEY_G)) {
+        // Draw the screenshot rectangle.
+        std::vector<vec2> ps = {
+            vec2(f_screenshot_blx, f_screenshot_bly),
+            vec2(f_screenshot_trx, f_screenshot_bly),
+            vec2(f_screenshot_trx, f_screenshot_try),
+            vec2(f_screenshot_blx, f_screenshot_try),
+            vec2(f_screenshot_blx, f_screenshot_bly)
+        };
+        world->graphics.paint.chain_2D(ps, 1, vec4(1,0,0,1));
+    }
+
+    // Filming
+    if (filming) {
+        take_screenshot();
+        film_frame += 1;
+        if (film_frame == film_num_frames) {
+            filming = false;
+            exit(EXIT_SUCCESS);
+        }
+    }
+
 }
 
 
 void Demo::post_render_update()
 {
-    double thickness = 0.005;
-    world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
+    // Filming a video, update simulation
+    if (filming) {
+        solver->time_step(film_dt);
+    }
+
+    if (show_wireframe) {
+        double thickness = 0.005;
+        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
+    }
     
     // Scale the pressure.
     VertexAttachment<double> scaled_pressure(geom->mesh);
@@ -189,8 +247,8 @@ void Demo::post_render_update()
     glDeleteBuffers(3, vbos);
     
     // Draw velocity field.
-    const float velocity_mul = 0.12;
-    // if (vector_field) {
+    if (show_vector_field) {
+        const float velocity_mul = 0.12;
         glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
         auto solution_pixels = std::vector<float>(4*1024*1024);
         glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
@@ -219,10 +277,39 @@ void Demo::post_render_update()
                 }
             }
         }
-    // } //endif vector_field
+    } //endif show_vector_field
+
+
 }
 
 
 void Demo::mouse_handler(MouseEvent e)
 {
+    if (e.action == MOUSE_BUTTON_PRESS) {
+        // Set the screenshot rectangle.
+        if (e.button.code == MOUSE_LEFT) {
+            screenshot_blx = int(world->graphics.window_viewport.w * e.cursor.x);
+            screenshot_bly = int(world->graphics.window_viewport.h * e.cursor.y);
+            f_screenshot_blx = e.cursor.x;
+            f_screenshot_bly = e.cursor.y;
+        }
+        if (e.button.code == MOUSE_RIGHT) {
+            screenshot_trx = int(world->graphics.window_viewport.w * e.cursor.x);
+            screenshot_try = int(world->graphics.window_viewport.h * e.cursor.y);
+            f_screenshot_trx = e.cursor.x;
+            f_screenshot_try = e.cursor.y;
+        }
+    }
+}
+
+void Demo::take_screenshot()
+{
+    static int counter = 0;
+    std::string pre = std::string(DATA) + "navier_stokes_" + std::to_string(counter);
+    world->graphics.screenshot(pre + ".ppm",
+                               screenshot_blx,
+                               screenshot_bly,
+                               screenshot_trx - screenshot_blx,
+                               screenshot_try - screenshot_bly);
+    counter += 1;
 }

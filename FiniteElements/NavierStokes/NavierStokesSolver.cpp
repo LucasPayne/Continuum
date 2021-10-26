@@ -83,6 +83,8 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
         velocity[e] = vec2(0.,0.);
         velocity_prev[e] = vec2(0.,0.);
     }
+    m_velocity_pressure_vector = Eigen::VectorXd(m_system_N);
+    for (int i = 0; i < m_system_N; i++) m_velocity_pressure_vector[i] = 0.;
 }
 
 /*--------------------------------------------------------------------------------
@@ -131,39 +133,41 @@ void NavierStokesSolver::newton_iteration()
 {
     assert(solving());
 
-    Eigen::VectorXd residual = compute_residual();
     SparseMatrix J = compute_gateaux_matrix();
+    // NOTE: J is the linear term matrix as currently there are no nonlinear terms.
+    Eigen::VectorXd residual = compute_residual(J);
     
     Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
     linear_solver.compute(J);
     Eigen::VectorXd velocity_pressure_variation_vector = linear_solver.solve(residual);
     
-    std::cout << velocity_pressure_variation_vector << "\n";getchar();
+    // std::cout << velocity_pressure_variation_vector << "\n";getchar();
 
     // Update the current velocity and pressure.
-    // The vector of variations has to be reassociated to the mesh.
+    // The new velocity and pressure (with the variation) is then reassociated to the mesh.
+    m_velocity_pressure_vector -= velocity_pressure_variation_vector;
+    
     int counter = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) continue;
-        velocity[v].x() -= velocity_pressure_variation_vector[2*counter+0];
-        velocity[v].y() -= velocity_pressure_variation_vector[2*counter+1];
+        velocity[v].x() = m_velocity_pressure_vector[2*counter+0];
+        velocity[v].y() = m_velocity_pressure_vector[2*counter+1];
         counter += 1;
     }
     counter = 0;
     for (auto e : geom.mesh.edges()) {
         if (e.on_boundary()) continue;
-        velocity[e].x() -= velocity_pressure_variation_vector[2*geom.mesh.num_interior_vertices() + 2*counter+0];
-        velocity[e].y() -= velocity_pressure_variation_vector[2*geom.mesh.num_interior_vertices() + 2*counter+1];
+        velocity[e].x() = m_velocity_pressure_vector[2*geom.mesh.num_interior_vertices() + 2*counter+0];
+        velocity[e].y() = m_velocity_pressure_vector[2*geom.mesh.num_interior_vertices() + 2*counter+1];
         counter += 1;
     }
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
         if (counter == m_num_pressure_variation_nodes-1) break; // skip the last pressure node
-        pressure[v] -= velocity_pressure_variation_vector[2*num_velocity_variation_nodes() + counter];
+        pressure[v] = m_velocity_pressure_vector[2*num_velocity_variation_nodes() + counter];
         counter += 1;
     }
 }
-
 
 void NavierStokesSolver::end_time_step()
 {
@@ -174,19 +178,78 @@ void NavierStokesSolver::end_time_step()
     m_iterating = false;
 }
 
+
+// Make one time step.
+void NavierStokesSolver::time_step(double dt)
+{
+    start_time_step(dt);
+    const int max_num_newton_iterations = 5;
+    const double epsilon = 1e-4;
+    for (int iter = 0; iter < max_num_newton_iterations; iter++) {
+        newton_iteration();
+        // Exit if infinity norm is below epsilon.
+        bool norm_pass = true;
+        for (int i = 0; i < m_system_N; i++) {
+            if (abs(m_velocity_pressure_vector[i]) > epsilon) {
+                norm_pass = false;
+                break;
+            }
+        }
+        if (norm_pass) break;
+    }
+    end_time_step();
+}
+
+
 /*--------------------------------------------------------------------------------
     Matrix assembly.
 --------------------------------------------------------------------------------*/
-Eigen::VectorXd NavierStokesSolver::compute_residual()
+Eigen::VectorXd NavierStokesSolver::compute_residual(SparseMatrix &linear_term_matrix)
 {
+    /*--------------------------------------------------------------------------------
+        Compute that part of the residual which is linear in u. This is computed by applying
+        the linear term matrix.
+    NOTE:
+        This needs to compute linear terms only. So, separate the gateaux matrix from the linear matrix,
+        which also computes the linear homogeneous terms of the residual.
+        This avoids duplication (having bugs in one traversal and not the other would be hard to detect).
+    --------------------------------------------------------------------------------*/
+    Eigen::VectorXd linear_residual_component = linear_term_matrix * m_velocity_pressure_vector;
+
+    /*--------------------------------------------------------------------------------
+        Reassociate the current residual to the mesh.
+    --------------------------------------------------------------------------------*/
     auto velocity_residual = P2Attachment<vec2>(geom.mesh);
     auto pressure_residual = P2Attachment<double>(geom.mesh);
-    compute_velocity_residual(velocity_residual);
-    compute_pressure_residual(pressure_residual);
+    int counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        velocity_residual[v].x() = linear_residual_component[2*counter+0];
+        velocity_residual[v].y() = linear_residual_component[2*counter+1];
+        counter += 1;
+    }
+    counter = 0;
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) continue;
+        velocity_residual[e].x() = linear_residual_component[2*geom.mesh.num_interior_vertices() + 2*counter+0];
+        velocity_residual[e].y() = linear_residual_component[2*geom.mesh.num_interior_vertices() + 2*counter+1];
+        counter += 1;
+    }
+    counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (counter == m_num_pressure_variation_nodes-1) break; // skip the last pressure node
+        pressure_residual[v] = linear_residual_component[2*num_velocity_variation_nodes() + counter];
+        counter += 1;
+    }
+
+    /*--------------------------------------------------------------------------------
+        Update the residual with non-homogeneous and non-linear terms.
+    --------------------------------------------------------------------------------*/
+    add_nonlinear_velocity_residual(velocity_residual);
 
     // Put these residual attachments into a length (2*N_u + N_p) vector.
     auto residual = Eigen::VectorXd(m_system_N);;
-    int counter = 0;
+    counter = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) continue;
         residual[2*counter+0] = velocity_residual[v].x();

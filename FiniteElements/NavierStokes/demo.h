@@ -54,10 +54,31 @@ struct Demo : public IBehaviour {
     SurfaceGeometry *geom;
 
     // Visualization
+    bool show_wireframe;
+    bool show_vector_field;
+    
     GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
     GLuint solution_fbo; // For render-to-texture.
     GLuint solution_texture; // 3 components: r:velocity_x, g:velocity_y, b:pressure.
     GLuint solution_depth_texture; //--- Is this needed for completeness?
+    
+    // Screenshots
+    int screenshot_blx;
+    int screenshot_bly;
+    int screenshot_trx;
+    int screenshot_try;
+    float f_screenshot_blx;
+    float f_screenshot_bly;
+    float f_screenshot_trx;
+    float f_screenshot_try;
+
+    void take_screenshot();
+    // Films
+    double film_seconds;
+    double film_dt;
+    double film_num_frames;
+    int film_frame;
+    int filming;
 };
 
 #endif // HEADER_DEFINED_DEMO

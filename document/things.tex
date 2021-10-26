@@ -5,8 +5,8 @@
 \usepackage{cancel}
 \usetikzlibrary{arrows.meta, positioning}
 \tikzset{%
-    block/.style = {draw=black,rectangle,thick,
-        minimum height=2em, text width=20em, align=center},
+    block/.style = {draw=cyan,rectangle,thick,
+        minimum height=2em, text width=25em, align=center},
     line/.style = {draw=cyan, line width=3pt, 
         -{Triangle[length=6pt, width=8pt]}, shorten >=2pt, shorten <=2pt},
 }
@@ -132,20 +132,17 @@ Suppose $\tilde{u} \in \Phi^u$ and $\tilde{p} \in \Phi^p$, where
     $$\Phi^u = \text{span}\left\{\phi^u_1,\cdots,\phi^u_{2n_u}\right\},\quad 
         \Phi^p = \text{span}\left\{\phi^p_1,\cdots,\phi^p_{n_p}\right\}$$
 are, respectively, spaces of vector velocity fields and of scalar pressure fields, both compatible with the integral equations.
-
 % A finite number of pieces $\Omega^{u}_1,\cdots,\Omega^u_{n_u}$, which might tessellate the interior of $\Omega$, can be chosen.
 % If the residual for the linearized momentum equation is zero for all of these, this means ``momentum is approximately conserved''.
 % Another finite number of pieces $\Omega^{p}_1,\cdots,\Omega^p_{n_p}$ could also be chosen to check that ``$\tilde{u}$ is approximately
 % incompressible''. This is called a finite volume method, and is a good idea for conservation laws such as Poisson's equation)
 % but a pure FVM, as just described, turns out not to lead to a stable method for the Stokes equations.
-
 % A finite number of pieces $\Omega_0$ could be chosen.
 % If the residual for the linearized momentum equation is zero for all of these,
 % and the residual for the incompressibility constraint is zero, this can be taken to mean ``momentum is approximately conserved'',
 % and ``$\tilde{u}$ is approximately non-compressing''.
 % This is called a finite volume method, and is a good idea for conservation laws such as Poisson's equation.
 % A pure FVM, as just described, turns out not to lead to a stable method for the Stokes equations.
-
 In an attempt to find an alternative finite set of equations, the Stokes equations can be written in the \textit{weak form}
 \begin{equation}\label{steady_stokes_weak_form}
 \begin{split}
@@ -155,10 +152,10 @@ In an attempt to find an alternative finite set of equations, the Stokes equatio
     \text{and\quad} -\int_{\Omega}u(\hat{x})\cdot\nabla\psi^p\,d\hat{x} &= 0 \text{\quad for all $\psi^p \in \Psi^p$}.
 \end{split}
 \end{equation}
-Although maybe less clear than the original form, this is a sort of ``rearrangement'' of the infinite system of equations given in terms of fluxes
-(analagous to a rebasis of a linear system).
+This is a sort of ``rearrangement'' of the infinite system of equations which was given in terms of fluxes
+(analogous to a rebasis of a linear system).
 For the continuous PDE, the ``trial spaces'' $\Psi^u$ and $\Psi^p$ are certain generalised function spaces.
-For example, for the discretized method, why not choose $\Psi^u = \Phi^u$ and $\Psi^p = \Phi^p$?
+For the discretized method, why not choose $\Psi^u = \Phi^u$ and $\Psi^p = \Phi^p$?
 
 
 \newpage
@@ -184,7 +181,7 @@ with basis functions
     $$\Phi^u = \text{span}\left\{\phi^u_{1x},\phi^u_{1y},\cdots,\phi^u_{n_ux},\phi^u_{n_uy}\right\}.$$
 
 The boundary values can be accounted for by letting $\tilde{u}_\Gamma$ be some arbitrary approximating function which satisfies the boundary condition,
-and restricting $\Phi^u$ to be zero on the boundary. The resulting linear system is
+and restricting $\Phi^u$ to be zero on the boundary. The resulting linear system is the one above.
 \begin{equation}
 \begin{split}
     \sum_{i=1}^{n_u}\left[
@@ -227,6 +224,13 @@ performing a change of variables to a ``reference triangle'', and analytically i
 Once the sparse linear system is formed, it is sent to a sparse linear solver.
 
 
+\newpage
+\begin{align*}
+    \tilde{p}\\
+    \tilde{u}_x\\
+    \tilde{u}_y
+\end{align*}
+
 
 \begin{tikzpicture}[node distance = 2cm, auto] 
     \node [block] (init) {
@@ -244,11 +248,44 @@ Conservation of mass an incompressibility
 \end{center}
 }; 
     \node [block, below=30pt of init] (expert) {
-nice}; 
+\begin{equation*}
+\begin{split}
+    \sum_{i=1}^{n_u}\left[
+        u_{ix}\int_\Omega\mu\nabla\phi_{ix}^u:\nabla\psi_j^u\,d\hat{x}
+        +
+        u_{iy}\int_\Omega\mu\nabla\phi_{iy}^u:\nabla\psi_j^u\,d\hat{x}
+    \right]
+    +
+    \sum_{i=1}^{n_p} p_i\int_\Omega \phi_i^p\nabla\cdot\psi^u_j\,d\hat{x}
+    =
+    \int_\Omega\nabla\tilde{u}_\Gamma:\nabla\psi_j^u\,d\hat{x},\\
+    \text{\quad for $j=1,\cdots,2n_u$}.\\
+    \sum_{i=1}^{n_u}\left[
+        u_{ix}\int_\Omega\psi_k^p\nabla\cdot\phi_{ix}^u\,d\hat{x}
+        +
+        u_{iy}\int_\Omega\psi_k^p\nabla\cdot\phi_{iy}^u\,d\hat{x}
+    \right]
+    =
+    \int_\Omega\psi_k^p\nabla\cdot\tilde{u}_\Gamma\,d\hat{x},\\
+    \text{\quad for $k=1,\cdots,n_p$}.\\
+\end{split}
+\end{equation*}
+}; 
     \path [line] (init) -- (expert); 
-    \node [block, below=30pt of expert] (third) {third}; 
+    \node [block, below=30pt of expert] (third) {
+\begin{equation*}
+\begin{split}
+        -\oint_{\partial \Omega_0} \mu\nabla u(\hat{x})\cdot \hat{n}\,d\hat{x}
+            &= \int_{\Omega_0}F(\hat{x})\,d\hat{x}
+            -\oint_{\partial\Omega_0} p(\hat{x})\hat{n}\,dx\\
+    \text{and\quad} \oint_{\partial\Omega_0}u(\hat{x})\cdot\hat{n}\,d\hat{x} &= 0 \text{\quad\quad for all pieces $\Omega_0 \subset \Omega$}.
+\end{split}
+\end{equation*}
+\vskip 0.02in
+.
+}; 
     \path [line] ([xshift=6em]expert.south) -- ([xshift=6em]third.north); 
-    \node [block, below=30pt of third] (fourth) {fourth}; 
+    \node [block, below=70pt of third] (fourth) {fourth}; 
     \path [line] (third.south) -- (fourth.north); 
 \end{tikzpicture}
 
