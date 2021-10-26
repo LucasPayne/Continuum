@@ -1,11 +1,53 @@
 #include "NavierStokes/demo.h"
 #include "NavierStokes/mesh_generators.h"
 
+enum MeshModes {
+    MM_square,
+    MM_square_with_obstruction,
+    NUM_MESH_MODES
+};
 
 Demo::Demo()
 {
     solver = nullptr;
     geom = nullptr;
+}
+
+void Demo::recreate_solver()
+{
+    if (solver != nullptr) delete solver;
+    if (geom != nullptr) delete geom;
+    double kinematic_viscosity = 1.;
+
+    if (mesh_mode == MM_square) {
+        geom = square_mesh(8);
+        solver = new NavierStokesSolver(*geom, kinematic_viscosity);
+        solver->set_source(
+            [&](double x, double y)->vec2 {
+                // const double r = 0.175;
+                // if (x*x + y*y <= r*r) return vec2(25,0);
+                const double r = 0.125;
+                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(-25, 0);
+                if ((x+0.5)*(x+0.5) + y*y <= r*r) return vec2(25, 0);
+                return vec2(0,0);
+            }
+        );
+    } else if (mesh_mode == MM_square_with_obstruction) {
+        double theta0 = 0.13;
+        vec2 obstruction_position = vec2(0,0);
+        geom = square_minus_circle(0.25, theta0, 1, 1, 8, false, obstruction_position, false);
+        solver = new NavierStokesSolver(*geom, kinematic_viscosity);
+        solver->set_source(
+            [&](double x, double y)->vec2 {
+                // const double r = 0.175;
+                // if (x*x + y*y <= r*r) return vec2(25,0);
+                const double r = 0.125;
+                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(-25, 0);
+                if ((x+0.5)*(x+0.5) + y*y <= r*r) return vec2(25, 0);
+                return vec2(0,0);
+            }
+        );
+    }
 }
 
 void Demo::init()
@@ -20,17 +62,13 @@ void Demo::init()
     controller->angle = -M_PI/2;
     controller->azimuth = M_PI;
 
-
-    geom = square_mesh(8);
-    double kinematic_viscosity = 1.;
-    solver = new NavierStokesSolver(*geom, kinematic_viscosity);
-    solver->set_source(
-        [&](double x, double y)->vec2 {
-            const double r = 0.175;
-            if (x*x + y*y <= r*r) return vec2(25,0);
-            return vec2(0,0);
-        }
-    );
+    
+    /*--------------------------------------------------------------------------------
+        Mesh selection
+    --------------------------------------------------------------------------------*/
+    mesh_mode = 0;
+    // Create the solver.
+    recreate_solver();
     
     /*--------------------------------------------------------------------------------
     Visualization
@@ -85,6 +123,17 @@ void Demo::keyboard_handler(KeyboardEvent e)
             film_frame = 0;
             filming = true;
         }
+
+        // Select mesh.
+        if (e.key.code == KEY_M) {
+            mesh_mode = (mesh_mode + 1) % NUM_MESH_MODES;
+            recreate_solver();
+        }
+        if (e.key.code == KEY_N) {
+            mesh_mode -= 1;
+            if (mesh_mode < 0) mesh_mode = NUM_MESH_MODES-1;
+            recreate_solver();
+        }
         
         // Rendering toggles.
         if (e.key.code == KEY_1) {
@@ -134,6 +183,17 @@ void Demo::post_render_update()
         double thickness = 0.005;
         world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
     }
+        // Draw boundaries.
+        for (auto start : geom->mesh.boundary_loops()) {
+            auto ps = std::vector<vec3>();
+            auto he = start;
+            do {
+                ps.push_back(vec3(0,0.0001,0)+eigen_to_vec3(geom->position[he.vertex()]));
+                he = he.next();
+            } while (he != start);
+            ps.push_back(ps[0]);
+            world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
+        }
     
     // Scale the pressure.
     VertexAttachment<double> scaled_pressure(geom->mesh);
@@ -256,7 +316,7 @@ void Demo::post_render_update()
         std::vector<float> pressures;
         // const int skip = 20;
         // const int skip = 14;
-        const int skip = 35;
+        const int skip = 23;
 	std::vector<vec2> positions_2D;
         for (int i = 0; i < 1024; i += skip) {
             float x = -1 + i*2.f/(1024-1.f);
@@ -265,7 +325,7 @@ void Demo::post_render_update()
                 float velocity_x = solution_pixels[4*(1024*j + i) + 0];
                 float velocity_y = solution_pixels[4*(1024*j + i) + 1];
                 float pressure = solution_pixels[4*(1024*j + i) + 2];
-                const float thickness = 0.005;
+                const float thickness = 0.002;
                 const vec4 color = vec4(0,0,0,1);
                 const float epsilon = 1e-5;
                 if (fabs(velocity_x) < epsilon && fabs(velocity_y) < epsilon) {

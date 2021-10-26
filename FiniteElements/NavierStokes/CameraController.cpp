@@ -40,7 +40,7 @@ void CameraController::init()
     //min_angle = -M_PI/2.0 + 0.15;
     min_angle = -M_PI/2.0;
     max_angle = M_PI/2.0 - 0.15;
-    view_with_mouse = true;
+    view_with_mouse = false;
     mouse_sensitivity = 2;
 }
 

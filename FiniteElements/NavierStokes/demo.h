@@ -53,6 +53,10 @@ struct Demo : public IBehaviour {
     NavierStokesSolver *solver;
     SurfaceGeometry *geom;
 
+    // Mesh selection
+    int mesh_mode;
+    void recreate_solver();
+
     // Visualization
     bool show_wireframe;
     bool show_vector_field;
