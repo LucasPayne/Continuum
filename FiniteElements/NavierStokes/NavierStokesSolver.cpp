@@ -133,10 +133,12 @@ void NavierStokesSolver::newton_iteration()
 {
     assert(solving());
 
-    SparseMatrix J = compute_gateaux_matrix();
-    // NOTE: J is the linear term matrix as currently there are no nonlinear terms.
-    Eigen::VectorXd residual = compute_residual(J);
-    
+    SparseMatrix linear_term_matrix;
+    SparseMatrix J;
+    std::tie(linear_term_matrix, J) = compute_gateaux_matrix();
+
+    // Pass the linear_term_matrix to the residual getter, as it is used to derive the homogeneous, linear parts of the residual.
+    Eigen::VectorXd residual = compute_residual(linear_term_matrix);
     Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
     linear_solver.compute(J);
     Eigen::VectorXd velocity_pressure_variation_vector = linear_solver.solve(residual);
@@ -307,53 +309,62 @@ void make_sparsity_image(SparseMatrix &matrix, std::string name)
     fclose(ppm_file);
 }
 
-SparseMatrix NavierStokesSolver::compute_gateaux_matrix()
+// Returns (linear_term_matrix, gateaux_matrix).
+// The linear term matrix is used to compute the homogeneous linear part of the residual.
+std::tuple<SparseMatrix, SparseMatrix> NavierStokesSolver::compute_gateaux_matrix()
 {
     // auto top_left_coefficients = std::vector<TopLeftEntry>();
     // auto bottom_left_coefficients = std::vector<BottomLeftEntry>();
-    auto top_left_coefficients = compute_gateaux_matrix_top_left();
-    auto bottom_left_coefficients = compute_gateaux_matrix_bottom_left();
-
+    auto top_left_coefficients = compute_linear_term_matrix_top_left();
+    auto bottom_left_coefficients = compute_linear_term_matrix_bottom_left();
 
     // Construct the sparse matrix by converting the coefficient lists (which are in terms of the mesh)
     // into a list of triplets indexing into a matrix.
-    auto eigen_coefficients = std::vector<EigenTriplet>();
-    auto add_eigen_coefficient = [&](int i, int j, double val) {
-        printf("%d %d %.6g\n", i, j, val);
-        eigen_coefficients.push_back(EigenTriplet(i, j, val));
+    auto get_sparse_matrix = [&]()->SparseMatrix {
+        auto eigen_coefficients = std::vector<EigenTriplet>();
+        auto add_eigen_coefficient = [&](int i, int j, double val) {
+            printf("%d %d %.6g\n", i, j, val);
+            eigen_coefficients.push_back(EigenTriplet(i, j, val));
+        };
+        for (auto coeff : top_left_coefficients) {
+            // printf("trial: %d\n", velocity_node_indices[coeff.velocity_trial_node]);
+            add_eigen_coefficient(
+                2*velocity_node_indices[coeff.velocity_trial_node] + coeff.trial_component,
+                2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
+                coeff.value
+            );
+        }
+        for (auto coeff : bottom_left_coefficients) {
+            add_eigen_coefficient(
+                2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
+                2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
+                coeff.value
+            );
+            // The matrix should be symmetric, so also set the top-right block.
+            add_eigen_coefficient(
+                2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
+                2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
+                coeff.value
+            );
+        }
+
+        auto matrix = SparseMatrix(m_system_N, m_system_N);
+        matrix.setFromTriplets(eigen_coefficients.begin(), eigen_coefficients.end());
+        matrix.makeCompressed();
+        return matrix;
     };
-    for (auto coeff : top_left_coefficients) {
-        // printf("trial: %d\n", velocity_node_indices[coeff.velocity_trial_node]);
-        add_eigen_coefficient(
-            2*velocity_node_indices[coeff.velocity_trial_node] + coeff.trial_component,
-            2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
-            coeff.value
-        );
-    }
-    for (auto coeff : bottom_left_coefficients) {
-        add_eigen_coefficient(
-            2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
-            2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
-            coeff.value
-        );
-        // The matrix should be symmetric, so also set the top-right block.
-        add_eigen_coefficient(
-            2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
-            2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
-            coeff.value
-        );
-    }
+
+    auto linear_term_matrix = get_sparse_matrix();
+    // Add non-linear advection terms into the matrix.
+
+
+
+    auto gateaux_matrix = get_sparse_matrix();
+
     printf("N_u: %d\n", m_num_velocity_variation_nodes);
     printf("N_p: %d\n", m_num_pressure_variation_nodes);
     printf("N: %d\n", m_system_N);
-    // getchar();
-
-    // Convert the list of triplets into a sparse matrix.
-    auto gateaux_matrix = SparseMatrix(m_system_N, m_system_N);
-    gateaux_matrix.setFromTriplets(eigen_coefficients.begin(), eigen_coefficients.end());
-    gateaux_matrix.makeCompressed();
-
     make_sparsity_image(gateaux_matrix, std::string(DATA) + "navier_stokes_gateaux_sparsity.png");
 
-    return gateaux_matrix;
+    return {linear_term_matrix, gateaux_matrix};
 }

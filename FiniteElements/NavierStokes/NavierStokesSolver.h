@@ -67,11 +67,11 @@ private:
     P1Attachment<int> pressure_node_indices;
 
     inline int system_N() const { return m_system_N; } // The size of the velocity-pressure vectors and Gateaux matrix.
-    SparseMatrix compute_gateaux_matrix();
+    std::tuple<SparseMatrix, SparseMatrix> compute_gateaux_matrix(); // returns (linear_term_matrix, gateaux_matrix).
     Eigen::VectorXd compute_residual(SparseMatrix &linear_term_matrix);
     void add_nonlinear_velocity_residual(P2Attachment<vec2> &velocity_residual);
-    std::vector<TopLeftEntry> compute_gateaux_matrix_top_left();
-    std::vector<BottomLeftEntry> compute_gateaux_matrix_bottom_left();
+    std::vector<TopLeftEntry> compute_linear_term_matrix_top_left();
+    std::vector<BottomLeftEntry> compute_linear_term_matrix_bottom_left();
 
     P2Attachment<vec2> source_samples_P2; // Samples for approximate integration.
 

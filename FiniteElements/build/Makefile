@@ -615,53 +615,53 @@ NavierStokes/add_nonlinear_velocity_residual.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/add_nonlinear_velocity_residual.cpp.s
 .PHONY : NavierStokes/add_nonlinear_velocity_residual.cpp.s
 
-NavierStokes/compute_gateaux_matrix_bottom_left.o: NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o
-.PHONY : NavierStokes/compute_gateaux_matrix_bottom_left.o
+NavierStokes/compute_linear_term_matrix_bottom_left.o: NavierStokes/compute_linear_term_matrix_bottom_left.cpp.o
+.PHONY : NavierStokes/compute_linear_term_matrix_bottom_left.o
 
 # target to build an object file
-NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o
-.PHONY : NavierStokes/compute_gateaux_matrix_bottom_left.cpp.o
+NavierStokes/compute_linear_term_matrix_bottom_left.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_bottom_left.cpp.o
+.PHONY : NavierStokes/compute_linear_term_matrix_bottom_left.cpp.o
 
-NavierStokes/compute_gateaux_matrix_bottom_left.i: NavierStokes/compute_gateaux_matrix_bottom_left.cpp.i
-.PHONY : NavierStokes/compute_gateaux_matrix_bottom_left.i
+NavierStokes/compute_linear_term_matrix_bottom_left.i: NavierStokes/compute_linear_term_matrix_bottom_left.cpp.i
+.PHONY : NavierStokes/compute_linear_term_matrix_bottom_left.i
 
 # target to preprocess a source file
-NavierStokes/compute_gateaux_matrix_bottom_left.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.i
-.PHONY : NavierStokes/compute_gateaux_matrix_bottom_left.cpp.i
+NavierStokes/compute_linear_term_matrix_bottom_left.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_bottom_left.cpp.i
+.PHONY : NavierStokes/compute_linear_term_matrix_bottom_left.cpp.i
 
-NavierStokes/compute_gateaux_matrix_bottom_left.s: NavierStokes/compute_gateaux_matrix_bottom_left.cpp.s
-.PHONY : NavierStokes/compute_gateaux_matrix_bottom_left.s
+NavierStokes/compute_linear_term_matrix_bottom_left.s: NavierStokes/compute_linear_term_matrix_bottom_left.cpp.s
+.PHONY : NavierStokes/compute_linear_term_matrix_bottom_left.s
 
 # target to generate assembly for a file
-NavierStokes/compute_gateaux_matrix_bottom_left.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_bottom_left.cpp.s
-.PHONY : NavierStokes/compute_gateaux_matrix_bottom_left.cpp.s
+NavierStokes/compute_linear_term_matrix_bottom_left.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_bottom_left.cpp.s
+.PHONY : NavierStokes/compute_linear_term_matrix_bottom_left.cpp.s
 
-NavierStokes/compute_gateaux_matrix_top_left.o: NavierStokes/compute_gateaux_matrix_top_left.cpp.o
-.PHONY : NavierStokes/compute_gateaux_matrix_top_left.o
+NavierStokes/compute_linear_term_matrix_top_left.o: NavierStokes/compute_linear_term_matrix_top_left.cpp.o
+.PHONY : NavierStokes/compute_linear_term_matrix_top_left.o
 
 # target to build an object file
-NavierStokes/compute_gateaux_matrix_top_left.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.o
-.PHONY : NavierStokes/compute_gateaux_matrix_top_left.cpp.o
+NavierStokes/compute_linear_term_matrix_top_left.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_top_left.cpp.o
+.PHONY : NavierStokes/compute_linear_term_matrix_top_left.cpp.o
 
-NavierStokes/compute_gateaux_matrix_top_left.i: NavierStokes/compute_gateaux_matrix_top_left.cpp.i
-.PHONY : NavierStokes/compute_gateaux_matrix_top_left.i
+NavierStokes/compute_linear_term_matrix_top_left.i: NavierStokes/compute_linear_term_matrix_top_left.cpp.i
+.PHONY : NavierStokes/compute_linear_term_matrix_top_left.i
 
 # target to preprocess a source file
-NavierStokes/compute_gateaux_matrix_top_left.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.i
-.PHONY : NavierStokes/compute_gateaux_matrix_top_left.cpp.i
+NavierStokes/compute_linear_term_matrix_top_left.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_top_left.cpp.i
+.PHONY : NavierStokes/compute_linear_term_matrix_top_left.cpp.i
 
-NavierStokes/compute_gateaux_matrix_top_left.s: NavierStokes/compute_gateaux_matrix_top_left.cpp.s
-.PHONY : NavierStokes/compute_gateaux_matrix_top_left.s
+NavierStokes/compute_linear_term_matrix_top_left.s: NavierStokes/compute_linear_term_matrix_top_left.cpp.s
+.PHONY : NavierStokes/compute_linear_term_matrix_top_left.s
 
 # target to generate assembly for a file
-NavierStokes/compute_gateaux_matrix_top_left.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_gateaux_matrix_top_left.cpp.s
-.PHONY : NavierStokes/compute_gateaux_matrix_top_left.cpp.s
+NavierStokes/compute_linear_term_matrix_top_left.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_top_left.cpp.s
+.PHONY : NavierStokes/compute_linear_term_matrix_top_left.cpp.s
 
 NavierStokes/demo.o: NavierStokes/demo.cpp.o
 .PHONY : NavierStokes/demo.o
@@ -910,12 +910,12 @@ help:
 	@echo "... NavierStokes/add_nonlinear_velocity_residual.o"
 	@echo "... NavierStokes/add_nonlinear_velocity_residual.i"
 	@echo "... NavierStokes/add_nonlinear_velocity_residual.s"
-	@echo "... NavierStokes/compute_gateaux_matrix_bottom_left.o"
-	@echo "... NavierStokes/compute_gateaux_matrix_bottom_left.i"
-	@echo "... NavierStokes/compute_gateaux_matrix_bottom_left.s"
-	@echo "... NavierStokes/compute_gateaux_matrix_top_left.o"
-	@echo "... NavierStokes/compute_gateaux_matrix_top_left.i"
-	@echo "... NavierStokes/compute_gateaux_matrix_top_left.s"
+	@echo "... NavierStokes/compute_linear_term_matrix_bottom_left.o"
+	@echo "... NavierStokes/compute_linear_term_matrix_bottom_left.i"
+	@echo "... NavierStokes/compute_linear_term_matrix_bottom_left.s"
+	@echo "... NavierStokes/compute_linear_term_matrix_top_left.o"
+	@echo "... NavierStokes/compute_linear_term_matrix_top_left.i"
+	@echo "... NavierStokes/compute_linear_term_matrix_top_left.s"
 	@echo "... NavierStokes/demo.o"
 	@echo "... NavierStokes/demo.i"
 	@echo "... NavierStokes/demo.s"
