@@ -52,6 +52,12 @@ struct Demo : public IBehaviour {
 
     NavierStokesSolver *solver;
     SurfaceGeometry *geom;
+
+    // Visualization
+    GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
+    GLuint solution_fbo; // For render-to-texture.
+    GLuint solution_texture; // 3 components: r:velocity_x, g:velocity_y, b:pressure.
+    GLuint solution_depth_texture; //--- Is this needed for completeness?
 };
 
 #endif // HEADER_DEFINED_DEMO

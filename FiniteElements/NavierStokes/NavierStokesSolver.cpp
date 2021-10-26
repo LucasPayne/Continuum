@@ -38,7 +38,10 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
 
     m_num_velocity_variation_nodes = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
     m_num_pressure_variation_nodes = geom.mesh.num_vertices();
-    m_system_N = 2*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes;
+    // The size of the system is 2*N_u + N_p - 1.
+    // The -1 is due to one pressure node being fixed.
+    // (As a convention, the fixed node is the last in the ordering.)
+    m_system_N = 2*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes - 1;
     
     /*--------------------------------------------------------------------------------
         Set up the indexing for nodes in the mesh.
@@ -47,14 +50,20 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
     // Velocity node ordering. Interior vertex nodes, then interior edge nodes.
     int counter = 0;
     for (auto v : geom.mesh.vertices()) {
-        if (v.on_boundary()) velocity_node_indices[v] = -1;
-        velocity_node_indices[v] = counter;
-        counter += 1;
+        if (v.on_boundary()) {
+            velocity_node_indices[v] = -1;
+        } else {
+            velocity_node_indices[v] = counter;
+            counter += 1;
+        }
     }
     for (auto e : geom.mesh.edges()) {
-        if (e.on_boundary()) velocity_node_indices[e] = -1;
-        velocity_node_indices[e] = counter;
-        counter += 1;
+        if (e.on_boundary()) {
+            velocity_node_indices[e] = -1;
+        } else {
+            velocity_node_indices[e] = counter;
+            counter += 1;
+        }
     }
     // Pressure node ordering. Vertex nodes (interior or on the boundary).
     counter = 0;
@@ -74,8 +83,6 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
         velocity[e] = vec2(0.,0.);
         velocity_prev[e] = vec2(0.,0.);
     }
-    m_velocity_pressure_vector = Eigen::VectorXd(m_system_N);
-    for (int i = 0; i < m_system_N; i++) m_velocity_pressure_vector[i] = 0.;
 }
 
 /*--------------------------------------------------------------------------------
@@ -130,6 +137,8 @@ void NavierStokesSolver::newton_iteration()
     Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
     linear_solver.compute(J);
     Eigen::VectorXd velocity_pressure_variation_vector = linear_solver.solve(residual);
+    
+    std::cout << velocity_pressure_variation_vector << "\n";getchar();
 
     // Update the current velocity and pressure.
     // The vector of variations has to be reassociated to the mesh.
@@ -149,6 +158,7 @@ void NavierStokesSolver::newton_iteration()
     }
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
+        if (counter == m_num_pressure_variation_nodes-1) break; // skip the last pressure node
         pressure[v] -= velocity_pressure_variation_vector[2*num_velocity_variation_nodes() + counter];
         counter += 1;
     }
@@ -192,10 +202,46 @@ Eigen::VectorXd NavierStokesSolver::compute_residual()
     }
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
+        if (counter == m_num_pressure_variation_nodes-1) break; // skip the last pressure node
         residual[2*num_velocity_variation_nodes() + counter] = pressure_residual[v];
         counter += 1;
     }
     return residual;
+}
+
+
+
+void make_sparsity_image(SparseMatrix &matrix, std::string name)
+{
+    assert(matrix.rows() == matrix.cols());
+    int system_N = matrix.rows();
+    int num_nonzeros = 0;
+    for (int i = 0; i < system_N; i++) {
+        for (int j = 0; j < system_N; j++) {
+            if (fabs(matrix.coeff(i, j)) >= 1e-4) {
+                num_nonzeros += 1;
+            }
+        }
+    }
+    FILE *ppm_file = fopen(const_cast<const char *>(name.c_str()), "w+");
+    fprintf(ppm_file, "P3\n");
+    fprintf(ppm_file, "%d %d\n", system_N, system_N);
+    fprintf(ppm_file, "255\n");
+    for (int i = 0; i < system_N; i++) {
+        for (int j = 0; j < system_N; j++) {
+            if (fabs(matrix.coeff(i, j)) >= 1e-4) {
+                if (fabs(matrix.coeff(i, j) - matrix.coeff(j, i)) <= 1e-4) {
+                    // signify when this entry is symmetric (equal to its corresponding transpose entry).
+                    fprintf(ppm_file, "255 0 0 ");
+                } else {
+                    fprintf(ppm_file, "0 0 0 ");
+                }
+            } else {
+	        fprintf(ppm_file, "255 255 255 ");
+            }
+        }
+    }
+    fclose(ppm_file);
 }
 
 SparseMatrix NavierStokesSolver::compute_gateaux_matrix()
@@ -205,32 +251,46 @@ SparseMatrix NavierStokesSolver::compute_gateaux_matrix()
     auto top_left_coefficients = compute_gateaux_matrix_top_left();
     auto bottom_left_coefficients = compute_gateaux_matrix_bottom_left();
 
+
     // Construct the sparse matrix by converting the coefficient lists (which are in terms of the mesh)
     // into a list of triplets indexing into a matrix.
     auto eigen_coefficients = std::vector<EigenTriplet>();
+    auto add_eigen_coefficient = [&](int i, int j, double val) {
+        printf("%d %d %.6g\n", i, j, val);
+        eigen_coefficients.push_back(EigenTriplet(i, j, val));
+    };
     for (auto coeff : top_left_coefficients) {
-        eigen_coefficients.push_back(EigenTriplet(
+        // printf("trial: %d\n", velocity_node_indices[coeff.velocity_trial_node]);
+        add_eigen_coefficient(
             2*velocity_node_indices[coeff.velocity_trial_node] + coeff.trial_component,
             2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
             coeff.value
-        ));
+        );
     }
     for (auto coeff : bottom_left_coefficients) {
-        eigen_coefficients.push_back(EigenTriplet(
+        add_eigen_coefficient(
             2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
             2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
             coeff.value
-        ));
+        );
         // The matrix should be symmetric, so also set the top-right block.
-        eigen_coefficients.push_back(EigenTriplet(
+        add_eigen_coefficient(
             2*velocity_node_indices[coeff.velocity_test_node] + coeff.test_component,
             2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
             coeff.value
-        ));
+        );
     }
+    printf("N_u: %d\n", m_num_velocity_variation_nodes);
+    printf("N_p: %d\n", m_num_pressure_variation_nodes);
+    printf("N: %d\n", m_system_N);
+    // getchar();
+
     // Convert the list of triplets into a sparse matrix.
     auto gateaux_matrix = SparseMatrix(m_system_N, m_system_N);
     gateaux_matrix.setFromTriplets(eigen_coefficients.begin(), eigen_coefficients.end());
     gateaux_matrix.makeCompressed();
+
+    make_sparsity_image(gateaux_matrix, std::string(DATA) + "navier_stokes_gateaux_sparsity.png");
+
     return gateaux_matrix;
 }

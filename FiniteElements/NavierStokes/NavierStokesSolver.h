@@ -25,6 +25,9 @@ struct BottomLeftEntry {
     P2Element velocity_test_node;
     int test_component;  // x: 0, y: 1
     double value;
+    BottomLeftEntry(Vertex _ptn, P2Element _vtn, int _tc, double val) :
+        pressure_trial_node{_ptn}, velocity_test_node{_vtn}, test_component{_tc}, value{val}
+    {}
 };
 
 
@@ -46,12 +49,13 @@ public:
     inline double kinematic_viscosity() const { return m_kinematic_viscosity; }
     inline double time() const { return m_time; }
 
-private:
     SurfaceGeometry &geom;
 
     // The velocity and pressure are changed during Newton iteration.
     P2Attachment<vec2> velocity;
     P1Attachment<double> pressure;
+
+private:
     // The previous velocity and pressure are only changed after a time step.
     P2Attachment<vec2> velocity_prev;
     P1Attachment<double> pressure_prev;
