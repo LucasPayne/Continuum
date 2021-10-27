@@ -75,7 +75,7 @@ ReactorDiffuser::ReactorDiffuser(SurfaceGeometry &_geom, float _mu, std::functio
     }
     gramian_matrix = SparseMatrix(num_nodes, num_nodes);
     gramian_matrix.setFromTriplets(coefficients.begin(), coefficients.end());
-    gramian_matrix.makeCompressed();
+    // gramian_matrix.makeCompressed();
 }
 
 
@@ -107,7 +107,7 @@ void ReactorDiffuser::time_step(double delta_time)
             Vertex vpp = he.next().tip();
             auto vp_pos = geom->position[vp];
             auto vpp_pos = geom->position[vpp];
-            double C = 1.0/(4.0*geom->triangle_area(tri));
+            double C = mu * 1.0/(4.0*geom->triangle_area(tri));
 
             // Diagonal term.
             double diagonal_term = C*(vpp_pos - vp_pos).dot(vpp_pos - vp_pos);
@@ -141,13 +141,32 @@ void ReactorDiffuser::time_step(double delta_time)
     // u/delta_time term.
     mass_matrix += inv_delta_time * gramian_matrix;
 
-    mass_matrix.makeCompressed();
+    // mass_matrix.makeCompressed();
 
     // u_prev/delta_time term.
-    rhs += gramian_matrix * u_vector;
+    rhs += inv_delta_time * gramian_matrix * u_vector;
 
     // Reaction term
-    //...........................
+    for (auto v : geom->mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = interior_vertex_indices[v];
+        vec3 v_pos = eigen_to_vec3(geom->position[v]);
+
+        double total_triangle_area = 0.0;
+        // For each adjacent triangle.
+        auto start = v.halfedge(); //todo: provide this circulator in mesh_processing.
+        auto he = start;
+        do {
+            auto tri = he.face();
+            total_triangle_area += geom->triangle_area(tri);
+            he = he.twin().next();
+        } while (he != start);
+
+        double reaction_sample = reaction_function(v_pos, u_mesh[v], time);
+
+        double val = total_triangle_area/3.0 * reaction_sample;
+        rhs[v_index] += val;
+    }
 
     /*--------------------------------------------------------------------------------
         Solve the system.
@@ -168,6 +187,7 @@ void ReactorDiffuser::time_step(double delta_time)
     int interior_vertex_index = 0;
     for (auto v : geom->mesh.vertices()) {
         if (v.on_boundary()) {
+            getchar();
         } else {
             u_mesh[v] = u_vector[interior_vertex_index];
             interior_vertex_index += 1;

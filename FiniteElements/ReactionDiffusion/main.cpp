@@ -1,8 +1,6 @@
 #include "NavierStokes/core.h"
 #include "NavierStokes/demo.h"
 
-Aspect<Camera> main_camera;
-
 class App : public IGC::Callbacks {
 public:
     World &world;

@@ -52,6 +52,21 @@ struct Demo : public IBehaviour {
 
     ReactorDiffuser *solver;
     SurfaceGeometry *geom;
+
+    // Visualization
+    GLShaderProgram solution_shader;
+    bool show_wireframe;
+    
+    // Screenshots
+    int screenshot_blx;
+    int screenshot_bly;
+    int screenshot_trx;
+    int screenshot_try;
+    float f_screenshot_blx;
+    float f_screenshot_bly;
+    float f_screenshot_trx;
+    float f_screenshot_try;
+    void take_screenshot();
 };
 
 #endif // HEADER_DEFINED_DEMO
