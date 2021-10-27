@@ -42,7 +42,7 @@ public:
 
     void time_step(double dt);
 
-    void set_source(PlaneVectorField vf);
+    void set_source(TimeDependentPlaneVectorField vf);
 
     inline bool solving() const { return m_solving; }
     inline bool iterating() const { return m_iterating; }
@@ -57,7 +57,7 @@ public:
     P2Attachment<vec2> velocity;
     P1Attachment<double> pressure;
 
-    PlaneVectorField source_function; // Exact function.
+    TimeDependentPlaneVectorField source_function; // Exact function.
 private:
     // The previous velocity and pressure are only changed after a time step.
     P2Attachment<vec2> velocity_prev;
@@ -71,9 +71,11 @@ private:
     Eigen::VectorXd compute_residual(SparseMatrix &linear_term_matrix);
     void add_nonlinear_velocity_residual(P2Attachment<vec2> &velocity_residual);
     std::vector<TopLeftEntry> compute_linear_term_matrix_top_left();
+    void add_nonlinear_term_matrix_top_left(std::vector<TopLeftEntry> &coefficients);
     std::vector<BottomLeftEntry> compute_linear_term_matrix_bottom_left();
 
     P2Attachment<vec2> source_samples_P2; // Samples for approximate integration.
+    void update_source_samples();
 
     int m_num_velocity_variation_nodes;
     int m_num_pressure_variation_nodes;

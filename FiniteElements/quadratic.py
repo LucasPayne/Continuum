@@ -413,6 +413,17 @@ pressure_basis_functions = [
 # for m in range(6):
 #     integrate(0, m)
 
+def gramian_integrate(m, n):
+    psi = pressure_basis_functions[m]
+    phi = pressure_basis_functions[n]
+    f = psi * phi
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{},{}: {}".format(m, n,  f_dy_dx))
+print("hat gramian")
+for n in range(3):
+    gramian_integrate(0, n)
+
 
 def advection_residual_array(psi_a, psi_b, psi_c):
     psi = nodal_basis_functions[barycentric_index_to_linear(psi_a, psi_b, psi_c)]
@@ -424,8 +435,13 @@ def advection_residual_array(psi_a, psi_b, psi_c):
             ap,bp,cp = linear_index_to_barycentric(k)
             phi_abc = nodal_basis_functions[i]
             phi_apbpcp = nodal_basis_functions[k]
-            psi_grad_transformed = (K1*sym.diff(psi, x) + K2*sym.diff(psi, y))
-            f = phi_abc * phi_apbpcp * psi_grad_transformed
+
+            # psi_grad_transformed = (K1*sym.diff(psi, x) + K2*sym.diff(psi, y))
+            # f = -phi_abc * phi_apbpcp * psi_grad_transformed
+
+            phi_apbpcp_grad_transformed = (K1*sym.diff(phi_apbpcp, x) + K2*sym.diff(phi_apbpcp, y))
+            f = phi_abc * phi_apbpcp_grad_transformed * psi
+
             f_dy = sym.integrate(f, (y, 0,1-x))
             f_dy_dx = sym.integrate(f_dy, (x, 0,1))
 
@@ -435,8 +451,8 @@ def advection_residual_array(psi_a, psi_b, psi_c):
             array[i, k] = f_dy_dx
     return array
 
-# arr = advection_residual_array(0,0,2)
-arr = advection_residual_array(1,1,0)
+arr = advection_residual_array(0,0,2)
+# arr = advection_residual_array(1,1,0)
 for i in range(6):
     for k in range(6):
         print("{},".format(arr[i, k]) + ("\n" if k == 5 else " "), end="")

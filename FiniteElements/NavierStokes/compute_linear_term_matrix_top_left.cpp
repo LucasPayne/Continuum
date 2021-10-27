@@ -36,11 +36,11 @@ std::vector<TopLeftEntry> NavierStokesSolver::compute_linear_term_matrix_top_lef
                 Time step term
             --------------------------------------------------------------------------------*/
             P2Element elements[6] = {
-                v, vp, vpp, edge_110, edge_011, edge_101
+                vp, vpp, v, edge_110, edge_011, edge_101
             };
             auto element_weights = std::array<double,6>();
             element_weights = {
-                1./60., -1./360., -1./360., -1./90., 0, 0
+                -1./360., -1./360., 1./60., -1./90., 0, 0
             };
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;
@@ -121,11 +121,11 @@ std::vector<TopLeftEntry> NavierStokesSolver::compute_linear_term_matrix_top_lef
                 Time step term
             --------------------------------------------------------------------------------*/
             P2Element elements[6] = {
-                v, vp, vpp, edge_110, edge_011, edge_101
+                vp, vpp, v, edge_110, edge_011, edge_101
             };
             auto element_weights = std::array<double,6>();
             element_weights = {
-                -1./90., 0, 0, 4./45., 2./45., 2./45.
+                0, 0, -1./90., 4./45., 2./45., 2./45.
             };
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;

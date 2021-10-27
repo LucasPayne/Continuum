@@ -23,13 +23,18 @@ void Demo::recreate_solver()
         geom = square_mesh(8);
         solver = new NavierStokesSolver(*geom, kinematic_viscosity);
         solver->set_source(
-            [&](double x, double y)->vec2 {
+            [&](double x, double y, double t)->vec2 {
                 // const double r = 0.175;
                 // if (x*x + y*y <= r*r) return vec2(25,0);
                 const double r = 0.125;
                 // if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(-25, 0);
-                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(0, 50);
-                if ((x+0.5)*(x+0.5) + y*y <= r*r) return vec2(25, 0);
+
+                // if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(0, 50);
+                // if ((x+0.5)*(x+0.5) + y*y <= r*r) return vec2(25, 0);
+                if (t < 0.1) {
+                    if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(0, 50);
+                }
+
                 return vec2(0,0);
             }
         );
@@ -39,7 +44,7 @@ void Demo::recreate_solver()
         geom = square_minus_circle(0.25, theta0, 1, 1, 8, false, obstruction_position, false);
         solver = new NavierStokesSolver(*geom, kinematic_viscosity);
         solver->set_source(
-            [&](double x, double y)->vec2 {
+            [&](double x, double y, double t)->vec2 {
                 // const double r = 0.175;
                 // if (x*x + y*y <= r*r) return vec2(25,0);
                 const double r = 0.125;
@@ -344,7 +349,7 @@ void Demo::post_render_update()
                 // Draw source vector.
                 if (show_source) {
                     const float source_mul = velocity_mul / 25.f;
-                    vec2 source_velocity = solver->source_function(x,y);
+                    vec2 source_velocity = solver->source_function(x,y, solver->time());
                     const vec4 source_color = vec4(0,0,1,1);
                     if (fabs(source_velocity.x()) >= epsilon || fabs(source_velocity.y()) >= epsilon) {
                         world->graphics.paint.line(vec3(x, 0.005, y),

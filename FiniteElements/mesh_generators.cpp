@@ -342,3 +342,45 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
     free(hole_mem);
     return geom;
 }
+
+
+SurfaceGeometry *torus_mesh(float main_radius, float secondary_radius, int N1)
+{
+    float r1 = main_radius;
+    float r2 = secondary_radius;
+    int N2 = ceil(r2/r1 * N1);
+
+    SurfaceMesh *mesh = new SurfaceMesh();
+    SurfaceGeometry *geom = new SurfaceGeometry(*mesh);
+
+    std::vector<std::vector<vec3>> rings;
+    std::vector<std::vector<Vertex>> vertex_rings;
+    for (int i = 0; i < N1; i++) {
+        float theta1 = 2*M_PI*i/N1;
+        vec3 base_point = main_radius * vec3(cos(theta1), 0, sin(theta1));
+        vec3 dir = base_point.normalized();
+        std::vector<vec3> ring;
+        std::vector<Vertex> vertex_ring;
+        for (int j = 0; j < N2; j++) {
+            float theta2 = 2*M_PI*j/N2;
+            vec3 point = base_point + secondary_radius*(cos(theta2)*dir + sin(theta2)*vec3(0,1,0));
+            ring.push_back(point);
+            auto vert = mesh->add_vertex();
+            vertex_ring.push_back(vert);
+            geom->position[vert] = vec3_to_eigen(point);
+        }
+        rings.push_back(ring);
+        vertex_rings.push_back(vertex_ring);
+    }
+
+    for (int i = 0; i < N1; i++) {
+        int ip = (i+1)%N1;
+        for (int j = 0; j < N2; j++) {
+            int jp = (j+1)%N2;
+            geom->mesh.add_triangle(vertex_rings[i][j], vertex_rings[ip][j], vertex_rings[ip][jp]);
+            geom->mesh.add_triangle(vertex_rings[i][j], vertex_rings[ip][jp], vertex_rings[i][jp]);
+        }
+    }
+    mesh->lock();
+    return geom;
+}

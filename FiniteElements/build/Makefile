@@ -99,6 +99,18 @@ edit_cache:
 edit_cache/fast: edit_cache
 .PHONY : edit_cache/fast
 
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
 # Special rule for the target list_install_components
 list_install_components:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
@@ -117,18 +129,6 @@ rebuild_cache:
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -188,6 +188,19 @@ discretization_figure/fast:
 .PHONY : discretization_figure/fast
 
 #=============================================================================
+# Target rules for targets named ReactionDiffusion
+
+# Build rule for target.
+ReactionDiffusion: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ReactionDiffusion
+.PHONY : ReactionDiffusion
+
+# fast build rule for target.
+ReactionDiffusion/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/build
+.PHONY : ReactionDiffusion/fast
+
+#=============================================================================
 # Target rules for targets named quadratic_figure
 
 # Build rule for target.
@@ -225,6 +238,19 @@ LaplaceSolver: cmake_check_build_system
 LaplaceSolver/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LaplaceSolver.dir/build.make CMakeFiles/LaplaceSolver.dir/build
 .PHONY : LaplaceSolver/fast
+
+#=============================================================================
+# Target rules for targets named basis_quadratic_figure
+
+# Build rule for target.
+basis_quadratic_figure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 basis_quadratic_figure
+.PHONY : basis_quadratic_figure
+
+# fast build rule for target.
+basis_quadratic_figure/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/build
+.PHONY : basis_quadratic_figure/fast
 
 #=============================================================================
 # Target rules for targets named LidDrivenCavity
@@ -277,19 +303,6 @@ HeatSolver: cmake_check_build_system
 HeatSolver/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
 .PHONY : HeatSolver/fast
-
-#=============================================================================
-# Target rules for targets named basis_quadratic_figure
-
-# Build rule for target.
-basis_quadratic_figure: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 basis_quadratic_figure
-.PHONY : basis_quadratic_figure
-
-# fast build rule for target.
-basis_quadratic_figure/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/build
-.PHONY : basis_quadratic_figure/fast
 
 #=============================================================================
 # Target rules for targets named basic_application
@@ -759,6 +772,102 @@ QuadraticLaplaceSolver.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/QuadraticLaplaceSolver.cpp.s
 .PHONY : QuadraticLaplaceSolver.cpp.s
 
+ReactionDiffusion/CameraController.o: ReactionDiffusion/CameraController.cpp.o
+.PHONY : ReactionDiffusion/CameraController.o
+
+# target to build an object file
+ReactionDiffusion/CameraController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/CameraController.cpp.o
+.PHONY : ReactionDiffusion/CameraController.cpp.o
+
+ReactionDiffusion/CameraController.i: ReactionDiffusion/CameraController.cpp.i
+.PHONY : ReactionDiffusion/CameraController.i
+
+# target to preprocess a source file
+ReactionDiffusion/CameraController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/CameraController.cpp.i
+.PHONY : ReactionDiffusion/CameraController.cpp.i
+
+ReactionDiffusion/CameraController.s: ReactionDiffusion/CameraController.cpp.s
+.PHONY : ReactionDiffusion/CameraController.s
+
+# target to generate assembly for a file
+ReactionDiffusion/CameraController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/CameraController.cpp.s
+.PHONY : ReactionDiffusion/CameraController.cpp.s
+
+ReactionDiffusion/ReactionDiffusion.o: ReactionDiffusion/ReactionDiffusion.cpp.o
+.PHONY : ReactionDiffusion/ReactionDiffusion.o
+
+# target to build an object file
+ReactionDiffusion/ReactionDiffusion.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/ReactionDiffusion.cpp.o
+.PHONY : ReactionDiffusion/ReactionDiffusion.cpp.o
+
+ReactionDiffusion/ReactionDiffusion.i: ReactionDiffusion/ReactionDiffusion.cpp.i
+.PHONY : ReactionDiffusion/ReactionDiffusion.i
+
+# target to preprocess a source file
+ReactionDiffusion/ReactionDiffusion.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/ReactionDiffusion.cpp.i
+.PHONY : ReactionDiffusion/ReactionDiffusion.cpp.i
+
+ReactionDiffusion/ReactionDiffusion.s: ReactionDiffusion/ReactionDiffusion.cpp.s
+.PHONY : ReactionDiffusion/ReactionDiffusion.s
+
+# target to generate assembly for a file
+ReactionDiffusion/ReactionDiffusion.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/ReactionDiffusion.cpp.s
+.PHONY : ReactionDiffusion/ReactionDiffusion.cpp.s
+
+ReactionDiffusion/demo.o: ReactionDiffusion/demo.cpp.o
+.PHONY : ReactionDiffusion/demo.o
+
+# target to build an object file
+ReactionDiffusion/demo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/demo.cpp.o
+.PHONY : ReactionDiffusion/demo.cpp.o
+
+ReactionDiffusion/demo.i: ReactionDiffusion/demo.cpp.i
+.PHONY : ReactionDiffusion/demo.i
+
+# target to preprocess a source file
+ReactionDiffusion/demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/demo.cpp.i
+.PHONY : ReactionDiffusion/demo.cpp.i
+
+ReactionDiffusion/demo.s: ReactionDiffusion/demo.cpp.s
+.PHONY : ReactionDiffusion/demo.s
+
+# target to generate assembly for a file
+ReactionDiffusion/demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/demo.cpp.s
+.PHONY : ReactionDiffusion/demo.cpp.s
+
+ReactionDiffusion/main.o: ReactionDiffusion/main.cpp.o
+.PHONY : ReactionDiffusion/main.o
+
+# target to build an object file
+ReactionDiffusion/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.o
+.PHONY : ReactionDiffusion/main.cpp.o
+
+ReactionDiffusion/main.i: ReactionDiffusion/main.cpp.i
+.PHONY : ReactionDiffusion/main.i
+
+# target to preprocess a source file
+ReactionDiffusion/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.i
+.PHONY : ReactionDiffusion/main.cpp.i
+
+ReactionDiffusion/main.s: ReactionDiffusion/main.cpp.s
+.PHONY : ReactionDiffusion/main.s
+
+# target to generate assembly for a file
+ReactionDiffusion/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.s
+.PHONY : ReactionDiffusion/main.cpp.s
+
 WeaklyIncompressible/WeaklyIncompressible.o: WeaklyIncompressible/WeaklyIncompressible.cpp.o
 .PHONY : WeaklyIncompressible/WeaklyIncompressible.o
 
@@ -875,6 +984,7 @@ help:
 	@echo "... LidDrivenCavity"
 	@echo "... NavierStokes"
 	@echo "... QuadraticLaplaceSolver"
+	@echo "... ReactionDiffusion"
 	@echo "... WeaklyIncompressible"
 	@echo "... basic_application"
 	@echo "... basis_quadratic_figure"
@@ -928,6 +1038,18 @@ help:
 	@echo "... QuadraticLaplaceSolver.o"
 	@echo "... QuadraticLaplaceSolver.i"
 	@echo "... QuadraticLaplaceSolver.s"
+	@echo "... ReactionDiffusion/CameraController.o"
+	@echo "... ReactionDiffusion/CameraController.i"
+	@echo "... ReactionDiffusion/CameraController.s"
+	@echo "... ReactionDiffusion/ReactionDiffusion.o"
+	@echo "... ReactionDiffusion/ReactionDiffusion.i"
+	@echo "... ReactionDiffusion/ReactionDiffusion.s"
+	@echo "... ReactionDiffusion/demo.o"
+	@echo "... ReactionDiffusion/demo.i"
+	@echo "... ReactionDiffusion/demo.s"
+	@echo "... ReactionDiffusion/main.o"
+	@echo "... ReactionDiffusion/main.i"
+	@echo "... ReactionDiffusion/main.s"
 	@echo "... WeaklyIncompressible/WeaklyIncompressible.o"
 	@echo "... WeaklyIncompressible/WeaklyIncompressible.i"
 	@echo "... WeaklyIncompressible/WeaklyIncompressible.s"

@@ -87,3 +87,13 @@ add_executable(NavierStokes
     NavierStokes/compute_linear_term_matrix_bottom_left.cpp
 )
 target_link_libraries(NavierStokes PRIVATE common)
+
+add_executable(ReactionDiffusion
+    ReactionDiffusion/main.cpp
+
+    ReactionDiffusion/demo.cpp
+    ReactionDiffusion/CameraController.cpp
+
+    ReactionDiffusion/ReactionDiffusion.cpp
+)
+target_link_libraries(ReactionDiffusion PRIVATE common)

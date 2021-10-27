@@ -90,17 +90,22 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
 /*--------------------------------------------------------------------------------
     Set up the solver and model parameters.
 --------------------------------------------------------------------------------*/
-void NavierStokesSolver::set_source(PlaneVectorField vf)
+void NavierStokesSolver::set_source(TimeDependentPlaneVectorField vf)
 {
     assert(!solving());
     source_function = vf;
+    update_source_samples();
+}
+
+void NavierStokesSolver::update_source_samples()
+{
     for (auto v : geom.mesh.vertices()) {
         auto pos = geom.position[v];
-        source_samples_P2[v] = vf(pos.x(), pos.z());
+        source_samples_P2[v] = source_function(pos.x(), pos.z(), time());
     }
     for (auto e : geom.mesh.edges()) {
         auto pos = 0.5*geom.position[e.a().vertex()] + 0.5*geom.position[e.b().vertex()];
-        source_samples_P2[e] = vf(pos.x(), pos.z());
+        source_samples_P2[e] = source_function(pos.x(), pos.z(), time());
     }
 }
 
@@ -108,7 +113,7 @@ void NavierStokesSolver::set_source(PlaneVectorField vf)
 /*--------------------------------------------------------------------------------
     Begin solving and iterating.
 --------------------------------------------------------------------------------*/
-void NavierStokesSolver::start_time_step(double dt)
+void NavierStokesSolver::start_time_step(double delta_time)
 {
     assert(!iterating());
     if (!solving()) {
@@ -125,7 +130,7 @@ void NavierStokesSolver::start_time_step(double dt)
         velocity_prev[e] = velocity[e];
     }
 
-    m_current_time_step_dt = dt;
+    m_current_time_step_dt = delta_time;
     m_iterating = true;
 }
 
@@ -177,14 +182,15 @@ void NavierStokesSolver::end_time_step()
     assert(iterating());
 
     m_time += m_current_time_step_dt;
+    update_source_samples();
     m_iterating = false;
 }
 
 
 // Make one time step.
-void NavierStokesSolver::time_step(double dt)
+void NavierStokesSolver::time_step(double delta_time)
 {
-    start_time_step(dt);
+    start_time_step(delta_time);
     const int max_num_newton_iterations = 5;
     const double epsilon = 1e-4;
     for (int iter = 0; iter < max_num_newton_iterations; iter++) {
@@ -356,8 +362,7 @@ std::tuple<SparseMatrix, SparseMatrix> NavierStokesSolver::compute_gateaux_matri
 
     auto linear_term_matrix = get_sparse_matrix();
     // Add non-linear advection terms into the matrix.
-
-
+    add_nonlinear_term_matrix_top_left(top_left_coefficients);
 
     auto gateaux_matrix = get_sparse_matrix();
 

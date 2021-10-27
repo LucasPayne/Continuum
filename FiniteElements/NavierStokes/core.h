@@ -9,6 +9,7 @@
 
 using PlaneFunction = std::function<double(double x, double y)>; // Function of the XY plane.
 using PlaneVectorField = std::function<vec2(double x, double y)>;
+using TimeDependentPlaneVectorField = std::function<vec2(double x, double y, double t)>;
 using PlaneFunctionNL1 = std::function<double(double x, double y, double u)>; // First-order non-linear plane function.
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using EigenTriplet = Eigen::Triplet<double>;
