@@ -17,10 +17,10 @@ void Demo::recreate_solver()
 {
     if (solver != nullptr) delete solver;
     if (geom != nullptr) delete geom;
-    double kinematic_viscosity = 0.35;
+    double kinematic_viscosity = 0.01;
 
     if (mesh_mode == MM_square) {
-        geom = square_mesh(8);
+        geom = square_mesh(12);
         solver = new NavierStokesSolver(*geom, kinematic_viscosity);
         solver->set_source(
             [&](double x, double y, double t)->vec2 {
@@ -116,7 +116,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_P) solver->end_time_step();
 
         // One iteration.
-        if (e.key.code == KEY_R) solver->time_step(0.025);
+        if (e.key.code == KEY_R) solver->time_step(0.0025);
 
         // Take a screenshot.
         if (e.key.code == KEY_T) {
@@ -124,8 +124,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         // Take a sequence of screenshots, to be converted to a video.
         if (e.key.code == KEY_9) {
-            film_seconds = 5;
-            film_dt = 1./25.;
+            film_seconds = 15;
+            // film_dt = 1./25.;
+            film_dt = 1./100.;
             film_num_frames = ceil(film_seconds / film_dt);
             film_frame = 0;
             filming = true;
@@ -141,6 +142,11 @@ void Demo::keyboard_handler(KeyboardEvent e)
             if (mesh_mode < 0) mesh_mode = NUM_MESH_MODES-1;
             recreate_solver();
         }
+
+        // Solver toggles
+        if (e.key.code == KEY_M) {
+            solver->m_use_advection = !solver->m_use_advection;
+        }
         
         // Rendering toggles.
         if (e.key.code == KEY_1) {
@@ -152,11 +158,34 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_3) {
             show_source = !show_source;
         }
+        if (e.key.code == KEY_4) {
+            solver->set_velocity([&](double x, double y)->vec2 {
+                // return 0.06*vec2(exp(x), exp(3*y+x));
+                const double r = 0.125;
+                if ((vec2(x,y) - source_position).length() <= r) {
+                    return vec2(2, 0);
+                }
+                return vec2(0,0);
+            });
+        }
     }
 }
 
 void Demo::update()
 {
+    double source_move_speed = 1.;
+    if (world->input.keyboard.down(KEY_LEFT_ARROW)) {
+        source_position.x() += source_move_speed * dt;
+    }
+    if (world->input.keyboard.down(KEY_RIGHT_ARROW)) {
+        source_position.x() -= source_move_speed * dt;
+    }
+    if (world->input.keyboard.down(KEY_DOWN_ARROW)) {
+        source_position.y() -= source_move_speed * dt;
+    }
+    if (world->input.keyboard.down(KEY_UP_ARROW)) {
+        source_position.y() += source_move_speed * dt;
+    }
     if (world->input.keyboard.down(KEY_G)) {
         // Draw the screenshot rectangle.
         std::vector<vec2> ps = {
@@ -179,6 +208,15 @@ void Demo::update()
         }
     }
 
+    solver->set_source(
+        [&](double x, double y, double t)->vec2 {
+            const double r = 0.125;
+            if ((vec2(x,y) - source_position).length() <= r) {
+                return vec2(0, 30);
+            }
+            return vec2(0,0);
+        }
+    );
 }
 
 

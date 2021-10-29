@@ -84,6 +84,9 @@ struct Demo : public IBehaviour {
     double film_num_frames;
     int film_frame;
     int filming;
+
+    // For interactive fluid.
+    vec2 source_position;
 };
 
 #endif // HEADER_DEFINED_DEMO

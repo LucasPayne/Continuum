@@ -451,8 +451,50 @@ def advection_residual_array(psi_a, psi_b, psi_c):
             array[i, k] = f_dy_dx
     return array
 
-arr = advection_residual_array(0,0,2)
-# arr = advection_residual_array(1,1,0)
-for i in range(6):
-    for k in range(6):
-        print("{},".format(arr[i, k]) + ("\n" if k == 5 else " "), end="")
+# arr = advection_residual_array(0,0,2)
+# # arr = advection_residual_array(1,1,0)
+# for i in range(6):
+#     for k in range(6):
+#         print("{},".format(arr[i, k]) + ("\n" if k == 5 else " "), end="")
+
+print("grads")
+def grads(a,b,c, m):
+    A,B = sym.symbols("A B") # u sample
+
+    psi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+    i,j,k = linear_index_to_barycentric(m)
+    phi_u = nodal_basis_functions[barycentric_index_to_linear(i, j, k)]
+    # f = (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y)) * psi_u
+    f = (K1*A + K2*B) * (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y)) * psi_u
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    print("{}{}{},{}{}{}: {}".format(a,b,c, i,j,k, f_dy_dx))
+# print("vertex")
+# for m in range(6):
+#     grads(0,0,2, m)
+# print("midpoint")
+# for m in range(6):
+#     grads(1,1,0, m)
+
+
+print("grads")
+def grads(a,b,c, m):
+    A,B = sym.symbols("A B") # u sample
+
+    psi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+    i,j,k = linear_index_to_barycentric(m)
+    phi_u = nodal_basis_functions[barycentric_index_to_linear(i, j, k)]
+    for K in range(3):
+        hatK = pressure_basis_functions[K]
+        f = -hatK * phi_u * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+        f_dy = sym.integrate(f, (y, 0,1-x))
+        f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+        # print("{}{}{},{}{}{}: {}".format(a,b,c, i,j,k, f_dy_dx))
+        print("{}, ".format(f_dy_dx), end="")
+    print("")
+print("vertex")
+for m in range(6):
+    grads(0,0,2, m)
+print("midpoint")
+for m in range(6):
+    grads(1,1,0, m)

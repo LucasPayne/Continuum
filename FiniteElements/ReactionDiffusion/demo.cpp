@@ -37,12 +37,26 @@ void Demo::init()
     solution_shader.add_shader(GLShader(FragmentShader, SHADERS "reaction_diffusion/reaction_diffusion.frag"));
     solution_shader.link();
 
+        // return -10*u*(u-1)*(u+1);
+        
     // geom = square_mesh(10);
-    geom = torus_mesh(1.5, 0.4, 150);
-    solver = new ReactorDiffuser(*geom, 0.02, [](vec3 pos, double u, double t)->double {
-        return -10*u*(u-1)*(u+1);
-    });
+    // geom = torus_mesh(1.5, 0.4, 150);
+    geom = torus_mesh(1.5, 0.4, 60);
+    solver = new ReactorDiffuser(*geom, 0.0001, 0.000012,
+        [](vec3 pos, double u, double v, double t)->double {
+            // const double R = 0;
+            // const double rho = 0.3;
+            // return (R - u)*(u*v - 1) + rho*(u - v);
+            return (1-u)*u*(1+u) + u*v;
+        },
+        [](vec3 pos, double u, double v, double t)->double {
+            return v*v + u;
+        }
+    );
     solver->set_u([](vec3 pos)->double {
+        return 0.;
+    });
+    solver->set_v([](vec3 pos)->double {
         return 0.;
     });
 
@@ -57,7 +71,18 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_1) show_wireframe = !show_wireframe;
         if (e.key.code == KEY_R) {
             solver->set_u([](vec3 pos) {
-                return 0.25 * sin(pos.x()*4) + 0.22*cos(pos.x()*pos.y()*10+1);
+                // srand(pos.x()+pos.y());
+                // return frand();
+                // return 0.25 * sin(pos.x()*4) + 0.22*cos(pos.x()*pos.y()*10+1);
+                // return 0.01*sin(pos.x()*30 + 50*cos(pos.y()*30));
+                // return 0.00001*sin(pos.x()*60000 + 50*cos(pos.y()*30));
+                if (pos.x() < -2) return 1;
+                return 0;
+            });
+            solver->set_v([](vec3 pos) {
+                // return 0.25 * sin(pos.x()*4) + 0.22*cos(pos.x()*pos.y()*10+1);
+                // return 0.005*sin(pos.x()*21);
+                return 0.;
             });
         }
         // Take a screenshot.
@@ -92,7 +117,8 @@ void Demo::post_render_update()
 
 
     auto position_data = std::vector<vec3>();
-    auto value_data = std::vector<float>();
+    auto u_data = std::vector<float>();
+    auto v_data = std::vector<float>();
 
     for (auto tri : geom->mesh.faces()) {
         auto start = tri.halfedge();
@@ -104,29 +130,32 @@ void Demo::post_render_update()
         for (int i = 0; i < 3; i++) {
             Vertex v = he.vertex();
             position_data.push_back(eigen_to_vec3(geom->position[v]));
-            value_data.push_back(solver->u_mesh[v]);
+            u_data.push_back(solver->u_mesh[v]);
+            v_data.push_back(solver->v_mesh[v]);
             he = he.next();
         }
     }
-    assert(position_data.size() == value_data.size());
+    assert(position_data.size() == u_data.size());
+    assert(u_data.size() == v_data.size());
 
     GLuint vao;
     glCreateVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    GLuint vbos[2]; // position, value
-    glGenBuffers(2, vbos);
+    GLuint vbos[3]; // position, value
+    glGenBuffers(3, vbos);
     int data_num_vertices = position_data.size();
     struct {
         const void *data;
         size_t data_size;
         size_t gl_data_number;
         GLenum gl_data_type;
-    } data_to_upload[2] = {
+    } data_to_upload[3] = {
         {&position_data[0], sizeof(vec3), 3, GL_FLOAT},
-        {&value_data[0], sizeof(float), 1, GL_FLOAT}
+        {&u_data[0], sizeof(float), 1, GL_FLOAT},
+        {&v_data[0], sizeof(float), 1, GL_FLOAT}
     };
     // Upload the data.
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
         auto metadata = data_to_upload[i];
         glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
         glBufferData(GL_ARRAY_BUFFER, data_num_vertices * metadata.data_size, metadata.data, GL_DYNAMIC_DRAW);

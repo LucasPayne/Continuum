@@ -13,17 +13,27 @@ Eigen::Vector3f vec3_to_eigen(vec3 v)
     return Eigen::Vector3f(v.x(), v.y(), v.z());
 }
 
-ReactorDiffuser::ReactorDiffuser(SurfaceGeometry &_geom, float _mu, std::function<double(vec3, double, double)> _reaction_function) :
+ReactorDiffuser::ReactorDiffuser(SurfaceGeometry &_geom,
+                    float _mu1,
+                    float _mu2,
+                    std::function<double(vec3, double, double, double)> _u_reaction_function,
+                    std::function<double(vec3, double, double, double)> _v_reaction_function
+) :
     geom{&_geom},
-    mu{_mu},
-    reaction_function{_reaction_function},
+    mu1{_mu1},
+    mu2{_mu2},
+    u_reaction_function{_u_reaction_function},
+    v_reaction_function{_v_reaction_function},
     interior_vertex_indices{_geom.mesh},
-    u_mesh{_geom.mesh}
+    u_mesh{_geom.mesh},
+    v_mesh{_geom.mesh}
 {
     time = 0.;
     num_nodes = geom->mesh.num_interior_vertices();
     u_vector = Eigen::VectorXd(num_nodes);
     for (int i = 0; i < num_nodes; i++) u_vector[i] = 0.;
+    v_vector = Eigen::VectorXd(num_nodes);
+    for (int i = 0; i < num_nodes; i++) v_vector[i] = 0.;
 
     // Set up the node indices.
     int counter = 0;
@@ -89,6 +99,10 @@ void ReactorDiffuser::time_step(double delta_time)
     };
     double inv_delta_time = 1./delta_time;
 
+for (int ITER = 0; ITER < 2; ITER++) {
+    Eigen::VectorXd &concentration_vector = ITER == 0 ? u_vector : v_vector;
+    auto &reaction_function = ITER == 0 ? u_reaction_function : v_reaction_function;
+    double mu = ITER == 0 ? mu1 : mu2;
     /*--------------------------------------------------------------------------------
         Construct the system.
     --------------------------------------------------------------------------------*/
@@ -144,7 +158,7 @@ void ReactorDiffuser::time_step(double delta_time)
     // mass_matrix.makeCompressed();
 
     // u_prev/delta_time term.
-    rhs += inv_delta_time * gramian_matrix * u_vector;
+    rhs += inv_delta_time * gramian_matrix * concentration_vector;
 
     // Reaction term
     for (auto v : geom->mesh.vertices()) {
@@ -162,7 +176,7 @@ void ReactorDiffuser::time_step(double delta_time)
             he = he.twin().next();
         } while (he != start);
 
-        double reaction_sample = reaction_function(v_pos, u_mesh[v], time);
+        double reaction_sample = reaction_function(v_pos, u_mesh[v], v_mesh[v], time);
 
         double val = total_triangle_area/3.0 * reaction_sample;
         rhs[v_index] += val;
@@ -179,7 +193,8 @@ void ReactorDiffuser::time_step(double delta_time)
     // Compute the numerical factorization 
     solver.factorize(mass_matrix);
     // Use the factors to solve the linear system 
-    u_vector = solver.solve(rhs);
+    concentration_vector = solver.solve(rhs);
+} // endfor ITER
     
     /*--------------------------------------------------------------------------------
     // Reassociate each coefficient with the corresponding vertex of the mesh.
@@ -190,9 +205,11 @@ void ReactorDiffuser::time_step(double delta_time)
             getchar();
         } else {
             u_mesh[v] = u_vector[interior_vertex_index];
+            v_mesh[v] = v_vector[interior_vertex_index];
             interior_vertex_index += 1;
         } 
     }
+
 
     time += delta_time;
 }
@@ -207,6 +224,18 @@ void ReactorDiffuser::set_u(std::function<double(vec3)> func)
         double val = func(pos);
         u_mesh[v] = val;
         u_vector[interior_vertex_index] = val;
+        interior_vertex_index += 1;
+    }
+}
+void ReactorDiffuser::set_v(std::function<double(vec3)> func)
+{
+    int interior_vertex_index = 0;
+    for (auto v : geom->mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        vec3 pos = eigen_to_vec3(geom->position[v]);
+        double val = func(pos);
+        v_mesh[v] = val;
+        v_vector[interior_vertex_index] = val;
         interior_vertex_index += 1;
     }
 }

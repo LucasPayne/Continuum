@@ -5,10 +5,17 @@
 
 class ReactorDiffuser {
 public:
-    ReactorDiffuser(SurfaceGeometry &_geom, float _mu, std::function<double(vec3, double, double)> _reaction_function);
+    ReactorDiffuser(SurfaceGeometry &_geom,
+                    float _mu1,
+                    float _mu2,
+                    std::function<double(vec3, double, double, double)> _u_reaction_function,
+                    std::function<double(vec3, double, double, double)> _v_reaction_function
+    );
 
-    double mu;
-    std::function<double(vec3, double, double)> reaction_function;
+    double mu1;
+    double mu2;
+    std::function<double(vec3, double, double, double)> u_reaction_function;
+    std::function<double(vec3, double, double, double)> v_reaction_function;
     SurfaceGeometry *geom;
 
     VertexAttachment<int> interior_vertex_indices;
@@ -19,10 +26,14 @@ public:
     int num_nodes; // Variation nodes (not on the boundary).
     SparseMatrix gramian_matrix;
 
+    // Chemical concentrations.
     Eigen::VectorXd u_vector;
     VertexAttachment<double> u_mesh;
+    Eigen::VectorXd v_vector;
+    VertexAttachment<double> v_mesh;
 
     void set_u(std::function<double(vec3)> func);
+    void set_v(std::function<double(vec3)> func);
 private:
 };
 

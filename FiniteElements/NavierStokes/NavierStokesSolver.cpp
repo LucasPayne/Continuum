@@ -35,6 +35,7 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
     m_iterating = false;
     m_kinematic_viscosity = _kinematic_viscosity;
     m_time = 0.;
+    m_use_advection = true;
 
     m_num_velocity_variation_nodes = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
     m_num_pressure_variation_nodes = geom.mesh.num_vertices();
@@ -92,7 +93,7 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
 --------------------------------------------------------------------------------*/
 void NavierStokesSolver::set_source(TimeDependentPlaneVectorField vf)
 {
-    assert(!solving());
+    // assert(!solving());
     source_function = vf;
     update_source_samples();
 }
@@ -108,6 +109,21 @@ void NavierStokesSolver::update_source_samples()
         source_samples_P2[e] = source_function(pos.x(), pos.z(), time());
     }
 }
+
+void NavierStokesSolver::set_velocity(PlaneVectorField vf)
+{
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        auto pos = geom.position[v];
+        velocity[v] = vf(pos.x(), pos.z());
+    }
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) continue;
+        auto pos = 0.5*geom.position[e.a().vertex()] + 0.5*geom.position[e.b().vertex()];
+        velocity[e] = vf(pos.x(), pos.z());
+    }
+}
+
 
 
 /*--------------------------------------------------------------------------------
@@ -191,19 +207,19 @@ void NavierStokesSolver::end_time_step()
 void NavierStokesSolver::time_step(double delta_time)
 {
     start_time_step(delta_time);
-    const int max_num_newton_iterations = 5;
+    const int max_num_newton_iterations = 1;
     const double epsilon = 1e-4;
     for (int iter = 0; iter < max_num_newton_iterations; iter++) {
         newton_iteration();
         // Exit if infinity norm is below epsilon.
-        bool norm_pass = true;
-        for (int i = 0; i < m_system_N; i++) {
-            if (abs(m_velocity_pressure_vector[i]) > epsilon) {
-                norm_pass = false;
-                break;
-            }
-        }
-        if (norm_pass) break;
+        // bool norm_pass = true;
+        // for (int i = 0; i < m_system_N; i++) {
+        //     if (abs(m_velocity_pressure_vector[i]) > epsilon) { //---incorrect exit condition
+        //         norm_pass = false;
+        //         break;
+        //     }
+        // }
+        // if (norm_pass) break;
     }
     end_time_step();
 }
@@ -362,7 +378,7 @@ std::tuple<SparseMatrix, SparseMatrix> NavierStokesSolver::compute_gateaux_matri
 
     auto linear_term_matrix = get_sparse_matrix();
     // Add non-linear advection terms into the matrix.
-    add_nonlinear_term_matrix_top_left(top_left_coefficients);
+    // add_nonlinear_term_matrix_top_left(top_left_coefficients);
 
     auto gateaux_matrix = get_sparse_matrix();
 
