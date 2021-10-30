@@ -1,6 +1,8 @@
 #include "NavierStokes/demo.h"
 #include "NavierStokes/mesh_generators.h"
 
+static int film_frame = 0;
+
 enum MeshModes {
     MM_square,
     MM_square_with_obstruction,
@@ -17,10 +19,11 @@ void Demo::recreate_solver()
 {
     if (solver != nullptr) delete solver;
     if (geom != nullptr) delete geom;
-    double kinematic_viscosity = 0.01;
+    // double kinematic_viscosity = 0.25;
+    double kinematic_viscosity = 0.001;
 
     if (mesh_mode == MM_square) {
-        geom = square_mesh(50);
+        geom = square_mesh(25);
         solver = new NavierStokesSolver(*geom, kinematic_viscosity);
         solver->set_source(
             [&](double x, double y, double t)->vec2 {
@@ -40,8 +43,8 @@ void Demo::recreate_solver()
         );
     } else if (mesh_mode == MM_square_with_obstruction) {
         double theta0 = 0.13;
-        vec2 obstruction_position = vec2(0,0);
-        geom = square_minus_circle(0.25, theta0, 1, 1, 8, false, obstruction_position, false);
+        vec2 obstruction_position = vec2(0.2,0.2);
+        geom = square_minus_circle(0.25, theta0, 1, 1, 60, false, obstruction_position, false);
         solver = new NavierStokesSolver(*geom, kinematic_viscosity);
         solver->set_source(
             [&](double x, double y, double t)->vec2 {
@@ -117,7 +120,8 @@ void Demo::keyboard_handler(KeyboardEvent e)
 
         // One iteration.
         // if (e.key.code == KEY_R) solver->time_step(0.0025);
-        if (e.key.code == KEY_R) solver->time_step(0.1);
+        // if (e.key.code == KEY_R) solver->time_step(0.0025);
+        if (e.key.code == KEY_R) solver->time_step(0.03);
 
         // Take a screenshot.
         if (e.key.code == KEY_T) {
@@ -125,9 +129,10 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         // Take a sequence of screenshots, to be converted to a video.
         if (e.key.code == KEY_9) {
-            film_seconds = 15;
             // film_dt = 1./25.;
-            film_dt = 1./100.;
+            // film_dt = 1./100.;
+            film_seconds = 3;
+            film_dt = 1./300.;
             film_num_frames = ceil(film_seconds / film_dt);
             film_frame = 0;
             filming = true;
@@ -164,7 +169,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
                 // return 0.06*vec2(exp(x), exp(3*y+x));
                 const double r = 0.25;
                 if ((vec2(x,y) - source_position).length() <= r) {
-                    return vec2(1, 0);
+                    return vec2(0, 100);
                 }
                 return vec2(0,0);
             });
@@ -201,6 +206,9 @@ void Demo::update()
 
     // Filming
     if (filming) {
+        // Save the data (so the simulation doesn't have to be re-run).
+        save_solution(std::string(DATA) + "navier_stokes_" + std::to_string(film_frame) + ".txt");
+
         take_screenshot();
         film_frame += 1;
         if (film_frame == film_num_frames) {
@@ -213,7 +221,7 @@ void Demo::update()
         [&](double x, double y, double t)->vec2 {
             const double r = 0.125;
             if ((vec2(x,y) - source_position).length() <= r) {
-                return vec2(0, 30);
+                return vec2(0, 3000);
             }
             return vec2(0,0);
         }
@@ -391,7 +399,7 @@ void Demo::post_render_update()
         std::vector<float> pressures;
         // const int skip = 20;
         // const int skip = 14;
-        const int skip = 23;
+        const int skip = 16;
 	std::vector<vec2> positions_2D;
         for (int i = 0; i < 1024; i += skip) {
             float x = -1 + i*2.f/(1024-1.f);
@@ -399,21 +407,26 @@ void Demo::post_render_update()
                 float y = -1 + j*2.f/(1024-1.f);
                 float velocity_x = solution_pixels[4*(1024*j + i) + 0];
                 float velocity_y = solution_pixels[4*(1024*j + i) + 1];
+                vec2 unit_vel = vec2(velocity_x, velocity_y).normalized();
                 float pressure = solution_pixels[4*(1024*j + i) + 2];
                 const float thickness = 0.002;
-                const vec4 color = vec4(0,0,0,1);
                 const float epsilon = 1e-5;
 
                 // Draw velocity vector.
-                const float velocity_mul = 0.12;
+                const float rho = 1;
+                float len = 1 - exp(-rho*sqrt(velocity_x*velocity_x + velocity_y*velocity_y));
+                // const vec4 color = vec4(0,0,len,1);
+                const vec4 color = vec4(0,0,0,1);
+                len *= 0.035;
                 if (fabs(velocity_x) >= epsilon || fabs(velocity_y) >= epsilon) {
-                    world->graphics.paint.line(vec3(x, 0.005, y), vec3(x + velocity_mul*velocity_x, 0, y + velocity_mul*velocity_y), thickness, color);
+                    world->graphics.paint.line(vec3(x, 0.005, y), vec3(x + len*unit_vel.x(), 0, y + len*unit_vel.y()), thickness, color);
+                    // world->graphics.paint.sphere(vec3(x, 0.005, y), 0.0025, vec4(1,0,0,1));
 	            pressures.push_back(pressure);
                     positions_2D.push_back(vec2(x,y));
                 }
                 // Draw source vector.
                 if (show_source) {
-                    const float source_mul = velocity_mul / 25.f;
+                    const float source_mul = 0.12 / 25.f;
                     vec2 source_velocity = solver->source_function(x,y, solver->time());
                     const vec4 source_color = vec4(0,0,1,1);
                     if (fabs(source_velocity.x()) >= epsilon || fabs(source_velocity.y()) >= epsilon) {
@@ -433,30 +446,46 @@ void Demo::post_render_update()
 void Demo::mouse_handler(MouseEvent e)
 {
     if (e.action == MOUSE_BUTTON_PRESS) {
-        // Set the screenshot rectangle.
-        if (e.button.code == MOUSE_LEFT) {
-            screenshot_blx = int(world->graphics.window_viewport.w * e.cursor.x);
-            screenshot_bly = int(world->graphics.window_viewport.h * e.cursor.y);
-            f_screenshot_blx = e.cursor.x;
-            f_screenshot_bly = e.cursor.y;
-        }
-        if (e.button.code == MOUSE_RIGHT) {
-            screenshot_trx = int(world->graphics.window_viewport.w * e.cursor.x);
-            screenshot_try = int(world->graphics.window_viewport.h * e.cursor.y);
-            f_screenshot_trx = e.cursor.x;
-            f_screenshot_try = e.cursor.y;
+        if (!filming ) {
+            // Set the screenshot rectangle.
+            if (e.button.code == MOUSE_LEFT) {
+                screenshot_blx = int(world->graphics.window_viewport.w * e.cursor.x);
+                screenshot_bly = int(world->graphics.window_viewport.h * e.cursor.y);
+                f_screenshot_blx = e.cursor.x;
+                f_screenshot_bly = e.cursor.y;
+            }
+            if (e.button.code == MOUSE_RIGHT) {
+                screenshot_trx = int(world->graphics.window_viewport.w * e.cursor.x);
+                screenshot_try = int(world->graphics.window_viewport.h * e.cursor.y);
+                f_screenshot_trx = e.cursor.x;
+                f_screenshot_try = e.cursor.y;
+            }
         }
     }
 }
 
 void Demo::take_screenshot()
 {
-    static int counter = 0;
-    std::string pre = std::string(DATA) + "navier_stokes_" + std::to_string(counter);
+    std::string pre = std::string(DATA) + "navier_stokes_" + std::to_string(film_frame);
     world->graphics.screenshot(pre + ".ppm",
                                screenshot_blx,
                                screenshot_bly,
                                screenshot_trx - screenshot_blx,
                                screenshot_try - screenshot_bly);
-    counter += 1;
+}
+
+void Demo::save_solution(std::string filename)
+{
+    FILE *file = fopen(filename.c_str(), "w+");
+    for (auto v : geom->mesh.vertices()) {
+        fprintf(file, "%.7f %.7f\n", solver->velocity[v].x(), solver->velocity[v].y());
+    }
+    for (auto e : geom->mesh.edges()) {
+        fprintf(file, "%.7f %.7f\n", solver->velocity[e].x(), solver->velocity[e].y());
+    }
+    for (auto v : geom->mesh.vertices()) {
+        fprintf(file, "%.7g\n", solver->pressure[v]);
+    }
+
+    fclose(file);
 }

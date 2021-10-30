@@ -78,7 +78,7 @@ add_executable(NavierStokes
     NavierStokes/main.cpp
 
     NavierStokes/demo.cpp
-    NavierStokes/mesh_generators.cpp
+    mesh_generators.cpp
     NavierStokes/CameraController.cpp
 
     NavierStokes/NavierStokesSolver.cpp
@@ -97,3 +97,11 @@ add_executable(ReactionDiffusion
     ReactionDiffusion/ReactionDiffusion.cpp
 )
 target_link_libraries(ReactionDiffusion PRIVATE common)
+
+
+add_executable(FlowVisualization
+    FlowVisualization/main.cpp
+    CameraController.cpp
+    core.cpp
+)
+target_link_libraries(FlowVisualization PRIVATE common)

@@ -1,7 +1,8 @@
 #include "NavierStokes/NavierStokesSolver.h"
 #include "NavierStokes/core.h"
 
-
+#define RESIDUAL_ADVECTION false
+#define WEIGHTS_MODE 1
 
 void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &velocity_residual)
 {
@@ -97,20 +98,30 @@ if (m_use_advection) {
             //     vec2 u_val = velocity_prev[elements[i]];
             //     integral += (1/(2*tri_area)) * u_val * grad_weights[i];
             // }
-
-#if 0
-            vec2 grad_weights[6*3] = {
-                -K1/72 - K2/72, -K1/60 - K2/60, -K1/360 - K2/360,
-                -K1/72 - K2/72, -K1/360 - K2/360, -K1/60 - K2/60,
-                K1/20 + K2/20, K1/120 + K2/120, K1/120 + K2/120,
-                K1/90 + K2/90, -K1/45 - K2/45, -K1/45 - K2/45,
-                K1/15 + K2/15, K1/90 + K2/90, K1/45 + K2/45,
-                K1/15 + K2/15, K1/45 + K2/45, K1/90 + K2/90,
+#if RESIDUAL_ADVECTION
+            vec2 grad_weights[6*6] = {
+#if WEIGHTS_MODE == 0
+-K1/140 - K2/140, 11*K1/2520 + 11*K2/2520, -K1/280 - K2/280, -2*K1/315 - 2*K2/315, -K1/126 - K2/126, -4*K1/315 - 4*K2/315,
+11*K1/2520 + 11*K2/2520, -K1/140 - K2/140, -K1/280 - K2/280, -2*K1/315 - 2*K2/315, -4*K1/315 - 4*K2/315, -K1/126 - K2/126,
+-K1/280 - K2/280, -K1/280 - K2/280, 13*K1/420 + 13*K2/420, K1/210 + K2/210, 2*K1/105 + 2*K2/105, 2*K1/105 + 2*K2/105,
+-2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315, K1/210 + K2/210, -4*K1/105 - 4*K2/105, 2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315,
+-K1/126 - K2/126, -4*K1/315 - 4*K2/315, 2*K1/105 + 2*K2/105, 2*K1/315 + 2*K2/315, 4*K1/63 + 4*K2/63, 2*K1/63 + 2*K2/63,
+-4*K1/315 - 4*K2/315, -K1/126 - K2/126, 2*K1/105 + 2*K2/105, 2*K1/315 + 2*K2/315, 2*K1/63 + 2*K2/63, 4*K1/63 + 4*K2/63,
+#else
+K1/280, -11*K1/2520, K1/140, K1/126, 2*K1/315, 4*K1/315,
+-11*K2/2520, K2/280, K2/140, K2/126, 4*K2/315, 2*K2/315,
+-K1/280 - K2/280, -K1/280 - K2/280, 13*K1/420 + 13*K2/420, K1/210 + K2/210, 2*K1/105 + 2*K2/105, 2*K1/105 + 2*K2/105,
+-K1/630 + 2*K2/315, 2*K1/315 - K2/630, -K1/105 - K2/105, 2*K1/105 + 2*K2/105, 4*K1/315 + 2*K2/315, 2*K1/315 + 4*K2/315,
+K1/630 + K2/126, -2*K1/315, K1/105 - 4*K2/105, -2*K1/105 - 4*K2/315, -4*K1/315 - 2*K2/63, -2*K1/315 - 8*K2/315,
+-2*K2/315, K1/126 + K2/630, -4*K1/105 + K2/105, -4*K1/315 - 2*K2/105, -8*K1/315 - 2*K2/315, -2*K1/63 - 4*K2/315,
+#endif
             };
-            Vertex vertices[3] = {v, vp, vpp};
             for (int i = 0; i < 6; i++) {
-                for (int K = 0; K < 3; K++) {
-                    integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]);
+                for (int K = 0; K < 6; K++) {
+                    vec2 u = velocity_prev[elements[i]];
+                    // vec2 u_transformed = u.x()*side1 + u.y()*side2;
+                    vec2 u_transformed = u;
+                    integral += u_transformed * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
                 }
             }
 #endif
@@ -204,23 +215,34 @@ if (m_use_advection) {
             //     integral += (1/(2*tri_area)) * u_val * grad_weights[i];
             // }
 
-#if 0
-            vec2 grad_weights[6*3] = {
-                K1/90, -K2/15, K1/45,
-                K2/90, K2/45, -K1/15,
-                vec2(0,0), K1/90 + K2/45, K1/45 + K2/90,
-                -2*K1/45 - 2*K2/45, -4*K1/45 - 2*K2/15, -2*K1/15 - 4*K2/45,
-                -4*K1/45 - 2*K2/45, -2*K1/45 - 2*K2/45, -2*K1/15 - 2*K2/45,
-                -2*K1/45 - 4*K2/45, -2*K1/45 - 2*K2/15, -2*K1/45 - 2*K2/45,
+#if RESIDUAL_ADVECTION
+            vec2 grad_weights[6*6] = {
+#if WEIGHTS_MODE == 0
+-K1/105 - K2/21, 2*K1/315 + 2*K2/315, -K1/630 + 2*K2/315, 4*K1/315 - 2*K2/105, 2*K1/105 + 2*K2/315, 2*K1/315 - 2*K2/105,
+2*K1/315 + 2*K2/315, -K1/21 - K2/105, 2*K1/315 - K2/630, -2*K1/105 + 4*K2/315, -2*K1/105 + 2*K2/315, 2*K1/315 + 2*K2/105,
+-K1/630 + 2*K2/315, 2*K1/315 - K2/630, -K1/105 - K2/105, 2*K1/105 + 2*K2/105, 4*K1/315 + 2*K2/315, 2*K1/315 + 4*K2/315,
+4*K1/315 - 2*K2/105, -2*K1/105 + 4*K2/315, 2*K1/105 + 2*K2/105, -16*K1/105 - 16*K2/105, -8*K1/105 - 16*K2/315, -16*K1/315 - 8*K2/105,
+2*K1/105 + 2*K2/315, -2*K1/105 + 2*K2/315, 4*K1/315 + 2*K2/315, -8*K1/105 - 16*K2/315, -16*K1/105 - 16*K2/315, -16*K1/315 - 16*K2/315,
+2*K1/315 - 2*K2/105, 2*K1/315 + 2*K2/105, 2*K1/315 + 4*K2/315, -16*K1/315 - 8*K2/105, -16*K1/315 - 16*K2/315, -16*K1/315 - 16*K2/105,
+#else
+-2*K1/105, 4*K1/315, K1/126, -4*K1/63, -2*K1/315, -2*K1/63,
+4*K2/315, -2*K2/105, K2/126, -4*K2/63, -2*K2/63, -2*K2/315,
+-2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315, K1/210 + K2/210, -4*K1/105 - 4*K2/105, 2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315,
+4*K1/315 - 2*K2/105, -2*K1/105 + 4*K2/315, 2*K1/105 + 2*K2/105, -16*K1/105 - 16*K2/105, -8*K1/105 - 16*K2/315, -16*K1/315 - 8*K2/105,
+-4*K1/315 - 2*K2/315, 2*K1/105 + 8*K2/315, -2*K1/105 - 4*K2/315, 16*K1/105 + 32*K2/315, 8*K1/105 + 8*K2/315, 16*K1/315,
+8*K1/315 + 2*K2/105, -2*K1/315 - 4*K2/315, -4*K1/315 - 2*K2/105, 32*K1/315 + 16*K2/105, 16*K2/315, 8*K1/315 + 8*K2/105,
+#endif
             };
-            Vertex vertices[3] = {v, vp, vpp};
             for (int i = 0; i < 6; i++) {
-                for (int K = 0; K < 3; K++) {
-                    integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]);
+                for (int K = 0; K < 6; K++) {
+                    // integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
+                    vec2 u = velocity_prev[elements[i]];
+                    // vec2 u_transformed = u.x()*side1 + u.y()*side2;
+                    vec2 u_transformed = u;
+                    integral += u_transformed * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
                 }
             }
 #endif
-            
 
 
 
@@ -235,6 +257,10 @@ void NavierStokesSolver::explicit_advection()
 {
     auto explicit_advection_vector_x_proj = Eigen::VectorXd(num_velocity_variation_nodes());
     auto explicit_advection_vector_y_proj = Eigen::VectorXd(num_velocity_variation_nodes());
+    for (int i = 0; i < num_velocity_variation_nodes(); i++) {
+        explicit_advection_vector_x_proj[i] = 0.;
+        explicit_advection_vector_y_proj[i] = 0.;
+    }
 
     // For each velocity trial function on a vertex node.
     int vertex_index = 0;
@@ -259,6 +285,9 @@ void NavierStokesSolver::explicit_advection()
             Edge edge_011 = he.next().next().edge();
             // Triangle side vectors.
             auto vec2_extract = [](Eigen::Vector3f evec) { return vec2(evec.x(), evec.z()); };
+            vec2 side1 = vec2_extract(v_pos - vpp_pos);
+            vec2 side2 = vec2_extract(vp_pos - v_pos);
+            vec2 side3 = vec2_extract(vpp_pos - vp_pos);
             vec2 K1 = vec2_extract(v_pos - vpp_pos).perp();
             vec2 K2 = vec2_extract(vp_pos - v_pos).perp();
             vec2 K3 = vec2_extract(vpp_pos - vp_pos).perp(); //NOTE: perp!
@@ -321,16 +350,29 @@ if (m_use_advection) {
             //
             
             vec2 grad_weights[6*6] = {
+#if WEIGHTS_MODE == 0
+K1/280, -11*K1/2520, K1/140, K1/126, 2*K1/315, 4*K1/315,
+-11*K2/2520, K2/280, K2/140, K2/126, 4*K2/315, 2*K2/315,
+-K1/280 - K2/280, -K1/280 - K2/280, 13*K1/420 + 13*K2/420, K1/210 + K2/210, 2*K1/105 + 2*K2/105, 2*K1/105 + 2*K2/105,
+-K1/630 + 2*K2/315, 2*K1/315 - K2/630, -K1/105 - K2/105, 2*K1/105 + 2*K2/105, 4*K1/315 + 2*K2/315, 2*K1/315 + 4*K2/315,
+K1/630 + K2/126, -2*K1/315, K1/105 - 4*K2/105, -2*K1/105 - 4*K2/315, -4*K1/315 - 2*K2/63, -2*K1/315 - 8*K2/315,
+-2*K2/315, K1/126 + K2/630, -4*K1/105 + K2/105, -4*K1/315 - 2*K2/105, -8*K1/315 - 2*K2/315, -2*K1/63 - 4*K2/315,
+#else
 K1/140 + K2/140, -11*K1/2520 - 11*K2/2520, K1/280 + K2/280, 2*K1/315 + 2*K2/315, K1/126 + K2/126, 4*K1/315 + 4*K2/315,
 -11*K1/2520 - 11*K2/2520, K1/140 + K2/140, K1/280 + K2/280, 2*K1/315 + 2*K2/315, 4*K1/315 + 4*K2/315, K1/126 + K2/126,
 K1/280 + K2/280, K1/280 + K2/280, -13*K1/420 - 13*K2/420, -K1/210 - K2/210, -2*K1/105 - 2*K2/105, -2*K1/105 - 2*K2/105,
 2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315, -K1/210 - K2/210, 4*K1/105 + 4*K2/105, -2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315,
 K1/126 + K2/126, 4*K1/315 + 4*K2/315, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315, -4*K1/63 - 4*K2/63, -2*K1/63 - 2*K2/63,
 4*K1/315 + 4*K2/315, K1/126 + K2/126, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315, -2*K1/63 - 2*K2/63, -4*K1/63 - 4*K2/63,
+#endif
             };
             for (int i = 0; i < 6; i++) {
-                for (int K = 0; K < 3; K++) {
-                    integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
+                for (int K = 0; K < 6; K++) {
+                    // integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
+                    vec2 u = velocity_prev[elements[i]];
+                    // vec2 u_transformed = u.x()*side1 + u.y()*side2;
+                    vec2 u_transformed = u;
+                    integral += u_transformed * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
                 }
             }
             
@@ -339,6 +381,8 @@ K1/126 + K2/126, 4*K1/315 + 4*K2/315, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315
 
             //
 } // endif m_use_advection
+
+
             he = he.twin().next();
         } while (he != start);
 
@@ -372,6 +416,9 @@ K1/126 + K2/126, 4*K1/315 + 4*K2/315, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315
             double tri_area = geom.triangle_area(tri);
             // Triangle side vectors.
             auto vec2_extract = [](Eigen::Vector3f evec) { return vec2(evec.x(), evec.z()); };
+            vec2 side1 = vec2_extract(v_pos - vpp_pos);
+            vec2 side2 = vec2_extract(vp_pos - v_pos);
+            vec2 side3 = vec2_extract(vpp_pos - vp_pos);
             vec2 K1 = vec2_extract(v_pos - vpp_pos).perp();
             vec2 K2 = vec2_extract(vp_pos - v_pos).perp();
             vec2 K3 = vec2_extract(vpp_pos - vp_pos).perp(); //NOTE: perp!
@@ -424,16 +471,29 @@ if (m_use_advection) {
             // }
 
             vec2 grad_weights[6*6] = {
+#if WEIGHTS_MODE == 0
+-2*K1/105, 4*K1/315, K1/126, -4*K1/63, -2*K1/315, -2*K1/63,
+4*K2/315, -2*K2/105, K2/126, -4*K2/63, -2*K2/63, -2*K2/315,
+-2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315, K1/210 + K2/210, -4*K1/105 - 4*K2/105, 2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315,
+4*K1/315 - 2*K2/105, -2*K1/105 + 4*K2/315, 2*K1/105 + 2*K2/105, -16*K1/105 - 16*K2/105, -8*K1/105 - 16*K2/315, -16*K1/315 - 8*K2/105,
+-4*K1/315 - 2*K2/315, 2*K1/105 + 8*K2/315, -2*K1/105 - 4*K2/315, 16*K1/105 + 32*K2/315, 8*K1/105 + 8*K2/315, 16*K1/315,
+8*K1/315 + 2*K2/105, -2*K1/315 - 4*K2/315, -4*K1/315 - 2*K2/105, 32*K1/315 + 16*K2/105, 16*K2/315, 8*K1/315 + 8*K2/105,
+#else
 K1/105 + K2/21, -2*K1/315 - 2*K2/315, K1/630 - 2*K2/315, -4*K1/315 + 2*K2/105, -2*K1/105 - 2*K2/315, -2*K1/315 + 2*K2/105,
 -2*K1/315 - 2*K2/315, K1/21 + K2/105, -2*K1/315 + K2/630, 2*K1/105 - 4*K2/315, 2*K1/105 - 2*K2/315, -2*K1/315 - 2*K2/105,
 K1/630 - 2*K2/315, -2*K1/315 + K2/630, K1/105 + K2/105, -2*K1/105 - 2*K2/105, -4*K1/315 - 2*K2/315, -2*K1/315 - 4*K2/315,
 -4*K1/315 + 2*K2/105, 2*K1/105 - 4*K2/315, -2*K1/105 - 2*K2/105, 16*K1/105 + 16*K2/105, 8*K1/105 + 16*K2/315, 16*K1/315 + 8*K2/105,
 -2*K1/105 - 2*K2/315, 2*K1/105 - 2*K2/315, -4*K1/315 - 2*K2/315, 8*K1/105 + 16*K2/315, 16*K1/105 + 16*K2/315, 16*K1/315 + 16*K2/315,
 -2*K1/315 + 2*K2/105, -2*K1/315 - 2*K2/105, -2*K1/315 - 4*K2/315, 16*K1/315 + 8*K2/105, 16*K1/315 + 16*K2/315, 16*K1/315 + 16*K2/105,
+#endif
             };
             for (int i = 0; i < 6; i++) {
-                for (int K = 0; K < 3; K++) {
-                    integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
+                for (int K = 0; K < 6; K++) {
+                    // integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
+                    vec2 u = velocity_prev[elements[i]];
+                    // vec2 u_transformed = u.x()*side1 + u.y()*side2;
+                    vec2 u_transformed = u;
+                    integral += u_transformed * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
                 }
             }
             
@@ -473,7 +533,7 @@ SparseMatrix NavierStokesSolver::gramian_matrix_P2_0()
     std::vector<EigenTriplet> coefficients;
     int N = num_velocity_variation_nodes();
     auto add_entry = [&](int i, int j, double value) {
-        printf("%d %d in %dx%d\n", i, j, N, N);
+        // printf("%d %d in %dx%d\n", i, j, N, N);
         assert(i >= 0 && j >= 0 && i <= N-1 && j <= N-1);
         coefficients.push_back(EigenTriplet(i, j, value));
     };
@@ -499,19 +559,19 @@ SparseMatrix NavierStokesSolver::gramian_matrix_P2_0()
 
             double R = 2*geom.triangle_area(tri);
 
-	    printf("vertex --- v\n");
+	    // printf("vertex --- v\n");
             add_entry(v_index, v_index, (1./60.)*R);
             if (!vp.on_boundary()) {
-                printf("vertex --- vp\n");
+                // printf("vertex --- vp\n");
                 add_entry(v_index, vp_index, (-1./360.)*R);
             }
             if (!vpp.on_boundary()) {
-                printf("vertex --- vpp\n");
+                // printf("vertex --- vpp\n");
                 add_entry(v_index, vpp_index, (-1./360.)*R);
             }
 
             if (!edge_110.on_boundary()) {
-                printf("vertex --- edge_110\n");
+                // printf("vertex --- edge_110\n");
                 add_entry(v_index, edge_110_index, (-1./90.)*R);
             }
             
@@ -547,24 +607,24 @@ SparseMatrix NavierStokesSolver::gramian_matrix_P2_0()
             double R = 2*geom.triangle_area(tri);
 
 	    if (!edge_110.on_boundary()) {
-                printf("midpoint --- edge_110\n");
+                // printf("midpoint --- edge_110\n");
                 add_entry(edge_110_index,
 		      edge_110_index, (4./45.)*R);
             }
             if (!edge_011.on_boundary()) {
-                printf("midpoint --- edge_011\n");
+                // printf("midpoint --- edge_011\n");
                 add_entry(edge_110_index,
                       edge_011_index, (2./45.)*R);
             }
             
             if (!edge_101.on_boundary()) {
-                printf("midpoint --- edge_101\n");
+                // printf("midpoint --- edge_101\n");
                 add_entry(edge_110_index,
                       edge_101_index, (2./45.)*R);
             }
             
             if (!v.on_boundary()) {
-                printf("midpoint --- v\n");
+                // printf("midpoint --- v\n");
                 add_entry(edge_110_index,
                       v_index, (-1./90.)*R);
             }
@@ -593,7 +653,7 @@ void NavierStokesSolver::explicit_advection_lagrangian()
             auto midpoint = 0.5*geom.position[element.edge.a().vertex()] + 0.5*geom.position[element.edge.b().vertex()];
             position = vec2(midpoint.x(), midpoint.z());
         }
-        vec2 vel = velocity[element];
+        vec2 vel = velocity_prev[element];
         vec2 prev_position = position - m_current_time_step_dt*vel;
 
         int prev_i = floor((0.5*prev_position.x() + 0.5) * velocity_grid_N);
@@ -614,3 +674,46 @@ void NavierStokesSolver::explicit_advection_lagrangian()
         func(P2Element(e));
     }
 }
+
+// void NavierStokesSolver::explicit_advection_lagrangian()
+// {
+//     std::vector<vec2> new_velocity_grid_samples = velocity_grid_samples;
+// 
+//     for (int i = 0; i < velocity_grid_N; i++) {
+//         float x = -1 + i*2.f/(1024-1.f);
+//         for (int j = 0; j < velocity_grid_N; j++) {
+// 	    float y = -1 + j*2.f/(1024-1.f);
+//             vec2 position = vec2(x, y);
+//             vec2 vel = velocity_grid_samples[velocity_grid_N*j + i];
+//             vec2 next_position = position + m_current_time_step_dt*vel;
+//             int next_i = floor((0.5*next_position.x() + 0.5) * velocity_grid_N);
+//             int next_j = floor((0.5*next_position.y() + 0.5) * velocity_grid_N);
+//             if (next_i < 0) next_i = 0;
+//             if (next_j < 0) next_j = 0;
+//             if (next_i >= velocity_grid_N) next_i = velocity_grid_N-1;
+//             if (next_j >= velocity_grid_N) next_j = velocity_grid_N-1;
+//             new_velocity_grid_samples[velocity_grid_N*next_j + next_i] = vel;
+//         }
+//     }
+// 
+//     auto func = [&](P2Element element) {
+//         if (element.on_boundary()) return;
+//         vec2 position;
+//         if (element.is_vertex()) {
+//             position = vec2(geom.position[element.vertex].x(), geom.position[element.vertex].z());
+//         } else {
+//             auto midpoint = 0.5*geom.position[element.edge.a().vertex()] + 0.5*geom.position[element.edge.b().vertex()];
+//             position = vec2(midpoint.x(), midpoint.z());
+//         }
+//         vec2 vel = velocity_prev[element];
+//         int position_i = floor((0.5*position.x() + 0.5) * velocity_grid_N);
+//         int position_j = floor((0.5*position.y() + 0.5) * velocity_grid_N);
+//         velocity[element] = new_velocity_grid_samples[velocity_grid_N*position_j + position_i];
+//     };
+//     for (auto v : geom.mesh.vertices()) {
+//         func(P2Element(v));
+//     }
+//     for (auto e : geom.mesh.edges()) {
+//         func(P2Element(e));
+//     }
+// }

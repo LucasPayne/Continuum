@@ -135,6 +135,9 @@ void NavierStokesSolver::start_time_step(double delta_time)
     if (!solving()) {
         m_solving = true;
     }
+    // Explicit advection.
+    if (m_use_advection) explicit_advection_lagrangian();
+    // if (m_use_advection) explicit_advection();
 
     // Initialize the previous state.
     // (The start of the Newton iteration is at the previous state.)
@@ -145,6 +148,7 @@ void NavierStokesSolver::start_time_step(double delta_time)
     for (auto e : geom.mesh.edges()) {
         velocity_prev[e] = velocity[e];
     }
+
     
     // Initialize the velocity pressure vector.
     int counter = 0;
@@ -230,22 +234,21 @@ void NavierStokesSolver::time_step(double delta_time)
 {
     start_time_step(delta_time);
 
-    if (m_use_advection) explicit_advection_lagrangian();
-
-    // const int max_num_newton_iterations = 1;
-    // const double epsilon = 1e-4;
-    // for (int iter = 0; iter < max_num_newton_iterations; iter++) {
-    //     newton_iteration();
-    //     // Exit if infinity norm is below epsilon.
-    //     // bool norm_pass = true;
-    //     // for (int i = 0; i < m_system_N; i++) {
-    //     //     if (abs(m_velocity_pressure_vector[i]) > epsilon) { //---incorrect exit condition
-    //     //         norm_pass = false;
-    //     //         break;
-    //     //     }
-    //     // }
-    //     // if (norm_pass) break;
-    // }
+    const int max_num_newton_iterations = 1;
+    const double epsilon = 1e-4;
+    for (int iter = 0; iter < max_num_newton_iterations; iter++) {
+        newton_iteration();
+        
+        // Exit if infinity norm is below epsilon.
+        // bool norm_pass = true;
+        // for (int i = 0; i < m_system_N; i++) {
+        //     if (abs(m_velocity_pressure_vector[i]) > epsilon) { //---incorrect exit condition
+        //         norm_pass = false;
+        //         break;
+        //     }
+        // }
+        // if (norm_pass) break;
+    }
 
     // if (m_use_advection) explicit_advection();
 
@@ -373,7 +376,7 @@ std::tuple<SparseMatrix, SparseMatrix> NavierStokesSolver::compute_gateaux_matri
     auto get_sparse_matrix = [&]()->SparseMatrix {
         auto eigen_coefficients = std::vector<EigenTriplet>();
         auto add_eigen_coefficient = [&](int i, int j, double val) {
-            printf("%d %d %.6g\n", i, j, val);
+            // printf("%d %d %.6g\n", i, j, val);
             eigen_coefficients.push_back(EigenTriplet(i, j, val));
         };
         for (auto coeff : top_left_coefficients) {
@@ -410,9 +413,9 @@ std::tuple<SparseMatrix, SparseMatrix> NavierStokesSolver::compute_gateaux_matri
 
     auto gateaux_matrix = get_sparse_matrix();
 
-    printf("N_u: %d\n", m_num_velocity_variation_nodes);
-    printf("N_p: %d\n", m_num_pressure_variation_nodes);
-    printf("N: %d\n", m_system_N);
+    // printf("N_u: %d\n", m_num_velocity_variation_nodes);
+    // printf("N_p: %d\n", m_num_pressure_variation_nodes);
+    // printf("N: %d\n", m_system_N);
     // make_sparsity_image(gateaux_matrix, std::string(DATA) + "navier_stokes_gateaux_sparsity.png");
 
     return {linear_term_matrix, gateaux_matrix};

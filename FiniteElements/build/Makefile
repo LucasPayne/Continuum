@@ -162,6 +162,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named quadratic_figure
+
+# Build rule for target.
+quadratic_figure: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 quadratic_figure
+.PHONY : quadratic_figure
+
+# fast build rule for target.
+quadratic_figure/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/quadratic_figure.dir/build.make CMakeFiles/quadratic_figure.dir/build
+.PHONY : quadratic_figure/fast
+
+#=============================================================================
 # Target rules for targets named QuadraticLaplaceSolver
 
 # Build rule for target.
@@ -173,6 +186,19 @@ QuadraticLaplaceSolver: cmake_check_build_system
 QuadraticLaplaceSolver/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/build
 .PHONY : QuadraticLaplaceSolver/fast
+
+#=============================================================================
+# Target rules for targets named FlowVisualization
+
+# Build rule for target.
+FlowVisualization: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FlowVisualization
+.PHONY : FlowVisualization
+
+# fast build rule for target.
+FlowVisualization/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/build
+.PHONY : FlowVisualization/fast
 
 #=============================================================================
 # Target rules for targets named discretization_figure
@@ -199,19 +225,6 @@ ReactionDiffusion: cmake_check_build_system
 ReactionDiffusion/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/build
 .PHONY : ReactionDiffusion/fast
-
-#=============================================================================
-# Target rules for targets named quadratic_figure
-
-# Build rule for target.
-quadratic_figure: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 quadratic_figure
-.PHONY : quadratic_figure
-
-# fast build rule for target.
-quadratic_figure/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/quadratic_figure.dir/build.make CMakeFiles/quadratic_figure.dir/build
-.PHONY : quadratic_figure/fast
 
 #=============================================================================
 # Target rules for targets named FiniteVolumes
@@ -460,6 +473,30 @@ triangle/fast:
 	$(MAKE) $(MAKESILENT) -f dependencies/triangle/CMakeFiles/triangle.dir/build.make dependencies/triangle/CMakeFiles/triangle.dir/build
 .PHONY : triangle/fast
 
+CameraController.o: CameraController.cpp.o
+.PHONY : CameraController.o
+
+# target to build an object file
+CameraController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.o
+.PHONY : CameraController.cpp.o
+
+CameraController.i: CameraController.cpp.i
+.PHONY : CameraController.i
+
+# target to preprocess a source file
+CameraController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.i
+.PHONY : CameraController.cpp.i
+
+CameraController.s: CameraController.cpp.s
+.PHONY : CameraController.s
+
+# target to generate assembly for a file
+CameraController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.s
+.PHONY : CameraController.cpp.s
+
 FiniteVolumes.o: FiniteVolumes.cpp.o
 .PHONY : FiniteVolumes.o
 
@@ -483,6 +520,30 @@ FiniteVolumes.s: FiniteVolumes.cpp.s
 FiniteVolumes.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiniteVolumes.dir/build.make CMakeFiles/FiniteVolumes.dir/FiniteVolumes.cpp.s
 .PHONY : FiniteVolumes.cpp.s
+
+FlowVisualization/main.o: FlowVisualization/main.cpp.o
+.PHONY : FlowVisualization/main.o
+
+# target to build an object file
+FlowVisualization/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/FlowVisualization/main.cpp.o
+.PHONY : FlowVisualization/main.cpp.o
+
+FlowVisualization/main.i: FlowVisualization/main.cpp.i
+.PHONY : FlowVisualization/main.i
+
+# target to preprocess a source file
+FlowVisualization/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/FlowVisualization/main.cpp.i
+.PHONY : FlowVisualization/main.cpp.i
+
+FlowVisualization/main.s: FlowVisualization/main.cpp.s
+.PHONY : FlowVisualization/main.s
+
+# target to generate assembly for a file
+FlowVisualization/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/FlowVisualization/main.cpp.s
+.PHONY : FlowVisualization/main.cpp.s
 
 HeatSolver.o: HeatSolver.cpp.o
 .PHONY : HeatSolver.o
@@ -724,30 +785,6 @@ NavierStokes/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.s
 .PHONY : NavierStokes/main.cpp.s
 
-NavierStokes/mesh_generators.o: NavierStokes/mesh_generators.cpp.o
-.PHONY : NavierStokes/mesh_generators.o
-
-# target to build an object file
-NavierStokes/mesh_generators.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/mesh_generators.cpp.o
-.PHONY : NavierStokes/mesh_generators.cpp.o
-
-NavierStokes/mesh_generators.i: NavierStokes/mesh_generators.cpp.i
-.PHONY : NavierStokes/mesh_generators.i
-
-# target to preprocess a source file
-NavierStokes/mesh_generators.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/mesh_generators.cpp.i
-.PHONY : NavierStokes/mesh_generators.cpp.i
-
-NavierStokes/mesh_generators.s: NavierStokes/mesh_generators.cpp.s
-.PHONY : NavierStokes/mesh_generators.s
-
-# target to generate assembly for a file
-NavierStokes/mesh_generators.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/mesh_generators.cpp.s
-.PHONY : NavierStokes/mesh_generators.cpp.s
-
 QuadraticLaplaceSolver.o: QuadraticLaplaceSolver.cpp.o
 .PHONY : QuadraticLaplaceSolver.o
 
@@ -916,6 +953,30 @@ basis_quadratic_figure.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/basis_quadratic_figure.dir/build.make CMakeFiles/basis_quadratic_figure.dir/basis_quadratic_figure.cpp.s
 .PHONY : basis_quadratic_figure.cpp.s
 
+core.o: core.cpp.o
+.PHONY : core.o
+
+# target to build an object file
+core.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.o
+.PHONY : core.cpp.o
+
+core.i: core.cpp.i
+.PHONY : core.i
+
+# target to preprocess a source file
+core.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.i
+.PHONY : core.cpp.i
+
+core.s: core.cpp.s
+.PHONY : core.s
+
+# target to generate assembly for a file
+core.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.s
+.PHONY : core.cpp.s
+
 discretization_figure.o: discretization_figure.cpp.o
 .PHONY : discretization_figure.o
 
@@ -939,6 +1000,30 @@ discretization_figure.s: discretization_figure.cpp.s
 discretization_figure.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/discretization_figure.cpp.s
 .PHONY : discretization_figure.cpp.s
+
+mesh_generators.o: mesh_generators.cpp.o
+.PHONY : mesh_generators.o
+
+# target to build an object file
+mesh_generators.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o
+.PHONY : mesh_generators.cpp.o
+
+mesh_generators.i: mesh_generators.cpp.i
+.PHONY : mesh_generators.i
+
+# target to preprocess a source file
+mesh_generators.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/mesh_generators.cpp.i
+.PHONY : mesh_generators.cpp.i
+
+mesh_generators.s: mesh_generators.cpp.s
+.PHONY : mesh_generators.s
+
+# target to generate assembly for a file
+mesh_generators.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/mesh_generators.cpp.s
+.PHONY : mesh_generators.cpp.s
 
 quadratic_figure.o: quadratic_figure.cpp.o
 .PHONY : quadratic_figure.o
@@ -979,6 +1064,7 @@ help:
 	@echo "... docs"
 	@echo "... uninstall"
 	@echo "... FiniteVolumes"
+	@echo "... FlowVisualization"
 	@echo "... HeatSolver"
 	@echo "... LaplaceSolver"
 	@echo "... LidDrivenCavity"
@@ -999,9 +1085,15 @@ help:
 	@echo "... spatial_algebra"
 	@echo "... table"
 	@echo "... triangle"
+	@echo "... CameraController.o"
+	@echo "... CameraController.i"
+	@echo "... CameraController.s"
 	@echo "... FiniteVolumes.o"
 	@echo "... FiniteVolumes.i"
 	@echo "... FiniteVolumes.s"
+	@echo "... FlowVisualization/main.o"
+	@echo "... FlowVisualization/main.i"
+	@echo "... FlowVisualization/main.s"
 	@echo "... HeatSolver.o"
 	@echo "... HeatSolver.i"
 	@echo "... HeatSolver.s"
@@ -1032,9 +1124,6 @@ help:
 	@echo "... NavierStokes/main.o"
 	@echo "... NavierStokes/main.i"
 	@echo "... NavierStokes/main.s"
-	@echo "... NavierStokes/mesh_generators.o"
-	@echo "... NavierStokes/mesh_generators.i"
-	@echo "... NavierStokes/mesh_generators.s"
 	@echo "... QuadraticLaplaceSolver.o"
 	@echo "... QuadraticLaplaceSolver.i"
 	@echo "... QuadraticLaplaceSolver.s"
@@ -1056,9 +1145,15 @@ help:
 	@echo "... basis_quadratic_figure.o"
 	@echo "... basis_quadratic_figure.i"
 	@echo "... basis_quadratic_figure.s"
+	@echo "... core.o"
+	@echo "... core.i"
+	@echo "... core.s"
 	@echo "... discretization_figure.o"
 	@echo "... discretization_figure.i"
 	@echo "... discretization_figure.s"
+	@echo "... mesh_generators.o"
+	@echo "... mesh_generators.i"
+	@echo "... mesh_generators.s"
 	@echo "... quadratic_figure.o"
 	@echo "... quadratic_figure.i"
 	@echo "... quadratic_figure.s"

@@ -531,7 +531,8 @@ def grads(a,b,c, m):
     phi_u = nodal_basis_functions[barycentric_index_to_linear(i, j, k)]
     for I in range(6):
         phi_u_I = nodal_basis_functions[I]
-        f = phi_u * phi_u_I * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+        # f = -phi_u * phi_u_I * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+        f = -phi_u_I * psi_u * (K1*sym.diff(phi_u, x) + K2*sym.diff(phi_u, y))
         f_dy = sym.integrate(f, (y, 0,1-x))
         f_dy_dx = sym.integrate(f_dy, (x, 0,1))
         # print("{}{}{},{}{}{}: {}".format(a,b,c, i,j,k, f_dy_dx))

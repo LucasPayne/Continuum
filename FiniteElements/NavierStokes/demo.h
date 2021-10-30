@@ -89,6 +89,8 @@ struct Demo : public IBehaviour {
 
     // For interactive fluid.
     vec2 source_position;
+
+    void save_solution(std::string filename);
 };
 
 #endif // HEADER_DEFINED_DEMO

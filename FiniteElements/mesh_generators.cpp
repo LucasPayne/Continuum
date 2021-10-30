@@ -1,3 +1,36 @@
+#include "mesh_generators.h"
+
+
+SquareMesh::SquareMesh(int _N) :
+    N{_N}
+{
+    SurfaceMesh *mesh = new SurfaceMesh();
+    geom = new SurfaceGeometry(*mesh);
+    
+    vertices = std::vector<Vertex>((N+1)*(N+1));
+    // Create vertices.
+    for (int i = 0; i <= N; i++) {
+        double x = -1 + i*2.f/N;
+        for (int j = 0; j <= N; j++) {
+            double y = -1 + j*2.f/N;
+            auto v = mesh->add_vertex();
+            geom->position[v] = Eigen::Vector3f(x, 0, y);
+            vertices[i*(N+1) + j] = v;
+        }
+    }
+    // Create triangles.
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            Vertex a = vertices[i*(N+1) + j];
+            Vertex b = vertices[(i+1)*(N+1) + j];
+            Vertex c = vertices[(i+1)*(N+1) + j+1];
+            Vertex d = vertices[i*(N+1) + j+1];
+            mesh->add_triangle(a,b,d);
+            mesh->add_triangle(b,c,d);
+        }
+    }
+    mesh->lock();
+}
 
 // Create a mesh.
 SurfaceGeometry *circle_mesh(int N, bool random)
@@ -148,57 +181,11 @@ SurfaceGeometry *square_mesh_with_square_hole(int N)
     return geom;
 }
 
-// Return with a data structure which can be used to access the square mesh with rectangular indexing.
-class SquareMesh
-{
-public:
-    SquareMesh(int _N) :
-        N{_N}
-    {
-        SurfaceMesh *mesh = new SurfaceMesh();
-        geom = new SurfaceGeometry(*mesh);
-        
-        vertices = std::vector<Vertex>((N+1)*(N+1));
-        // Create vertices.
-        for (int i = 0; i <= N; i++) {
-            double x = -1 + i*2.f/N;
-            for (int j = 0; j <= N; j++) {
-                double y = -1 + j*2.f/N;
-                auto v = mesh->add_vertex();
-                geom->position[v] = Eigen::Vector3f(x, 0, y);
-                vertices[i*(N+1) + j] = v;
-            }
-        }
-        // Create triangles.
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                Vertex a = vertices[i*(N+1) + j];
-                Vertex b = vertices[(i+1)*(N+1) + j];
-                Vertex c = vertices[(i+1)*(N+1) + j+1];
-                Vertex d = vertices[i*(N+1) + j+1];
-                mesh->add_triangle(a,b,d);
-                mesh->add_triangle(b,c,d);
-            }
-        }
-        mesh->lock();
-    }
 
-    inline Vertex vertex(int i, int j) {
-        return vertices[i*(N+1) + j];
-    }
-
-    SurfaceGeometry *geom;
-private:
-    int N;
-    std::vector<Vertex> vertices;
-};
-
-
-
-SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, int square_N, bool misc_curve=false, vec2 obstruction_position=vec2(0,0),
-                                     bool many_sample_curve=false,
-                                     float rect_x_scale = 1.f,
-                                     float rect_y_scale = 1.f
+SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, int square_N, bool misc_curve, vec2 obstruction_position,
+                                     bool many_sample_curve,
+                                     float rect_x_scale,
+                                     float rect_y_scale
 ) {
     SurfaceMesh *mesh = new SurfaceMesh();
     SurfaceGeometry *geom = new SurfaceGeometry(*mesh);
@@ -340,47 +327,5 @@ SurfaceGeometry *square_minus_circle(float r, float theta0, float a, float b, in
     free(p_mem);
     free(segment_mem);
     free(hole_mem);
-    return geom;
-}
-
-
-SurfaceGeometry *torus_mesh(float main_radius, float secondary_radius, int N1)
-{
-    float r1 = main_radius;
-    float r2 = secondary_radius;
-    int N2 = ceil(r2/r1 * N1);
-
-    SurfaceMesh *mesh = new SurfaceMesh();
-    SurfaceGeometry *geom = new SurfaceGeometry(*mesh);
-
-    std::vector<std::vector<vec3>> rings;
-    std::vector<std::vector<Vertex>> vertex_rings;
-    for (int i = 0; i < N1; i++) {
-        float theta1 = 2*M_PI*i/N1;
-        vec3 base_point = main_radius * vec3(cos(theta1), 0, sin(theta1));
-        vec3 dir = base_point.normalized();
-        std::vector<vec3> ring;
-        std::vector<Vertex> vertex_ring;
-        for (int j = 0; j < N2; j++) {
-            float theta2 = 2*M_PI*j/N2;
-            vec3 point = base_point + secondary_radius*(cos(theta2)*dir + sin(theta2)*vec3(0,1,0));
-            ring.push_back(point);
-            auto vert = mesh->add_vertex();
-            vertex_ring.push_back(vert);
-            geom->position[vert] = vec3_to_eigen(point);
-        }
-        rings.push_back(ring);
-        vertex_rings.push_back(vertex_ring);
-    }
-
-    for (int i = 0; i < N1; i++) {
-        int ip = (i+1)%N1;
-        for (int j = 0; j < N2; j++) {
-            int jp = (j+1)%N2;
-            geom->mesh.add_triangle(vertex_rings[i][j], vertex_rings[ip][j], vertex_rings[ip][jp]);
-            geom->mesh.add_triangle(vertex_rings[i][j], vertex_rings[ip][jp], vertex_rings[i][jp]);
-        }
-    }
-    mesh->lock();
     return geom;
 }
