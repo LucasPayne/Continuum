@@ -477,6 +477,51 @@ def grads(a,b,c, m):
 #     grads(1,1,0, m)
 
 
+# print("grads")
+# def grads(a,b,c, m):
+#     A,B = sym.symbols("A B") # u sample
+# 
+#     psi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+#     i,j,k = linear_index_to_barycentric(m)
+#     phi_u = nodal_basis_functions[barycentric_index_to_linear(i, j, k)]
+#     for K in range(3):
+#         hatK = pressure_basis_functions[K]
+#         f = -hatK * phi_u * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+#         f_dy = sym.integrate(f, (y, 0,1-x))
+#         f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#         # print("{}{}{},{}{}{}: {}".format(a,b,c, i,j,k, f_dy_dx))
+#         print("{}, ".format(f_dy_dx), end="")
+#     print("")
+# print("vertex")
+# for m in range(6):
+#     grads(0,0,2, m)
+# print("midpoint")
+# for m in range(6):
+#     grads(1,1,0, m)
+# 
+# 
+# print("grads")
+# def grads(a,b,c, m):
+#     A,B = sym.symbols("A B") # u sample
+# 
+#     psi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+#     i,j,k = linear_index_to_barycentric(m)
+#     phi_u = nodal_basis_functions[barycentric_index_to_linear(i, j, k)]
+#     for K in range(3):
+#         hatK = pressure_basis_functions[K]
+#         f = -hatK * phi_u * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+#         f_dy = sym.integrate(f, (y, 0,1-x))
+#         f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+#         # print("{}{}{},{}{}{}: {}".format(a,b,c, i,j,k, f_dy_dx))
+#         print("{}, ".format(f_dy_dx), end="")
+#     print("")
+# print("vertex")
+# for m in range(6):
+#     grads(0,0,2, m)
+# print("midpoint")
+# for m in range(6):
+#     grads(1,1,0, m)
+
 print("grads")
 def grads(a,b,c, m):
     A,B = sym.symbols("A B") # u sample
@@ -484,9 +529,9 @@ def grads(a,b,c, m):
     psi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
     i,j,k = linear_index_to_barycentric(m)
     phi_u = nodal_basis_functions[barycentric_index_to_linear(i, j, k)]
-    for K in range(3):
-        hatK = pressure_basis_functions[K]
-        f = -hatK * phi_u * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
+    for I in range(6):
+        phi_u_I = nodal_basis_functions[I]
+        f = phi_u * phi_u_I * (K1*sym.diff(psi_u, x) + K2*sym.diff(psi_u, y))
         f_dy = sym.integrate(f, (y, 0,1-x))
         f_dy_dx = sym.integrate(f_dy, (x, 0,1))
         # print("{}{}{},{}{}{}: {}".format(a,b,c, i,j,k, f_dy_dx))

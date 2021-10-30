@@ -116,7 +116,8 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_P) solver->end_time_step();
 
         // One iteration.
-        if (e.key.code == KEY_R) solver->time_step(0.0025);
+        // if (e.key.code == KEY_R) solver->time_step(0.0025);
+        if (e.key.code == KEY_R) solver->time_step(0.01);
 
         // Take a screenshot.
         if (e.key.code == KEY_T) {
@@ -144,7 +145,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
 
         // Solver toggles
-        if (e.key.code == KEY_M) {
+        if (e.key.code == KEY_B) {
             solver->m_use_advection = !solver->m_use_advection;
         }
         
@@ -163,7 +164,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
                 // return 0.06*vec2(exp(x), exp(3*y+x));
                 const double r = 0.125;
                 if ((vec2(x,y) - source_position).length() <= r) {
-                    return vec2(2, 0);
+                    return vec2(1, 0);
                 }
                 return vec2(0,0);
             });

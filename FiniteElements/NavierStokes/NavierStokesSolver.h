@@ -61,6 +61,8 @@ public:
     TimeDependentPlaneVectorField source_function; // Exact function.
 
     bool m_use_advection; // for debugging whether advection actually works
+
+    void make_sparsity_image(SparseMatrix &matrix, std::string name);
 private:
     // The previous velocity and pressure are only changed after a time step.
     P2Attachment<vec2> velocity_prev;
@@ -73,8 +75,11 @@ private:
     std::tuple<SparseMatrix, SparseMatrix> compute_gateaux_matrix(); // returns (linear_term_matrix, gateaux_matrix).
     Eigen::VectorXd compute_residual(SparseMatrix &linear_term_matrix);
     void add_nonlinear_velocity_residual(P2Attachment<vec2> &velocity_residual);
+    void explicit_advection();
     std::vector<TopLeftEntry> compute_linear_term_matrix_top_left();
     std::vector<BottomLeftEntry> compute_linear_term_matrix_bottom_left();
+
+    SparseMatrix gramian_matrix_P2_0();
 
     P2Attachment<vec2> source_samples_P2; // Samples for approximate integration.
     void update_source_samples();

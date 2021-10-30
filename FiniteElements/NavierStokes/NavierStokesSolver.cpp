@@ -145,6 +145,28 @@ void NavierStokesSolver::start_time_step(double delta_time)
     for (auto e : geom.mesh.edges()) {
         velocity_prev[e] = velocity[e];
     }
+    
+    // Initialize the velocity pressure vector.
+    int counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        m_velocity_pressure_vector[2*counter+0] = velocity[v].x();
+        m_velocity_pressure_vector[2*counter+1] = velocity[v].y();
+        counter += 1;
+    }
+    counter = 0;
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) continue;
+        m_velocity_pressure_vector[2*geom.mesh.num_interior_vertices() + 2*counter+0] = velocity[e].x();
+        m_velocity_pressure_vector[2*geom.mesh.num_interior_vertices() + 2*counter+1] = velocity[e].y();
+        counter += 1;
+    }
+    counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (counter == m_num_pressure_variation_nodes-1) break; // skip the last pressure node
+        m_velocity_pressure_vector[2*num_velocity_variation_nodes() + counter] = pressure[v];
+        counter += 1;
+    }
 
     m_current_time_step_dt = delta_time;
     m_iterating = true;
@@ -207,20 +229,23 @@ void NavierStokesSolver::end_time_step()
 void NavierStokesSolver::time_step(double delta_time)
 {
     start_time_step(delta_time);
-    const int max_num_newton_iterations = 1;
-    const double epsilon = 1e-4;
-    for (int iter = 0; iter < max_num_newton_iterations; iter++) {
-        newton_iteration();
-        // Exit if infinity norm is below epsilon.
-        // bool norm_pass = true;
-        // for (int i = 0; i < m_system_N; i++) {
-        //     if (abs(m_velocity_pressure_vector[i]) > epsilon) { //---incorrect exit condition
-        //         norm_pass = false;
-        //         break;
-        //     }
-        // }
-        // if (norm_pass) break;
-    }
+    // const int max_num_newton_iterations = 1;
+    // const double epsilon = 1e-4;
+    // for (int iter = 0; iter < max_num_newton_iterations; iter++) {
+    //     newton_iteration();
+    //     // Exit if infinity norm is below epsilon.
+    //     // bool norm_pass = true;
+    //     // for (int i = 0; i < m_system_N; i++) {
+    //     //     if (abs(m_velocity_pressure_vector[i]) > epsilon) { //---incorrect exit condition
+    //     //         norm_pass = false;
+    //     //         break;
+    //     //     }
+    //     // }
+    //     // if (norm_pass) break;
+    // }
+
+    if (m_use_advection) explicit_advection();
+
     end_time_step();
 }
 
@@ -298,7 +323,7 @@ Eigen::VectorXd NavierStokesSolver::compute_residual(SparseMatrix &linear_term_m
 
 
 
-void make_sparsity_image(SparseMatrix &matrix, std::string name)
+void NavierStokesSolver::make_sparsity_image(SparseMatrix &matrix, std::string name)
 {
     assert(matrix.rows() == matrix.cols());
     int system_N = matrix.rows();
@@ -385,7 +410,7 @@ std::tuple<SparseMatrix, SparseMatrix> NavierStokesSolver::compute_gateaux_matri
     printf("N_u: %d\n", m_num_velocity_variation_nodes);
     printf("N_p: %d\n", m_num_pressure_variation_nodes);
     printf("N: %d\n", m_system_N);
-    make_sparsity_image(gateaux_matrix, std::string(DATA) + "navier_stokes_gateaux_sparsity.png");
+    // make_sparsity_image(gateaux_matrix, std::string(DATA) + "navier_stokes_gateaux_sparsity.png");
 
     return {linear_term_matrix, gateaux_matrix};
 }
