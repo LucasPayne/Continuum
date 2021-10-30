@@ -20,7 +20,7 @@ void Demo::recreate_solver()
     double kinematic_viscosity = 0.01;
 
     if (mesh_mode == MM_square) {
-        geom = square_mesh(12);
+        geom = square_mesh(50);
         solver = new NavierStokesSolver(*geom, kinematic_viscosity);
         solver->set_source(
             [&](double x, double y, double t)->vec2 {
@@ -117,7 +117,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
 
         // One iteration.
         // if (e.key.code == KEY_R) solver->time_step(0.0025);
-        if (e.key.code == KEY_R) solver->time_step(0.01);
+        if (e.key.code == KEY_R) solver->time_step(0.1);
 
         // Take a screenshot.
         if (e.key.code == KEY_T) {
@@ -162,7 +162,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_4) {
             solver->set_velocity([&](double x, double y)->vec2 {
                 // return 0.06*vec2(exp(x), exp(3*y+x));
-                const double r = 0.125;
+                const double r = 0.25;
                 if ((vec2(x,y) - source_position).length() <= r) {
                     return vec2(1, 0);
                 }
@@ -220,30 +220,8 @@ void Demo::update()
     );
 }
 
-
-void Demo::post_render_update()
+void Demo::render_solution_texture()
 {
-    // Filming a video, update simulation
-    if (filming) {
-        solver->time_step(film_dt);
-    }
-
-    if (show_wireframe) {
-        double thickness = 0.005;
-        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
-    }
-    // Draw boundaries.
-    for (auto start : geom->mesh.boundary_loops()) {
-        auto ps = std::vector<vec3>();
-        auto he = start;
-        do {
-            ps.push_back(vec3(0,0.0001,0)+eigen_to_vec3(geom->position[he.vertex()]));
-            he = he.next();
-        } while (he != start);
-        ps.push_back(ps[0]);
-        world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
-    }
-    
     // Scale the pressure.
     VertexAttachment<double> scaled_pressure(geom->mesh);
     double min_pressure = std::numeric_limits<double>::infinity();
@@ -354,6 +332,54 @@ void Demo::post_render_update()
     // Clean up.
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(3, vbos);
+
+
+    //================================================================================
+    // Send the sampled velocity to the solver, for Lagrangian advection.
+    //================================================================================
+    glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
+    auto solution_pixels = std::vector<float>(4*1024*1024);
+    glReadPixels(0,0,1024,1024, GL_RGBA, GL_FLOAT, &solution_pixels[0]);
+    glBindFramebuffer(GL_FRAMEBUFFER, world->graphics.screen_buffer.id);
+    solver->velocity_grid_N = 1024;
+    solver->velocity_grid_samples = std::vector<vec2>(1024*1024);
+    for (int i = 0; i < 1024; i++) {
+        float x = -1 + i*2.f/(1024-1.f);
+        for (int j = 0; j < 1024; j++) {
+            float y = -1 + j*2.f/(1024-1.f);
+            float velocity_x = solution_pixels[4*(1024*j + i) + 0];
+            float velocity_y = solution_pixels[4*(1024*j + i) + 1];
+            solver->velocity_grid_samples[1024*j + i] = vec2(velocity_x, velocity_y);
+        }
+    }
+}
+
+
+void Demo::post_render_update()
+{
+    // Filming a video, update simulation
+    if (filming) {
+        solver->time_step(film_dt);
+    }
+
+    if (show_wireframe) {
+        double thickness = 0.005;
+        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
+    }
+    // Draw boundaries.
+    for (auto start : geom->mesh.boundary_loops()) {
+        auto ps = std::vector<vec3>();
+        auto he = start;
+        do {
+            ps.push_back(vec3(0,0.0001,0)+eigen_to_vec3(geom->position[he.vertex()]));
+            he = he.next();
+        } while (he != start);
+        ps.push_back(ps[0]);
+        world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
+    }
+    
+    // render solution texture
+    render_solution_texture();
     
     // Draw velocity field.
     // Also draw source velocity field.

@@ -58,6 +58,8 @@ struct Demo : public IBehaviour {
     void recreate_solver();
 
     // Visualization
+    void render_solution_texture();
+
     bool show_wireframe;
     bool show_vector_field;
     bool show_source;

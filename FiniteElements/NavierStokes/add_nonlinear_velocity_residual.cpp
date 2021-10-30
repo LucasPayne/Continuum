@@ -304,20 +304,40 @@ if (m_use_advection) {
             // }
 
             
-            vec2 grad_weights[6*3] = {
-                -K1/72 - K2/72, -K1/60 - K2/60, -K1/360 - K2/360,
-                -K1/72 - K2/72, -K1/360 - K2/360, -K1/60 - K2/60,
-                K1/20 + K2/20, K1/120 + K2/120, K1/120 + K2/120,
-                K1/90 + K2/90, -K1/45 - K2/45, -K1/45 - K2/45,
-                K1/15 + K2/15, K1/90 + K2/90, K1/45 + K2/45,
-                K1/15 + K2/15, K1/45 + K2/45, K1/90 + K2/90,
+            // vec2 grad_weights[6*3] = {
+            //     -K1/72 - K2/72, -K1/60 - K2/60, -K1/360 - K2/360,
+            //     -K1/72 - K2/72, -K1/360 - K2/360, -K1/60 - K2/60,
+            //     K1/20 + K2/20, K1/120 + K2/120, K1/120 + K2/120,
+            //     K1/90 + K2/90, -K1/45 - K2/45, -K1/45 - K2/45,
+            //     K1/15 + K2/15, K1/90 + K2/90, K1/45 + K2/45,
+            //     K1/15 + K2/15, K1/45 + K2/45, K1/90 + K2/90,
+            // };
+            // Vertex vertices[3] = {v, vp, vpp};
+            // for (int i = 0; i < 6; i++) {
+            //     for (int K = 0; K < 3; K++) {
+            //         integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]);
+            //     }
+            // }
+            //
+            
+            vec2 grad_weights[6*6] = {
+K1/140 + K2/140, -11*K1/2520 - 11*K2/2520, K1/280 + K2/280, 2*K1/315 + 2*K2/315, K1/126 + K2/126, 4*K1/315 + 4*K2/315,
+-11*K1/2520 - 11*K2/2520, K1/140 + K2/140, K1/280 + K2/280, 2*K1/315 + 2*K2/315, 4*K1/315 + 4*K2/315, K1/126 + K2/126,
+K1/280 + K2/280, K1/280 + K2/280, -13*K1/420 - 13*K2/420, -K1/210 - K2/210, -2*K1/105 - 2*K2/105, -2*K1/105 - 2*K2/105,
+2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315, -K1/210 - K2/210, 4*K1/105 + 4*K2/105, -2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315,
+K1/126 + K2/126, 4*K1/315 + 4*K2/315, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315, -4*K1/63 - 4*K2/63, -2*K1/63 - 2*K2/63,
+4*K1/315 + 4*K2/315, K1/126 + K2/126, -2*K1/105 - 2*K2/105, -2*K1/315 - 2*K2/315, -2*K1/63 - 2*K2/63, -4*K1/63 - 4*K2/63,
             };
-            Vertex vertices[3] = {v, vp, vpp};
             for (int i = 0; i < 6; i++) {
                 for (int K = 0; K < 3; K++) {
-                    integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]);
+                    integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
                 }
             }
+            
+
+
+
+            //
 } // endif m_use_advection
             he = he.twin().next();
         } while (he != start);
@@ -382,26 +402,42 @@ if (m_use_advection) {
             //     integral += (1/(2*tri_area)) * u_val * grad_weights[i];
             // }
 
-            vec2 grad_weights[6*3] = {
-                K1/90, -K2/15, K1/45,
-                K2/90, K2/45, -K1/15,
-                vec2(0,0), K1/90 + K2/45, K1/45 + K2/90,
-                -2*K1/45 - 2*K2/45, -4*K1/45 - 2*K2/15, -2*K1/15 - 4*K2/45,
-                -4*K1/45 - 2*K2/45, -2*K1/45 - 2*K2/45, -2*K1/15 - 2*K2/45,
-                -2*K1/45 - 4*K2/45, -2*K1/45 - 2*K2/15, -2*K1/45 - 2*K2/45,
+            // vec2 grad_weights[6*3] = {
+            //     K1/90, -K2/15, K1/45,
+            //     K2/90, K2/45, -K1/15,
+            //     vec2(0,0), K1/90 + K2/45, K1/45 + K2/90,
+            //     -2*K1/45 - 2*K2/45, -4*K1/45 - 2*K2/15, -2*K1/15 - 4*K2/45,
+            //     -4*K1/45 - 2*K2/45, -2*K1/45 - 2*K2/45, -2*K1/15 - 2*K2/45,
+            //     -2*K1/45 - 4*K2/45, -2*K1/45 - 2*K2/15, -2*K1/45 - 2*K2/45,
+            // };
+            // Vertex vertices[3] = {v, vp, vpp};
+            // for (int i = 0; i < 6; i++) {
+            //     for (int K = 0; K < 3; K++) {
+            //         vec2 val = velocity_prev[elements[i]] * vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]);
+            //         // printf("%.6g\n", m_current_time_step_dt);
+            //         // std::cout << velocity_prev[elements[i]] << "\n";
+            //         // std::cout << "::" << grad_weights[3*i+K] << "\n";
+            //         // printf("%.6f\n", vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]));
+            //         // std::cout << "::" << grad_weights[3*i+K] << "\n";
+            //         integral += val;
+            //     }
+            // }
+
+            vec2 grad_weights[6*6] = {
+K1/105 + K2/21, -2*K1/315 - 2*K2/315, K1/630 - 2*K2/315, -4*K1/315 + 2*K2/105, -2*K1/105 - 2*K2/315, -2*K1/315 + 2*K2/105,
+-2*K1/315 - 2*K2/315, K1/21 + K2/105, -2*K1/315 + K2/630, 2*K1/105 - 4*K2/315, 2*K1/105 - 2*K2/315, -2*K1/315 - 2*K2/105,
+K1/630 - 2*K2/315, -2*K1/315 + K2/630, K1/105 + K2/105, -2*K1/105 - 2*K2/105, -4*K1/315 - 2*K2/315, -2*K1/315 - 4*K2/315,
+-4*K1/315 + 2*K2/105, 2*K1/105 - 4*K2/315, -2*K1/105 - 2*K2/105, 16*K1/105 + 16*K2/105, 8*K1/105 + 16*K2/315, 16*K1/315 + 8*K2/105,
+-2*K1/105 - 2*K2/315, 2*K1/105 - 2*K2/315, -4*K1/315 - 2*K2/315, 8*K1/105 + 16*K2/315, 16*K1/105 + 16*K2/315, 16*K1/315 + 16*K2/315,
+-2*K1/315 + 2*K2/105, -2*K1/315 - 2*K2/105, -2*K1/315 - 4*K2/315, 16*K1/315 + 8*K2/105, 16*K1/315 + 16*K2/315, 16*K1/315 + 16*K2/105,
             };
-            Vertex vertices[3] = {v, vp, vpp};
             for (int i = 0; i < 6; i++) {
                 for (int K = 0; K < 3; K++) {
-                    vec2 val = velocity_prev[elements[i]] * vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]);
-                    // printf("%.6g\n", m_current_time_step_dt);
-                    // std::cout << velocity_prev[elements[i]] << "\n";
-                    // std::cout << "::" << grad_weights[3*i+K] << "\n";
-                    // printf("%.6f\n", vec2::dot(velocity_prev[vertices[K]], grad_weights[3*i + K]));
-                    // std::cout << "::" << grad_weights[3*i+K] << "\n";
-                    integral += val;
+                    integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
                 }
             }
+            
+
 } // endif m_use_advection
         }
         explicit_advection_vector_x_proj[geom.mesh.num_interior_vertices() + edge_index] = integral.x();
@@ -543,4 +579,38 @@ SparseMatrix NavierStokesSolver::gramian_matrix_P2_0()
     // make_sparsity_image(matrix, DATA "P20_P20_gramian_navierstokes.ppm");
 
     return matrix;
+}
+
+
+void NavierStokesSolver::explicit_advection_lagrangian()
+{
+    auto func = [&](P2Element element) {
+        if (element.on_boundary()) return;
+        vec2 position;
+        if (element.is_vertex()) {
+            position = vec2(geom.position[element.vertex].x(), geom.position[element.vertex].z());
+        } else {
+            auto midpoint = 0.5*geom.position[element.edge.a().vertex()] + 0.5*geom.position[element.edge.b().vertex()];
+            position = vec2(midpoint.x(), midpoint.z());
+        }
+        vec2 vel = velocity[element];
+        vec2 prev_position = position - m_current_time_step_dt*vel;
+
+        int prev_i = floor((0.5*prev_position.x() + 0.5) * velocity_grid_N);
+        int prev_j = floor((0.5*prev_position.y() + 0.5) * velocity_grid_N);
+    
+        if (prev_i < 0) prev_i = 0;
+        if (prev_j < 0) prev_j = 0;
+        if (prev_i >= velocity_grid_N) prev_i = velocity_grid_N-1;
+        if (prev_j >= velocity_grid_N) prev_j = velocity_grid_N-1;
+
+        vec2 prev_vel = velocity_grid_samples[velocity_grid_N*prev_j + prev_i];
+        velocity[element] = prev_vel;
+    };
+    for (auto v : geom.mesh.vertices()) {
+        func(P2Element(v));
+    }
+    for (auto e : geom.mesh.edges()) {
+        func(P2Element(e));
+    }
 }

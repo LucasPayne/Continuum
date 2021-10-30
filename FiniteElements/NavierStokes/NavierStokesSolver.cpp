@@ -229,6 +229,9 @@ void NavierStokesSolver::end_time_step()
 void NavierStokesSolver::time_step(double delta_time)
 {
     start_time_step(delta_time);
+
+    if (m_use_advection) explicit_advection_lagrangian();
+
     // const int max_num_newton_iterations = 1;
     // const double epsilon = 1e-4;
     // for (int iter = 0; iter < max_num_newton_iterations; iter++) {
@@ -244,7 +247,7 @@ void NavierStokesSolver::time_step(double delta_time)
     //     // if (norm_pass) break;
     // }
 
-    if (m_use_advection) explicit_advection();
+    // if (m_use_advection) explicit_advection();
 
     end_time_step();
 }
