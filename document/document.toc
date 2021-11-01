@@ -83,18 +83,22 @@
 \contentsline {chapter}{\chapternumberline {4}Solving the Stokes equations with the finite element method}{55}{chapter.4}
 \contentsline {section}{\numberline {4.1}Introduction}{55}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}The lid-driven cavity flow problem}{55}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Attempting solution by an iterative pressure update}{55}{subsection.4.1.2}
-\contentsline {subsubsection}{Implementing the pressure iteration}{56}{section*.54}
-\contentsline {subsection}{\numberline {4.1.3}A mixed finite element method}{57}{subsection.4.1.3}
-\contentsline {subsection}{\numberline {4.1.4}The weak form of the steady Stokes equations}{57}{subsection.4.1.4}
-\contentsline {subsection}{\numberline {4.1.5}Taylor-Hood mixed finite elements for the Stokes problem}{58}{subsection.4.1.5}
+\contentsline {section}{\numberline {4.2}Attempting solution by an iterative pressure update}{55}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Implementing the pressure iteration}{56}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Forming the right-hand-sides for the two Poisson solves}{57}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Results for the iterative pressure update method}{57}{subsection.4.2.3}
+\contentsline {section}{\numberline {4.3}A mixed finite element method}{58}{section.4.3}
+\contentsline {subsubsection}{The pressure finite element space}{58}{section*.55}
+\contentsline {subsubsection}{The velocity finite element product space }{58}{section*.56}
+\contentsline {subsection}{\numberline {4.3.1}The mixed weak form of the steady Stokes equations}{58}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Forming a linear system from the mixed weak form}{59}{subsection.4.3.2}
 \contentsline {chapter}{\chapternumberline {5}A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{61}{chapter.5}
 \contentsline {section}{\numberline {5.1}Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{61}{section.5.1}
-\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{61}{section*.57}
-\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{62}{section*.58}
+\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{61}{section*.58}
+\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{62}{section*.59}
 \contentsline {subsection}{\numberline {5.1.1}A splitting method with semi-Lagrangian advection}{62}{subsection.5.1.1}
 \contentsline {section}{\numberline {5.2}Results}{62}{section.5.2}
-\contentsline {subsubsection}{The sample problem}{63}{section*.59}
-\contentsline {subsubsection}{The discretization}{63}{section*.60}
-\contentsline {subsubsection}{Visualisation of the results}{63}{section*.62}
-\contentsline {chapter}{Bibliography}{67}{section*.66}
+\contentsline {subsubsection}{The sample problem}{63}{section*.60}
+\contentsline {subsubsection}{The discretization}{63}{section*.61}
+\contentsline {subsubsection}{Visualisation of the results}{63}{section*.63}
+\contentsline {chapter}{Bibliography}{67}{section*.67}

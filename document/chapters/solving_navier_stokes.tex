@@ -13,7 +13,7 @@ a no-slip boundary condition everywhere. The equation is then
 \end{equation}
 
 Time dependence is simple. Due to the diffusive nature of the Stokes equation, a viable option for time discretization (to maintain stability) is implicit Euler.
-The discretized time-dependent Stokes equations are then
+The discretized weak form of the time-dependent Stokes equations is then
 \newcommand{\uprev}{{u_{\text{prev}}}}
 \begin{equation}
 \begin{split}
@@ -72,7 +72,7 @@ of the Stokes flow method of chapter 5
 (timestepping and split semi-Lagrangian advection).
 \subsubsection{The sample problem}
 As a specific test case, the kinematic viscosity is set to $\nu = 0.001$, and
-the domain $\Omega$ is taken as the square with circular obstruction
+the domain $\Omega$ is taken as a square with circular obstruction
     $$\Omega = [-1,1]^2 - D,$$
 where $D$ is the disk of radius $0.18$ centred at $\hat{x} = (0,0)$.
 The initial condition and boundary conditions are the simplest possible: $0$ initial velocity, and no-slip everywhere.
