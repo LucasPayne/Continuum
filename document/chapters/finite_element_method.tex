@@ -151,8 +151,7 @@ a linear system is formed, and the approximate solution is solved
 for as a function of this grid.
 However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
 They could be coefficients of, for example, hat basis functions.
-Yet a finite difference discretization of Poisson equation \eqref{poisson_compact} may not take this into account at all. One might feel that
-limits have been taken too soon.
+Yet a finite difference discretization of Poisson equation \eqref{poisson_compact} may not take this into account at all.
 \end{aside}
 
 We will not be using the finite difference method
@@ -1753,35 +1752,42 @@ def integrate_gradients(a,b,c, i,j,k):
 \end{figure}
 
 
-\begin{align*}
-    \begin{bmatrix}
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
-    \end{bmatrix}\begin{bmatrix}
-        u_{1x}\\
-        u_{1y}\\
-        \vdots\\
-        u_{n_ux}\\
-        u_{n_uy}\\
-        p_1\\
-        \vdots\\
-        p_{n_p - 1}
-    \end{bmatrix}
-    = \begin{bmatrix}
-        u_{1x}\\
-        u_{1y}\\
-        \vdots\\
-        u_{n_ux}\\
-        u_{n_uy}\\
-        p_1\\
-        \vdots\\
-        p_{n_p - 1}
-    \end{bmatrix}
-\end{align*}
+% \begin{align*}
+%     \begin{bmatrix}
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+%         0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+%     \end{bmatrix}\begin{bmatrix}
+%         u_{1x}\\
+%         u_{1y}\\
+%         \vdots\\
+%         u_{n_ux}\\
+%         u_{n_uy}\\
+%         p_1\\
+%         \vdots\\
+%         p_{n_p - 1}
+%     \end{bmatrix}
+%     = \begin{bmatrix}
+%         u_{1x}\\
+%         u_{1y}\\
+%         \vdots\\
+%         u_{n_ux}\\
+%         u_{n_uy}\\
+%         p_1\\
+%         \vdots\\
+%         p_{n_p - 1}
+%     \end{bmatrix}
+% \end{align*}
+
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{figures/quadratic_approx/quadratic_discontinuous.png}}
+    \label{quadratic_discontinuous}
+\end{figure}

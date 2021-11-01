@@ -1,4 +1,4 @@
-\section{Extending the Stokes method}
+\section{Extending the steady Stokes flow method to unsteady Navier-Stokes flow}
 
 To extend the the previously described mixed finite element method to the general incompressible Navier-Stokes equations,
 we must introduce time dependence and advection. We will focus on the Navier-Stokes equations in a closed cavity, with $\rho = 1$, and with zero initial condition and
@@ -89,32 +89,41 @@ This emulates a sort of inflow condition at the right-hand-side, without the nec
 
 \subsubsection{The discretization}
 The base square mesh is $60 \times 60$, with velocity sampled at additional midpoints. This mesh, along with the source disk, is
-displayed in figure \ref{fig:navier_wireframe}.
+displayed in figure \ref{navier_wireframe}. The circular obstruction boundary is approximated naively with many fans of thin triangles,
+which, thankfully, the finite element method can handle with ease.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{figures/navier_stokes/wireframe.png}
-    \label{fig:navier_wireframe}
+    \includegraphics[width=1\textwidth]{figures/navier_stokes/wireframe_full.png}
+    \label{navier_wireframe}
 \end{figure}
 
 The time step is constant, chosen as $\Delta t = 1/300$. A total of $900$ time steps have been computed, from $t = 0$ to $t = 3$.
-This computation took 14 hours on a 2012 laptop, and the code is very unoptimized --- however, the major bottleneck is by far the sparse linear solve. The
+This computation took 14 hours on a 2012 laptop, and the code is very unoptimized --- however, the major bottleneck is by far the sparse linear solve,
+so the speed of this algorithm depends almost entirely on a fast sparse saddle point linear solver and an effective preconditioner. The
 advection step is effectively free in comparison (interactive-speed advection versus a minute for the solve on my machine). The resulting sparse matrix is $31895 \times 31895$, with a
 fill of approximately $0.0003845/1$.
 
 \subsubsection{Visualisation of the results}
-Figures \ref{fig:navier_0} and \ref{fig:navier_1} display the resulting solution at varying times.
-The initial flow shown in \ref{fig:navier_0}, as expected, splits symmetrically at the obstruction into two vortices, which then split as they hit the walls.
-Subsequently, in figure \ref{fig:navier_1} (which displays a larger range of time steps), symmetry breaks down, the source flow deflects.
+Figures \ref{navier_0} and \ref{navier_1} display the resulting solution at varying times. A video of the solution (at roughly 1/10 the speed) is
+available \href{https://youtu.be/m5He2x3gNz8}{online} (\texttt{https://youtu.be/m5He2x3gNz8}).
+The average fluid speed is roughly $\norm{u} = 6$. The image colour ranges from $0$ (black) to $1$ (white),
+determined by the function
+    $$\text{Colour}(\hat{x}) = 1-\exp(-0.1\cdot \norm{u}).$$
+For example, the source flow is bright white as it has the highest speed, while the centres of vortices are almost pitch black.
+
+The initial flow shown in \ref{navier_0}, as expected, splits symmetrically at the obstruction into two sets of coupled vortices, which will then split as they hit the walls in \ref{navier_1}.
+Subsequently, in figure \ref{navier_1} (which displays a larger range of time steps), symmetry breaks down, and the source flow deflects downward.
 The solution past this point cannot be considered as anywhere close to the real solution, due to the onset of turbulence in this medium-Reynolds-number flow. However, important qualitative effects
-(for example incompressibility and oppositely-oriented vortices being pushed against the corners of the cavity) are apparent.
+(for example incompressibility and oppositely-oriented vortices being pushed against the corners of the cavity) are apparent. The incompressibility condition is
+in fact held everywhere with a maximum absolute error of at most $10^{-3}$, usually on the order of $10^{-4}$.
 
 \begin{figure}[htbp]
     \includegraphics[width=\textwidth]{figures/navier_stokes/navier_0.png}
-    \label{fig:navier_0}
+    \label{navier_0}
 \end{figure}
 \begin{figure}[htbp]
     \includegraphics[width=\textwidth]{figures/navier_stokes/navier_1.png}
-    \label{fig:navier_1}
+    \label{navier_1}
 \end{figure}
 

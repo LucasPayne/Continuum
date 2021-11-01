@@ -20,7 +20,79 @@ We let the domain be is $\Omega = [-1,1]^2$ and define a Dirichlet boundary cond
         \left(0, 0\right)^T &\text{otherwise}.\\
         \end{array}\right.
 \end{equation}
-We will use a finite element method to solve the steady Stokes flow \eqref{steady_stokes} with this domain and boundary condition.
+We will use a finite element method to solve the steady Stokes flow \eqref{steady_stokes} with this domain and boundary condition. A highly viscous incompressible
+fluid under these conditions will form a single stable vortex.
+
+\subsection{Attempting solution by an iterative pressure update}
+% <<<
+Since the steady Stokes equations are a linearly constrained vector Poisson equation,
+it would be convenient to use a solution method which trivially extends our already-implemented Poisson solver.
+One idea is to define a coupled system of equations replacing the constrained equation \eqref{steady_stokes}, resulting in an initial boundary value problem
+in auxilliary parameter $\gamma$:
+\begin{equation}
+\begin{split}
+    -\nu\Delta u &= -\nabla p_*,\\
+    \Part{p_*}{\gamma} &= -C\nabla\cdot u,\\
+    \text{with \quad} \left.u\right|_\Gamma &= u_\Gamma, u(\hat{x}, 0) = u_0(\hat{x}), \text{\quad and \quad} p_*(\hat{x}, 0) = 0,
+\end{split}
+\end{equation}
+where $C > 0$ controls the speed of the divergence elimination.
+With explicit Euler in the parameter $\gamma$, the resulting iterative fixed point method is
+\begin{equation}
+\begin{split}
+    u^{(0)} &\leftarrow u_0,\\
+    p_*^{(0)} &\leftarrow 0,\\
+    -\nu\Delta u^{(n)} &\leftarrow -\nabla p_*^{(n)},\\
+    p_*^{(n+1)} &\leftarrow p_*^{(n)} - \Delta\gamma C\nabla\cdot u^{(n)},
+\end{split}
+\end{equation}
+This has some problems, notably, that if $\nabla\cdot u$ is constant the pressure gradient will remain unchanged, meaning
+that $u^{(n)}$ will reach a fixed point while the pressure blows up. It is feasible that this iteration could be modified such that the only
+effective fixed points occur when $\nabla\cdot u = 0$, but luckily, the method converges for the lid-driven cavity problem.
+
+\subsubsection{Implementing the pressure iteration}
+To implement this iteration, the divergence $\nabla\cdot u^{(n)}$ must be projected onto the pressure space P1.
+For each pressure basis function $\psi^p_1,\cdots,\psi^p_{n_p}$, an integral is computed and stored in a vector of values
+$$
+    \hat{v}_{\text{proj}} \leftarrow \left[\int_\Omega \psi^p_j \nabla\cdot u^{(n)}\right]_{j=1,\cdots,n_p}.
+$$
+This is the $L^2$ projection of $\nabla\cdot u^{(n)}$ onto the P1 finite element space, so to retrieve the hat function coefficients,
+form the P1 (Gramian) projection matrix
+$$
+    A \leftarrow \left[ \int_\Omega \phi^p_i\psi^p_j \right]_{i,j=1,\cdots,n_p}
+$$
+and solve the linear system
+$$
+    A\hat{v} = \hat{v}_{\text{proj}}.
+$$
+Due to the extreme sparsity and near-orthogonality of this system, it can be solved very efficiently. Finally,
+the pressure update is
+$$
+    \hat{p}_*^{(n+1)} \leftarrow \hat{p}_*^{(n)} - \Delta t C \hat{v},
+$$
+where $\hat{p}_*^{(n)}$ denotes the vector of coefficients of hat functions which combine to $p_*^{(n)}$.
+The results for the lid-driven cavity problem are displayed in figure \ref{stokes_lid_driven_weakly_incomprssible}.
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{figures/stokes/lid_driven_weakly_incompressible/figure.png}}
+    \label{stokes_lid_driven_weakly_incomprssible}
+\end{figure}
+This has taken quite a large number of iterations, each iteration solving two large sparse linear systems (the Gramian system being the cheaper to solve).
+However, the result is as expected, and this method is easy to implement given an already-working quadratic-element Poisson solver.
+
+\subsection{A mixed finite element method}
+
+As described in section \ref{pressure_derivation}, the pressure $p$ is a Lagrange multiplier that appears
+when solving the optimization problem \eqref{stokes_flow_optimization}:
+\begin{equation*}
+\begin{aligned}
+& \underset{u}{\text{minimize}}
+& & E(u) =  \frac{\mu}{2} \inner{\nabla u, \nabla u} - \inner{u, \rho g}\\
+& \text{subject to}
+& & \nabla\cdot u = 0.
+\end{aligned}
+\end{equation*}
 
 % We will begin by discretizing the \textit{unconstrained} steady Stokes equations,
 % which are a vector Poisson equation:
@@ -490,3 +562,30 @@ linear system of equations:
 % TetGen is a small tool whose primary purpose is to perform \textit{constrained Delaunay tetrahedralization}, given a solid boundary and a point cloud on the interior.
 % This constructs a valid tetrahedral partition intended for finite element solvers. The partition is efficiently created in a very robust manner in over 36k lines of C code. TetGen is part of the geometric backbone of many FEA tools (references).
 % % >>>
+
+
+% \begin{figure}[H]
+%     \centering
+%     \centerline{\includegraphics[width=0.8\textwidth]{figures/stokes/obstruction_failed_weakly_incompressible/figure.png}}
+%     \label{stokes_obstruction_failed_weakly_incompressible}
+% \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=0.8\textwidth]{figures/stokes/lid_driven_obstruction/figure.png}}
+    \label{stokes_lid_driven_obstruction}
+\end{figure}
+
+
+% \begin{align*}
+%     &\widetilde{u}_x\\
+%     &\widetilde{u}_y\\
+%     &\widetilde{p}\\
+%     &\nabla\cdot \widetilde{u}
+% \end{align*}
+% 
+% After one iteration.
+% 
+% After about 20 iterations.
+% 
+% After about 100 iterations.
