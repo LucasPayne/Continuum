@@ -58,8 +58,9 @@
 \BOOKMARK [1][-]{section.4.3}{A mixed finite element method}{chapter.4}% 58
 \BOOKMARK [2][-]{subsection.4.3.1}{The mixed weak form of the steady Stokes equations}{section.4.3}% 59
 \BOOKMARK [2][-]{subsection.4.3.2}{Forming a linear system from the mixed weak form}{section.4.3}% 60
-\BOOKMARK [0][-]{chapter.5}{A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{}% 61
-\BOOKMARK [1][-]{section.5.1}{Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{chapter.5}% 62
-\BOOKMARK [2][-]{subsection.5.1.1}{A splitting method with semi-Lagrangian advection}{section.5.1}% 63
-\BOOKMARK [1][-]{section.5.2}{Results}{chapter.5}% 64
-\BOOKMARK [0][-]{section*.67}{Bibliography}{}% 65
+\BOOKMARK [2][-]{subsection.4.3.3}{Implementation and results}{section.4.3}% 61
+\BOOKMARK [0][-]{chapter.5}{A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{}% 62
+\BOOKMARK [1][-]{section.5.1}{Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{chapter.5}% 63
+\BOOKMARK [2][-]{subsection.5.1.1}{A splitting method with semi-Lagrangian advection}{section.5.1}% 64
+\BOOKMARK [1][-]{section.5.2}{Results}{chapter.5}% 65
+\BOOKMARK [0][-]{section*.70}{Bibliography}{}% 66

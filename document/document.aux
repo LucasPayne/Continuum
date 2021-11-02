@@ -297,34 +297,44 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Implementing the pressure iteration}{56}{subsection.4.2.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Forming the right-hand-sides for the two Poisson solves}{57}{subsection.4.2.2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Results for the iterative pressure update method}{57}{subsection.4.2.3}}
-\newlabel{stokes_lid_driven_weakly_incomprssible}{{\M@TitleReference {\caption@xref {stokes_lid_driven_weakly_incomprssible}{ on input line 120}}{Results for the iterative pressure update method}}{57}{Results for the iterative pressure update method}{figure.caption.54}{}}
+\newlabel{stokes_lid_driven_weakly_incomprssible}{{\M@TitleReference {\caption@xref {stokes_lid_driven_weakly_incomprssible}{ on input line 121}}{Results for the iterative pressure update method}}{57}{Results for the iterative pressure update method}{figure.caption.54}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.3}A mixed finite element method}{58}{section.4.3}}
 \@writefile{toc}{\contentsline {subsubsection}{The pressure finite element space}{58}{section*.55}}
 \@writefile{toc}{\contentsline {subsubsection}{The velocity finite element product space }{58}{section*.56}}
+\newlabel{velocity_product_basis}{{4.4}{58}{The velocity finite element product space}{equation.4.3.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}The mixed weak form of the steady Stokes equations}{58}{subsection.4.3.1}}
-\newlabel{steady_stokes_weak}{{4.4}{58}{The mixed weak form of the steady Stokes equations}{equation.4.3.4}{}}
+\newlabel{steady_stokes_weak}{{4.5}{58}{The mixed weak form of the steady Stokes equations}{equation.4.3.5}{}}
 \citation{automating_fem}
-\newlabel{mixed_space_basis_functions}{{4.5}{59}{The mixed weak form of the steady Stokes equations}{equation.4.3.5}{}}
+\newlabel{mixed_space_basis_functions}{{4.6}{59}{The mixed weak form of the steady Stokes equations}{equation.4.3.6}{}}
+\newlabel{steady_stokes_weak_mixed}{{4.7}{59}{The mixed weak form of the steady Stokes equations}{equation.4.3.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Forming a linear system from the mixed weak form}{59}{subsection.4.3.2}}
-\newlabel{steady_stokes_linear_system}{{4.6}{59}{Forming a linear system from the mixed weak form}{equation.4.3.6}{}}
-\newlabel{stokes_lid_driven_obstruction}{{\M@TitleReference {\caption@xref {stokes_lid_driven_obstruction}{ on input line 322}}{Forming a linear system from the mixed weak form}}{59}{Forming a linear system from the mixed weak form}{figure.caption.57}{}}
+\citation{automating_fem}
+\citation{fenics_book}
+\citation{firedrake}
+\citation{eigen}
+\newlabel{steady_stokes_linear_system}{{4.8}{60}{Forming a linear system from the mixed weak form}{equation.4.3.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}Implementation and results}{60}{subsection.4.3.3}}
+\@writefile{toc}{\contentsline {subsubsection}{Lid driven cavity with obstruction}{60}{section*.57}}
+\newlabel{stokes_lid_driven_obstruction}{{\M@TitleReference {\caption@xref {stokes_lid_driven_obstruction}{ on input line 394}}{Lid driven cavity with obstruction}}{60}{Lid driven cavity with obstruction}{figure.caption.58}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Stokes flow around an obstruction in a pipe}{61}{section*.59}}
+\newlabel{stokes_pipe}{{\M@TitleReference {\caption@xref {stokes_pipe}{ on input line 408}}{Stokes flow around an obstruction in a pipe}}{61}{Stokes flow around an obstruction in a pipe}{figure.caption.60}{}}
 \@writefile{lof}{\addvspace {10pt}}
 \@writefile{lot}{\addvspace {10pt}}
-\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{61}{chapter.5}}
+\@writefile{toc}{\contentsline {chapter}{\chapternumberline {5}A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{63}{chapter.5}}
 \@writefile{loa}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{61}{section.5.1}}
-\newlabel{navier_stokes_ibvp}{{5.1}{61}{Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{equation.5.1.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{61}{section*.58}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{63}{section.5.1}}
+\newlabel{navier_stokes_ibvp}{{5.1}{63}{Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{equation.5.1.1}{}}
 \citation{stam_stable_fluids}
-\@writefile{toc}{\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{62}{section*.59}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}A splitting method with semi-Lagrangian advection}{62}{subsection.5.1.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Results}{62}{section.5.2}}
-\@writefile{toc}{\contentsline {subsubsection}{The sample problem}{63}{section*.60}}
-\@writefile{toc}{\contentsline {subsubsection}{The discretization}{63}{section*.61}}
-\newlabel{navier_wireframe}{{\M@TitleReference {\caption@xref {navier_wireframe}{ on input line 98}}{The discretization}}{63}{The discretization}{figure.caption.62}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Visualisation of the results}{63}{section*.63}}
-\newlabel{navier_0}{{\M@TitleReference {\caption@xref {navier_0}{ on input line 123}}{Visualisation of the results}}{65}{Visualisation of the results}{figure.caption.64}{}}
-\newlabel{navier_1}{{\M@TitleReference {\caption@xref {navier_1}{ on input line 127}}{Visualisation of the results}}{66}{Visualisation of the results}{figure.caption.65}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{64}{section*.61}}
+\@writefile{toc}{\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{64}{section*.62}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}A splitting method with semi-Lagrangian advection}{64}{subsection.5.1.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Results}{65}{section.5.2}}
+\@writefile{toc}{\contentsline {subsubsection}{The sample problem}{65}{section*.63}}
+\@writefile{toc}{\contentsline {subsubsection}{The discretization}{65}{section*.64}}
+\newlabel{navier_wireframe}{{\M@TitleReference {\caption@xref {navier_wireframe}{ on input line 103}}{The discretization}}{65}{The discretization}{figure.caption.65}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Visualisation of the results}{66}{section*.66}}
+\newlabel{navier_0}{{\M@TitleReference {\caption@xref {navier_0}{ on input line 128}}{Visualisation of the results}}{67}{Visualisation of the results}{figure.caption.67}{}}
+\newlabel{navier_1}{{\M@TitleReference {\caption@xref {navier_1}{ on input line 132}}{Visualisation of the results}}{68}{Visualisation of the results}{figure.caption.68}{}}
 \bibcite{newton}{1}
 \bibcite{johann_bernoulli}{2}
 \bibcite{dirichlet_principle}{3}
@@ -346,7 +356,7 @@
 \bibcite{DOLFIN}{19}
 \bibcite{fenics_book}{20}
 \bibcite{fenics_tutorial}{21}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{67}{section*.67}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{69}{section*.70}}
 \bibcite{approximation_theory}{22}
 \bibcite{stam}{23}
 \bibcite{ham_fem}{24}
@@ -375,5 +385,5 @@
   default-pyg-prefix.pygstyle,
   default.pygstyle,
   44E264053836E3C280C136C5401B4798184697E0BBEB04804400AB7E25E4285F.pygtex}
-\memsetcounter{lastsheet}{69}
-\memsetcounter{lastpage}{69}
+\memsetcounter{lastsheet}{71}
+\memsetcounter{lastpage}{71}

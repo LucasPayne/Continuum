@@ -92,13 +92,16 @@
 \contentsline {subsubsection}{The velocity finite element product space }{58}{section*.56}
 \contentsline {subsection}{\numberline {4.3.1}The mixed weak form of the steady Stokes equations}{58}{subsection.4.3.1}
 \contentsline {subsection}{\numberline {4.3.2}Forming a linear system from the mixed weak form}{59}{subsection.4.3.2}
-\contentsline {chapter}{\chapternumberline {5}A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{61}{chapter.5}
-\contentsline {section}{\numberline {5.1}Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{61}{section.5.1}
-\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{61}{section*.58}
-\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{62}{section*.59}
-\contentsline {subsection}{\numberline {5.1.1}A splitting method with semi-Lagrangian advection}{62}{subsection.5.1.1}
-\contentsline {section}{\numberline {5.2}Results}{62}{section.5.2}
-\contentsline {subsubsection}{The sample problem}{63}{section*.60}
-\contentsline {subsubsection}{The discretization}{63}{section*.61}
-\contentsline {subsubsection}{Visualisation of the results}{63}{section*.63}
-\contentsline {chapter}{Bibliography}{67}{section*.67}
+\contentsline {subsection}{\numberline {4.3.3}Implementation and results}{60}{subsection.4.3.3}
+\contentsline {subsubsection}{Lid driven cavity with obstruction}{60}{section*.57}
+\contentsline {subsubsection}{Stokes flow around an obstruction in a pipe}{61}{section*.59}
+\contentsline {chapter}{\chapternumberline {5}A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{63}{chapter.5}
+\contentsline {section}{\numberline {5.1}Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{63}{section.5.1}
+\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{64}{section*.61}
+\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{64}{section*.62}
+\contentsline {subsection}{\numberline {5.1.1}A splitting method with semi-Lagrangian advection}{64}{subsection.5.1.1}
+\contentsline {section}{\numberline {5.2}Results}{65}{section.5.2}
+\contentsline {subsubsection}{The sample problem}{65}{section*.63}
+\contentsline {subsubsection}{The discretization}{65}{section*.64}
+\contentsline {subsubsection}{Visualisation of the results}{66}{section*.66}
+\contentsline {chapter}{Bibliography}{69}{section*.70}

@@ -1,8 +1,8 @@
 \section{Extending the steady Stokes flow method to unsteady Navier-Stokes flow}
 
-To extend the the previously described mixed finite element method to the general incompressible Navier-Stokes equations,
+To extend the the previously described mixed finite element method to the general incompressible Navier-Stokes equations \eqref{navier_stokes},
 we must introduce time dependence and advection. We will focus on the Navier-Stokes equations in a closed cavity, with $\rho = 1$, and with zero initial condition and
-a no-slip boundary condition everywhere. The equation is then
+a no-slip boundary condition everywhere. The equation to solve is then
 
 \begin{equation}\label{navier_stokes_ibvp}
 \begin{split}
@@ -12,18 +12,23 @@ a no-slip boundary condition everywhere. The equation is then
 \end{split}
 \end{equation}
 
-Time dependence is simple. Due to the diffusive nature of the Stokes equation, a viable option for time discretization (to maintain stability) is implicit Euler.
+If we temporarily ignore the $u\cdot \nabla u$ term,
+this is an unsteady Stokes flow.
+Due to the diffusive nature of the Stokes equation, a viable option for time discretization (to maintain stability) is implicit Euler.
 The discretized weak form of the time-dependent Stokes equations is then
 \newcommand{\uprev}{{u_{\text{prev}}}}
 \begin{equation}
 \begin{split}
     \int_\om \frac{u - \uprev}{\Delta t}\cdot \psi^u\,d\hat{x}
-        &= \int_\om \nu \nabla u : \nabla \psi^u - p\nabla\cdot \psi^u + \rho g \cdot \psi^u\,d\hat{x},\\
+        &= \int_\om -\nu \nabla u : \nabla \psi^u - p\nabla\cdot \psi^u + \rho g \cdot \psi^u\,d\hat{x},\\
     \int_\om -\psi^p \nabla\cdot u &= 0 \text{\quad\quad for all $\psi^u \in \Psi^u$ and $\psi^p \in \Psi^p$.}
 \end{split}
 \end{equation}
+The resulting linear system is a simple modification of the system used to solve steady Stokes flow in chapter 4 ---
+All that is needed is to add a $\frac{u}{\Delta t}$ P2 projection matrix to the upper-left block of the steady Stokes matrix,
+and to add the projection of $\frac{u}{\Delta t}$ into $P2$ to the right-hand-side vector.
 
-The last step is to introduce advection: the term $u\cdot \nabla u$. There are many choices.
+The last step is to introduce the advection due to the term $u\cdot \nabla u$. There are many choices.
 \subsubsection{Fully implicit Euler with Newton iterations}
 If full implicit Euler is used, and the nonlinear advection term is expanded, the result is a nonlinear system of equations.
 The simplest option is then a Newton iteration, solving a sequence of linear systems after computing the Gateaux derivative of the system
