@@ -1,4 +1,6 @@
 
+// temporary
+int FIGURE_MODE = 0;
 
 enum MeshModes {
     MM_cylinder,
@@ -365,6 +367,9 @@ void Demo::keyboard_handler(KeyboardEvent e)
             many_sample_curve = !many_sample_curve;
             recreate_solver();
         }
+        if (e.key.code == KEY_G) { // temporary, figure creation
+            FIGURE_MODE = (FIGURE_MODE + 1) % 2;
+        }
         if (e.key.code == KEY_I) {
             take_high_res_screenshot(high_res_screenshot_n);
             high_res_screenshot_n = (high_res_screenshot_n+1)%4;
@@ -639,7 +644,7 @@ void Demo::post_render_update()
     };
     
     // Show solution sprites.
-#if 1
+#if 0
     sprite_shader.bind();
     // glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -662,7 +667,7 @@ void Demo::post_render_update()
     // Draw wireframe or base.
     if (wireframe) {
         float thickness = 0.00125;
-        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
+        world->graphics.paint.wireframe(*geom, mat4x4::translation(0,0,0), thickness);
         for (auto v : geom->mesh.vertices()) {
             // world->graphics.paint.sphere(eigen_to_vec3(geom->position[v]), 0.0075, vec4(0.9,0.9,0.9,1));
         }
@@ -675,12 +680,12 @@ void Demo::post_render_update()
             auto ps = std::vector<vec3>();
             auto he = start;
             do {
-                ps.push_back(vec3(0,0.0001,0)+eigen_to_vec3(geom->position[he.vertex()]));
+                ps.push_back(vec3(0,0,0)+eigen_to_vec3(geom->position[he.vertex()]));
                 he = he.next();
             } while (he != start);
             if (wireframe) ps.push_back(ps[0]);
             else ps.push_back(ps[0]);
-            world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
+            world->graphics.paint.chain(ps, 0.001, vec4(0,0,0,1));
         }
     // Draw boundary condition.
     if (many_sample_curve) { //drawing specific figure
@@ -695,27 +700,190 @@ void Demo::post_render_update()
                     vec3(solver->u_boundary[e].x(), 0, solver->u_boundary[e].y()) };
                 vec3 pos[2] = {eigen_to_vec3(geom->position[v]),
                             eigen_to_vec3(solver->midpoints[e])};
-                vec3 shift = vec3(0,0.04,0);
+                vec3 shift = vec3(0,0,0);
                 const float epsilon = 1e-5;
                 for (int i = 0; i < 2; i++) {
                     if (bv[i].length() > epsilon) {
-                        world->graphics.paint.sphere(pos[i]+shift, 0.003, vec4(1,0.6,0.6,1));
+                        // world->graphics.paint.sphere(pos[i]+shift, 0.003, vec4(1,0.6,0.6,1));
                         const float line_wid = 0.005;
-                        world->graphics.paint.line(pos[i]+shift, shift+pos[i] + bv[i]*velocity_mul, line_wid, vec4(1,0.6,0.6,1));
+                        vec4 col = vec4(0.7,0.9,1,1);
+                        world->graphics.paint.line(pos[i]+shift, shift+pos[i] + bv[i]*velocity_mul, line_wid, col);
                         // arrow head
                         const float arrow_wid = 0.015;
                         vec3 tip = 1.0001*shift+pos[i]+bv[i]*velocity_mul;
                         vec3 bv_perp = vec3(-bv[i].z(), 0, bv[i].x());
                         vec3 arrow_bit_1 = tip - arrow_wid*bv[i].normalized() + arrow_wid*bv_perp.normalized();
                         vec3 arrow_bit_2 = tip - arrow_wid*bv[i].normalized() - arrow_wid*bv_perp.normalized();
-                        world->graphics.paint.line(tip, arrow_bit_1, line_wid, vec4(1,0.6,0.6,1));
-                        world->graphics.paint.line(tip, arrow_bit_2, line_wid, vec4(1,0.6,0.6,1));
+                        world->graphics.paint.line(tip, arrow_bit_1, line_wid, col);
+                        world->graphics.paint.line(tip, arrow_bit_2, line_wid, col);
                     }
                 }
                 he = he.next();
             } while (he != start);
         }
     }
+
+    SurfaceMesh tri_mesh;
+    SurfaceGeometry tri_geom(tri_mesh);
+#if 0
+    auto v = tri_mesh.add_vertex();
+    auto vp = tri_mesh.add_vertex();
+    auto vpp = tri_mesh.add_vertex();
+    tri_mesh.add_triangle(v, vp, vpp);
+    vec3 c = vec3(-3,0,0);
+    vec3 p1 = c + vec3(0,0,0);
+    vec3 p2 = c + vec3(1,0,0);
+    vec3 p3 = c + vec3(1.25,0,2);
+    tri_geom.position[v] = vec3_to_eigen(p1);
+    tri_geom.position[vp] = vec3_to_eigen(p2);
+    tri_geom.position[vpp] = vec3_to_eigen(p3);
+    world->graphics.paint.wireframe(tri_geom, mat4x4::translation(0,0,0), 0.001);
+    tri_geom.position[vp] += Eigen::Vector3f(0,1,0);
+    world->graphics.paint.wireframe(tri_geom, mat4x4::translation(0,0,0), 0.005);
+    world->graphics.paint.line(
+            p2,
+            p2 + vec3(0,1,0),
+            0.002,
+            vec4(0,0,0,1));
+    vec3 drop = p1 + (p3 - p1).normalized() * vec3::dot(p2 - p1, (p3 - p1).normalized());
+    world->graphics.paint.line(
+            drop,
+            p2,
+            0.01,
+            vec4(1,0,0,1));
+    vec3 corner1 = p1 + p2 - drop;
+    vec3 corner2 = p3 + p2 - drop;
+    world->graphics.paint.line(
+            p1,
+            corner1,
+            0.01,
+            vec4(1,0,0,1));
+    world->graphics.paint.line(
+            p3,
+            corner2,
+            0.01,
+            vec4(1,0,0,1));
+    world->graphics.paint.line(
+            p1,
+            p3,
+            0.01,
+            vec4(1,0,0,1));
+    world->graphics.paint.line(
+            corner1,
+            corner2,
+            0.01,
+            vec4(1,0,0,1));
+#endif
+    
+
+#if 0
+    auto v = tri_mesh.add_vertex();
+    vec3 c = vec3(-3,0,0);
+    tri_geom.position[v] = vec3_to_eigen(c);
+    #define AMOUNT 4 
+    // float angles[AMOUNT] = {0, 0.1, 0.3, 0.4, 0.7};
+    float angles[AMOUNT] = {0, 0.15, 0.35, 0.7};
+    Vertex vs[AMOUNT];
+    vec3 vs_p[AMOUNT];
+    for (int i = 0; i < AMOUNT; i++) {
+        float theta = 2*M_PI*angles[i];
+        float co = cos(theta);
+        float si = sin(theta);
+        vs[i] = tri_mesh.add_vertex();
+        vec3 p = c + vec3(co, 0, si);
+        vs_p[i] = p;
+        tri_geom.position[vs[i]] = vec3_to_eigen(p);
+    }
+    for (int i = 0; i < AMOUNT; i++) {
+        tri_mesh.add_triangle(v, vs[i], vs[(i+1)%AMOUNT]);
+    }
+    world->graphics.paint.wireframe(tri_geom, mat4x4::translation(0,0,0), 0.01);
+
+    for (int i = 0; i < AMOUNT; i++) {
+        int ii = (i+1)%AMOUNT;
+        vec3 m1 = 0.5*c + 0.5*vs_p[i];
+        vec3 m2 = 0.5*c + 0.5*vs_p[ii];
+        auto line = [&](vec3 a, vec3 b) {
+            vec3 shift = vec3(0,0.01,0);
+            world->graphics.paint.line(a+shift, b+shift, 0.008, vec4(0,0,0,1));
+        };
+        line(m1, m2);
+
+        auto circumcenter = [&](vec3 A, vec3 B, vec3 C) {
+            // https://gamedev.stackexchange.com/questions/60630/how-do-i-find-the-circumcenter-of-a-triangle-in-3d
+            Eigen::Vector3f a = vec3_to_eigen(A);
+            Eigen::Vector3f b = vec3_to_eigen(B);
+            Eigen::Vector3f c = vec3_to_eigen(C);
+            Eigen::Vector3f ac = c - a ;
+            Eigen::Vector3f ab = b - a ;
+            Eigen::Vector3f abXac = ab.cross(ac);
+
+            // this is the vector from a TO the circumsphere center
+            Eigen::Vector3f toCircumsphereCenter = (abXac.cross( ab )*ac.dot(ac) + ac.cross( abXac )*ab.dot(ab)) / (2.f*abXac.dot(abXac)) ;
+            float circumsphereRadius = toCircumsphereCenter.norm();
+            // The 3 space coords of the circumsphere center then:
+            Eigen::Vector3f ccs = a  +  toCircumsphereCenter ; // now this is the actual 3space location
+            return eigen_to_vec3(ccs);
+        };
+        vec3 cc = circumcenter(c, vs_p[i], vs_p[ii]);
+        world->graphics.paint.sphere(cc, 0.03, vec4(1,0,0,1));
+        line(c, m1);
+        line(c, m2);
+        if (vec2::dot(vec2(cc.x() - vs_p[i].x(), cc.z() - vs_p[i].z()),
+                vec2(vs_p[ii].x() - vs_p[i].x(), vs_p[ii].z() - vs_p[i].z()).perp()) < 0) {
+            vec3 m = 0.5*vs_p[i] + 0.5*vs_p[ii];
+            line(m, cc);
+            line(m1, m);
+            line(m2, m);
+        } else {
+            line(m1, cc);
+            line(m2, cc);
+        }
+    }
+#endif
+
+#if 1
+    for (int R = 0; R < 3; R++) {
+        auto v = tri_mesh.add_vertex();
+        auto vp = tri_mesh.add_vertex();
+        auto vpp = tri_mesh.add_vertex();
+        Vertex vs[3] = {v,vp,vpp};
+        tri_mesh.add_triangle(vp, v, vpp);
+        vec3 c = vec3(-3-1.6*R,0,0);
+
+        vec3 p1;
+        vec3 p2;
+        vec3 p3;
+        if (FIGURE_MODE == 0) {
+            p1 = c + vec3(0,0,0);
+            p2 = c + vec3(-1.25,0,-0.6);
+            p3 = c + vec3(0.66,0,1.7);
+        } else {
+            p1 = c + vec3(0,0,0);
+            p2 = c + vec3(-1,0,0);
+            p3 = c + vec3(0,0,1);
+        }
+        vec3 ps[3] = {p1,p2,p3};
+        tri_geom.position[v] = vec3_to_eigen(p1);
+        tri_geom.position[vp] = vec3_to_eigen(p2);
+        tri_geom.position[vpp] = vec3_to_eigen(p3);
+        #if 0
+        world->graphics.paint.wireframe(tri_geom, mat4x4::translation(0,0,0), 0.001);
+        tri_geom.position[vs[R]] += Eigen::Vector3f(0,1,0);
+        world->graphics.paint.wireframe(tri_geom, mat4x4::translation(0,0,0), 0.005);
+        world->graphics.paint.line(
+                ps[R],
+                ps[R] + vec3(0,1,0),
+                0.002,
+                vec4(0,0,0,1));
+        #else
+        world->graphics.paint.line(ps[0], ps[1], 0.005, vec4(0,0,0,1));
+        world->graphics.paint.line(ps[1], ps[2], 0.005, vec4(0,0,0,1));
+        world->graphics.paint.line(ps[2], ps[0], 0.005, vec4(0,0,0,1));
+        
+        #endif
+    }
+#endif
 }
 
 

@@ -6,8 +6,8 @@
 ================================================================================*/
 #ifndef HEADER_DEFINED_NAVIER_STOKES_SOLVER
 #define HEADER_DEFINED_NAVIER_STOKES_SOLVER
-#include "NavierStokes/P2_P1.h"
-#include "NavierStokes/core.h"
+#include "core.h"
+#include "P2_P1.h"
 
 // Helper structs for building the Gateaux matrix.
 struct TopLeftEntry {

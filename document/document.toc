@@ -64,22 +64,20 @@
 \contentsline {subsubsection}{Numerical linear algebra}{38}{section*.39}
 \contentsline {subsection}{\numberline {3.3.7}An implementation in C\texttt {++}}{38}{subsection.3.3.7}
 \contentsline {subsection}{\numberline {3.3.8}Validating the method}{38}{subsection.3.3.8}
-\contentsline {section}{\numberline {3.4}From finite volumes to general Galerkin methods}{41}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Generalising the flux integrals by combining equations}{41}{subsection.3.4.1}
-\contentsline {subsection}{\numberline {3.4.2}The weak form of Poisson's equation}{42}{subsection.3.4.2}
-\contentsline {subsection}{\numberline {3.4.3}General Galerkin methods for Poisson's equation}{43}{subsection.3.4.3}
-\contentsline {section}{\numberline {3.5}Discretizing Poisson's equation by finite elements}{44}{section.3.5}
-\contentsline {subsection}{\numberline {3.5.1}Forming a linear system}{44}{subsection.3.5.1}
-\contentsline {subsection}{\numberline {3.5.2}A piecewise linear finite element triangulation scheme}{45}{subsection.3.5.2}
-\contentsline {subsubsection}{Computing the linear system by closed form integration}{45}{section*.45}
-\contentsline {subsubsection}{Integrating the source function}{48}{section*.46}
-\contentsline {subsection}{\numberline {3.5.3}A piecewise quadratic finite element triangulation scheme}{48}{subsection.3.5.3}
-\contentsline {subsubsection}{The piecewise quadratic basis functions}{49}{section*.47}
-\contentsline {subsubsection}{The linear system}{50}{section*.51}
-\contentsline {subsection}{\numberline {3.5.4}Computing the linear system for the piecewise quadratic scheme}{50}{subsection.3.5.4}
-\contentsline {subsection}{\numberline {3.5.5}The resulting matrix assembly algorithm}{51}{subsection.3.5.5}
-\contentsline {subsection}{\numberline {3.5.6}The resulting finite element algorithm}{51}{subsection.3.5.6}
-\contentsline {subsection}{\numberline {3.5.7}Validation and results}{51}{subsection.3.5.7}
+\contentsline {section}{\numberline {3.4}From finite volumes to general Galerkin methods}{42}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Generalising the flux integrals by combining equations}{42}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}The weak form of Poisson's equation}{43}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}General Galerkin methods for Poisson's equation}{44}{subsection.3.4.3}
+\contentsline {section}{\numberline {3.5}Discretizing Poisson's equation by finite elements}{45}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Forming a linear system}{45}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}A piecewise linear finite element triangulation scheme}{46}{subsection.3.5.2}
+\contentsline {subsubsection}{Computing the linear system by closed form integration}{46}{section*.45}
+\contentsline {subsubsection}{Integrating the source function}{49}{section*.47}
+\contentsline {subsection}{\numberline {3.5.3}A piecewise quadratic finite element triangulation scheme}{49}{subsection.3.5.3}
+\contentsline {subsubsection}{The piecewise quadratic basis functions}{50}{section*.48}
+\contentsline {subsection}{\numberline {3.5.4}Computing the linear system for the piecewise quadratic scheme}{51}{subsection.3.5.4}
+\contentsline {subsection}{\numberline {3.5.5}The resulting matrix assembly algorithm}{52}{subsection.3.5.5}
+\contentsline {subsection}{\numberline {3.5.6}Validation and results}{53}{subsection.3.5.6}
 \contentsline {chapter}{\chapternumberline {4}Solving the Stokes equations with the finite element method}{57}{chapter.4}
 \contentsline {section}{\numberline {4.1}Introduction}{57}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}The lid-driven cavity flow problem}{57}{subsection.4.1.1}

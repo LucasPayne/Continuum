@@ -13,6 +13,20 @@ out vec4 color;
 void main(void)
 {
     vec4 val = texture(solution, fs_in.uv);
-    // color = vec4(vec3(val[mode]), 1);
-    color = vec4(vec3(val.z), 1);
+    if (mode == 0 || mode == 1) {
+        // Velocity component
+        float v = val[mode];
+        if (v > 0) {
+            color = vec4(v, 0,0,1);
+        } else {
+            color = vec4(0,0,abs(v),1);
+        }
+        color = vec4(vec3(1-exp(-0.1*length(val.xy))), 1);
+    } else if (mode == 2) {
+        // Pressure
+        color = vec4(vec3(val[mode]), 1);
+    } else if (mode == 3) {
+        // Divergence
+        color = vec4(vec3(val[mode]), 1);
+    }
 }

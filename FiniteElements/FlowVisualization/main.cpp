@@ -2,20 +2,27 @@
 #include "CameraController.h"
 #include "P2_P1.h"
 #include "mesh_generators.cpp"
+#include "Filmer.h"
 
 Aspect<Camera> main_camera;
+
+
 
 
 struct Solution {
     Solution(SurfaceGeometry &_geom) :
         geom{_geom},
         velocity{_geom.mesh},
-        pressure{_geom.mesh}
+        pressure{_geom.mesh},
+        divergence{_geom.mesh},
+        divergence_linear{_geom.mesh}
     {
     }
     SurfaceGeometry &geom;
     P2Attachment<vec2> velocity;
     P1Attachment<double> pressure;
+    P2Attachment<double> divergence;
+    P1Attachment<double> divergence_linear;
 };
 
 
@@ -30,8 +37,7 @@ public:
     void mouse_handler(MouseEvent e);
     void window_handler(WindowEvent e);
 
-    Entity demo_e;
-    Aspect<Behaviour> demo_b;
+    FILE *divergence_residual_file;
 
     char *directory_path;
 
@@ -43,6 +49,7 @@ public:
     Solution sol;
     int solution_index;
 
+    Filmer *filmer;
     
     GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
     GLuint solution_fbo; // For render-to-texture.
@@ -51,8 +58,17 @@ public:
     GLShaderProgram render_solution_shader;
     GLuint render_solution_vao;
 
+    int render_solution_mode;
+
     void render_solution_texture();
     void render_solution(int mode); //velocity_x, velocity_y, pressure
+    
+    // Divergence computation.
+    SparseMatrix gramian_matrix_P2_0();
+    void div_P2_P2(P2Attachment<vec2> &vf, P2Attachment<double> &div);
+
+    SparseMatrix gramian_matrix_P1_0();
+    void div_P2_P1(P2Attachment<vec2> &vf, P1Attachment<double> &div);
 };
 
 
@@ -63,6 +79,9 @@ App::App(World &_world, char *_directory_path, SurfaceGeometry &_geom) :
     geom{_geom},
     sol{geom}
 {
+    std::string fname = std::string(DATA) + "divergence_residuals.txt";
+    divergence_residual_file = fopen(fname.c_str(), "w+");
+
     // OpenGL ----------------------------------------------------
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
@@ -83,12 +102,19 @@ App::App(World &_world, char *_directory_path, SurfaceGeometry &_geom) :
     controller->angle = -M_PI/2;
     controller->azimuth = M_PI;
 
+    // Create the screenshotter.
+    auto filmer_e = world.entities.add();
+    filmer = world.add<Filmer>(filmer_e, std::string(DATA) + "navier_render", [&](int film_frame) {
+        solution_index = film_frame;
+        load_solution(solution_index);
+        render_solution(render_solution_mode);
+    }, 1);
+
     //---example solution frame
     // load_solution(std::string(directory_path) + "navier_stokes_1.txt");
 
     solution_index = 1;
     load_solution(1);
-
 
     solution_shader.add_shader(GLShader(VertexShader, SHADERS "flow_visualization_solution/solution.vert"));
     solution_shader.add_shader(GLShader(TessControlShader, SHADERS "flow_visualization_solution/solution.tcs"));
@@ -124,7 +150,9 @@ void App::close()
 
 void App::loop()
 {
-    render_solution(0);
+    if (!filmer->filming) {
+        render_solution(render_solution_mode);
+    }
 
     // world.graphics.paint.wireframe(geom, mat4x4::identity(), 0.001);
 
@@ -144,6 +172,7 @@ void App::loop()
     }
         
     // Draw boundaries.
+    #if 0
     for (auto start : geom.mesh.boundary_loops()) {
         auto ps = std::vector<vec3>();
         auto he = start;
@@ -154,6 +183,7 @@ void App::loop()
         ps.push_back(ps[0]);
         world.graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
     }
+    #endif
 
     render_solution_texture();
 }
@@ -165,7 +195,14 @@ void App::window_handler(WindowEvent e)
 void App::keyboard_handler(KeyboardEvent e)
 {
     if (e.action == KEYBOARD_PRESS) {
-        if (e.key.code == KEY_Q) exit(EXIT_SUCCESS);
+        if (e.key.code == KEY_Q) {
+            fclose(divergence_residual_file);
+            exit(EXIT_SUCCESS);
+        }
+        if (e.key.code == KEY_1) render_solution_mode = 0;
+        if (e.key.code == KEY_2) render_solution_mode = 1;
+        if (e.key.code == KEY_3) render_solution_mode = 2;
+        if (e.key.code == KEY_4) render_solution_mode = 3;
     }
 }
 
@@ -199,6 +236,10 @@ bool App::load_solution(int number)
         sol.pressure[v] = p;
     }
 
+    // Compute the divergence
+    // div_P2_P2(sol.velocity, sol.divergence);
+    // div_P2_P1(sol.velocity, sol.divergence_linear);
+
     fclose(file);
     return true;
 }
@@ -206,6 +247,8 @@ bool App::load_solution(int number)
 
 void App::render_solution_texture()
 {
+    const double pressure_mul = 1.;
+
     // Scale the pressure.
     VertexAttachment<double> scaled_pressure(geom.mesh);
     double min_pressure = std::numeric_limits<double>::infinity();
@@ -220,7 +263,7 @@ void App::render_solution_texture()
     }
     if (max_pressure != min_pressure) {
         for (auto v : geom.mesh.vertices()) {
-            scaled_pressure[v] = (sol.pressure[v] - min_pressure) / (max_pressure - min_pressure);
+            scaled_pressure[v] = pressure_mul*(sol.pressure[v] - min_pressure) / (max_pressure - min_pressure);
         }
     } else {
         for (auto v : geom.mesh.vertices()) {
@@ -232,6 +275,8 @@ void App::render_solution_texture()
     auto position_data = std::vector<vec2>();
     auto velocity_data = std::vector<vec2>();
     auto pressure_data = std::vector<float>();
+    auto divergence_data = std::vector<float>();
+    auto divergence_linear_data = std::vector<float>();
     // Create a 6-vertex patch per triangle.
     for (auto tri : geom.mesh.faces()) {
         auto start = tri.halfedge();
@@ -247,6 +292,10 @@ void App::render_solution_texture()
             velocity_data.push_back(sol.velocity[e]);
             pressure_data.push_back(scaled_pressure[v]);
             pressure_data.push_back(0.f); // Dummy data, as there is no midpoint pressure.
+            divergence_data.push_back(sol.divergence[v]);
+            divergence_data.push_back(sol.divergence[e]);
+            divergence_linear_data.push_back(sol.divergence_linear[v]);
+            divergence_linear_data.push_back(0.f); // Dummy data.
 
             he = he.next();
         } while (he != start);
@@ -260,20 +309,22 @@ void App::render_solution_texture()
     GLuint vao;
     glCreateVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    GLuint vbos[5]; // position, velocity, pressure
+    GLuint vbos[5]; // position, velocity, pressure, divergence, divergence_linear
     glGenBuffers(5, vbos);
     struct {
         const void *data;
         size_t data_size;
         size_t gl_data_number;
         GLenum gl_data_type;
-    } data_to_upload[3] = {
+    } data_to_upload[5] = {
         {&position_data[0], sizeof(vec2), 2, GL_FLOAT}, // position
         {&velocity_data[0], sizeof(vec2), 2, GL_FLOAT}, // velocity (P2)
         {&pressure_data[0], sizeof(float), 1, GL_FLOAT}, // pressure (P1)
+        {&divergence_data[0], sizeof(float), 1, GL_FLOAT}, // divergence (P2)
+        {&divergence_linear_data[0], sizeof(float), 1, GL_FLOAT}, // divergence_linear (P1)
     };
     // Upload the data.
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         auto metadata = data_to_upload[i];
         glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
         glBufferData(GL_ARRAY_BUFFER, data_num_vertices * metadata.data_size, metadata.data, GL_DYNAMIC_DRAW);
@@ -362,6 +413,396 @@ void App::render_solution(int mode)
 }
 
 
+// Gramian projection matrix for P2_0 (zero on the boundary).
+SparseMatrix App::gramian_matrix_P2_0()
+{
+    VertexAttachment<int> interior_vertex_indices(geom.mesh);
+    EdgeAttachment<int> interior_midpoint_indices(geom.mesh);
+    int index = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) {
+            interior_vertex_indices[v] = -1;
+            continue;
+        }
+        interior_vertex_indices[v] = index;
+        index += 1;
+    }
+    index = 0;
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) {
+            interior_midpoint_indices[e] = -1;
+            continue;
+        }
+        interior_midpoint_indices[e] = index;
+        index += 1;
+    }
+
+    std::vector<EigenTriplet> coefficients;
+    int N = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
+    auto add_entry = [&](int i, int j, double value) {
+        coefficients.push_back(EigenTriplet(i, j, value));
+    };
+
+    // For each psi^us on a vertex.
+    int counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        auto start = v.halfedge();
+        auto he = start;
+        int v_index = counter;
+        do {
+            auto tri = he.face();
+            auto vp = he.next().vertex();
+            auto vpp = he.next().next().vertex();
+            int vp_index = interior_vertex_indices[vp];
+            int vpp_index = interior_vertex_indices[vpp];
+            auto edge_110 = he.next().edge(); // vp to vpp
+            auto edge_011 = he.next().next().edge(); // vpp to v
+            auto edge_101 = he.edge(); // v to vp
+            int edge_110_index = interior_midpoint_indices[edge_110];
+            int edge_011_index = interior_midpoint_indices[edge_011];
+            int edge_101_index = interior_midpoint_indices[edge_101];
+
+            double R = 2*geom.triangle_area(tri);
+
+            add_entry(v_index, v_index, (1./60.)*R);
+            if (!vp.on_boundary()) add_entry(v_index, vp_index, (-1./360.)*R);
+            if (!vpp.on_boundary()) add_entry(v_index, vpp_index, (-1./360.)*R);
+
+            if (!edge_110.on_boundary()) add_entry(v_index, geom.mesh.num_interior_vertices() + edge_110_index, (-1./90.)*R);
+            
+            he = he.twin().next();
+        } while (!he.face().null() && he != start);
+        counter += 1;
+    }
+
+    counter = 0;
+    // For each psi^us at a midpoint.
+    for (auto edge : geom.mesh.edges()) {
+        if (edge.on_boundary()) continue;
+        int midpoint_index = counter;
+        Halfedge hes[2] = {edge.a(), edge.b()};
+
+        // For the two incident triangles.
+        for (int t = 0; t < 2; t++) {
+            // Define terms.
+            auto he = hes[t];
+            auto tri = he.face();
+            // if (tri.null()) continue;
+            // Triangle vertices.
+            auto v = he.next().tip(); // v is the opposite vertex.
+            auto vp = he.vertex();
+            auto vpp = he.tip();
+            int v_index = interior_vertex_indices[v];
+            int vp_index = interior_vertex_indices[vp];
+            int vpp_index = interior_vertex_indices[vpp];
+            auto edge_110 = he.edge(); // vp to vpp
+            auto edge_011 = he.next().edge(); // vpp to v
+            auto edge_101 = he.next().next().edge(); // v to vp
+            int edge_110_index = interior_midpoint_indices[edge_110];
+            int edge_011_index = interior_midpoint_indices[edge_011];
+            int edge_101_index = interior_midpoint_indices[edge_101];
+
+            double R = 2*geom.triangle_area(tri);
+
+	    if (!edge_110.on_boundary()) add_entry(geom.mesh.num_interior_vertices() + edge_110_index,
+		      geom.mesh.num_interior_vertices() + edge_110_index, (4./45.)*R);
+            if (!edge_011.on_boundary()) add_entry(geom.mesh.num_interior_vertices() + edge_110_index,
+                      geom.mesh.num_interior_vertices() + edge_011_index, (2./45.)*R);
+            
+            if (!edge_101.on_boundary()) add_entry(geom.mesh.num_interior_vertices() + edge_110_index,
+                      geom.mesh.num_interior_vertices() + edge_101_index, (2./45.)*R);
+            
+            if (!v.on_boundary()) add_entry(geom.mesh.num_interior_vertices() + edge_110_index,
+                      v_index, (-1./90.)*R);
+            
+        }
+        counter += 1;
+    }
+    
+    auto matrix = SparseMatrix(N, N);
+    matrix.setFromTriplets(coefficients.begin(), coefficients.end());
+    matrix.makeCompressed();
+    // make_sparsity_image(matrix, DATA "P20_P20_gramian.ppm");
+
+    return matrix;
+}
+
+
+// Compute the divergence of vf in P2_2 projected into P2.
+void App::div_P2_P2(P2Attachment<vec2> &vf, P2Attachment<double> &div)
+{
+    int N = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
+    auto div_vector_proj = Eigen::VectorXd(N);
+    for (int i = 0; i < N; i++) div_vector_proj[i] = 0.;
+    
+    int counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        int v_index = counter;
+        auto v_pos = geom.position[v];
+
+        double integral = 0.;
+
+        // For each adjacent triangle.
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            // Define terms.
+            Face tri = he.face();
+            Vertex vp = he.next().vertex();
+            Vertex vpp = he.next().tip();
+            auto vp_pos = geom.position[vp];
+            auto vpp_pos = geom.position[vpp];
+            auto edge_110 = he.next().edge(); // vp to vpp
+            auto edge_011 = he.next().next().edge(); // vpp to v
+            auto edge_101 = he.edge(); // v to vp
+            // Triangle side vectors.
+            auto vec2_extract = [](Eigen::Vector3f evec) { return vec2(evec.x(), evec.z()); };
+            vec2 K1 = vec2_extract(v_pos - vpp_pos);
+            vec2 K2 = vec2_extract(vp_pos - v_pos);
+            vec2 K3 = vec2_extract(vpp_pos - vp_pos);
+
+            vec2 vf_002 = vf[v];
+            vec2 vf_200 = vf[vp];
+            vec2 vf_020 = vf[vpp];
+            vec2 vf_101 = vf[edge_101];
+            vec2 vf_011 = vf[edge_011];
+            vec2 vf_110 = vf[edge_110];
+
+            // integral += (1./15.)*vec2::dot(K3.perp(), vf_002);
+            // integral += (-1./30.)*vec2::dot(K3.perp(), vf_020);
+            // integral += (-1./30.)*vec2::dot(K3.perp(), vf_200);
+
+            // integral += (1./10.)*vec2::dot(K3.perp(), vf_011);
+            // integral += (-1./30.)*vec2::dot(K3.perp(), vf_110);
+            // integral += (1./10.)*vec2::dot(K3.perp(), vf_101);
+            
+            integral += (1./15.)*vec2::dot(K3.perp(), vf_002);
+            integral += (-1./30.)*vec2::dot(K2.perp(), vf_020);
+            integral += (-1./30.)*vec2::dot(K1.perp(), vf_200);
+
+            integral += vec2::dot((1./30.)*K1.perp() + (1./10.)*K2.perp(), vf_011);
+            integral += vec2::dot((-1./30.)*K1.perp() + (-1./30.)*K2.perp(), vf_110);
+            integral += vec2::dot((1./10.)*K1.perp() + (1./30.)*K2.perp(), vf_101);
+            
+
+            he = he.twin().next();
+        } while (!he.face().null() && he != start);
+
+        div_vector_proj[v_index] -= integral;
+        counter += 1;
+    }
+
+    counter = 0;
+    for (auto edge : geom.mesh.edges()) {
+        if (edge.on_boundary()) continue;
+        int midpoint_index = counter;
+        Halfedge hes[2] = {edge.a(), edge.b()};
+
+        double integral = 0.;
+
+        // For the two incident triangles.
+        for (int t = 0; t < 2; t++) {
+            // Define terms.
+            auto he = hes[t];
+            auto tri = he.face();
+            if (tri.null()) continue;
+            // Triangle vertices.
+            auto v = he.next().tip(); // v is the opposite vertex.
+            auto vp = he.vertex();
+            auto vpp = he.tip();
+            auto v_pos = geom.position[v];
+            auto vp_pos = geom.position[vp];
+            auto vpp_pos = geom.position[vpp];
+            auto edge_110 = he.edge(); // vp to vpp
+            auto edge_011 = he.next().edge(); // vpp to v
+            auto edge_101 = he.next().next().edge(); // v to vp
+            // Triangle side vectors.
+            auto vec2_extract = [](Eigen::Vector3f evec) { return vec2(evec.x(), evec.z()); };
+            vec2 K1 = vec2_extract(v_pos - vpp_pos);
+            vec2 K2 = vec2_extract(vp_pos - v_pos);
+            vec2 K3 = vec2_extract(vpp_pos - vp_pos);
+
+            vec2 vf_002 = vf[v];
+            vec2 vf_200 = vf[vp];
+            vec2 vf_020 = vf[vpp];
+            vec2 vf_101 = vf[edge_101];
+            vec2 vf_011 = vf[edge_011];
+            vec2 vf_110 = vf[edge_110];
+            // integral += (1./30.)*vec2::dot(K3.perp(), vf_002);
+            // integral += vec2::dot((1./15.)*K1.perp() + (-1./30.)*K2.perp(), vf_020);
+            // integral += vec2::dot((-1./30.)*K1.perp() + (1./15.)*K2.perp(), vf_200);
+
+            // integral += vec2::dot((4./15.)*K1.perp() + (2./15.)*K2.perp(), vf_011);
+            // integral += vec2::dot((4./15.)*K1.perp() + (4./15.)*K2.perp(), vf_110);
+            // integral += vec2::dot((2./15.)*K1.perp() + (4./15.)*K2.perp(), vf_101);
+            integral += vec2::dot((-1./30.)*K3.perp(), vf_002);
+            integral += vec2::dot((1./10.)*K2.perp(), vf_020);
+            integral += vec2::dot((1./10.)*K1.perp(), vf_200);
+
+            integral += vec2::dot((-4./15.)*K1.perp() + (-2./15.)*K2.perp(), vf_011);
+            integral += vec2::dot((4./15.)*K1.perp() + (4./15.)*K2.perp(), vf_110);
+            integral += vec2::dot((-2./15.)*K1.perp() + (-4./15.)*K2.perp(), vf_101);
+        }
+        div_vector_proj[geom.mesh.num_interior_vertices() + midpoint_index] -= integral;
+        counter += 1;
+    }
+    
+    SparseMatrix gramian = gramian_matrix_P2_0();
+    Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > solver;
+    solver.analyzePattern(gramian);
+    solver.factorize(gramian);
+    Eigen::VectorXd div_vector = solver.solve(div_vector_proj);
+
+    // std::cout << "div_vector\n";
+    // std::cout << div_vector << "\n";
+    // std::cout << "div_vector_proj\n";
+    // std::cout << div_vector_proj << "\n";
+    // getchar();
+
+    // Associate this divergence to the P2 mesh.
+    int interior_vertex_index = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (!v.on_boundary()) {
+            div[v] = div_vector[interior_vertex_index];
+            interior_vertex_index += 1;
+        } else {
+            div[v] = 0.;
+        }
+    }
+    int interior_edge_index = 0;
+    for (auto e : geom.mesh.edges()) {
+        if (!e.on_boundary()) {
+            div[e] = div_vector[geom.mesh.num_interior_vertices() + interior_edge_index];
+            interior_edge_index += 1;
+        } else {
+            div[e] = 0.;
+        }
+    }
+}
+
+SparseMatrix App::gramian_matrix_P1_0()
+{
+    std::vector<EigenTriplet> coefficients;
+    int N_p = geom.mesh.num_vertices();
+
+    VertexAttachment<int> vertex_indices(geom.mesh);
+    int index = 0;
+    for (auto v : geom.mesh.vertices()) {
+        vertex_indices[v] = index;
+        index += 1;
+    }
+
+    auto add_entry = [&](int i, int j, double value) {
+        // printf("%d %d %.6f\n", i, j, value);
+        coefficients.push_back(EigenTriplet(i, j, value));
+    };
+
+    // For each psi^p.
+    for (auto v : geom.mesh.vertices()) {
+        auto start = v.halfedge();
+        auto he = start;
+        int v_index = vertex_indices[v];
+        do {
+            auto tri = he.face();
+            auto vp = he.next().vertex();
+            auto vpp = he.next().next().vertex();
+            int vp_index = vertex_indices[vp];
+            int vpp_index = vertex_indices[vpp];
+
+            double R = 2*geom.triangle_area(tri);
+
+            add_entry(v_index, v_index, (1./12.)*R);
+            add_entry(v_index, vp_index, (1./24.)*R);
+            add_entry(v_index, vpp_index, (1./24.)*R);
+            
+            he = he.twin().next();
+        } while (!he.face().null() && he != start);
+    }
+
+    auto matrix = SparseMatrix(N_p, N_p);
+    matrix.setFromTriplets(coefficients.begin(), coefficients.end());
+    matrix.makeCompressed();
+    // make_sparsity_image(matrix, DATA "pressure_gramian.ppm");
+
+    return matrix;
+}
+
+void App::div_P2_P1(P2Attachment<vec2> &vf, P1Attachment<double> &div)
+{
+    int N_p = geom.mesh.num_vertices();
+    auto u_div_l2_proj = Eigen::VectorXd(N_p);
+    for (int i = 0; i < N_p; i++) u_div_l2_proj[i] = 0.;
+
+
+    VertexAttachment<int> vertex_indices(geom.mesh);
+    int index = 0;
+    for (auto v : geom.mesh.vertices()) {
+        vertex_indices[v] = index;
+        index += 1;
+    }
+
+    // Compute the divergence term.
+    // For each psi^p.
+    for (auto v : geom.mesh.vertices()) {
+        int v_index = vertex_indices[v];
+        auto v_pos = geom.position[v];
+
+        double integral = 0.;
+
+        auto start = v.halfedge();
+        auto he = start;
+        do {
+            auto tri = he.face();
+            auto vp = he.next().vertex();
+            auto vpp = he.next().next().vertex();
+            int vp_index = vertex_indices[vp];
+            int vpp_index = vertex_indices[vpp];
+            auto vp_pos = geom.position[vp];
+            auto vpp_pos = geom.position[vpp];
+            auto edge_110 = he.next().edge(); // vp to vpp
+            auto edge_011 = he.next().next().edge(); // vpp to v
+            auto edge_101 = he.edge(); // v to vp
+            // Triangle side vectors.
+            auto vec2_extract = [](Eigen::Vector3f evec) { return vec2(evec.x(), evec.z()); };
+            vec2 K1 = vec2_extract(v_pos - vpp_pos);
+            vec2 K2 = vec2_extract(vp_pos - v_pos);
+            vec2 K3 = vec2_extract(vpp_pos - vp_pos);
+
+            vec2 u110 = vf[edge_110];
+            vec2 u011 = vf[edge_011];
+            vec2 u101 = vf[edge_101];
+            vec2 u002 = vf[v];
+            integral += (-1./6.) * vec2::dot(K3.perp(), u002);
+            integral += (1./6.) * vec2::dot(K3.perp(), u110);
+            integral += (-1./6.) * vec2::dot((K2 - K1).perp(), u011);
+            integral += (-1./6.) * vec2::dot((K1 - K2).perp(), u101);
+            
+            he = he.twin().next();
+        } while (!he.face().null() && he != start);
+
+        u_div_l2_proj[v_index] = integral;
+    }
+
+    // Reconstruct the P1 divergence of u, then associate it to the mesh.
+    SparseMatrix gramian = gramian_matrix_P1_0();
+    Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > solver;
+    solver.analyzePattern(gramian);
+    solver.factorize(gramian);
+    Eigen::VectorXd div_u_vector = solver.solve(u_div_l2_proj);
+    index = 0;
+    float abs_max_div = 0;
+    for (auto v : geom.mesh.vertices()) {
+        div[v] = div_u_vector[index];
+        if (fabs(div[v]) > abs_max_div) abs_max_div = fabs(div[v]);
+        index += 1;
+    }
+    // Write the divergence residual to a text file.
+    fprintf(divergence_residual_file, "%.12f\n", abs_max_div);
+    
+}
+
 int main(int argc, char *argv[])
 {
     if (argc != 2) {
@@ -370,9 +811,18 @@ int main(int argc, char *argv[])
     }
     char *directory_path = argv[1];
 
+    #define GEOM 4
+
+    // navier_3
+    #if GEOM == 3
     double theta0 = 0.13;
     vec2 obstruction_position = vec2(0.2,0.2);
     SurfaceGeometry *geom = square_minus_circle(0.25, theta0, 1, 1, 60, false, obstruction_position, false);
+    #elif GEOM == 4
+    double theta0 = 0.1257;
+    vec2 obstruction_position = vec2(0,0);
+    SurfaceGeometry *geom = square_minus_circle(0.18, theta0, 1, 1, 60, true, obstruction_position, false);
+    #endif
 
     printf("[main] Creating context...\n");
     IGC::Context context("A world");

@@ -479,6 +479,7 @@ CameraController.o: CameraController.cpp.o
 # target to build an object file
 CameraController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.o
 .PHONY : CameraController.cpp.o
 
 CameraController.i: CameraController.cpp.i
@@ -487,6 +488,7 @@ CameraController.i: CameraController.cpp.i
 # target to preprocess a source file
 CameraController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.i
 .PHONY : CameraController.cpp.i
 
 CameraController.s: CameraController.cpp.s
@@ -495,7 +497,32 @@ CameraController.s: CameraController.cpp.s
 # target to generate assembly for a file
 CameraController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.s
 .PHONY : CameraController.cpp.s
+
+Filmer.o: Filmer.cpp.o
+.PHONY : Filmer.o
+
+# target to build an object file
+Filmer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/Filmer.cpp.o
+.PHONY : Filmer.cpp.o
+
+Filmer.i: Filmer.cpp.i
+.PHONY : Filmer.i
+
+# target to preprocess a source file
+Filmer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/Filmer.cpp.i
+.PHONY : Filmer.cpp.i
+
+Filmer.s: Filmer.cpp.s
+.PHONY : Filmer.s
+
+# target to generate assembly for a file
+Filmer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/Filmer.cpp.s
+.PHONY : Filmer.cpp.s
 
 FiniteVolumes.o: FiniteVolumes.cpp.o
 .PHONY : FiniteVolumes.o
@@ -616,30 +643,6 @@ LidDrivenCavity/LidDrivenCavity.s: LidDrivenCavity/LidDrivenCavity.cpp.s
 LidDrivenCavity/LidDrivenCavity.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LidDrivenCavity.dir/build.make CMakeFiles/LidDrivenCavity.dir/LidDrivenCavity/LidDrivenCavity.cpp.s
 .PHONY : LidDrivenCavity/LidDrivenCavity.cpp.s
-
-NavierStokes/CameraController.o: NavierStokes/CameraController.cpp.o
-.PHONY : NavierStokes/CameraController.o
-
-# target to build an object file
-NavierStokes/CameraController.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o
-.PHONY : NavierStokes/CameraController.cpp.o
-
-NavierStokes/CameraController.i: NavierStokes/CameraController.cpp.i
-.PHONY : NavierStokes/CameraController.i
-
-# target to preprocess a source file
-NavierStokes/CameraController.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.i
-.PHONY : NavierStokes/CameraController.cpp.i
-
-NavierStokes/CameraController.s: NavierStokes/CameraController.cpp.s
-.PHONY : NavierStokes/CameraController.s
-
-# target to generate assembly for a file
-NavierStokes/CameraController.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.s
-.PHONY : NavierStokes/CameraController.cpp.s
 
 NavierStokes/NavierStokesSolver.o: NavierStokes/NavierStokesSolver.cpp.o
 .PHONY : NavierStokes/NavierStokesSolver.o
@@ -958,7 +961,10 @@ core.o: core.cpp.o
 
 # target to build an object file
 core.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.o
 .PHONY : core.cpp.o
 
 core.i: core.cpp.i
@@ -966,7 +972,10 @@ core.i: core.cpp.i
 
 # target to preprocess a source file
 core.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.i
 .PHONY : core.cpp.i
 
 core.s: core.cpp.s
@@ -974,7 +983,10 @@ core.s: core.cpp.s
 
 # target to generate assembly for a file
 core.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.s
 .PHONY : core.cpp.s
 
 discretization_figure.o: discretization_figure.cpp.o
@@ -1000,30 +1012,6 @@ discretization_figure.s: discretization_figure.cpp.s
 discretization_figure.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/discretization_figure.dir/build.make CMakeFiles/discretization_figure.dir/discretization_figure.cpp.s
 .PHONY : discretization_figure.cpp.s
-
-mesh_generators.o: mesh_generators.cpp.o
-.PHONY : mesh_generators.o
-
-# target to build an object file
-mesh_generators.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o
-.PHONY : mesh_generators.cpp.o
-
-mesh_generators.i: mesh_generators.cpp.i
-.PHONY : mesh_generators.i
-
-# target to preprocess a source file
-mesh_generators.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/mesh_generators.cpp.i
-.PHONY : mesh_generators.cpp.i
-
-mesh_generators.s: mesh_generators.cpp.s
-.PHONY : mesh_generators.s
-
-# target to generate assembly for a file
-mesh_generators.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/mesh_generators.cpp.s
-.PHONY : mesh_generators.cpp.s
 
 quadratic_figure.o: quadratic_figure.cpp.o
 .PHONY : quadratic_figure.o
@@ -1088,6 +1076,9 @@ help:
 	@echo "... CameraController.o"
 	@echo "... CameraController.i"
 	@echo "... CameraController.s"
+	@echo "... Filmer.o"
+	@echo "... Filmer.i"
+	@echo "... Filmer.s"
 	@echo "... FiniteVolumes.o"
 	@echo "... FiniteVolumes.i"
 	@echo "... FiniteVolumes.s"
@@ -1103,9 +1094,6 @@ help:
 	@echo "... LidDrivenCavity/LidDrivenCavity.o"
 	@echo "... LidDrivenCavity/LidDrivenCavity.i"
 	@echo "... LidDrivenCavity/LidDrivenCavity.s"
-	@echo "... NavierStokes/CameraController.o"
-	@echo "... NavierStokes/CameraController.i"
-	@echo "... NavierStokes/CameraController.s"
 	@echo "... NavierStokes/NavierStokesSolver.o"
 	@echo "... NavierStokes/NavierStokesSolver.i"
 	@echo "... NavierStokes/NavierStokesSolver.s"
@@ -1151,9 +1139,6 @@ help:
 	@echo "... discretization_figure.o"
 	@echo "... discretization_figure.i"
 	@echo "... discretization_figure.s"
-	@echo "... mesh_generators.o"
-	@echo "... mesh_generators.i"
-	@echo "... mesh_generators.s"
 	@echo "... quadratic_figure.o"
 	@echo "... quadratic_figure.i"
 	@echo "... quadratic_figure.s"

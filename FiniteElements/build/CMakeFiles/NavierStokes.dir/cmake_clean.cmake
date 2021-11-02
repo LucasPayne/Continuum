@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o"
-  "CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o.d"
+  "CMakeFiles/NavierStokes.dir/CameraController.cpp.o"
+  "CMakeFiles/NavierStokes.dir/CameraController.cpp.o.d"
   "CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o"
   "CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o.d"
   "CMakeFiles/NavierStokes.dir/NavierStokes/add_nonlinear_velocity_residual.cpp.o"
@@ -13,8 +13,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.o.d"
   "CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.o"
   "CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.o.d"
-  "CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o"
-  "CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o.d"
+  "CMakeFiles/NavierStokes.dir/core.cpp.o"
+  "CMakeFiles/NavierStokes.dir/core.cpp.o.d"
   "NavierStokes"
   "NavierStokes.pdb"
 )

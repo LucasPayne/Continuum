@@ -4,6 +4,8 @@ in TES_OUT {
     vec3 barycentric;
     flat vec2 velocities[6];
     float pressure;
+    flat float divergences[6];
+    float divergence_linear;
 } fs_in;
 
 out vec4 color; // render-to-texture, (velocity_x, velocity_y, pressure, 1)
@@ -29,5 +31,13 @@ void main(void)
     for (int i = 0; i < 6; i++) {
         velocity += q[i] * fs_in.velocities[i];
     }
-    color = vec4(velocity, fs_in.pressure, 1);
+
+    // Evaluate divergence.
+    float divergence = 0;
+    for (int i = 0; i < 6; i++) {
+        divergence += q[i] * fs_in.divergences[i];
+    }
+
+    // color = vec4(velocity, fs_in.pressure, divergence);
+    color = vec4(velocity, fs_in.pressure, fs_in.divergence_linear);
 }

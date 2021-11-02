@@ -60,7 +60,10 @@ target_link_libraries(quadratic_figure PRIVATE common)
 add_executable(basis_quadratic_figure basis_quadratic_figure.cpp)
 target_link_libraries(basis_quadratic_figure PRIVATE common)
 
-add_executable(QuadraticLaplaceSolver QuadraticLaplaceSolver.cpp)
+add_executable(QuadraticLaplaceSolver
+    QuadraticLaplaceSolver.cpp
+    core.cpp
+)
 target_link_libraries(QuadraticLaplaceSolver PRIVATE common)
 
 add_executable(LidDrivenCavity
@@ -70,6 +73,7 @@ target_link_libraries(LidDrivenCavity PRIVATE common)
 
 add_executable(WeaklyIncompressible
     WeaklyIncompressible/WeaklyIncompressible.cpp
+    core.cpp
 )
 target_link_libraries(WeaklyIncompressible PRIVATE common)
 
@@ -78,8 +82,8 @@ add_executable(NavierStokes
     NavierStokes/main.cpp
 
     NavierStokes/demo.cpp
-    mesh_generators.cpp
-    NavierStokes/CameraController.cpp
+    CameraController.cpp
+    core.cpp
 
     NavierStokes/NavierStokesSolver.cpp
     NavierStokes/add_nonlinear_velocity_residual.cpp
@@ -103,5 +107,6 @@ add_executable(FlowVisualization
     FlowVisualization/main.cpp
     CameraController.cpp
     core.cpp
+    Filmer.cpp
 )
 target_link_libraries(FlowVisualization PRIVATE common)

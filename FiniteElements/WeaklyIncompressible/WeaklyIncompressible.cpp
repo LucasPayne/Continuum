@@ -1,24 +1,10 @@
-#include "cg_sandbox.h"
+#include "core.h"
 #include "triangle_wrapper.h"
 #include "CameraController.cpp"
 #include <Eigen/SparseCore>
 #include <Eigen/SparseLU>
 #include <Eigen/IterativeLinearSolvers>
 #include "mesh_generators.cpp"
-using PlaneFunction = std::function<double(double x, double y)>; // Function of the XY plane.
-using PlaneVectorField = std::function<vec2(double x, double y)>;
-using PlaneFunctionNL1 = std::function<double(double x, double y, double u)>; // First-order non-linear plane function.
-using SparseMatrix = Eigen::SparseMatrix<double>;
-using EigenTriplet = Eigen::Triplet<double>;
-
-vec3 eigen_to_vec3(Eigen::Vector3f v)
-{
-    return vec3(v.x(), v.y(), v.z());
-}
-Eigen::Vector3f vec3_to_eigen(vec3 v)
-{
-    return Eigen::Vector3f(v.x(), v.y(), v.z());
-}
 
 Aspect<Camera> main_camera;
 

@@ -1,11 +1,13 @@
+#include "core.h"
 #include "NavierStokes/demo.h"
-#include "NavierStokes/mesh_generators.h"
+#include "mesh_generators.cpp"
 
 static int film_frame = 0;
 
 enum MeshModes {
     MM_square,
     MM_square_with_obstruction,
+    MM_square_with_obstruction_2,
     NUM_MESH_MODES
 };
 
@@ -45,6 +47,21 @@ void Demo::recreate_solver()
         double theta0 = 0.13;
         vec2 obstruction_position = vec2(0.2,0.2);
         geom = square_minus_circle(0.25, theta0, 1, 1, 60, false, obstruction_position, false);
+        solver = new NavierStokesSolver(*geom, kinematic_viscosity);
+        solver->set_source(
+            [&](double x, double y, double t)->vec2 {
+                // const double r = 0.175;
+                // if (x*x + y*y <= r*r) return vec2(25,0);
+                const double r = 0.125;
+                if ((x-0.5)*(x-0.5) + y*y <= r*r) return vec2(0, 50);
+                if ((x+0.5)*(x+0.5) + y*y <= r*r) return vec2(25, 0);
+                return vec2(0,0);
+            }
+        );
+    } else if (mesh_mode == MM_square_with_obstruction_2) {
+        double theta0 = 0.1257;
+        vec2 obstruction_position = vec2(0,0);
+        geom = square_minus_circle(0.18, theta0, 1, 1, 60, true, obstruction_position, false);
         solver = new NavierStokesSolver(*geom, kinematic_viscosity);
         solver->set_source(
             [&](double x, double y, double t)->vec2 {
@@ -179,7 +196,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
 
 void Demo::update()
 {
-    double source_move_speed = 1.;
+    double source_move_speed = 0.1;
     if (world->input.keyboard.down(KEY_LEFT_ARROW)) {
         source_position.x() += source_move_speed * dt;
     }
@@ -209,7 +226,7 @@ void Demo::update()
         // Save the data (so the simulation doesn't have to be re-run).
         save_solution(std::string(DATA) + "navier_stokes_" + std::to_string(film_frame) + ".txt");
 
-        take_screenshot();
+        // take_screenshot();
         film_frame += 1;
         if (film_frame == film_num_frames) {
             filming = false;
@@ -217,11 +234,20 @@ void Demo::update()
         }
     }
 
+    std::cout << "source_position: " << source_position << "\n";
     solver->set_source(
+        // navier_3
+        // [&](double x, double y, double t)->vec2 {
+        //     const double r = 0.125;
+        //     if ((vec2(x,y) - source_position).length() <= r) {
+        //         return vec2(0, 3000);
+        //     }
+        //     return vec2(0,0);
+        // }
         [&](double x, double y, double t)->vec2 {
             const double r = 0.125;
             if ((vec2(x,y) - source_position).length() <= r) {
-                return vec2(0, 3000);
+                return vec2(3000, 0);
             }
             return vec2(0,0);
         }
@@ -371,10 +397,11 @@ void Demo::post_render_update()
     }
 
     if (show_wireframe) {
-        double thickness = 0.005;
+        double thickness = 0.0002;
         world->graphics.paint.wireframe(*geom, mat4x4::translation(0,-0.01,0), thickness);
     }
     // Draw boundaries.
+    #if 0
     for (auto start : geom->mesh.boundary_loops()) {
         auto ps = std::vector<vec3>();
         auto he = start;
@@ -385,6 +412,16 @@ void Demo::post_render_update()
         ps.push_back(ps[0]);
         world->graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
     }
+    #endif
+    // TEMPORARY Draw source
+    std::vector<vec3> source_points;
+    for (int i = 0; i < 360; i++) {
+        double theta = 2*M_PI*i/(360.-1);
+        double c = cos(theta);
+        double s = sin(theta);
+        source_points.push_back(vec3(-0.85+0.125*c, 0.01, 0+0.125*s));
+    }
+    world->graphics.paint.chain(source_points, 0.005, vec4(0,0,1,1));
     
     // render solution texture
     render_solution_texture();

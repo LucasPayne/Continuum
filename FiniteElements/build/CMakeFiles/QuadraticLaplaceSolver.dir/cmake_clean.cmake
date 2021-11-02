@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/QuadraticLaplaceSolver.dir/QuadraticLaplaceSolver.cpp.o"
   "CMakeFiles/QuadraticLaplaceSolver.dir/QuadraticLaplaceSolver.cpp.o.d"
+  "CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.o"
+  "CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.o.d"
   "QuadraticLaplaceSolver"
   "QuadraticLaplaceSolver.pdb"
 )

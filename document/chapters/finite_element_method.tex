@@ -552,7 +552,7 @@ the computed circumcentre lies inside or outside the triangle.
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=0.46\textwidth]{figures/geometry/area.png}}
+    \centerline{\includegraphics[width=0.6\textwidth]{figures/geometry/area.png}}
     \caption{
         The area computation reduces to the computation of the areas of small triangles.
     }
@@ -574,7 +574,7 @@ Pseudocode for this algorithm is given below.
 \newcommand{\poissonfvmmatrixassembly}{Poisson\_FVM\_Matrix\_Assembly}
 
 \newcommand{\totaltrianglearea}{\text{total\_triangle\_area}}
-\begin{algorithm}\label{alg:assembly}
+\begin{algorithm}
 
 % https://tex.stackexchange.com/questions/64204/mutliple-inputs-with-line-breaking
 \newlength\mylen
@@ -634,6 +634,7 @@ Pseudocode for this algorithm is given below.
 }
     % \caption{Pseudocode for the described finite volume method for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
     \caption{Pseudocode for the described finite volume matrix assembly process for the Poisson boundary value problem \eqref{poisson_dirichlet_problem}.}
+    \label{algorithm_assembly}
 \end{algorithm}
 \newpage
 
@@ -642,17 +643,17 @@ We now have an effective algorithm for approximating Poisson's equation:
 \begin{enumerate}
     \item Partition the 2D domain $\Omega$ into triangles $T_1,\cdots,T_{n_T}$. This determines the hat basis functions $\phi_1,\cdots,\phi_n$
          and the mixed Voronoi cells $\Omega_1,\cdots,\Omega_n$.
-    \item Form the matrix and right-hand side in \eqref{poisson_matrix_equation} with the algorithm \ref{alg:assembly}.
+    \item Form the matrix and right-hand side in \eqref{poisson_matrix_equation} with algorithm \ref{algorithm_assembly}.
     \item Solve the resulting linear system for $\hat{h}$, and construct the solution as $\tilde{h} = \widetilde{h}_\Gamma + \Phi\cdot\hat{h}$.
 \end{enumerate}
 Each of these steps is conceptually well-separated into the domains of
-mesh generation, matrix assembly, and numerical linear algebra. The above pseudocode \ref{alg:assembly} is a matrix assembly algorithm.
+mesh generation, matrix assembly, and numerical linear algebra. The above pseudocode \ref{algorithm_assembly} is a matrix assembly algorithm.
 It assumes that there is already a domain triangulation, and constructs the linear system \eqref{poisson_matrix_equation}.
 Although we have addressed the
 problem of matrix assembly, specific to this particular finite volume method, mesh generation and numerical linear algebra can be delegated to external libraries.
 The full solve algorithm is given below.
 
-\begin{algorithm}\label{alg:fvm}
+\begin{algorithm}
 
 \newcommand\mydata[1]{%
   \settowidth\mylen{\KwData{}}%
@@ -681,6 +682,8 @@ The full solve algorithm is given below.
     $\tilde{h} \leftarrow \sum_{j=1}^n h_j\text{Hat}(p_j) + \sum_{j=1}^{n_\Gamma} h_\Gamma(p_j^\Gamma)\text{Hat}(p_j^\Gamma)$\;
     \Return{$\tilde{h}$}\;
 }
+    \caption{The full finite volume algorithm for Poisson's equation.}
+    \label{algorithm_fvm}
 \end{algorithm}
 
 The routine \textbf{Generate\_Triangulation} is provided by a mesh generator, and 
@@ -693,7 +696,7 @@ of mesh traversals performed during matrix assembly. This is typically some vari
 implemented in libraries such as Geometry Central \cite{geometry_central},
 the Polygon Mesh Processing library \cite{polygon_mesh_processing_library}, and OpenMesh \cite{openmesh}.
 
-A mesh data structure is a foundational component of mesh generation systems. For 2D domains, a somewhat regular sampling of points on the boundary
+Given a mesh data structure, we now need mesh generators to create triangulations of the domain. A somewhat regular sampling of points on the boundary
 and interior, followed by triangulation of these points, can suffice for a piecewise-linear finite volume mesh.
 The Triangle \cite{triangle} library, for example, contains a single very efficient and robust C routine (consisting of 16k lines of highly optimized code)
 for performing Delaunay triangulations \cite{orourke}
@@ -706,17 +709,20 @@ of standard, robust linear and non-linear solver libraries, such as Argonne Nati
 and the smaller-scale C\texttt{++} libraries Armadillo \cite{armadillo} and Eigen \cite{eigen}.
 A PDE solver will typically pass either a full matrix to the linear solver (dense or sparse),
 or provide the linear solver with callback routines that give it access to the system coefficients when they are needed.
+With efficient mesh generation, mesh traversal, and matrix assembly,
+it is likely that the bottleneck of a finite element method will be the solution of (possibly many) large, sparse linear systems,
+so the choice of linear solver can be the determining factor of computational efficiency.
 
---- Discuss sparsity here.
+% --- Discuss sparsity here.
 
 \subsection{An implementation in C\texttt{++}}
-I have implemented algorithm \ref{alg:fvm} in C\texttt{++}.
+I have implemented algorithm \ref{algorithm_fvm} in C\texttt{++}.
 This code uses a simple mesh generator based on the C library Triangle \cite{triangle}. Triangle is given a list of points
 and boundary points, and generates a Delaunay triangulation \cite{orourke}. This triangulation is then converted to a halfedge mesh data structure
 based on the ideas in the Geometry Central library \cite{geometry_central}.
 The matrix is constructed as a flat array of indices and coefficients, which are then converted to CRS (compressed row storage) form.
 The system is solved with a sparse LU factorisation method provided by the C\texttt{++} Eigen library \cite{eigen}.
-With these interfaces, the resulting C\texttt{++} was almost a direct transliteration of the pseudocodes \ref{alg:fvm} and \ref{alg:assembly}.
+With these interfaces, the resulting C\texttt{++} was almost a direct transliteration of the pseudocodes \ref{algorithm_fvm} and \ref{algorithm_assembly}.
 
 The implemented matrix assembly algorithm has linear space and time complexity in the number of mesh vertices,
 and all data is generated and accessed in flat buffers, giving good cache performance.
@@ -747,7 +753,7 @@ the average length of a triangle edge.
 Each square in this grid
 corresponds to two right-angled triangles in the triangulation
 \footnote{This is a rather uninteresting mesh which doesn't take advantage
-of Galerkin methods' ability to model complex geometries, but it is a difficult problem to parameterise a complex mesh by some $r$ such that the error
+of Galerkin methods' ability to model complex geometries, but this avoids the problem of parameterising a complex mesh by some $r$ such that the error
 metric acts ``nicely''.}.
 To measure convergence, we use the $L^2$-norm (although others could be used), defined by
 \begin{equation}\label{test_L2_norm}
@@ -822,7 +828,7 @@ on an irregularly-meshed disk.
     \end{center}
     \caption{
         Approximate solutions to the test problem \eqref{fvm_test_equation_1} with varying $r$.
-        The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref{alg:fvm}
+        The domain is a unit disk, and $r$ is reduced by introducing random points. The finite volume algorithm \ref{algorithm_fvm}
         works trivially with curved domains and irregular meshes.
     }
     \label{fvm_laplace_error}
@@ -847,6 +853,7 @@ While each finite volume
 has a clear geometric meaning (as a small cell around which a certain test flux integral is taken), the geometric meaning of a ``finite element''
 requires slightly more thought, although it will be seen to be the same idea in disguise --- the resulting linear system
 will be formed from averaged, or ``blurred'' flux integrals, rather than single flux integrals.
+This is analogous to expressing a discrete linear system in a different basis.
 % Much of the resulting algorithm is the same as the finite volume method derived above, but
 % with different integrals.
 
@@ -911,10 +918,9 @@ Since this cone has unit slope, the normal $\hat{n}$ of the level set $v = 1-t$ 
 one integral over the union of level sets.
 The outer integral of the right-hand side of \eqref{poisson_integral_example_modified} consists of a ``stack of integrations'' of $g$ against concentric disks, which 
 is equivalent to integrating $g$ against a ``stack of concentric disks'', or rather, the cone $v$ \eqref{poisson_integral_example_v}.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
 
 At another level of informality, with more notation, we can define the indicator function
 \begin{equation}\label{fem_indicator_function}
@@ -940,11 +946,6 @@ the theory of distributions, or generalised functions, introduced by Laurent Sch
 If there should be any definition of a ``generalised gradient'', this seems reasonable --- if the indicator function
 $\chi(\Omega_{0,t})$ is approximated by a sequence of smooth functions $f_1, f_2,\ldots$, the gradient $\nabla f_i$
 will approach \eqref{fem_indicator_gradient}.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
 We then have the equalities
 \begin{align*}
     \int_{t=0}^{t=1}\left[\oint_{\partial\Omega_{0,t}} -\nabla h\cdot \hat{n}\,dx\right]\,dt
@@ -956,7 +957,6 @@ We then have the equalities
         \int_{t=0}^{t=1}\chi(\Omega_{0,t})\,dt
     \right]\,dx,
 \end{align*}
-where the final equality might assume some regularity (--- Fubini's theorem?).
 We then define
 \begin{equation}\label{fem_v_definition}
     v \coloneqq \int_{t=0}^{t=1}\chi(\Omega_{0,t})\,dt,
@@ -1002,7 +1002,8 @@ We can try just about any kind of function spaces for $\Phi$ and $\Psi$, but we 
 \end{itemize}
 Further, whether Bubnov-- or Petrov--Galerkin, there are two common classes of $H^1_0$-conforming Galerkin methods:
 \begin{itemize}
-    \item If the $\Phi$ and $\Psi$ basis functions have well-localised compact support, we get the \textit{finite element method}.
+    \item If the $\Phi$ and $\Psi$ basis functions have well-localised compact support,
+            and are defined with respect to some mesh approximation of the domain, we get the \textit{finite element method}.
     \item If the $\Phi$ and $\Psi$ basis functions are non-localised global functions, for example harmonics of $\Omega$, we get the \textit{spectral method}.
 \end{itemize}
 Next, we will derive a simple finite element method for Poisson's equation.
@@ -1148,8 +1149,8 @@ While $\Psi_{\text{FVM}}$ is technically not $H^1_0$-conforming, if the gradient
 \section{Discretizing Poisson's equation by finite elements}
 We now derive two finite element methods for Poisson's equation. The first will use
 the same piecewise linear triangulation scheme as for the previous FVM, but with seemingly different integrals --- the
-result will turn out to not give any improvement over algorithm \ref{alg:fvm}. However, we will subsequently generalise this finite element method
-to a higher order method.
+result will turn out to be essentially equivalent to algorithm \ref{algorithm_fvm}. However, we will subsequently generalise this finite element method
+to a quadratic polynomial finite element space.
 
 \subsection{Forming a linear system}
 We now start with the weak form \eqref{poisson_equation_weak_form}.
@@ -1280,7 +1281,7 @@ We will transform each triangle domain $T$ into a ``reference element''
 \newcommand{\reftri}{{\mathcal{R}}}
 $\reftri$, defined by
     $$\reftri = \left\{(x,y) \in [0,1]^2 \mid x + y < 1\right\}.$$
-We introduce the ``reference basis functions'', which account for all possible ways a hat function could intersect with this triangle:
+We introduce the ``reference basis functions'', which account for all possible ways a hat function could restrict to this triangle:
 \begin{equation}\label{fem_reference_basis_functions}
     \Phi^\reftri_1 = 1-x-y, \text{\quad and \quad} \Phi^\reftri_2 = x \text{\quad and \quad} \Phi^\reftri_3 = y.
 \end{equation}
@@ -1289,9 +1290,20 @@ with gradients
     \nabla\Phi^\reftri_1 = (-1, -1)^T, \text{\quad and \quad} \nabla\Phi^\reftri_2 = (1,0)^T \text{\quad and \quad} \Phi^\reftri_3 = (0,1)^T.
 \end{equation}
 
-\vskip 0.2in
-(draw $\reftri$ and reference basis functions)
-\vskip 0.2in
+% \vskip 0.2in
+% (draw $\reftri$ and reference basis functions)
+% \vskip 0.2in
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{figures/hat/ref.png}
+    \end{center}
+    \caption{\small
+        The hat functions on an arbitrary triangle are pulled back to the reference triangle. This induces a change of variables
+        in integrals over $T$.
+        The Jacobian matrix $J$ maps the unit axes of $\reftri$ to the sides $vv^\pr$ and $vv^\ppr$ of $T$.
+    }
+    \label{hat_ref}
+\end{figure}
 
 Suppose we are computing the integral \eqref{fem_integral_vertex_triangles} around some interior vertex $v$,
 and are computing the subintegral for some incident triangle $T$ with vertices $v,v^\pr,v^\ppr$.
@@ -1302,14 +1314,12 @@ $\affmap : \reftri \rightarrow T$ defined by
 \begin{equation}\label{fem_affine_map}
     \affmap(x,y) = v + (v^\pr - v)x + (v^\ppr - v)y
 \end{equation}
-gives a pullback of scalar functions $\Phi^\reftri_{1,2,3}$ on $\reftri$
-to scalar functions $\Phi_{1,2,3}$ on $T$. These scalar functions on $T$ correspond
+gives a pullback of scalar functions
+ $\Phi_{1,2,3}$ on $T$
+to scalar functions
+ $\Phi^\reftri_{1,2,3}$ on $\reftri$
+. These scalar functions on $\reftri$ correspond
 exactly to those pieces of basis hat functions whose gradients we want to integrate.
-
-\vskip 0.2in
-(draw this affine mapping)
-\vskip 0.2in
-
 To derive a change of variables formula, we need to compute the Jacobian matrix of $\affmap$:
 $$
     J = \begin{bmatrix} \Part{\affmap_x}{x} & \Part{\affmap_x}{y} \\ 
@@ -1321,7 +1331,7 @@ $$
         \end{array}
         \right].
 $$
-If we pushforward the domain of integration from $T$ to $\reftri$ by $\affmap$ (enacting a change of variables),
+If we pullback the domain of integration from $T$ to $\reftri$ by $\affmap$ (enacting a change of variables),
 the resulting expression is
 \begin{equation}\label{fem_closed_form_integral_complicated}
     \int_T \nabla\Phi_l \cdot \nabla\Phi_m\,dx
@@ -1371,7 +1381,7 @@ By plugging these expressions into \eqref{fem_closed_form_integral_simple}, we g
         &= \frac{1}{4\text{Area}(T)}(v_t - v)\cdot(v_{t+1} - v_t).
 \end{align*}
 Note that these are the same as the closed forms \eqref{fvm_closed_form_integrals} derived for the finite volume method.
-Now we notice that all this work has been wasted, as this finite element method gives
+This finite element method gives
 exactly the same matrix as the previous finite volume method.
 
 \subsubsection{Integrating the source function}
@@ -1390,11 +1400,6 @@ Note that $\frac{1}{4}\sum_{t=1}^k\text{Area}(T^{p_j}_t)$, the volume of the hat
 area of the midpoint-connecting polygon.
 Approximation \eqref{fem_source_approximation} is \textit{almost} the same as the FVM source approximation \eqref{fvm_source_approximation},
 but instead of integrating over the mixed Voronoi cell, we integrate over the midpoint-connecting polygon.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
 % The midpoint-connecting polygons do not pack together like puzzle pieces, as the mixed Voronoi cells did --- so we should expect
 % approximation \eqref{fem_source_approximation} to be \textit{worse} than \eqref{fvm_source_approximation}.
 We therefore will not bother in implementing this piecewise linear scheme.
@@ -1416,27 +1421,12 @@ being $1$ at one vertex and $0$ at the others. When a nodal point is shared by t
 determines a basis function of the global test and trial function spaces, $\Phi$ and $\Psi$.
 
 \subsubsection{The piecewise quadratic basis functions}
-As we tried linear polynomials on $T$, why not try quadratic polynomials? There are $6$ degrees of freedom for quadratic polynomials
-given in barycentric coordinates, so a natural choice of nodal points are the triangle vertices and their midpoints, shown below.
-
-\vskip 0.2in
-(nodal points and corresponding basis functions)
-\vskip 0.2in
-
-Using barycentric coordinates $(x,y,z)$ on $T$, where $x + y + z = 1$, the quadratic nodal basis functions are
-\begin{equation}\label{quadratic_nodal}
-\begin{split}
-    \Phi_{200} &= x(1 - 2y - 2z),\quad 
-    \Phi_{110} = 4xy,\\
-    \Phi_{020} &= y(1 - 2z - 2x),\quad
-    \Phi_{011} = 4yz,\\
-    \Phi_{002} &= z(1 - 2x - 2y),\quad
-    \Phi_{101} = 4zx.
-\end{split}
-\end{equation}
-We use ``barycentric indices'', common in the computer-aided geometric design literature.
-These indices are convenient as, up to a scaling, they are the barycentric coordinates of the basis function's corresponding node.
-These basis functions are displayed in figure \ref{quadratic_basis}.
+As we tried linear polynomials on $T$, why not try quadratic polynomials?
+We will denote the linear finite element space by P1, and the new quadratic finite element space by P2.\footnote{The utility of quadratic elements
+will become apparent when the P2-P1 Taylor-Hood stable Stokes solver is discussed in chapter 4.}
+There are $6$ degrees of freedom for quadratic polynomials
+given in barycentric coordinates, so a natural choice of nodal points are the triangle vertices and their midpoints. The resulting nodal
+basis functions are shown in figure \ref{quadratic_basis}.
 
 \begin{figure}[H]
     \begin{center}
@@ -1449,12 +1439,24 @@ These basis functions are displayed in figure \ref{quadratic_basis}.
     \label{quadratic_basis}
 \end{figure}
 
+Using barycentric coordinates $(x,y,z)$ on $T$, where $x + y + z = 1$, these quadratic nodal basis functions are
+\begin{equation}\label{quadratic_nodal}
+\begin{split}
+    \Phi_{200} &= x(1 - 2y - 2z),\quad 
+    \Phi_{110} = 4xy,\\
+    \Phi_{020} &= y(1 - 2z - 2x),\quad
+    \Phi_{011} = 4yz,\\
+    \Phi_{002} &= z(1 - 2x - 2y),\quad
+    \Phi_{101} = 4zx.
+\end{split}
+\end{equation}
+We use ``barycentric indices'', common in the computer-aided geometric design literature.
+These indices are convenient as, up to a scaling, they are the barycentric coordinates of the basis function's corresponding node.
 % Introducing some convenient notation for the piecewise quadratic basis functions,
 % we refer to the basis functions corresponding to interior vertices by $\phi_1,\cdots,\phi_{n_I}$ ,
 % the basis functions corresponding to boundary vertices by $\phi_1^\Gamma,\cdots,\phi_{n_\Gamma}^\Gamma$,
 % and the basis function corresponding to the midpoint of adjacent vertices $i$ and $j$ by $\phi_{ij}$ and $\phi^\Gamma_{ij}$
 % , respectively in the interior and on the boundary.
-
 As the linear functions on the triangle, with incident nodes identified, implicitly defined hat functions,
 so do these quadratic functions on the triangle.
 We get two classes of global basis functions, formed by stitching together incident nodal basis functions:
@@ -1479,7 +1481,7 @@ at each nodal point. Example interpolations are shown in figure
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/quadratic_approx/collage_1.png}
     \end{center}
-    \caption{
+    \caption{\small
         Interpolations of $f(x,y) = \frac{1}{2}(x^2 - y^2)+1.23 + \frac{3}{10}\cos(4x)$
         on the unit circle (with linear boundary approximation).
         First row: Piecewise quadratic interpolations of $f$.
@@ -1489,110 +1491,157 @@ at each nodal point. Example interpolations are shown in figure
     }
     \label{quadratic_approx}
 \end{figure}
-\subsubsection{The linear system}
-
 
 \subsection{Computing the linear system for the piecewise quadratic scheme}
 In section \ref{fem_closed_form} we derived the expressions needed to form the linear system for the piecewise linear scheme.
 With the nodal basis functions expressed in coordinates of a reference triangle $\reftri$,
 by performing a change of variables we can compute closed form expressions for the integrals restricted to each triangle.
 This process is the same in the quadratic case, although it becomes more tedious.
-Thankfully, this process can be automated by using an algebraic computing language --- I have used the Python library SymPy
-\cite{sympy}. Listing \ref{sympy_quadratic} displays Python code which has been used to compute coefficients.
-The function $\textbf{integrate\_gradients}(a,b,c, i,j,k)$ computes a symbolic definite integral,
+Thankfully, this process can be automated by using an algebraic computing language --- I have used the Python library SymPy \cite{sympy} to
+do these computations.
+% Listing \ref{sympy_quadratic} displays Python code which has been used to compute coefficients.
+For example, I have a simple function $\textbf{integrate\_gradients}(a,b,c, i,j,k)$ which computes a symbolic definite integral,
 \begin{equation}
      \int_\reftri (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,d\hat{x}
     = \int_{x=0}^{x=1}\int_{y=0}^{y=1-x} (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,dy\,dx,
 \end{equation}
 where $\Phi^\reftri_{abc}$ is the nodal basis function $\Phi_{abc}$ in reference triangle coordinates, with $z$ replaced by $1-x-y$.
-As a rough outline, the resulting matrix assembly algorithm (for constructing $A$ and $\hat{f}$), like in the pseudocode \ref{alg:assembly},
+When the reference-triangle trial function index is $i,j,k = 0,0,2$ and $1,1,0$, the values for arbitrary reference-triangle test functions, with index $a,b,c$
+are computed. The result is a table of ``magic numbers'' which are used as weights when computing integrals during mesh traversal.
+The resulting relevant values are
+\begin{align*}
+&\text{Integrals against vertex-based trial functions on $\reftri$}\\
+&\text{integrate\_gradients}(002,002) \rightarrow K_1\cdot K_1/2 + K_1\cdot K_2 + K_2\cdot K_2/2\\
+&\text{integrate\_gradients}(002,200) \rightarrow -K_1\cdot K_3/6\\
+&\text{integrate\_gradients}(002,020) \rightarrow -K_2\cdot K_3/6\\
+&\text{integrate\_gradients}(002,101) \rightarrow 2K_1\cdot K_3/3\\
+&\text{integrate\_gradients}(002,011) \rightarrow 2K_2\cdot K_3/3\\
+&\text{integrate\_gradients}(002,110) \rightarrow 0\\
+&\text{Integrals against midpoint-based trial functions on $\reftri$}\\
+&\text{integrate\_gradients}(110,110) \rightarrow 4K_1\cdot K1/3 + 4K_1\cdot K_2/3 + 4K_2\cdot K_2/3\\
+&\text{integrate\_gradients}(110,011) \rightarrow 4K_1\cdot K_3/3\\
+&\text{integrate\_gradients}(110,101) \rightarrow 4K_2\cdot K_3/3\\
+&\text{integrate\_gradients}(110,200) \rightarrow 2K_1\cdot K_2/3\\
+&\text{integrate\_gradients}(110,020) \rightarrow 2K_1\cdot K_2/3\\
+&\text{integrate\_gradients}(110,002) \rightarrow 0.
+\end{align*}
+$K_1$ and $K_2$ are the edges $vv^\pr$ and $v^\ppr v$ of $T$.
+
+\subsection{The resulting matrix assembly algorithm}
+As a rough outline, the resulting matrix assembly algorithm (for constructing $A$ and $\hat{f}$), like in the pseudocode \ref{algorithm_assembly},
 simply
 \begin{itemize}
     \item iterates over each trial basis function $\psi \in \Psi$,
     \item determines the basis functions $\phi^* \in \Phi^*$ which have domain overlapping $\psi$'s domain (by some mesh traversal),
-    \item splits the domain of integration into triangles (where the restricted basis functions are quadratic --- previously they were linear),
+    \item splits the domain of integration into triangles, where the restricted basis functions are quadratic,
     \item computes the integrals in closed form on this triangle (where these integrals could be derived using computer algebra),
     \item updates the matrix and RHS values, depending on whether $\phi^*$'s node is on the boundary or not.
 \end{itemize}
-The new matrix assembly algorithm is given in listing \ref{alg:quadratic_assembly}.
+
+The new matrix assembly algorithm is given in listing \ref{algorithm_quadratic_assembly}.
 The fully expanded algorithm, with mesh traversals and closed form integrals hard-coded, is becoming nigh unreadable.
 Clearly there is a simple coherent structure underlying all of these steps. We could easily generalise to piecewise cubics
 by having $10 = 1 + 2 + 3 + 4$ nodes per triangle --- just find a nodal basis for cubics on a reference triangle,
-and plug them into the same Python script \ref{sympy_quadratic} to derive coefficients of closed form integrals (which, again,
-will be in terms of dot products between $K_1$, $K_2$, and $K_3$). We then would need to write out the whole mesh traversal
+and plug them into the same SymPy script to derive coefficients of closed form integrals (which, again,
+will be in terms of dot products between $K_1$ and $K_2$). We then would need to write out the whole mesh traversal
 and index manipulations required, in order to implement what conceptually is a trivial increase of order from $2$ to $3$.
-This process (the derivation and implementation of a finite element algorithm) is clearly a good candidate for automation.
+This process (the derivation and implementation of a finite element algorithm) is clearly a good candidate for automation,
+and this has in fact been done \cite{automating_fem} \cite{fenics_book} \cite{firedrake}.
 
-\subsection{The resulting matrix assembly algorithm}
-\subsection{The resulting finite element algorithm}
+
+The resulting finite element algorithm, which makes calls to a mesh generator and a linear solver,
+is much the same as given in pseudocode \ref{algorithm_fvm}, but with a call to the quadratic Poisson solver rather than the finite
+volume solver.
 \subsection{Validation and results}
+Figure \ref{quadratic_fem_error_page} displays results for the same Poisson problem as solved with the finite volume method.
+The results are somewhat better, at least visually, but note that the error for $N=20$ is actually worse.
+This is likely because of the rectangle-rule integration of the source term. However, it does not matter, as this quadratic scheme is primarily
+useful to us because of its stability properties, and not its convergence properties. This will be apparent later, when we derive a Stokes
+flow solver based on this quadratic Poisson solver. A log-log $L^2$ error plot for the 
+first test problem \eqref{fvm_test_equation_1} is given in figure \ref{error_quadratic_fem_1}.
+The quadratic Poisson solver, as usual, trivially extends to complex geometries, even those with discontinuous boundary
+conditions, as indicated in figure \ref{quadratic_discontinuous}.
 
-\begin{figure}
-\begin{mintedbox}[mathescape=true]{python}
-import sympy as sym
-
-# Helper function to convert a barycentric index to an index into
-# a flat array.
-def barycentric_index_to_linear(i,j,k):
-    assert(i+j+k == 2)
-    ...
-
-# Define algebraic symbols for the variables.
-x,y,z = sym.symbols("x y z")
-
-# The reference triangle has vertices $v,v^\pr,v^\ppr$.
-# We define $K_1,K_2,K_3$ by
-#     $K_1 = (v - v^\ppr)^\perp$,
-#     $K_2 = (v^\pr - v)^\perp$,
-#     $K_3 = (v^\ppr - v^\pr)^\perp$.
-# $K_1$ and $K_2$ are the columns of the matrix $K$
-# (which is the inverse transpose Jacobian without the constant term).
-# while $K_3 = -K_1-K_2$.
-K1,K2,K3 = sym.symbols("K1 K2 K3")
-
-# Define the quadratic basis functions $\Phi_{ijk}$
-# given in barycentric coordinates (x,y,z).
-# The order with respect to barycentric indices is $200,020,002, 110,011,101$.
-nodal_basis_functions_barycentric = [
-    x*(1 - 2*y - 2*z),
-    y*(1 - 2*z - 2*x),
-    z*(1 - 2*x - 2*y),
-    4*x*y,
-    4*y*z,
-    4*z*x
-]
-# Map the nodal basis functions to the reference triangle
-# by substituting $z$ with $1-x-y$.
-# These remapped basis functions will be denoted by $\Phi_{ijk}^\reftri$.
-nodal_basis_functions = [p.subs(z,1-x-y).expand() for p in nodal_basis_functions_barycentric]
-# Compute the gradients $\nabla\Phi_{ijk}^\reftri$.
-nodal_basis_gradients = [(sym.diff(p, x), sym.diff(p, y)) for p in nodal_basis_functions]
-
-# Provide a function to compute the integral
-#     $\int_\reftri (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,d\hat{x}$
-#     $= \int_{x=0}^{x=1}\int_{y=0}^{y=1-x} (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,dy\,dx.$
-def integrate_gradients(a,b,c, i,j,k):
-    grad1 = nodal_basis_gradients[barycentric_index_to_linear(a,b,c)]
-    grad2 = nodal_basis_gradients[barycentric_index_to_linear(i,j,k)]
-    f = (K1*grad1[0] + K2*grad1[1])*(K1*grad2[0] + K2*grad2[1])
-    f_dy = sym.integrate(f, (y, 0,1-x))
-    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
-    # Print the result.
-    print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), f_dy_dx.simplify().subs(-K1-K2,K3))
-\end{mintedbox}
-\caption{
-    Python code to compute the closed form expressions required when forming the linear system.
-    This code uses the SymPy library \cite{sympy}.
-}
-\label{sympy_quadratic}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\linewidth]{figures/quadratic_error/error_plot_trim.png}
+    \end{center}
+    \caption{
+        The $L^2$-norm error for the test problem \eqref{fvm_test_equation_1}, as parameter $r$ varies, using the quadratic Poisson solver.
+    }
+    \label{error_quadratic_fem_1}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{figures/quadratic_approx/quadratic_discontinuous.png}}
+    \caption{
+        Solutions of the Laplace equation on an irregularly meshed disk, with discontinuous Dirichlet boundary condition.
+        The (P2) quadratic finite element Poisson solver is used.
+    }
+    \label{quadratic_discontinuous}
 \end{figure}
 
 
-
-
-
-\newpage
-\begin{algorithm}\label{alg:quadratic_assembly}
+% \begin{figure}
+% \begin{mintedbox}[mathescape=true]{python}
+% import sympy as sym
+% 
+% # Helper function to convert a barycentric index to an index into
+% # a flat array.
+% def barycentric_index_to_linear(i,j,k):
+%     assert(i+j+k == 2)
+%     ...
+% 
+% # Define algebraic symbols for the variables.
+% x,y,z = sym.symbols("x y z")
+% 
+% # The reference triangle has vertices $v,v^\pr,v^\ppr$.
+% # We define $K_1,K_2,K_3$ by
+% #     $K_1 = (v - v^\ppr)^\perp$,
+% #     $K_2 = (v^\pr - v)^\perp$,
+% #     $K_3 = (v^\ppr - v^\pr)^\perp$.
+% # $K_1$ and $K_2$ are the columns of the matrix $K$
+% # (which is the inverse transpose Jacobian without the constant term).
+% # while $K_3 = -K_1-K_2$.
+% K1,K2,K3 = sym.symbols("K1 K2 K3")
+% 
+% # Define the quadratic basis functions $\Phi_{ijk}$
+% # given in barycentric coordinates (x,y,z).
+% # The order with respect to barycentric indices is $200,020,002, 110,011,101$.
+% nodal_basis_functions_barycentric = [
+%     x*(1 - 2*y - 2*z),
+%     y*(1 - 2*z - 2*x),
+%     z*(1 - 2*x - 2*y),
+%     4*x*y,
+%     4*y*z,
+%     4*z*x
+% ]
+% # Map the nodal basis functions to the reference triangle
+% # by substituting $z$ with $1-x-y$.
+% # These remapped basis functions will be denoted by $\Phi_{ijk}^\reftri$.
+% nodal_basis_functions = [p.subs(z,1-x-y).expand() for p in nodal_basis_functions_barycentric]
+% # Compute the gradients $\nabla\Phi_{ijk}^\reftri$.
+% nodal_basis_gradients = [(sym.diff(p, x), sym.diff(p, y)) for p in nodal_basis_functions]
+% 
+% # Provide a function to compute the integral
+% #     $\int_\reftri (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,d\hat{x}$
+% #     $= \int_{x=0}^{x=1}\int_{y=0}^{y=1-x} (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,dy\,dx.$
+% def integrate_gradients(a,b,c, i,j,k):
+%     grad1 = nodal_basis_gradients[barycentric_index_to_linear(a,b,c)]
+%     grad2 = nodal_basis_gradients[barycentric_index_to_linear(i,j,k)]
+%     f = (K1*grad1[0] + K2*grad1[1])*(K1*grad2[0] + K2*grad2[1])
+%     f_dy = sym.integrate(f, (y, 0,1-x))
+%     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+%     # Print the result.
+%     print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), f_dy_dx.simplify().subs(-K1-K2,K3))
+% \end{mintedbox}
+% \caption{
+%     Python code to compute the closed form expressions required when forming the linear system.
+%     This code uses the SymPy library \cite{sympy}.
+% }
+% \label{sympy_quadratic}
+% \end{figure}
+\begin{algorithm}
 \tiny
 
 % https://tex.stackexchange.com/questions/64204/mutliple-inputs-with-line-breaking
@@ -1733,11 +1782,11 @@ def integrate_gradients(a,b,c, i,j,k):
     % $\tilde{h} \leftarrow \sum_{j=1}^n h_j\text{Hat}(p_j) + \sum_{j=1}^{n_\Gamma} h_\Gamma(p_j^\Gamma)\text{Hat}(p_j^\Gamma)$\;
     % \Return{$\tilde{h}$}\;
 }
-    \caption{Text}
+    \caption{The resulting P2 (quadratic) finite element Poisson solver.}
+    \label{algorithm_quadratic_assembly}
 \end{algorithm}
-\newpage
 
-\begin{figure}[H]
+\begin{figure}
     \begin{center}
         \includegraphics[width=1\linewidth]{figures/quadratic_error/quadratic_error.png}
     \end{center}
@@ -1785,12 +1834,3 @@ def integrate_gradients(a,b,c, i,j,k):
 % \end{align*}
 
 
-\begin{figure}[H]
-    \centering
-    \centerline{\includegraphics[width=1\textwidth]{figures/quadratic_approx/quadratic_discontinuous.png}}
-    \caption{
-        Solutions of the Laplace equation on an irregularly meshed disk, with discontinuous Dirichlet boundary condition.
-        The (P2) quadratic finite element Poisson solver is used.
-    }
-    \label{quadratic_discontinuous}
-\end{figure}

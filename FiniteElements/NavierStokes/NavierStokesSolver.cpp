@@ -1,21 +1,11 @@
 /*================================================================================
-    P2-P1 Taylor-Hood finite element solver for the incompressible Navier-Stokes
+    P2-P1 Taylor-Hood mixed finite element solver for the incompressible Navier-Stokes
     equations.
     
     The boundary condition is no-slip for the entire boundary.
 ================================================================================*/
 #include "NavierStokes/NavierStokesSolver.h"
-#include "NavierStokes/core.h"
-
-// utilities
-vec3 eigen_to_vec3(Eigen::Vector3f v)
-{
-    return vec3(v.x(), v.y(), v.z());
-}
-Eigen::Vector3f vec3_to_eigen(vec3 v)
-{
-    return Eigen::Vector3f(v.x(), v.y(), v.z());
-}
+#include "core.h"
 
 
 /*--------------------------------------------------------------------------------
@@ -187,6 +177,16 @@ void NavierStokesSolver::newton_iteration()
     // Pass the linear_term_matrix to the residual getter, as it is used to derive the homogeneous, linear parts of the residual.
     Eigen::VectorXd residual = compute_residual(linear_term_matrix);
     Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
+    printf("Solving %ld x %ld linear system\n", J.rows(), J.cols());
+    int num_nonzeroes = 0;
+    for (int i = 0; i < J.rows(); i++) {
+        for (int j = 0; j < J.cols(); j++) {
+            if (fabs(J.coeff(i, j)) >= 1e-4) {
+                num_nonzeroes += 1;
+            }
+        }
+    }
+    printf("Fill is %.7f\n", num_nonzeroes * (1.f/(J.rows()*J.cols())));
     linear_solver.compute(J);
     Eigen::VectorXd velocity_pressure_variation_vector = linear_solver.solve(residual);
     

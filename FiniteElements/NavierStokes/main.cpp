@@ -1,4 +1,4 @@
-#include "NavierStokes/core.h"
+#include "core.h"
 #include "NavierStokes/demo.h"
 
 Aspect<Camera> main_camera;

@@ -97,33 +97,33 @@ CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/NavierStokes/demo.cpp -o CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.s
 
-CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o: CMakeFiles/NavierStokes.dir/flags.make
-CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o: ../mesh_generators.cpp
-CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o: CMakeFiles/NavierStokes.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o -MF CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o.d -o CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o -c /home/lucas/Continuum/FiniteElements/mesh_generators.cpp
+CMakeFiles/NavierStokes.dir/CameraController.cpp.o: CMakeFiles/NavierStokes.dir/flags.make
+CMakeFiles/NavierStokes.dir/CameraController.cpp.o: ../CameraController.cpp
+CMakeFiles/NavierStokes.dir/CameraController.cpp.o: CMakeFiles/NavierStokes.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/NavierStokes.dir/CameraController.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NavierStokes.dir/CameraController.cpp.o -MF CMakeFiles/NavierStokes.dir/CameraController.cpp.o.d -o CMakeFiles/NavierStokes.dir/CameraController.cpp.o -c /home/lucas/Continuum/FiniteElements/CameraController.cpp
 
-CMakeFiles/NavierStokes.dir/mesh_generators.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NavierStokes.dir/mesh_generators.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/mesh_generators.cpp > CMakeFiles/NavierStokes.dir/mesh_generators.cpp.i
+CMakeFiles/NavierStokes.dir/CameraController.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NavierStokes.dir/CameraController.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/CameraController.cpp > CMakeFiles/NavierStokes.dir/CameraController.cpp.i
 
-CMakeFiles/NavierStokes.dir/mesh_generators.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/mesh_generators.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/mesh_generators.cpp -o CMakeFiles/NavierStokes.dir/mesh_generators.cpp.s
+CMakeFiles/NavierStokes.dir/CameraController.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/CameraController.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/CameraController.cpp -o CMakeFiles/NavierStokes.dir/CameraController.cpp.s
 
-CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o: CMakeFiles/NavierStokes.dir/flags.make
-CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o: ../NavierStokes/CameraController.cpp
-CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o: CMakeFiles/NavierStokes.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o -MF CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o.d -o CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o -c /home/lucas/Continuum/FiniteElements/NavierStokes/CameraController.cpp
+CMakeFiles/NavierStokes.dir/core.cpp.o: CMakeFiles/NavierStokes.dir/flags.make
+CMakeFiles/NavierStokes.dir/core.cpp.o: ../core.cpp
+CMakeFiles/NavierStokes.dir/core.cpp.o: CMakeFiles/NavierStokes.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/NavierStokes.dir/core.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/NavierStokes.dir/core.cpp.o -MF CMakeFiles/NavierStokes.dir/core.cpp.o.d -o CMakeFiles/NavierStokes.dir/core.cpp.o -c /home/lucas/Continuum/FiniteElements/core.cpp
 
-CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/NavierStokes/CameraController.cpp > CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.i
+CMakeFiles/NavierStokes.dir/core.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NavierStokes.dir/core.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/core.cpp > CMakeFiles/NavierStokes.dir/core.cpp.i
 
-CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/NavierStokes/CameraController.cpp -o CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.s
+CMakeFiles/NavierStokes.dir/core.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NavierStokes.dir/core.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/core.cpp -o CMakeFiles/NavierStokes.dir/core.cpp.s
 
 CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o: CMakeFiles/NavierStokes.dir/flags.make
 CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o: ../NavierStokes/NavierStokesSolver.cpp
@@ -185,8 +185,8 @@ CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_bottom_left.
 NavierStokes_OBJECTS = \
 "CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.o" \
 "CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.o" \
-"CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o" \
-"CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o" \
+"CMakeFiles/NavierStokes.dir/CameraController.cpp.o" \
+"CMakeFiles/NavierStokes.dir/core.cpp.o" \
 "CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o" \
 "CMakeFiles/NavierStokes.dir/NavierStokes/add_nonlinear_velocity_residual.cpp.o" \
 "CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_top_left.cpp.o" \
@@ -197,8 +197,8 @@ NavierStokes_EXTERNAL_OBJECTS =
 
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/main.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/demo.cpp.o
-NavierStokes: CMakeFiles/NavierStokes.dir/mesh_generators.cpp.o
-NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/CameraController.cpp.o
+NavierStokes: CMakeFiles/NavierStokes.dir/CameraController.cpp.o
+NavierStokes: CMakeFiles/NavierStokes.dir/core.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/NavierStokesSolver.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/add_nonlinear_velocity_residual.cpp.o
 NavierStokes: CMakeFiles/NavierStokes.dir/NavierStokes/compute_linear_term_matrix_top_left.cpp.o

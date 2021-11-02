@@ -67,35 +67,36 @@ pressure_basis_functions = [
 ] # v, v', v''
 
 # # Compute the integral
-# def integrate_gradients(a,b,c, i,j,k):
-#     grad1 = nodal_basis_gradients[barycentric_index_to_linear(a,b,c)]
-#     grad2 = nodal_basis_gradients[barycentric_index_to_linear(i,j,k)]
-#     f = (K1*grad1[0] + K2*grad1[1])*(K1*grad2[0] + K2*grad2[1])
-# 
-#     f_dy = sym.integrate(f, (y, 0,1-x))
-#     f_dy_dx = sym.integrate(f_dy, (x, 0,1))
-# 
-#     print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), f_dy_dx.simplify().subs(-K1-K2,K3))
-# 
-# 
-# def grads():
-#     print("vertex integrals")
-#     integrate_gradients(0,0,2,  0,0,2)
-#     integrate_gradients(0,0,2,  2,0,0)
-#     integrate_gradients(0,0,2,  0,2,0)
-#     
-#     integrate_gradients(0,0,2,  1,0,1)
-#     integrate_gradients(0,0,2,  0,1,1)
-#     integrate_gradients(0,0,2,  1,1,0)
-#     
-#     print("midpoint integrals")
-#     integrate_gradients(1,1,0,  1,1,0)
-#     integrate_gradients(1,1,0,  0,1,1)
-#     integrate_gradients(1,1,0,  1,0,1)
-#     
-#     integrate_gradients(1,1,0,  2,0,0)
-#     integrate_gradients(1,1,0,  0,2,0)
-#     integrate_gradients(1,1,0,  0,0,2)
+def integrate_gradients(a,b,c, i,j,k):
+    grad1 = nodal_basis_gradients[barycentric_index_to_linear(a,b,c)]
+    grad2 = nodal_basis_gradients[barycentric_index_to_linear(i,j,k)]
+    f = (K1*grad1[0] + K2*grad1[1])*(K1*grad2[0] + K2*grad2[1])
+
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+
+    print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), f_dy_dx.simplify().subs(-K1-K2,K3))
+
+
+def grads():
+    print("vertex integrals")
+    integrate_gradients(0,0,2,  0,0,2)
+    integrate_gradients(0,0,2,  2,0,0)
+    integrate_gradients(0,0,2,  0,2,0)
+    
+    integrate_gradients(0,0,2,  1,0,1)
+    integrate_gradients(0,0,2,  0,1,1)
+    integrate_gradients(0,0,2,  1,1,0)
+    
+    print("midpoint integrals")
+    integrate_gradients(1,1,0,  1,1,0)
+    integrate_gradients(1,1,0,  0,1,1)
+    integrate_gradients(1,1,0,  1,0,1)
+    
+    integrate_gradients(1,1,0,  2,0,0)
+    integrate_gradients(1,1,0,  0,2,0)
+    integrate_gradients(1,1,0,  0,0,2)
+grads()
 # 
 # 
 # # Source term integration

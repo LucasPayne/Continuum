@@ -122,14 +122,15 @@
 \begin{abstract}
 This paper describes those basic theoretical principles necessary to understand
 the meaning of the Navier-Stokes equations and the fundamental problems that need to be addressed when writing a fluid solver.
-Given two additional necessary components (an efficient mesh data structure and a library of sparse linear solvers),
+Given two additional necessary components (an efficient mesh data structure and a sparse linear solver),
 a working Navier-Stokes solver can be implemented by routine mesh traversals and assembly of linear systems.
 
+\vskip 0.05in
 Firstly, the incompressible Navier-Stokes equations are derived in the framework of continuum mechanics as a Cauchy momentum equation
 with a volume-conserving constraint. If the advection is ignored, the fluid pressure is a Lagrange multiplier
 for the constraint in the resulting linear Stokes equations.
 
-
+\vskip 0.05in
 Finite element (and additionally, finite volume) methods are then introduced in the context of the Poisson equation.
 The resulting Poisson solvers form the basis of a stable, Taylor-Hood mixed finite element solver for the linear, steady Stokes equations.
 This method solves for the velocity and the Lagrange multiplier, pressure, simultaneously.

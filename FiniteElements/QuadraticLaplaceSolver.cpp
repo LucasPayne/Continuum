@@ -1,3 +1,4 @@
+#include "core.h"
 #include "cg_sandbox.h"
 #include "triangle_wrapper.h"
 #include "CameraController.cpp"
@@ -10,23 +11,7 @@ FILE *error_metric_file = nullptr;
 
 
 
-using PlaneFunction = std::function<double(double x, double y)>; // Function of the XY plane.
-using PlaneFunctionNL1 = std::function<double(double x, double y, double u)>; // First-order non-linear plane function.
-using SparseMatrix = Eigen::SparseMatrix<double>;
-using EigenTriplet = Eigen::Triplet<double>;
-
 Aspect<Camera> main_camera;
-
-
-vec3 eigen_to_vec3(Eigen::Vector3f v)
-{
-    return vec3(v.x(), v.y(), v.z());
-}
-Eigen::Vector3f vec3_to_eigen(vec3 v)
-{
-    return Eigen::Vector3f(v.x(), v.y(), v.z());
-}
-
 
 struct ManufacturedSolution {
     PlaneFunction dirichlet_boundary_function;
@@ -629,11 +614,11 @@ void Demo::post_render_update()
     if (geom != nullptr) delete geom;
     srand(2302131);
     if (linear_mode) {
-        geom = circle_mesh(mesh_N*2, random);
-        // geom = square_mesh(mesh_N*2);
+        // geom = circle_mesh(mesh_N*2, random);
+        geom = square_mesh(mesh_N*2);
     } else {
-        geom = circle_mesh(mesh_N, random);
-        // geom = square_mesh(mesh_N);
+        // geom = circle_mesh(mesh_N, random);
+        geom = square_mesh(mesh_N);
     }
     // Compute Edge midpoints.
     auto midpoints = EdgeAttachment<Eigen::Vector3f>(geom->mesh);
@@ -823,9 +808,9 @@ if (!render_exact_solution) {
         h += h_coeff * (a - b).norm();
     }
 
-    // float error = sqrt(total);
-    // fprintf(error_metric_file, "%d %.10f %.10f\n", mesh_N, h, error);
-    // printf("%d %.10f %.10f\n", mesh_N, h, error);
+    float error = sqrt(total);
+    fprintf(error_metric_file, "%d %.10f %.10f\n", mesh_N, h, error);
+    printf("%d %.10f %.10f\n", mesh_N, h, error);
 
 
 
@@ -971,7 +956,7 @@ void App::mouse_handler(MouseEvent e)
 
 int main(int argc, char *argv[])
 {
-    error_metric_file = fopen(DATA "error_metric_file.txt", "w+");
+    error_metric_file = fopen(DATA "QUADRATIC_error_metric_file.txt", "w+");
 
     printf("[main] Creating context...\n");
     IGC::Context context("A world");

@@ -1,5 +1,5 @@
 #include "NavierStokes/NavierStokesSolver.h"
-#include "NavierStokes/core.h"
+#include "core.h"
 
 #define RESIDUAL_ADVECTION false
 #define WEIGHTS_MODE 1
