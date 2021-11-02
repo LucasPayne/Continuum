@@ -52,16 +52,16 @@
 \contentsline {section}{\numberline {3.3}Discretizing Poisson's equation by finite volumes}{28}{section.3.3}
 \contentsline {subsection}{\numberline {3.3.1}The Dirichlet boundary condition and the test space}{28}{subsection.3.3.1}
 \contentsline {subsection}{\numberline {3.3.2}Forming a linear system}{29}{subsection.3.3.2}
-\contentsline {subsection}{\numberline {3.3.3}A piecewise linear finite volume triangulation scheme}{29}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.3}A piecewise linear finite volume triangulation scheme}{30}{subsection.3.3.3}
 \contentsline {subsubsection}{The test space}{30}{section*.26}
 \contentsline {subsubsection}{Approximating the boundary values}{31}{section*.28}
 \contentsline {subsubsection}{Choosing a finite number of control volumes}{31}{section*.31}
 \contentsline {subsection}{\numberline {3.3.4}Computing the linear system by closed form integration}{32}{subsection.3.3.4}
-\contentsline {subsubsection}{Integrating the source function}{34}{section*.33}
+\contentsline {subsubsection}{Integrating the source function}{34}{section*.34}
 \contentsline {subsection}{\numberline {3.3.5}The resulting matrix assembly algorithm}{35}{subsection.3.3.5}
 \contentsline {subsection}{\numberline {3.3.6}The resulting finite volume algorithm}{37}{subsection.3.3.6}
-\contentsline {subsubsection}{Mesh generation}{37}{section*.36}
-\contentsline {subsubsection}{Numerical linear algebra}{38}{section*.37}
+\contentsline {subsubsection}{Mesh generation}{37}{section*.38}
+\contentsline {subsubsection}{Numerical linear algebra}{38}{section*.39}
 \contentsline {subsection}{\numberline {3.3.7}An implementation in C\texttt {++}}{38}{subsection.3.3.7}
 \contentsline {subsection}{\numberline {3.3.8}Validating the method}{38}{subsection.3.3.8}
 \contentsline {section}{\numberline {3.4}From finite volumes to general Galerkin methods}{41}{section.3.4}
@@ -71,11 +71,11 @@
 \contentsline {section}{\numberline {3.5}Discretizing Poisson's equation by finite elements}{44}{section.3.5}
 \contentsline {subsection}{\numberline {3.5.1}Forming a linear system}{44}{subsection.3.5.1}
 \contentsline {subsection}{\numberline {3.5.2}A piecewise linear finite element triangulation scheme}{45}{subsection.3.5.2}
-\contentsline {subsubsection}{Computing the linear system by closed form integration}{45}{section*.43}
-\contentsline {subsubsection}{Integrating the source function}{48}{section*.44}
+\contentsline {subsubsection}{Computing the linear system by closed form integration}{45}{section*.45}
+\contentsline {subsubsection}{Integrating the source function}{48}{section*.46}
 \contentsline {subsection}{\numberline {3.5.3}A piecewise quadratic finite element triangulation scheme}{48}{subsection.3.5.3}
-\contentsline {subsubsection}{The piecewise quadratic basis functions}{49}{section*.45}
-\contentsline {subsubsection}{The linear system}{50}{section*.49}
+\contentsline {subsubsection}{The piecewise quadratic basis functions}{49}{section*.47}
+\contentsline {subsubsection}{The linear system}{50}{section*.51}
 \contentsline {subsection}{\numberline {3.5.4}Computing the linear system for the piecewise quadratic scheme}{50}{subsection.3.5.4}
 \contentsline {subsection}{\numberline {3.5.5}The resulting matrix assembly algorithm}{51}{subsection.3.5.5}
 \contentsline {subsection}{\numberline {3.5.6}The resulting finite element algorithm}{51}{subsection.3.5.6}
@@ -88,22 +88,22 @@
 \contentsline {subsection}{\numberline {4.2.2}Forming the right-hand-sides for the two Poisson solves}{59}{subsection.4.2.2}
 \contentsline {subsection}{\numberline {4.2.3}Results for the iterative pressure update method}{59}{subsection.4.2.3}
 \contentsline {section}{\numberline {4.3}A mixed finite element method}{60}{section.4.3}
-\contentsline {subsubsection}{The pressure finite element space}{60}{section*.55}
-\contentsline {subsubsection}{The velocity finite element product space }{60}{section*.56}
+\contentsline {subsubsection}{The pressure finite element space}{60}{section*.57}
+\contentsline {subsubsection}{The velocity finite element product space }{60}{section*.58}
 \contentsline {subsection}{\numberline {4.3.1}The mixed weak form of the steady Stokes equations}{60}{subsection.4.3.1}
 \contentsline {subsection}{\numberline {4.3.2}Forming a linear system from the mixed weak form}{61}{subsection.4.3.2}
 \contentsline {subsection}{\numberline {4.3.3}Implementation and results}{62}{subsection.4.3.3}
-\contentsline {subsubsection}{Lid driven cavity with obstruction}{62}{section*.57}
-\contentsline {subsubsection}{Stokes flow around an obstruction in a pipe}{63}{section*.59}
+\contentsline {subsubsection}{Lid driven cavity with obstruction}{62}{section*.59}
+\contentsline {subsubsection}{Stokes flow around an obstruction in a pipe}{63}{section*.61}
 \contentsline {chapter}{\chapternumberline {5}A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}{65}{chapter.5}
 \contentsline {section}{\numberline {5.1}Extending the steady Stokes flow method to unsteady Navier-Stokes flow}{65}{section.5.1}
 \contentsline {subsection}{\numberline {5.1.1}Adding time dependence to the Stokes flow solver}{65}{subsection.5.1.1}
 \contentsline {subsection}{\numberline {5.1.2}The problem of advection}{66}{subsection.5.1.2}
-\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{66}{section*.61}
-\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{66}{section*.62}
+\contentsline {subsubsection}{Fully implicit Euler with Newton iterations}{66}{section*.63}
+\contentsline {subsubsection}{A mixed implicit-explicit (IMEX) method}{66}{section*.64}
 \contentsline {subsection}{\numberline {5.1.3}A splitting method with semi-Lagrangian advection}{66}{subsection.5.1.3}
 \contentsline {section}{\numberline {5.2}Results}{67}{section.5.2}
-\contentsline {subsubsection}{The sample problem}{67}{section*.63}
-\contentsline {subsubsection}{The discretization}{67}{section*.64}
-\contentsline {subsubsection}{Visualisation of the results}{68}{section*.66}
-\contentsline {chapter}{Bibliography}{71}{section*.70}
+\contentsline {subsubsection}{The sample problem}{67}{section*.65}
+\contentsline {subsubsection}{The discretization}{67}{section*.66}
+\contentsline {subsubsection}{Visualisation of the results}{68}{section*.68}
+\contentsline {chapter}{Bibliography}{71}{section*.72}

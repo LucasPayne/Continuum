@@ -69,9 +69,9 @@ The focus here is on the Dirichlet problem
 \end{equation}
 where $\Gamma$ is the boundary of the domain, and the domain is 2D.
 Poisson's equation can be thought of as the steady-state version of the heat equation. The solution of a Poisson problem will be a crucial component
-of the solution of the Stokes equations. It seems ideal to start by discussing
-discretization methods for Poisson's equation \eqref{poisson_compact} in particular,
-as it is likely the simplest non-trivial PDE. Poisson's equation \eqref{poisson_compact}, importantly,
+of the steady Stokes solver described in chapter 4, which in turn is a core component of
+the Navier-Stokes solver described in chapter 5.
+Poisson's equation \eqref{poisson_compact}, importantly,
 is based on an integral conservation law.
 An integral form will give clearer routes to discretizations which
 have geometric meaning.
@@ -84,8 +84,8 @@ of quantity $\phi$ by $j$, quantified over arbitrary control volumes $\Omega_0$.
 There are an infinite number of control volumes, and therefore an infinite number of equations which must hold, and there is an infinite dimensional
 space of solutions to choose from. A key idea, then, is to choose a finite number of equations and a finite dimensional subspace of possible approximate solutions.
 A supposed solution will be represented by the coefficients of some choice of basis functions for the subspace. Each equation will be checked exactly against this supposed solution.
-To continue with this idea, we must write Poisson's equation \eqref{poisson_compact} in integral form.
-
+To continue with this idea, we must write Poisson's equation \eqref{poisson_compact} in integral form. This form is the natural one
+which appears when discussing equilibrium of diffusion processes.
 
 \subsubsection{Deriving the heat and Poisson equation through diffusion processes}
 The Poisson equation \eqref{poisson_compact} can be thought of as the steady state of some diffusion process with a source term $g$,
@@ -124,7 +124,7 @@ In integral form, ``undoing'' the application of Stokes' theorem above, Poisson'
     \oint_{\pomn} -\nabla h\cdot \hat{n}\,dx = \int_{\omn} g\,dx \quad \text{for all control volumes $\Omega_0$.}
 \end{equation}
 Form \eqref{poisson_equation_integral} clearly shows that we are calculating a steady state,
-as we are solving for $h$ such that the amount of heat that leaves $\Omega_0$ is the amount introduced into $\Omega_0$ by the source function.
+as we are solving for $h$ such that the amount of heat that diffuses out of $\Omega_0$ (in the direction of the negative gradient) is the amount introduced into $\Omega_0$ by the source function.
 The form \eqref{poisson_equation_integral}, rather than \eqref{poisson_compact}, will be the starting point for deriving Galerkin methods.
 
 \subsubsection{So how do we discretize Poisson's equation?}
@@ -146,9 +146,9 @@ and we get \eqref{poisson_compact} in the form
            +\frac{\partial^2 h}{\partial y^2}
            +\frac{\partial^2 h}{\partial z^2}\right) = g.
 \end{equation}
-By forming secant approximations of the derivatives over a regular grid,
-a linear system is formed, and the approximate solution is solved
-for as a function of this grid.
+The finite difference method consists of forming secant approximations of the derivatives over a regular grid,
+constructing a linear system, and solving for the approximate solution
+as a function of this grid.
 However, it may be hard to give a real interpretation of what the solution samples at grid points say about the solution everywhere.
 They could be coefficients of, for example, hat basis functions.
 Yet a finite difference discretization of Poisson equation \eqref{poisson_compact} may not take this into account at all.
@@ -204,59 +204,59 @@ finite volume discretization.
 The Dirichlet boundary condition $\left.h\right|_\Gamma = h_\Gamma$ specifies the boundary values for any solution.
 However, the finite dimensional space $\Phi^*$ may not be able to exactly represent the boundary function $h_\Gamma$,
 and therefore the first step is to approximate $h_\Gamma$ (for which there are many options, for example
-projection in the $L^2$-norm or interpolation across a finite sampling of boundary points \cite{approximation_theory}). Choosing some $\phi_\Gamma \in \Phi^*$ with
-    $$\left.\phi_\Gamma\right|_\Gamma \approx h_\Gamma,$$
+projection in the $L^2$-norm or interpolation across a finite sampling of boundary points \cite{approximation_theory}). Choosing some $\widetilde{h}_\Gamma \in \Phi^*$ with
+    $$\left.\widetilde{h}_\Gamma\right|_\Gamma \approx h_\Gamma,$$
 we can define an ``interior'' function space
 $$
     \Phi = \left\{h^* \in \Phi^* \mid \left.h\right|_\Gamma = 0 \right\},
 $$
 and the approximate solution $\tilde{h}$ will then be
 $$
-    \tilde{h} = \phi + \phi_\Gamma
+    \tilde{h} = \phi + \widetilde{h}_\Gamma
 $$
 for some $\phi \in \Phi$.
-In the finite volume and finite element literature the space $\Phi$ is called the test space.
+The space $\Phi$ is called the \textit{test space}.
 Since we selected $n$ control volumes $\Omega_1,\cdots,\Omega_n$, the approximating space $\Phi^*$ must be chosen such that
 $\Phi$ is $n$-dimensional. We can choose a basis for the test space,
     $$\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}.$$
 The problem is now to find a vector of coefficients of these test functions,
     $\hat{h} = (h_1, \cdots, h_n)^T,$
 and reconstruct the solution as
-    $$\tilde{h} = \phi + \phi_\Gamma,$$
+    $$\tilde{h} = \phi + \widetilde{h}_\Gamma,$$
 where $\phi$ is the ``interior variation''
     $$\phi = \Phi\cdot \hat{h} \coloneqq h_1\phi_1 + \cdots + h_n\phi_n.$$
 
 \subsection{Forming a linear system}
 The integral-conservation-law form \eqref{poisson_equation_integral} of Poisson's equation \eqref{poisson_compact}
-now directly indicates a method of approximation. Letting $h$ be approximated by $\tilde{h} = \phi + \phi_\Gamma$ (where $\phi \in \Phi$ is unknown and $\phi_\Gamma \in \Phi^*$ is known),
+now directly indicates a method of approximation. Letting $h$ be approximated by $\tilde{h} = \phi + \widetilde{h}_\Gamma$ (where $\phi \in \Phi$ is unknown and $\widetilde{h}_\Gamma \in \Phi^*$ is known),
 and restricting the flux integrals to the control volumes $\Omega_1,\cdots,\Omega_n$, the conservation law \eqref{poisson_equation_integral} becomes
 \begin{equation}\label{poisson_equation_integral_fvm}
-    \oint_{\partial\Omega_j} -\nabla \left(\phi + \phi_\Gamma\right) \cdot \hat{n}\,dx = \int_{\Omega_j} g\,dx \quad\quad j=1,\cdots,n.
+    \oint_{\partial\Omega_j} -\nabla \left(\phi + \widetilde{h}_\Gamma\right) \cdot \hat{n}\,dx = \int_{\Omega_j} g\,dx \quad\quad j=1,\cdots,n.
 \end{equation}
 The ``interior variation'' $\phi = \Phi\cdot \hat{h}$ is the only unknown, so we can move all knowns to the right-hand side
 and expand $\phi$ in terms of the basis test functions $\phi_1,\cdots,\phi_n$:
 \begin{equation}\label{poisson_equation_integral_fvm_knowns_unknowns}
     \oint_{\partial\Omega_j} -\nabla \left(\sum_{i=1}^nh_i\phi_i\right) \cdot \hat{n}\,dx =
             \int_{\Omega_j} g\,dx
-            + \oint_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
+            + \oint_{\partial\Omega_j} \nabla \widetilde{h}_\Gamma \cdot \hat{n}\,dx
  \quad\quad j=1,\cdots,n.
 \end{equation}
 By linearity, to emphasize the separate integrals that need to be computed, the above equation can be written as
 \begin{equation}\label{poisson_equation_integral_discretized}
     \sum_{i=1}^n h_i\oint_{\pom_j} -\nabla \phi_i \cdot \hat{n}\,dx =
             \int_{\Omega_j} g\,dx
-            + \oint_{\partial\Omega_j} \nabla \phi_\Gamma \cdot \hat{n}\,dx
+            + \oint_{\partial\Omega_j} \nabla \widetilde{h}_\Gamma \cdot \hat{n}\,dx
  \quad\quad j=1,\cdots,n.
 \end{equation}
-It is seen here that there must be some restrictions on the $\phi_i$ and $\phi_\Gamma$.
+It is seen here that there must be some restrictions on the $\phi_i$ and $\widetilde{h}_\Gamma$.
 Formally, they must be in the Sobolev space $H^1(\Omega)$
-(--- NOTE: This is probably wrong, as the integrals are over internal cell boundaries and the boundary $\Gamma$. Need to read
-about $H^{\text{div}}$)
+% (--- NOTE: This is probably wrong, as the integrals are over internal cell boundaries and the boundary $\Gamma$. Need to read
+% about $H^{\text{div}}$)
 This simply means that they must have a gradient defined ``almost everywhere''.
 It does not matter if the gradient is not defined at isolated lower-dimensional subsets, as these make no contribution to
 the integral. The system \eqref{poisson_equation_integral_discretized} can be written in matrix form as
 \newcommand{\integralentry}[2]{\oint_{\pom_{#1}}-\nabla\phi_{#2}\cdot\hat{n}\,dx}
-\newcommand{\integralrhsentry}[1]{\int_{\om_{#1}}g\,dx + \oint_{\pom_{#1}}\nabla\phi_\Gamma\cdot\hat{n}\,dx}
+\newcommand{\integralrhsentry}[1]{\int_{\om_{#1}}g\,dx + \oint_{\pom_{#1}}\nabla\widetilde{h}_\Gamma\cdot\hat{n}\,dx}
 \begin{equation}\label{poisson_matrix_equation}
 \begin{split}
     A\hat{h}
@@ -272,7 +272,7 @@ the integral. The system \eqref{poisson_equation_integral_discretized} can be wr
 \end{split}
 \end{equation}
 This system is solved for the coefficients of combination $\hat{h} = (h_1 \cdots h_n)^T$, and the approximate
-solution is constructed as $\tilde{h} = \Phi\cdot\hat{h} + \phi_\Gamma$.
+solution is constructed as $\tilde{h} = \Phi\cdot\hat{h} + \widetilde{h}_\Gamma$.
 If the control volumes $\Omega_1,\cdots,\Omega_n$ and test space $\Phi = \text{span}\left\{\phi_1,\cdots,\phi_n\right\}$
 are chosen well, this linear system will be nonsingular and hopefully well-conditioned.
 If the chosen control volumes join together in the interior of $\Omega$ like pieces of a puzzle, this gives a conservative system of balanced fluxes, but it is another question whether the approximation
@@ -297,7 +297,7 @@ $T_1,\cdots,T_{n_T}$. An example triangulation of an ellipse-shaped domain is sh
 
 \subsubsection{The test space}
 Firstly, there is a clear choice of function space $\Phi^*$, which satisfies the $H^1$ condition
-(NOTE: Is $H^1$ necessary? Need to check conditions for finite volumes), consisting of piecewise linear ``hat'' basis functions
+% (NOTE: Is $H^1$ necessary? Need to check conditions for finite volumes), consisting of piecewise linear ``hat'' basis functions
 at each interior or boundary vertex,
 \newcommand{\hatfun}[1]{\text{Hat}(#1)}
 $$
@@ -330,11 +330,11 @@ One of these basis functions for the ellipse-shaped domain is shown in figure \r
 \subsubsection{Approximating the boundary values}
 One simple approximation of $\left.h\right|_\Gamma = h_\Gamma$ is
 \begin{equation}\label{boundary_approximation}
-    \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
+    \widetilde{h}_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
                 + \cdots
                 + h_\Gamma(p^\Gamma_{n_\Gamma})\hatfun{p^\Gamma_{n_\Gamma}},
 \end{equation}
-which is a piecewise linear interpolation when restricted to the boundary $\Gamma$. The approximation $\phi_\Gamma$ for some boundary
+which is a piecewise linear interpolation when restricted to the boundary $\Gamma$. The approximation $\widetilde{h}_\Gamma$ for some boundary
 function $h_\Gamma$ is shown in figure \ref{boundary}.
 \begin{figure}[H]
     \begin{center}
@@ -342,11 +342,11 @@ function $h_\Gamma$ is shown in figure \ref{boundary}.
     \end{center}
     \caption{\scriptsize
         A circle domain $\Omega$ with boundary $\Gamma$ is tessellated by triangles $T_1,\cdots,T_{n_T}$.
-        The boundary function $h_\Gamma$ is approximated by $\phi_\Gamma$, a linear combination of hat functions centred at the boundary vertices.
+        The boundary function $h_\Gamma$ is approximated by $\widetilde{h}_\Gamma$, a linear combination of hat functions centred at the boundary vertices.
     }
     \label{boundary}
 \end{figure}
-This approximation $\phi_\Gamma$ is added to the ``interior variation'' $\phi = \Phi\cdot\hat{h}$ to construct a possible solution.
+This approximation $\widetilde{h}_\Gamma$ is added to the ``interior variation'' $\phi = \Phi\cdot\hat{h}$ to construct a possible solution.
 When a linear solver is given the linear system \eqref{poisson_matrix_equation}, it will find the interior variation $\phi$
 which minimises some residual norm. An iterative solver, for example, can then be thought of as progressively varying a thin membrane attached
 to the boundary curve,
@@ -356,7 +356,7 @@ until the residual error is sufficiently small. This construction is shown in fi
         \includegraphics[width=1\linewidth]{figures/laplaceboundary/laplaceboundaryv2.png}
     \end{center}
     \caption{\scriptsize
-        The fixed boundary approximation $\phi_\Gamma$ is added to a variable interior variation $\phi$ to give a possible approximate solution $\tilde{h}$.
+        The fixed boundary approximation $\widetilde{h}_\Gamma$ is added to a variable interior variation $\phi$ to give a possible approximate solution $\tilde{h}$.
         This possible solution can be checked by integration against the trial control volumes $\Omega_1,\cdots,\Omega_n$.
     }
     \label{laplaceboundary}
@@ -386,10 +386,9 @@ contained in a single fan of triangles. Notice also that the Voronoi polygon pas
 This midpoint property will soon prove useful in computing integrals, but the resulting exposition will be clearer if we can also
 assume that the cell boundary \textit{is} contained in a single fan of triangles. Therefore we define the \textit{mixed Voronoi cell} \cite{polygon_mesh_processing},
 where a wayward circumcentre is pulled back to the opposite edge.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
 
 The scheme as described so far, consisting of a triangle mesh, hat test functions, and barycentric, Voronoi, or mixed Voronoi control volumes,
 has found some success, especially in the domain of geometry processing (\cite{polygon_mesh_processing}, \cite{ddg_triangulated}).
@@ -398,7 +397,7 @@ We will work with the mixed Voronoi cells.
 \subsection{Computing the linear system by closed form integration}\label{fvm_closed_form}
 Now that we have chosen a specific finite volume discretization, given a domain triangulation we can compute
 the coefficients of the linear system \eqref{poisson_matrix_equation} and solve for $\hat{h}$, giving
-the approximate solution $\tilde{h} = \phi_\Gamma + \Phi\cdot \hat{h}$.
+the approximate solution $\tilde{h} = \widetilde{h}_\Gamma + \Phi\cdot \hat{h}$.
 By fortuitous circumstances, these integrals actually have simple closed forms.
 (This is with the exception of the heat source integrals $\int_{\Omega_j}g\,dx$,
 which may require numerical integration if the heat source $g$ is not restricted to $\Phi^*$.)
@@ -414,10 +413,10 @@ rather than with the expanded linear system \eqref{poisson_matrix_equation}.
 By linearity, the $\nabla$ in $\nabla\tilde{h}$ ``falls through'' the expansion of $\tilde{h}$:
 % $\nabla \tilde{h}$ is a combination of gradients of basis functions of $\Phi^*$:
 \begin{equation}\label{gradient_expansion}
-    \nabla \tilde{h} = \nabla\phi_\Gamma + \nabla\phi
+    \nabla \tilde{h} = \nabla\widetilde{h}_\Gamma + \nabla\phi
              = \sum_{i=1}^{n_\Gamma}h_\Gamma(p^\Gamma_i)\nabla\phi^\Gamma_i + \sum_{i=1}^n h_i\nabla\phi_i.
 \end{equation}
-By linearity the integral \eqref{fvm_integral} becomes
+Another application of linearity rearranges the integral \eqref{fvm_integral} to
 \begin{equation}\label{fvm_integral_linearity_expanded}
     \sum_{i=1}^{n_\Gamma}\left[h_\Gamma(p^\Gamma_i)\oint_{\pom_j}-\nabla\phi^\Gamma_i\cdot\hat{n}\,dx\right]
     + \sum_{i=1}^n\left[h_i\oint_{\pom_j}-\nabla\phi_i\cdot\hat{n}\,dx\right].
@@ -476,17 +475,7 @@ $$
 \int_{\Omega_j \cap T} -\nabla\phi_{v_{t+1}}\cdot\hat{n}\,dx.
 $$
 This is simple because the gradients are constant on $\Omega_j \cap T_t^v$.
-
-\vskip 0.2in
-(figure)
-\vskip 0.2in
-
-The Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v_t)$ and $m^\ppr = \frac{1}{2}(v + v_{t+1})$, taking a detour to a point within $T$.
-
-\vskip 0.2in
-(figure)
-\vskip 0.2in
-
+It so happens that the Voronoi polygon joins the midpoints $m^\pr = \frac{1}{2}(v + v_t)$ and $m^\ppr = \frac{1}{2}(v + v_{t+1})$, taking a detour to a point within $T$.
 However, since the gradient vector fields are constant, they are conservative, and we can simplify the domain $\Omega_j \cap T$ to the line segment $L$ between
 the midpoints $m^\pr$ and $m^\ppr$. Since the gradients are constant on $T$, these integrals are the length of $L$ multiplied by one ``sample'' flux across $L$.
 This can be done easily, by noticing $L$ is parallel with and half the length of the line segment between $v_t$ and $v_{t+1}$.
@@ -497,11 +486,16 @@ We can then compute the integrals as:
     \frac{1}{2}\nabla\phi_{v_{t+1}}\cdot(v_{t+1} - v_t)^\perp,
 \end{equation}
 where $(v_{t+1} - v_t)^\perp$ is the vector $v_{t+1} - v_t$ rotated $90$ degrees anticlockwise.
-We now only need the constant gradients on $T$. This requires some simple geometry. As this construction is the same for each vertex, consider an anticlockwise ordering of $v,v_t,v_{t+1}$, named $v^\pr,v^\ppr,v^\pppr$.
+We now only need the constant gradients on $T$. This requires some simple geometry. As this construction is the same for each vertex, consider an anticlockwise ordering of $v,v_t,v_{t+1}$, named $v^\pr,v^\ppr,v^\pppr$. This construction is drawn in figure \ref{geometry_hat}.
 
-\vskip 0.2in
-(figure of a rectangle drawn around the triangle, and the perpendicular direction, with width and height labels)
-\vskip 0.2in
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=0.4\textwidth]{figures/geometry/hat.png}}
+    \caption{
+        The gradient of $\phi_1$ is proportional to the perpendicular of the base formed by the nodes of $\phi_2$ and $\phi_3$.
+    }
+    \label{geometry_hat}
+\end{figure}
 
 We must normalize this vector and then divide by the height of this rectangle, as the slope is inversely proportional to the rectangle height.
 This gives the gradient
@@ -556,9 +550,14 @@ The computation of the mixed Voronoi cell area $\text{Area}(\om_j)$ can be achie
 Iterating over each triangle incident to $p_j$, compute the cell segment area as the area of two triangles, the second triangle depending on whether
 the computed circumcentre lies inside or outside the triangle.
 
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=0.46\textwidth]{figures/geometry/area.png}}
+    \caption{
+        The area computation reduces to the computation of the areas of small triangles.
+    }
+    \label{geometry_area}
+\end{figure}
 
 \subsection{The resulting matrix assembly algorithm}
 Using the expression \eqref{flux_integral_summation}, the linear system
@@ -644,7 +643,7 @@ We now have an effective algorithm for approximating Poisson's equation:
     \item Partition the 2D domain $\Omega$ into triangles $T_1,\cdots,T_{n_T}$. This determines the hat basis functions $\phi_1,\cdots,\phi_n$
          and the mixed Voronoi cells $\Omega_1,\cdots,\Omega_n$.
     \item Form the matrix and right-hand side in \eqref{poisson_matrix_equation} with the algorithm \ref{alg:assembly}.
-    \item Solve the resulting linear system for $\hat{h}$, and construct the solution as $\tilde{h} = \phi_\Gamma + \Phi\cdot\hat{h}$.
+    \item Solve the resulting linear system for $\hat{h}$, and construct the solution as $\tilde{h} = \widetilde{h}_\Gamma + \Phi\cdot\hat{h}$.
 \end{enumerate}
 Each of these steps is conceptually well-separated into the domains of
 mesh generation, matrix assembly, and numerical linear algebra. The above pseudocode \ref{alg:assembly} is a matrix assembly algorithm.
@@ -988,14 +987,14 @@ The resulting discrete system of equations for a general Galerkin method is
 \begin{equation}\label{poisson_galerkin_system}
 \begin{split}
     \int_\Omega \nabla\tilde{h}\cdot \nabla\psi_j\,dx
-        &\equiv \int_\Omega \nabla(\phi_\Gamma + \Phi\cdot\hat{h})\cdot \nabla\psi_j\,dx \\
-    &\equiv \int_\Omega \nabla\phi_\Gamma \cdot \nabla\psi_j\,dx + \sum_{i=1}^n h_i\int_\Omega \nabla\phi_i\cdot \nabla\psi_j\,dx\\
+        &\equiv \int_\Omega \nabla(\widetilde{h}_\Gamma + \Phi\cdot\hat{h})\cdot \nabla\psi_j\,dx \\
+    &\equiv \int_\Omega \nabla\widetilde{h}_\Gamma \cdot \nabla\psi_j\,dx + \sum_{i=1}^n h_i\int_\Omega \nabla\phi_i\cdot \nabla\psi_j\,dx\\
     &= \int_\Omega g\psi_j\,dx,
         \text{\quad\quad $j = 1,\cdots,n$}.
 \end{split}
 \end{equation}
 Remember that we start with the discrete solution space $\Phi^*$, then define the test space $\Phi$ to be $\Phi^*$ restricted to those functions vanishing on $\Gamma$.
-The term $\phi_\Gamma \in \Phi^*$ is a ``base'' term which approximates the boundary condition $h_\Gamma$ on $\Gamma$.
+The term $\widetilde{h}_\Gamma \in \Phi^*$ is a ``base'' term which approximates the boundary condition $h_\Gamma$ on $\Gamma$.
 We can try just about any kind of function spaces for $\Phi$ and $\Psi$, but we can make some broad distinctions, for example:
 \begin{itemize}
     \item If $\Psi = \Phi$, then we call this a \textit{Bubnov--Galerkin} method.
@@ -1098,7 +1097,7 @@ While $\Psi_{\text{FVM}}$ is technically not $H^1_0$-conforming, if the gradient
 % variational methods with the original PDE.
 
 % \subsubsection{Integrating over trial functions versus integrating over domains}
-% The above construction (generalising a finite volume flux integral to a finite-element ``blurred flux'' integral) is further investigated
+% The above construction (generalising a finite volume flux integral to a finite element ``blurred flux'' integral) is further investigated
 % below.
 % We will work with the Dirac delta ``function'' (which is rather a distribution, or generalised function),
 % defined by
@@ -1157,7 +1156,7 @@ We now start with the weak form \eqref{poisson_equation_weak_form}.
 Firstly, we can express the resulting Galerkin linear system in matrix form as
 
 \renewcommand{\integralentry}[2]{\int_{\om}\nabla\phi_{#2}\cdot\nabla{\psi_j}\,dx}
-\renewcommand{\integralrhsentry}[1]{\int_{\om}g\psi_j\,dx - \int_{\om}\nabla\phi_\Gamma\cdot\nabla{\psi_j}\,dx}
+\renewcommand{\integralrhsentry}[1]{\int_{\om}g\psi_j\,dx - \int_{\om}\nabla\widetilde{h}_\Gamma\cdot\nabla{\psi_j}\,dx}
 \begin{equation}\label{fem_poisson_matrix_equation}
 \begin{split}
     A\hat{h}
@@ -1228,13 +1227,13 @@ show how this, seemingly pedantic, complete derivation of this equivalent FEM sc
 
 Again, we use the piecewise linear interpolation \eqref{boundary_approximation} of the Dirichlet boundary function $h_\Gamma$:
 \begin{equation*}
-    \phi_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
+    \widetilde{h}_\Gamma = h_\Gamma(p^\Gamma_1)\hatfun{p^\Gamma_1}
                 + \cdots
                 + h_\Gamma(p^\Gamma_{n_\Gamma})\hatfun{p^\Gamma_{n_\Gamma}}.
 \end{equation*}
 As before, we expand the gradient $\nabla\tilde{h}$ \eqref{gradient_expansion} by linearity as
 \begin{equation*}
-    \nabla \tilde{h} = \nabla\phi_\Gamma + \nabla\phi
+    \nabla \tilde{h} = \nabla\widetilde{h}_\Gamma + \nabla\phi
              = \sum_{i=1}^{n_\Gamma}h_\Gamma(p^\Gamma_i)\nabla\phi^\Gamma_i + \sum_{i=1}^n h_i\nabla\phi_i,
 \end{equation*}
 and in this case the (Bubnov--)Galerkin linear system \eqref{poisson_galerkin_system} becomes
@@ -1791,7 +1790,7 @@ def integrate_gradients(a,b,c, i,j,k):
     \centerline{\includegraphics[width=1\textwidth]{figures/quadratic_approx/quadratic_discontinuous.png}}
     \caption{
         Solutions of the Laplace equation on an irregularly meshed disk, with discontinuous Dirichlet boundary condition.
-        The (P2) quadratic finite-element Poisson solver is used.
+        The (P2) quadratic finite element Poisson solver is used.
     }
     \label{quadratic_discontinuous}
 \end{figure}
