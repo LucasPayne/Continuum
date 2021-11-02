@@ -12,6 +12,7 @@ a no-slip boundary condition everywhere. The equation to solve is then
 \end{split}
 \end{equation}
 
+\subsection{Adding time dependence to the Stokes flow solver}
 If we temporarily ignore the $u\cdot \nabla u$ term,
 this is an unsteady Stokes flow.
 Due to the diffusive nature of the Stokes equation, a viable option for time discretization (to maintain stability) is implicit Euler.
@@ -24,15 +25,19 @@ The discretized weak form of the time-dependent Stokes equations is then
     \int_\om -\psi^p \nabla\cdot u &= 0 \text{\quad\quad for all $\psi^u \in \Psi^u$ and $\psi^p \in \Psi^p$.}
 \end{split}
 \end{equation}
-The resulting linear system is a simple modification of the system used to solve steady Stokes flow in chapter 4 ---
-All that is needed is to add a $\frac{u}{\Delta t}$ P2 projection matrix to the upper-left block of the steady Stokes matrix,
-and to add the projection of $\frac{u}{\Delta t}$ into $P2$ to the right-hand-side vector.
+The resulting linear system is a simple modification of the system used to solve steady Stokes flow in chapter 4.
+All that is needed is to add $\frac{1}{\Delta t}$ times the P2 (Gramian) $L^2$ projection matrix to the upper-left block of the steady Stokes matrix,
+and to add the P2 $L^2$ projection of $\frac{\uprev}{\Delta t}$ to the right-hand-side vector.
 
-The last step is to introduce the advection due to the term $u\cdot \nabla u$. There are many choices.
+\subsection{The problem of advection}
+The last step is to introduce the advection due to the term $u\cdot \nabla u$,
+which is the single source of nonlinearity for the Navier-Stokes equations \eqref{navier_stokes}.
+There are many choices.
+
 \subsubsection{Fully implicit Euler with Newton iterations}
 If full implicit Euler is used, and the nonlinear advection term is expanded, the result is a nonlinear system of equations.
 The simplest option is then a Newton iteration, solving a sequence of linear systems after computing the Gateaux derivative of the system
-at each step. This fully implicit method may be highly accurate, but requires a not-so-straightforward modification of the Stokes flow code.
+at each step. This fully implicit method might be highly accurate, but requires a not-so-straightforward modification of the Stokes flow code.
 
 \subsubsection{A mixed implicit-explicit (IMEX) method}
 An alternative method is IMEX, where $u\cdot \nabla u$ is instead $\uprev \cdot \nabla \uprev$ in the implicit Euler step.
@@ -47,7 +52,7 @@ If we instead alternate between
 the inertial advective motion of the fluid,
 and then apply those non-advective forces (viscosity, body forces, and pressure),
 then this first step can use the method of characteristics. The simplest such method is \textit{semi-Lagrangian advection},
-which is common in meteorology and computer graphics \cite{stam_stable_fluids}.
+which is common in computer graphics \cite{stam_stable_fluids}.
 The resulting split equations are
 \begin{equation}
 \begin{split}
@@ -56,18 +61,18 @@ The resulting split equations are
 \end{split}
 \end{equation}
 The second step can be solved with the time-step Stokes flow equation described previously. For the first, advective, step
-we can use the method of characteristics. Given that $u$ is sampled at vertices and midpoints in the triangulation, the characteristic curve
-at a node $\hat{x}$ is tangent to $u(\hat{x})$. An explicit Euler step will simply ``shift'' the node to $\hat{x} + \Delta t u(\hat{x})$,
+we can use the method of characteristics. Given that $\uprev$ is sampled at vertex and midpoint nodes in the triangulation, the characteristic curve
+at a node $\hat{x}$ is tangent to $\uprev(\hat{x})$. An explicit Euler step will simply ``shift'' the node to $\hat{x} + \Delta t \uprev(\hat{x})$,
 with the same velocity (due to inertia).
 This is the Lagrangian perspective, and will require either modification of the mesh, or reprojection of the ``shifted''
 finite element spaces onto the non-shifted finite element space.
 The alternative, \textit{semi}-Lagrangian method, is to sample the velocity \textit{backward} along the characteristic curve,
-    $$u(\hat{x}) \leftarrow u(\hat{x} - \Delta t u(\hat{x})).$$
+    $$u^*(\hat{x}) \leftarrow \uprev(\hat{x} - \Delta t \uprev(\hat{x})).$$
 Given the no-slip boundary condition, for small enough $\Delta t$ it seems reasonable to say that
-$u(\hat{x} - \Delta t \uprev(\hat{x}))$ is $0$ when $\hat{x} - \Delta t u(\hat{x})$ lies outside of the domain.
+$\uprev(\hat{x} - \Delta t \uprev(\hat{x}))$ is $0$ when $\hat{x} - \Delta t \uprev(\hat{x})$ lies outside of the domain.
 The resampling is done with the exact $\uprev$ reconstructed by quadratic basis functions. This can be achieved by either mesh traversal, to locate the triangle
 containing $\hat{x} - \Delta t \uprev(\hat{x})$, followed by combination of the quadratic triangle basis functions, or by densely sampling $\uprev$ into
-a fine grid, which is used as a lookup table through linear filtering. Given that the domain is 2D, this second option can be done extremely quickly by triangle rasterization (function sampling) on a modern GPU. This avoids the necessity of additional data structures for mesh search.
+a fine grid, which is used as a lookup table through bilinear filtering. Given that the domain is 2D, this second option can be done extremely quickly by triangle rasterization (function sampling) on a modern GPU. This avoids the necessity of additional data structures for mesh search.
 
 
 
@@ -89,7 +94,7 @@ g(\hat{x}) =
         (0, 0) &\text{otherwise},\\
         \end{array}\right.
 $$
-where $D_g$ is a disk of radius $0.125$ centred at roughly $\hat{x} = (0.85, 0)$.
+where $D_g$ is a disk of radius $0.125$ centred at $\hat{x} = (0.85, 0)$.
 This emulates a sort of inflow condition at the right-hand-side, without the necessity of handling non-trivial boundary conditions.
 
 \subsubsection{The discretization}
@@ -100,6 +105,11 @@ which, thankfully, the finite element method can handle with ease.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figures/navier_stokes/wireframe_full.png}
+    \caption{\small
+        The wireframe mesh used. This is a relatively dense mesh in comparison to the
+        ones used with the Stokes solver, so the resulting sparse linear system is very large.
+        A naive boundary-conforming triangulation is used near the obstruction.
+    }
     \label{navier_wireframe}
 \end{figure}
 
@@ -112,23 +122,31 @@ fill of approximately $0.0003845/1$.
 \subsubsection{Visualisation of the results}
 Figures \ref{navier_0} and \ref{navier_1} display the resulting solution at varying times. A video of the solution (at roughly 1/10 the speed) is
 available \href{https://youtu.be/m5He2x3gNz8}{online} (\texttt{https://youtu.be/m5He2x3gNz8}).
-The average fluid speed is roughly $\norm{u} = 6$. The image colour ranges from $0$ (black) to $1$ (white),
+The average fluid speed is roughly $\norm{u} = 6$, giving a Reynolds number of roughly $2000$ to $12000$,
+depending on whether the reference length $L$ is taken as the square width or the obstruction diameter. The image colour ranges from $0$ (black) to $1$ (white),
 determined by the function
     $$\text{Colour}(\hat{x}) = 1-\exp(-0.1\cdot \norm{u}).$$
 For example, the source flow is bright white as it has the highest speed, while the centres of vortices are almost pitch black.
+Note that the first frame displayed ($t = 0.02$) makes the naive rectangle-rule integration of the source function obvious.
 
-The initial flow shown in \ref{navier_0}, as expected, splits symmetrically at the obstruction into two sets of coupled vortices, which will then split as they hit the walls in \ref{navier_1}.
+The initial flow shown in \ref{navier_0}, as expected, splits symmetrically at the obstruction into two sets of coupled vortices, which will then split as they hit the walls in figure \ref{navier_1}.
 Subsequently, in figure \ref{navier_1} (which displays a larger range of time steps), symmetry breaks down, and the source flow deflects downward.
 The solution past this point cannot be considered as anywhere close to the real solution, due to the onset of turbulence in this medium-Reynolds-number flow. However, important qualitative effects
 (for example incompressibility and oppositely-oriented vortices being pushed against the corners of the cavity) are apparent. The incompressibility condition is
-in fact held everywhere with a maximum absolute error of at most $10^{-3}$, usually on the order of $10^{-4}$.
+in fact held everywhere with a maximum absolute error of at worst $10^{-3}$, usually on the order of $10^{-4}$.
 
 \begin{figure}[htbp]
     \includegraphics[width=\textwidth]{figures/navier_stokes/navier_0.png}
+    \caption{
+        Flow speed visualisations for the closed cavity test problem, $t = 0.02$ to $t = 0.203$.
+    }
     \label{navier_0}
 \end{figure}
 \begin{figure}[htbp]
     \includegraphics[width=\textwidth]{figures/navier_stokes/navier_1.png}
+    \caption{
+        Flow speed visualisations for the closed cavity test problem, $t = 0.403$ to $t = 2.603$.
+    }
     \label{navier_1}
 \end{figure}
 

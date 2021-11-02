@@ -83,6 +83,7 @@ $$
 $$
 where $\hat{p}_*^{(n)}$ denotes the vector of coefficients of hat functions which combine to $p_*^{(n)}$.
 
+\newpage
 \subsection{Forming the right-hand-sides for the two Poisson solves}
 The last problem is to project $-\Part{p^{(n)}}{x}$ and $-\Part{p^{(n)}}{y}$ onto the finite element space P2,
 in order to set up the linear system when solving
@@ -109,7 +110,7 @@ $$
     -\nu\Delta u_x^{(n)} = \hat{w} + \left[\rho g_x\right]
 $$
 for $u_x$ using the quadratic Poisson solver derived in chapter 3. The term $\left[\rho g_x\right]$ denotes some quadratic coefficients
-which combine to approximate the source term --- these can be computed numerically.
+which combine to approximate the source term. These coefficients can be computed numerically.
 
 \subsection{Results for the iterative pressure update method}
 The results for the lid-driven cavity problem for $\nu = 1$ are displayed in figure \ref{stokes_lid_driven_weakly_incomprssible}.
@@ -118,10 +119,16 @@ A coarse mesh is used, as the low Reynolds number flow doesn't exhibit any high-
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1.1\textwidth]{figures/stokes/lid_driven_weakly_incompressible/figure.png}}
+    \caption{\tiny
+        The (scaled) velocity field is visualized by a regular grid of samples in the domain.
+        The constraint residual $\nabla\cdot \widetilde{u}$ is displayed at the left, with cyan and yellow denoting opposite signs. The iterative pressure update
+        progressively eliminates this residual.
+    }
     \label{stokes_lid_driven_weakly_incomprssible}
 \end{figure}
-This has taken quite a large number of iterations, each iteration solving two large sparse linear systems (the Gramian system being the cheaper to solve).
-The result is as expected, and this method is easy to implement given an already-working quadratic-element Poisson solver.
+
+This has taken quite a large number of iterations, where two large sparse linear systems are solved each iteration (the Gramian system being the cheaper to solve).
+The result is as expected, and this method is easy to implement given an already working quadratic-element Poisson solver.
 However, as implemented, this method is neither general enough nor fast enough to form the basis of a Navier-Stokes solver.
 
 
@@ -229,7 +236,7 @@ where $\partial x$ and $\partial y$ denote unit vector fields in the axis direct
 The weak form of the steady Stokes equations \eqref{steady_stokes} is then
 \begin{equation*}
 \begin{split}
-    &\int_\om \left(-\nu\Delta u + \nabla p\right)\cdot \psi^u\,dx = \int_\Omega \rho g\cdot\psi^u\,d\hat{x},\\
+    &\int_\om \left(-\nu\Delta u + \nabla p\right)\cdot \psi^u\,d\hat{x} = \int_\Omega \rho g\cdot\psi^u\,d\hat{x},\\
     &\int_\om -\psi^p\left(\nabla\cdot u\right)\,d\hat{x} = 0, \quad\text{for all $\psi^u \in \Psi^u, \psi^p \in \Psi^p$},
 \end{split}
 \end{equation*}
@@ -242,17 +249,13 @@ which by integration by parts can be written as
 \end{equation}
 This can be thought of as a single set of equations integrated against basis functions in the ``mixed'' finite element spaces
     $$\Phi^\mathcal{M} = \Phi^u \oplus \Phi^p \text{\quad and \quad} \Psi^\mathcal{M} = \Psi^u \oplus \Psi^p$$
-with basis functions
+where $\Phi^\mathcal{M}$ has basis functions
 \begin{equation}\label{mixed_space_basis_functions}
-\begin{split}
-    \Phi^\mathcal{M} &= \text{span}\left\{
+    \Phi^\mathcal{M} = \text{span}\left\{
         \phi^u_1,\cdots,\phi^u_{2n_u}, \phi_1^p,\cdots,\phi_{n_p}^p
-    \right\},\\
-    \Psi^\mathcal{M} &= \text{span}\left\{
-        \psi^u_1,\cdots,\psi^u_{2n_u}, \psi_1^p,\cdots,\psi_{n_p}^p
-    \right\}.
-\end{split}
+    \right\}
 \end{equation}
+and similar for $\Psi^\mathcal{M}$.
 The sum of a velocity basis function $\psi^u$ with a pressure basis function $\psi^p$ is a formal sum $\psi^u + \psi^p$. The weak form is then
 \begin{equation}\label{steady_stokes_weak_mixed}
 \begin{split}
@@ -330,15 +333,15 @@ Now, substituting $u \leftarrow \tilde{u}$ and $p \leftarrow \tilde{p}$, the mix
 &\sum_{i=1}^{n_u} \left[u_{xi}\int_\Omega \nu\nabla\phi^{u,s}_i \cdot \nabla\psi^{u,s}_j\,d\hat{x}\right]
         + \sum_{i=1}^{n_p} p_i\int_\Omega -\psi^{u,s}_j \Part{\phi^p_{i}}{x}\,d\hat{x}
     = \int_\Omega \rho g_x \psi^{u,s}_j
-        - \nu\nabla\phi_{\Gamma,x} \cdot \nabla\psi^{u,s}_j \,d\hat{x},\\
+        - \nu\nabla\widetilde{u}_{\Gamma,x} \cdot \nabla\psi^{u,s}_j \,d\hat{x},\\
     &\sum_{i=1}^{n_u} \left[u_{yi}\int_\Omega \nu\nabla\phi^{u,s}_i \cdot \nabla\psi^{u,s}_j\,d\hat{y}\right]
             + \sum_{i=1}^{n_p} p_i\int_{\Omega} -\psi^{u,s}_j \Part{\phi^p_{i}}{y}\,d\hat{x}
         = \int_\Omega \rho g_y \psi^{u,s}_j
-            - \nu\nabla\phi_{\Gamma,y} \cdot \nabla\psi^{u,s}_j \,d\hat{x}\\
+            - \nu\nabla\widetilde{u}_{\Gamma,y} \cdot \nabla\psi^{u,s}_j \,d\hat{x}\\
     &\text{for \quad} j=1,\cdots,n_u,\\
     &\sum_{i=1}^{n_u} \left[u_{ix} \int_\Omega -\psi^p_j \Part{\phi^u_i}{x} \,d\hat{x}
     + u_{iy} \int_\Omega -\psi^p_j \Part{\phi^u_i}{y} \,d\hat{x}\right]
-        = \int_\Omega \psi^p_j \nabla \cdot \phi^u_\Gamma\\
+        = \int_\Omega \psi^p_j \nabla \cdot \widetilde{u}_\Gamma\\
     &\text{for \quad} j=1,\cdots,n_p-1.\\
 \end{split}
 \end{equation}
@@ -350,8 +353,8 @@ in some partial derivatives rather than divergences. The result is a $(2n_u + n_
 \subsection{Implementation and results}
 As each basis function has a small support, the resulting linear system will be highly sparse, and, as in chapter 3, each integral coefficient, bar
 those involving the
-the source term $\rho g$, can be computed analytically by changes of variables onto reference triangles. The resulting tabulations of ``magic numbers'',
-and implementations of mesh traversal algorithms to form these matrix coefficients, is a somewhat tedious and routine task, but forms the core of complexity
+the source term $\rho g$, can be computed analytically by changes of variables onto reference triangles. The resulting tables of ``magic numbers'',
+and implementations of mesh traversals to form these matrix coefficients, is a somewhat tedious and routine task, but forms the core of complexity
 in the implementation of this method --- and is a good target for automation \cite{automating_fem} \cite{fenics_book} \cite{firedrake}. For this matrix to be constructed efficiently, as described in chapter 3, a good mesh data structure is necessary
 for fast mesh traversal to find overlapping basis functions. The bottleneck of this algorithm is then the solution of the resulting
 large, sparse, symmetric mixed-definite system.
@@ -361,8 +364,10 @@ used to implement the Poisson equation solvers in chapter 3.
 
 \subsubsection{Lid driven cavity with obstruction}
 The results for the lid-driven cavity problem, with $\nu = 1$, and an additional complex obstruction, are displayed in figure
-\ref{stokes_lid_driven_obstruction}. The colour maps display a scaled pressure (white denoting high pressure), the velocity components
-(with blue denoting a negative value, red a positive value), and the divergence projected into P1. The incompressibility condition does in fact
+\ref{stokes_lid_driven_obstruction}.
+The colour maps display a scaled pressure (white denoting high pressure), the velocity components
+(with blue denoting a negative value, red a positive value), and the divergence projected into P1.
+The incompressibility condition does in fact
 hold to within a small margin of error on the order of $10^{-4}$.
 
 % \begin{equation}
@@ -391,20 +396,31 @@ hold to within a small margin of error on the order of $10^{-4}$.
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=0.7\textwidth]{figures/stokes/lid_driven_obstruction/figure.png}}
+    \caption{\tiny
+        The Stokes flow results for the lid-driven cavity problem, with kinematic viscosity $\nu = 1$.
+        The additional obstruction causes the large vortex, created by the ``sliding lid'', to split.
+    }
     \label{stokes_lid_driven_obstruction}
 \end{figure}
 \newpage
 \subsubsection{Stokes flow around an obstruction in a pipe}
-As an alternative test case, Stokes flow around an obstruction in a pipe can be simulated by making the pipe domain long enough, and enforcing
-no-slip on the two walls of the pipe and Dirichlet conditions giving a constant flow on the left and right. As the steady Stokes equations
+As an alternative test case, Stokes flow around an obstruction in a pipe can be simulated by making the pipe domain long enough.
+The no-slip condition is enforced on
+the two walls of the pipe, and Dirichlet conditions are given to emulate a constant flow from right to left. As the steady Stokes equations
 are a constrained vector Poisson equation, \textit{any} Dirichlet condition will give a well-formed system, which is not necessarily true
 if we instead enforce Neumann (boundary flux) conditions.
 The results, and a basic overview of the process of this method, are shown in figure \ref{stokes_pipe}.
 The linear system (with sparsity patterns for the matrix and right-hand-side vector, and the block matrix structure indicated by colour) is also visualised.
 \begin{figure}[H]
     % \vskip -1in
-   \centering
+    \centering
     \centerline{\includegraphics[width=0.9\textwidth]{figures/stokes/pipe/full.png}}
+    \caption{The resulting finite element process for Stokes flow.
+        % The finite element modelling process is visualised here for the particular case of Stokes flow through
+        % a (shortened) long pipe around an obstruction. The algorithm consists of the construction of a large
+        % sparse linear system on a generated mesh, which is then solved for the velocity and pressure. The velocity and pressure
+        % are then reconstructed from the P2 and P1 basis functions.
+    }
     \label{stokes_pipe}
 \end{figure}
 
