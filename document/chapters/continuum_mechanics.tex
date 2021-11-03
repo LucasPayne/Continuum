@@ -1,16 +1,29 @@
 % Continuum Mechanics
 
+\vskip -0.4in
 \section{Introduction}
  % <<<
---- Introduction.
-
-Although the focus later will be on fluid mechanics, a large set of fundamental concepts of solid and fluid mechanics
-are the same. The key distinction appears when one focuses on displacements and materials with ``shear strength'' (solids)  versus flows
-and materials with no shear strength (common fluids).
-
+Before discussing the Navier-Stokes equations,
+we must first discuss some basic kinematic and dynamical ideas in mechanics necessary to describe a continuum
+model of a fluid. It will turn out that the incompressible Navier-Stokes equations are a quite simple modification of
+the standard momentum conservation law of continuum mechanics.
+The equations of motion (for example, resulting from $F = ma$) for a finite dimensional system
+governed by Newtonian mechanics are usually ordinary differential equations.
+The equations of motion for a system in continuum mechanics (for exampling, resulting from the Cauchy momentum equation, described soon),
+are partial differential equations. However, more fundamental is the resulting set of \textit{integral conservation laws},
+from which a corresponding system of partial differential equations can be derived.
+% Although the focus later will be on fluid mechanics, a large set of fundamental concepts of solid and fluid mechanics
+% are the same. The key distinction appears when one focuses on displacements and materials with ``shear strength'' (solids)  versus flows
+% and materials with no shear strength (common fluids).
 % >>>
 
+\vskip -0.4in
 \section{Transport}
+\begin{figure}[H]
+\centerline{\includegraphics[width=0.45\textwidth]{figures/sketches/transport.png}}
+\caption{A distributed quantity transporting across a continuum.}
+\label{sketch_transport}
+\end{figure}
 % <<<
 % Introduction
 % <<<
@@ -20,14 +33,15 @@ Maxwell's equations, and the equations of fluid motion, are formed by \textit{co
 evolution of the state (represented by a function) is
 due to the transport of the quantity that the function measures, which is either pushed around (by some flux either predetermined or dependent on the current state),
 introduced into the system at sources, or leaves the system at sinks.
-
+This transport process is sketched above, in figure \ref{sketch_transport}.
 % (figure of some manifold embedded in space, and some vector field pushing quantity around)
-\begin{center}
-\includegraphics[angle=90,page=11,width=0.56\linewidth]{figures/2.pdf}
-\end{center}
-
+% \begin{figure}[H]
+% \centerline{\includegraphics[angle=90,page=11,width=0.44\linewidth]{figures/2.pdf}}
+% \caption{Thing}
+% \label{sketch_transport}
+% \end{figure}
 We consider here the transport of quantities (scalar, vector, and tensor) on a general finite-dimensional manifold $M$,
-colloquially called ``the continuum''. All transporting vector fields (or flux functions) are considered to be tangent to this manifold $M$.
+colloquially called ``the continuum''. All transporting vector fields (``flux functions'') are considered to be tangent to this manifold $M$.
 % >>>
 \subsection{Continuity equations and conservation laws}\label{conservation_laws}
 % <<<
@@ -49,17 +63,25 @@ A common technique in continuum modelling is the use of Stokes' theorem to simpl
 Stokes' theorem and its specialisations (such as the divergence theorem and Green's theorem) are really \textit{definitions} of pointwise quantities
 such as the divergence and curl as limits of these integral expressions for arbitrarily small regions.
 
+The idea is that a space can be broken into many little pieces. If an integral equation holds over small regions, by linearity,
+the integral equation will hold over larger elements, formed by combining the smaller elements.
+If the elements are made ``infinitely small'',
+then the result is a \textit{differential equation} which holds at each point. There are some analytical issues here, but
+the hope is that if the differential equation holds at each point, the integral equation will hold over each control volume thought of
+as an aggregate of infinitely small pieces.
+For example, if $\Omega_\epsilon$ is a ball of radius $\epsilon$ around
+a point $x^* \in M$, then the divergence can be defined as
 \begin{equation}
-    \nabla\cdot v \coloneqq \lim_{\epsilon \rightarrow 0} \frac{1}{\pom_\epsilon}\int_{\pom_\epsilon}v\cdot\hat{n}\,dx.
+    \nabla\cdot v (x^*) \coloneqq \lim_{\epsilon \rightarrow 0} \frac{1}{\text{Area}(\pom_\epsilon)}\int_{\pom_\epsilon}v\cdot\hat{n}\,dx.
 \end{equation}
-\begin{equation}
-    \int_{\pom}v\cdot \hat{n}\,dx = \sum_{i\in\mathcal{I}}\int_{\pom_i}v\cdot \hat{n}\,dx.
-\end{equation}
-\begin{equation}
-    \int_{\pom}v\cdot \hat{n}\,dx = \int_\om \left[\lim_{\epsilon \rightarrow 0}\frac{1}{\pom_{x,\epsilon}}\int_{\pom_{x,\epsilon}}v\cdot\hat{n}\,dx^\prime\right]\,dx.
-\end{equation}
-
-
+% \begin{equation}
+%     \int_{\pom}v\cdot \hat{n}\,dx = \sum_{i\in\mathcal{I}}\int_{\pom_i}v\cdot \hat{n}\,dx.
+% \end{equation}
+% \begin{equation}
+%     \int_{\pom}v\cdot \hat{n}\,dx = \int_\om \left[\lim_{\epsilon \rightarrow 0}\frac{1}{\pom_{x,\epsilon}}\int_{\pom_{x,\epsilon}}v\cdot\hat{n}\,dx^\prime\right]\,dx.
+% \end{equation}
+% 
+% 
 Equation \eqref{continuity_equation} becomes
 \begin{equation}\label{continuity_equation_differential}
     \Part{\phi}{t} = s - \nabla\cdot (\phi j)
@@ -85,16 +107,18 @@ vector field $\hat{u}$ which will transport our control volume $\Omega_0$. The r
     \frac{d}{dt}\int_{\Omega_0(t)}\gamma\,dx,
 \end{equation}
 where $\Omega_0(t)$ implicitly denotes that $\Omega_0$ is being transported under the flow of $\hat{u}$.
-Clearly, this rate of change of quantity $\gamma$ is due to the motion of the control volume,
-
+Clearly, this the change of quantity $\gamma$ is due to the motion of the control volume, sketched in figure \ref{sketch_reynolds}.
 % \vskip 0.2in
 % (a picture of positive and negative contributions at the boundary)
 % \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=7,width=0.66\linewidth]{figures/2.pdf}
-\end{center}
-
-as well as internal changes of $\gamma$ inside the (fixed) control volume.
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=7,width=0.66\linewidth]{figures/2.pdf}}
+\caption{\small
+    A moving control volume collects and loses quantity at the boundary, in addition to what is gained or lost due to the sources
+    and sinks in the interior. The control volume is also able to deform under the flow.
+}
+\label{sketch_reynolds}
+\end{figure}
 The formal expression of these contributions to the rate of change \eqref{reynolds_rate_of_change} is
 \begin{equation}\label{reynolds_transport_theorem}
     \frac{d}{dt}\int_{\Omega_0(t)}\gamma\,dx = 
@@ -115,7 +139,7 @@ The right-hand-side of \eqref{reynolds_transport_theorem_differential} measures
 the change in volume of a quantity when a small control volume around the point of evaluation is moved, expanded or contracted by the flow field $\hat{u}$.
 
 \subsubsection{Reynolds transport applied to a continuity equation}
-Letting our quantity $\gamma$ in \eqref{reynolds_transport_theorem} be the quantity $\phi$ transported by flux function $j$,
+Letting the quantity $\gamma$ in \eqref{reynolds_transport_theorem} be the quantity $\phi$ transported by flux function $j$,
 described in continuity equation \eqref{continuity_equation}, we get a specialised form of the Reynolds transport theorem for continuity equations.
 Term $\Part{\gamma}{t}$ in \eqref{reynolds_transport_theorem} becomes $\Part{\phi}{t}$ in the differential form of the continuity equation \eqref{continuity_equation_differential}, giving
 \begin{equation}\label{reynolds_transport_continuity_equation}
@@ -169,20 +193,20 @@ The corresponding conservation law, in differential form \eqref{continuity_equat
     \Part{\phi_{\text{vol}}}{t} = -\nabla \cdot (\phi_{\text{vol}}j) + s_{\text{vol}}
         \quad\Rightarrow\quad \nabla\cdot j = 0.
 \end{equation}
-This is our non-compressing constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
+This is a non-compressing constraint on $j$, and has a clear interpretation, as there is a non-zero divergence of $j$ if and only if
 there is an inward or outward flux which would contract or expand a transported control volume.
 % >>>
 \subsection{Transport of vector and tensor quantities}
 % <<<
 All previous discussion on the transport of scalar quantities applies trivially to vector and tensor quantities.
-This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity
+This will soonest be of use in the discussion of conservation of linear momentum, a vector quantity.
 % (---should this be mentioned? It doesn't fit into the
 % framework so far as there is no notion of position map, this might be confusing and seem to imply ``linear momentum'' is natural for any continuum process).
-However, some notational discussion is needed in order to establish differential forms of continuity equations and the Reynolds transport theorem.
+However, some notational discussion is needed in order to establish the resulting differential forms of continuity equations and the Reynolds transport theorem.
 \subsubsection{Reynolds transport of vector and tensor quantities}
 For a general tensor quantity $\Gamma$, the integral form of Reynolds transport \eqref{reynolds_transport_theorem} is trivially
 \begin{equation}\label{reynolds_transport_theorem_tensor}
-    \frac{d}{dt}\int_{\Omega_0(t)}\Gamma\,dx
+    \frac{d}{dt}\int_{\Omega_0(t)}\Gamma\,dx =
         \int_{\Omega_0(t)}\Part{\Gamma}{t}\,dx + \int_{\partial\Omega_0(t)}\Gamma \left(\hat{u}\cdot\hat{n}\right) \,dx.
 \end{equation}
 The step to the differential form \eqref{reynolds_transport_theorem_differential}, however, needs some thought
@@ -197,7 +221,7 @@ $\hat{n}$ (which is a contravariant vector). The divergence of a rank $n$ tensor
         \int_{\partial{\Omega_0}} \Psi : \hat{n}\,dx.
 \end{equation}
 We can then rewrite $\Gamma \left(\hat{u}\cdot \hat{n}\right)$ in \eqref{reynolds_transport_theorem_tensor} as
-    $$\Gamma \left(\hat{u}\cdot \hat{n}\right) = \left(\Gamma \otimes \hat{u}\right) : \hat{n},$$
+    $$\Gamma \left(\hat{u}\cdot \hat{n}\right) = \left(\Gamma \otimes \hat{u}\right) \cdot \hat{n},$$
 where the tensor product $\otimes$ ``defers contraction'' of $\hat{u}$ with $\hat{n}$, by storing it as a component of product tensor $\Gamma \otimes \hat{u}$.
 This leads to a differentialisation of \eqref{reynolds_transport_theorem_tensor},
 \begin{equation}\label{reynolds_transport_theorem_tensor_differential}
@@ -211,7 +235,7 @@ With the previous ideas from tensor algebra, it will be easy to describe continu
 \end{equation}
 By the same tensor algebra as above we have
     $$
-        \Phi \left(j\cdot (-\hat{n})\right) = -\left(\Phi \otimes j\right) : \hat{n},
+        \Phi \left(j\cdot (-\hat{n})\right) = -\left(\Phi \otimes j\right) \cdot \hat{n},
     $$
 giving \eqref{continuity_equation_tensor} in differential form as
 \begin{equation}\label{continuity_equation_tensor_differential}
@@ -240,7 +264,7 @@ domain $M$. These conserved quantities are time-varying maps from $M$ to some me
 Each map is a component of the total configuration space $C$, which clearly must be infinite-dimensional.
 We now consider another component of $C$
 which will let us model a physical domain with alterable shape.
-In our discussion we will consider a fixed time interval $[t_1, t_2]$ in which our physical motions will take place.
+In our discussion we will consider a fixed time interval $[t_1, t_2]$ in which the physical motion will take place.
 % >>>
 \subsection{Position maps}
 % <<<
@@ -249,30 +273,33 @@ We will call this the ``position map''
     $$y:M\times [t_1, t_2] \rightarrow N.$$
 In general, $y$ needs not be continuous, differentiable, or invertible.
 These restrictions are only introduced in accord to the physical meaning of the position map. For example, models of small beam deflections
-may require continuity, and invertibility to prevent self-intersections.
+may require continuity, and invertibility to prevent self-intersections. An example position map for a beam model is sketched 
+in figure \ref{sketch_beam_position_map}.
 
 % \vskip 0.2in
 % (figure of abstract square domain mapping to a bent beam, and a figure of a map from a reference configuration to itself.)
 % \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=8,width=0.5\linewidth]{figures/2.pdf}
-\end{center}
-
-
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=8,width=0.42\linewidth]{figures/2.pdf}}
+\caption{\small The beam geometry embedded in the ambient space.}
+\label{sketch_beam_position_map}
+\end{figure}
 As an example, suppose we are modelling the heat distribution of a 2D beam supporting a point load which is also a heat source.
 We could model the beam geometry as a smooth invertible map $y: [0,1]^2\rightarrow \mathbb{R}^2$,
 letting $M = [0,1]^2$ and $N = \mathbb{R}^2$. The heat distribution on the beam could be represented
 by a function $h : M \rightarrow \mathbb{R}$, and a heat flux function $j$ could be pulled back to $M$ from $N$.
-
+This example model is sketched in figure \ref{sketch_beam_heat}.
 % \vskip 0.2in
 % (picture of this)
 % \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=9,width=0.55\linewidth]{figures/2.pdf}
-\end{center}
-
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=9,width=0.5\linewidth]{figures/2.pdf}}
+\caption{\small An example continuum modelling scenario, for example. The equations being solved
+may be those of linear elasticity for the beam, and the heat equation for the heat distribution.}
+\label{sketch_beam_heat}
+\end{figure}
 Although this model is so far hopelessly incomplete, we can see that position maps and transport equations are fundamental tools
-used for modelling the \textit{geometry} of a problem.
+used for modelling the \textit{geometry} of a continuum problem.
 
 
 % \subsubsection{Displacement maps}
@@ -296,32 +323,40 @@ In the case of the position map $y : M \times [t_1, t_2] \rightarrow N$, the vel
 a vector in the tangent space of $N$ at $y(x)$ for each parameter $x \in M$. This vector field is denoted $\dot{y}$.
 This is the \textit{Lagrangian} description of motion. We will find it useful to instead use the \textit{Eulerian} description, where we measure the velocity of the position map in the position domain $N$. Formally we denote this Eulerian velocity by the letter $u$, ubiquitous in fluid mechanics, and let
     $$u(y, t) \coloneqq \dot{y}(y^{-1}(y, t), t)\quad \text{for all valid $y\in N$.}$$
+The geometry of this setup is sketched in figure \ref{sketch_velocity}.
 
-\begin{center}
-\includegraphics[angle=90,page=2,width=0.8\linewidth]{figures/2.pdf}
-\end{center}
-
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=2,width=0.8\linewidth]{figures/2.pdf}}
+\caption{\small
+    From the Eulerian perspective, the velocity $u$ is a function of those positions embedded in $N$.
+}
+\label{sketch_velocity}
+\end{figure}
 For some transported scalar quantity $\phi : M \times [t_1, t_2] \rightarrow \mathbb{R}$, the tangent space at each point of $\mathbb{R}$ is $\mathbb{R}$,
 and therefore our velocity is represented by a scalar function $\Part{\phi}{t}$ giving local change in time of $\phi(x)$ for each $x \in M$.
-
+This is the usual idea of a rate of change of $\phi$, but the geometrical idea, using tangent spaces, is the same as for the velocity of the position map.
+This idea is sketched in figure \ref{sketch_rate_of_change}.
 % \vskip 0.2in
 % (draw this)
 % \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=3,width=0.8\linewidth]{figures/2.pdf}
-\end{center}
-
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=3,width=0.8\linewidth]{figures/2.pdf}}
+\caption{
+    The rate of change $\Part{\phi}{t}$ is measured in position space $N$.
+}
+\label{sketch_rate_of_change}
+\end{figure}
 We may denote our total velocities as a state variable $\dot{q}$. 
-When we have state $q$, the corresponding velocity $\dot{q}$ will be in the tangent space of $C$ at $q$, denoted $T_q C$.
+When we have state $q$, the corresponding velocity $\dot{q}$ will be in the tangent space of the configuration space $C$ at $q$, denoted $T_q C$.
 We can then define the space of velocities as the \textit{tangent bundle} of the configuration space,
     $$TC = \bigcup_{q \in C} T_q C.$$
 % >>>
 \subsection{The deformation and velocity gradients}\label{deformation_and_velocity_gradients}
 % <<<
-We may think of the mechanics of a particle as a special case of our continuum model, where
+We may think of the mechanics of a particle as a special case of a continuum model, where
 $M$ is a single point. In this case we have only one $x \in M$, so we cannot vary $x$.
-However, for a continuum parameter domain $M$ we can take derivatives with respect to our parameter as well as time.
-We can extract important geometric/kinematic information from the spatial derivatives of our position map $y$.
+However, for a continuum parameter domain $M$ we can take derivatives with respect to the spatial parameter as well as time.
+We can extract important geometric/kinematic information from the spatial derivatives of the position map $y$.
 
 \subsubsection{The deformation gradient}
 The gradient of the position map $y$ with respect to parameter $x \in M$ is called the \textit{deformation gradient}
@@ -329,15 +364,14 @@ The gradient of the position map $y$ with respect to parameter $x \in M$ is call
     \nabla y.
 \end{equation}
 The deformation gradient is equivalent to the \textit{Jacobian matrix}, used to compute the \textit{pushforward}
-of tangent vectors under the displacement map.
-
-% \vskip 0.2in
-% (draw this)
-% \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=4,width=0.5\linewidth]{figures/2.pdf}
-\end{center}
-
+of tangent vectors under the displacement map. An example is sketched in \ref{sketch_jacobian}.
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=4,width=0.5\linewidth]{figures/2.pdf}}
+\caption{\small
+    The Jacobian matrix gives the local linear transformation induced by a differentiable map.
+}
+\label{sketch_jacobian}
+\end{figure}
 The determinant of the Jacobian matrix is usually denoted $J = \det(\nabla y)$, and is called the Jacobian.
 
 \subsubsection{The velocity gradient}
@@ -348,18 +382,17 @@ Letting $u$ be our Eulerian velocity as defined above, we may express the positi
     y(x, 0) = y_0(x).
 \end{split}
 \end{equation}
+The flow of an initial disk is sketched in figure \ref{sketch_deformation}.
+\begin{figure}
+\centerline{\includegraphics[angle=90,page=5,width=0.4\linewidth]{figures/2.pdf}}
+\caption{\small The changing position map induces a flow, deforming the initial geometry.}
+\label{sketch_deformation}
+\end{figure}
 It is common, especially in flow problems, to let $M$ be a subset of $N$ which is the ``initial geometry''.
 In this case we could let the initial position map be the identity map
     $$y_0(x) = x \in M \subset N.$$
 For example, given an initial disc in $\mathbb{R}^2$, we may prescribe a constant Eulerian velocity field $u$ and
 see how the original disc is ``mixed''.
-
-% \vskip 0.2in
-% (draw this)
-% \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=5,width=0.4\linewidth]{figures/2.pdf}
-\end{center}
 
 
 We can see that, in this case, it is meaningful to take spatial gradients in \eqref{position_map_ode} to derive an ODE for the deformation gradient $\nabla y$:
@@ -369,18 +402,16 @@ We can see that, in this case, it is meaningful to take spatial gradients in \eq
     \nabla y(x, 0) = I,
 \end{split}
 \end{equation}
-where $I$ is the identity tensor. This is easily visualised.
-
-% \vskip 0.2in
-% (draw this)
-% \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=1,width=0.58\linewidth]{figures/1.pdf}
-\end{center}
-
+where $I$ is the identity tensor. This is easily visualised --- figure \ref{sketch_flow_vis} gives a sketch.
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=1,width=0.58\linewidth]{figures/1.pdf}}
+\caption{\small
+    The flow of the initial geometry induces a flow on the deformation gradient.
+}
+\label{sketch_flow_vis}
+\end{figure}
 We can see that the term $\nabla u$ is a ``differential generator'' of the deformation gradient.
 $\nabla u$ is called the \textit{velocity gradient}.
-
 % Polar decomposition, symmetric and antisymmetric parts.
 % >>>
 \subsection{Material points and material derivatives}\label{material_points}
@@ -403,14 +434,14 @@ This derivative \eqref{material_derivative} will turn out to measure ``per-volum
 A \textit{material element} is a small piece of a continuum model which evolves with the displacement and flow.
 In fluid dynamics this is also called a fluid parcel, although it should not be thought of as an object placed in the fluid, but
 rather some tracer such as a non-diffusing dye.
-
-% \vskip 0.2in
-% (draw this)
-% \vskip 0.2in
-\begin{center}
-\includegraphics[angle=90,page=1,width=0.55\linewidth]{figures/2.pdf}
-\end{center}
-
+This idealisation is sketched in figure \ref{sketch_material_element}.
+\begin{figure}[H]
+\centerline{\includegraphics[angle=90,page=1,width=0.55\linewidth]{figures/2.pdf}}
+\caption{An idealised material element being pushed by the flow.
+    Although the point will not deform under the flow, an ``infinitely small'' material element will.
+}
+\label{sketch_material_element}
+\end{figure}
 In continuum mechanics a \textit{material point} is the ideal point of the continuum, corresponding to some macroscopic averaging in physical models.
 At a certain point, we can imagine an arbitrarily small fluid parcel being transported by the flow.
 No matter how small this is, the parcel will still start to shear, expand, and contract due
@@ -423,9 +454,9 @@ on \textit{per-volume} quantities.
 % \vskip 0.2in
 % (figure of a point mass flowing along a scalar field, and a mass with extent being compressed)
 % \vskip 0.2in
-\begin{center}
-\includegraphics[page=2,width=0.66\linewidth]{figures/3.pdf}
-\end{center}
+% \begin{center}
+% \includegraphics[page=2,width=0.66\linewidth]{figures/3.pdf}
+% \end{center}
 
 % >>>
 % >>>
@@ -449,11 +480,6 @@ where $y(\omn, t)$ denotes the domain pushed forward by the position map. By the
     \int_{\omn} \rho_0(x)\,dx = \int_{\omn} \det(\nabla y)\rho(y(x,t), t)\,dx,
 \end{equation}
 where $J = \det(\nabla y)$ is the Jacobian, measuring the local change in the volume element due to the change of variables.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
 As \eqref{lagrangian_mass_conservation_cov} must hold identically for all $\Omega_0$, we have the localised conservation law
 \begin{equation}\label{lagrangian_mass_conservation_local}
     \rho_0 = \det(\nabla y)\rho.
@@ -548,7 +574,7 @@ as mass is transported by $u$ and has no source, we get
 $$
     \rho\Part{u}{t} -\cancel{u\nabla(\rho u)} + \cancel{u\nabla\cdot (\rho u)} + \rho u\cdot\nabla u = \rho g + \nabla\cdot\sigma.
 $$
-Finally, the material derivative as defined in section (ref) is helpful in simplifying the above to
+Finally, the material derivative, as defined in section \ref{material_points}, is helpful in simplifying the above to
 \begin{equation}\label{cauchy_continuity_differential_material}
     \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma.
 \end{equation}
@@ -593,9 +619,10 @@ We can see there are $1 + d$ equations by expanding $u$ in terms of components i
     i=1,\cdots,d. &
 \end{split}
 \end{align*}
-When $g$ and $\sigma$ are known, this system is well-formed, but not very interesting.
+When $g$ and $\sigma$ are known, where $\sigma$ is not determined by the material state, this system is well-formed, but not very interesting.
 This effectively models a continuum of non-interacting material points, with a linear-momentum-introducing source function $\rho g + \nabla\cdot \sigma$.
-However, we usually let $g$ be known (as this is a per-mass external body force, for example gravity), and the Cauchy stress tensor $\sigma$ be unknown.
+However, we usually let $g$ be known (as this is a per-mass external body force, for example gravity), and the Cauchy stress tensor $\sigma$ be unknown,
+to be determined by the material state.
 This gives $d^2$ more unknowns, so the system is heavily underdetermined. In effect, the system \eqref{conservation_system} is
 underdetermined because we don't have a specific material in mind.
 
@@ -669,7 +696,7 @@ induces forces on the material, or rather, how kinematics is related to dynamics
 
 \subsubsection{Completing the equations}
 We have so far been working quite generally with the forms of continuum mechanics models and their constraints. Although we have made some assumptions
-(for example, we require $\sigma$ to be a purely local function, an idealisation due to Cauchy [ref]), we must so far leave
+(for example, we require $\sigma$ to be a purely a function of the local linearisation of the continuum model, an idealisation due to Cauchy), we must so far leave
 our systems underdetermined.
 In the next chapter, we will
 investigate an important constitutive relation for the stress $\sigma$, forming what is called a \textit{Navier-Stokes fluid},

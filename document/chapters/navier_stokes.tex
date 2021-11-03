@@ -65,7 +65,6 @@ we want $\sigma$ to be symmetric.
 % <<<
 Angular momentum is traditionally presented in terms of rigid bodies, bodies subject to a distance-preserving constraint between
 material points. It is the moment of linear momentum.
-
 The discussion in section \ref{material_points} indicates that we can think of a very small rigid body at a material point, subject to the flow.
 This will be subject to a ``spin force''.
 
@@ -93,17 +92,15 @@ It is simple to derive an angular momentum conservation equation, just by taking
 If \eqref{linear_momentum_for_angular} holds, should \eqref{moment_of_linear_momentum_sources} hold automatically?
 % Note that as $\Omega_0$ becomes small, $\hat{x}$ will become approximately parallel to $\hat{n}$.
 % 
-
 By Stokes' theorem, the final term in \eqref{linear_momentum_for_angular} can be written as
 \begin{align*}
     \int_{\pomn} \sigma\hat{n}\,dx = \int_\omn\nabla\cdot\sigma\,dx.
 \end{align*}
-
-\vskip 0.2in
-(draw the differentialization happening at each point, contracting a small control volume).
-\vskip 0.2in
-
-With the help of the above picture, we can try to derive a per-point form for the final term in \eqref{moment_of_linear_momentum_sources},
+% \vskip 0.2in
+% (draw the differentialization happening at each point, contracting a small control volume).
+% \vskip 0.2in
+% With the help of the above picture,
+We can try to derive a per-point form for the final term in \eqref{moment_of_linear_momentum_sources},
 \begin{align*}
     \int_{\pomn} \bar{x} \wedge \left(\sigma\hat{n}\right)\,dx = \int_\omn\cdots ? \cdots\,dx.
 \end{align*}
@@ -119,13 +116,8 @@ We can reason geometrically to find the final term. We can split $\sigma$ into i
 Antisymmetric matrices have a lot to do with rotations: A special property of antisymmetric matrices is
     $$\inner{x, Nx} = \inner{x, N^Tx} = \inner{x, -Nx} \quad\Rightarrow\quad \inner{x, Nx} = 0.$$
 In fact the antisymmetric matrices are exactly those which generate rotations (formally, $\exp(N)$ is orthogonal, where $\exp$ is the matrix
-exponential). If $\sigma$ is kept constant over $\pom_c$, we can visualise the tractions contributed by the symmetric and antisymmetric parts of $\sigma$:
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
-By the above diagram we can conclude that, letting $\sigma = S + N$ be constant,
+exponential). If $\sigma$ is kept constant over $\pom_c$, we can consider the tractions contributed by the symmetric and antisymmetric parts of $\sigma$,
+concluding that, letting $\sigma = S + N$ be constant,
 \begin{align*}
     \int_{\pom_c} \bar{x} \wedge \left(\left(S + N\right)\hat{n}\right)\,dx
     =
@@ -170,9 +162,7 @@ to imply \eqref{moment_of_linear_momentum_sources_localised} (for linear momentu
 \end{equation}
 So, without the introduction of any explicit angular momentum sources (body and surface couples), the Cauchy stress tensor $\sigma$ is required to be symmetric,
 reducing the $d^2$ unknowns to $d(d+1)/2$ unknowns.
-
-(~~~ May be $\widehat{N}/2$, maybe a sign error. Check Leal p68.)
-
+% (~~~ May be $\widehat{N}/2$, maybe a sign error. Check Leal p68.)
 % (... figure)
 % \begin{center}
 % \includegraphics[page=1,width=0.7\linewidth]{figures/3.pdf}
@@ -200,26 +190,77 @@ reducing the $d^2$ unknowns to $d(d+1)/2$ unknowns.
 % \end{equation*}
 % >>>
 % >>>
+% \subsection{Conservation of energy}
+% % <<<
+% \begin{equation*}
+% \begin{split}
+%     \frac{D\rho}{Dt} + \rho\nabla\cdot u = 0 &\quad\text{(Conservation of mass)},\\
+%     \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma &\quad\text{(Conservation of linear momentum)},\\
+%     \sigma = \sigma^T &\quad\text{(Conservation of angular momentum)}.
+% \end{split}
+% \end{equation*}
+% % >>>
 
-\subsection{Conservation of energy}
-% <<<
-\begin{equation*}
-\begin{split}
-    \frac{D\rho}{Dt} + \rho\nabla\cdot u = 0 &\quad\text{(Conservation of mass)},\\
-    \rho\frac{Du}{Dt} = \rho g + \nabla\cdot\sigma &\quad\text{(Conservation of linear momentum)},\\
-    \sigma = \sigma^T &\quad\text{(Conservation of angular momentum)}.
-\end{split}
-\end{equation*}
-% >>>
+\section{The Navier-Stokes constitutive relation}
+We can keep going from here, and derive restrictions on possible constitutive relations due to, for example, conservation of energy.
+This leads to general classes of physical fluid models, including some ``memoryless'' complex fluids. Typically,
+new parameters are then introduced which may be constant, or themselves determined by the state of the continuum model, such as
+bulk viscosity, pressure, and temperature.
+The incompressible Navier-Stokes equations are one of the simplest such physically realistic fluid models,
+introducing one parameter (the shear viscosity $\mu$) and one unknown (the pressure $p$).
+\subsection{The Euler equations}
+Consider letting $\sigma = -pI$, where $p$ is a new unknown, to be interpreted as pressure.
+Combining the momentum equation of \eqref{compressible_system} with a volume preserving constraint $\nabla\cdot u = 0$,
+determines the unknown $p$ completely. $p$ is then interpreted as determining a conservative, isotropic force on material elements, which
+``pushes them apart'' in order to obey the new constraint. The pressure will soon be discussed in some detail.
+This constitutive relation gives the \textit{Euler equations}, modelling an entirely inviscid incompressible fluid. Although this is perhaps
+the simplest fluid model to write down, the resulting equations,
+\begin{equation}\label{euler_equations}
+    \rho\frac{Du}{Dt} = - \nabla p + \rho g,\quad \nabla\cdot u = 0,
+\end{equation}
+are hyperbolic and very difficult to solve. An entirely inviscid fluid is also not very physically realistic --- a small amount of
+viscosity (resistence to shear) can resolve the resulting issues at boundary interfaces \cite{batchelor} \cite{leal}.
 
-\section{Scaling and dimension}
-% <<<
+\subsection{Introducing viscosity forces}
+The argument here is somewhat heuristic.
+The viscosity force is intended to give shear resistance to a fluid, and the deformation gradient $\nabla u$ gives local information about
+this shear. We can consider the separate components of $u$, say for $d = 2$, being $u_x$ and $u_y$.
+Consider two small control volumes meeting at an interface aligned to the $y$-axis, and a laminar flow moving
+only in the $y$-axis. If $\Part{u_y}{x}$ is positive
+at the interface, this means that there is shear. The viscosity force is expected to cause
+the bulk velocities of these adjacent control volumes to tend to the same velocity near the interface.
+The positive $\Part{u_y}{x}$ term then indicates a positive force at the interface, which is increasing
+the speed of the slower left control volume (near the interface), and decreasing the speed of the faster right control volume.
+The idea of the Navier-Stokes relation is that a vector \textit{diffusion} models this effect nicely. We can let
+    $$\sigma = -pI + \mu \nabla u,$$
+where $\mu > 0$ is a new parameter which determines the speed of the momentum diffusion.
+The resulting equations of fluid motion, in differential form, applying the divergence theorem to the Cauchy stress tensor $\sigma$'s
+contraction with the boundary elements (computing the traction forces), are
+\begin{equation}\label{navier_stokes_final}
+    \rho\left(\Part{u}{t} + u\cdot \nabla u\right) = - \nabla p + \mu\Delta u + \rho g,\quad \nabla\cdot u = 0.
+\end{equation}
+The viscosity term $\mu\Delta u$ is linear, and the resulting equations, the incompressible Navier-Stokes equations are parabolic and
+non-linear, due to the advection term expanded from $\rho\frac{Du}{Dt}$.
+The unknowns are the velocity field $u$, and the pressure $p$.
+
 \subsection{The Reynolds number}
-% >>>
+Even with viscosity preventing discontinuities in a flow, the Navier-Stokes equations
+still exhibit \textit{turbulence}. The patterns of motion resulting from even simple initial conditions and sources of momentum
+can be as intricate as the motion of the real fluids they model -- whirling, bifurcating, and colliding vortices, unpredictable waving
+and wisps of velocity fluctuations, and so on. However, if viscosity is high enough with respect
+to some choice of reference measurements of the domain and average fluid speed, then the non-linear advective term $\rho u\cdot \nabla u$
+in \eqref{navier_stokes_final}, which is both the origin of nonlinearity and of these complex flow patterns, can be ignored.
+The most common value used in determining the possible complexity of the flow is the non-dimensional \textit{Reynolds number},
+    $$Re = \frac{\rho \norm{u} L}{\mu}.$$
+$L$ is a reference length, such as the length of a pipe domain or the diameter of an obstructing circle of interest. $\norm{u}$ can be
+taken as the average speed of fluid motion. $\mu$ is the shear viscosity parameter of the Navier-Stokes equations,
+which measures the strength of momentum diffusion. Therefore,
+    $$\text{A low enough Reynolds number} \quad\Rightarrow\quad \text{Momentum diffusion has a much greater effect than momentum advection.}$$
+We will firstly consider approximations of the Navier-Stokes equations \eqref{navier_stokes_full} for very low Reynolds number flow.
 
 \section{Stokes flow and the meaning of pressure}\label{pressure_derivation}
 % <<<
-If we assume that the advective term $u\cdot \nabla u$ in the incompressible Navier-Stokes equations is ``small'',
+If we assume that the advective term $u\cdot \nabla u$ in the incompressible Navier-Stokes equations \eqref{navier_stokes_final} is ``small'',
 we can ignore it and derive the linear \textit{unsteady Stokes equations}:
 \begin{equation}\label{unsteady_stokes}
     \rho\Part{u}{t} = \mu\Delta u + \rho g - \nabla p, \quad \nabla\cdot u = 0.
@@ -311,21 +352,24 @@ We then get
 \end{equation}
 which are the steady Stokes equations \eqref{steady_stokes} with pressure $p = \lambda$.
 
-
-
-\subsection{Application to hydrostatics}
-For example, we may imagine the steady Stokes equations modelling a calm sea with a flat seabed.
-We can let the body force be gravity described by a potential $\phi$:
-    $$\rho g = -\nabla \phi.$$
-If we make a perturbed displacement of the velocity field at the bottom of the ocean, supposing that some volume of water
-is beginning to expand,
-we are working against gravity as well as our virtual force, pressure.
-
-\vskip 0.2in
-(draw this)
-\vskip 0.2in
-
+% \subsection{Application to hydrostatics}
+% For example, we may imagine the steady Stokes equations modelling a calm sea with a flat seabed.
+% We can let the body force be gravity described by a potential $\phi$:
+%     $$\rho g = -\nabla \phi.$$
+% If we make a perturbed displacement of the velocity field at the bottom of the ocean, supposing that some volume of water
+% is beginning to expand,
+% we are working against gravity as well as our virtual force, pressure.
+% 
+% \vskip 0.2in
+% (draw this)
+% \vskip 0.2in
 % >>>
+
+\section{Scaling and dimension}
+% <<<
+\subsection{The Reynolds number}
+% >>>
+
 
 % \subsection{Kinds of fluids}
 % \subsubsection{Incompressible fluids}
