@@ -1,6 +1,7 @@
 #include "core.h"
 #include "SurfaceNavierStokes/demo.h"
 #include "mesh_generators.cpp"
+#include "mesh_processing/extensions/assimp_convert.h"
 
 Demo::Demo()
 {
@@ -19,17 +20,26 @@ void Demo::init()
     controller = world->add<CameraController>(cameraman);
     controller->angle = -M_PI/2;
     controller->azimuth = M_PI;
+
+    geom = assimp_to_surface_geometry(std::string(MODELS) + "cylinder.stl");
+    geom->mesh.lock();
+    solver = new SurfaceNavierStokesSolver(*geom, 1);
+
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
 {
     if (e.action == KEYBOARD_PRESS) {
         if (e.key.code == KEY_Q) exit(EXIT_SUCCESS);
+        if (e.key.code == KEY_R) {
+            solver->time_step(0.1);
+        }
     }
 }
 
 void Demo::update()
 {
+    world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.01);
 }
 
 

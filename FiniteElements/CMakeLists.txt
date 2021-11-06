@@ -34,6 +34,7 @@ include_directories(
 add_library(common INTERFACE)
 target_compile_definitions(common INTERFACE
     DATA="${CMAKE_CURRENT_SOURCE_DIR}/data/"
+    MODELS="${CMAKE_CURRENT_SOURCE_DIR}/models/"
     SHADERS="${CMAKE_CURRENT_SOURCE_DIR}/shaders/"
 )
 set(CMAKE_CXX_FLAGS "-g")

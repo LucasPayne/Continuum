@@ -99,6 +99,8 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
 --------------------------------------------------------------------------------*/
 void SurfaceNavierStokesSolver::time_step(double delta_time)
 {
+    m_current_time_step_dt = delta_time;
+
     if (!solving()) {
         m_solving = true;
     }
@@ -163,11 +165,12 @@ SparseMatrix SurfaceNavierStokesSolver::compute_matrix()
     // into a list of triplets indexing into a matrix.
     auto eigen_coefficients = std::vector<EigenTriplet>();
     auto add_eigen_coefficient = [&](int i, int j, double val) {
+        // printf("%d %d, %.6g\n", i,j, val);
         eigen_coefficients.push_back(EigenTriplet(i, j, val));
     };
     for (auto coeff : velocity_block_coefficients) {
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; i++) {
+            for (int j = 0; j < 3; j++) {
                 add_eigen_coefficient(
                     2*velocity_node_indices[coeff.velocity_trial_node] + i,
                     2*velocity_node_indices[coeff.velocity_test_node] + j,
@@ -176,6 +179,7 @@ SparseMatrix SurfaceNavierStokesSolver::compute_matrix()
             }
         }
     }
+    getchar();
     for (auto coeff : pressure_block_coefficients) {
         for (int i = 0; i < 3; i++) {
             add_eigen_coefficient(
@@ -190,6 +194,7 @@ SparseMatrix SurfaceNavierStokesSolver::compute_matrix()
             );
         }
     }
+    getchar();
     for (auto coeff : centripetal_block_coefficients) {
         for (int i = 0; i < 3; i++) {
             add_eigen_coefficient(
@@ -204,6 +209,7 @@ SparseMatrix SurfaceNavierStokesSolver::compute_matrix()
             );
         }
     }
+    getchar();
 
 
     auto matrix = SparseMatrix(m_system_N, m_system_N);

@@ -3104,7 +3104,38 @@ CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.o: ../SurfaceNav
   ../P2_P1.h \
   ../CameraController.h \
   ../mesh_generators.cpp \
-  ../mesh_generators.h
+  ../mesh_generators.h \
+  /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/extensions/assimp_convert.h \
+  /usr/local/include/assimp/Importer.hpp \
+  /usr/local/include/assimp/types.h \
+  /usr/local/include/assimp/defs.h \
+  /usr/local/include/assimp/config.h \
+  /usr/local/include/assimp/vector2.h \
+  /usr/local/include/assimp/vector3.h \
+  /usr/local/include/assimp/color4.h \
+  /usr/local/include/assimp/matrix3x3.h \
+  /usr/local/include/assimp/matrix4x4.h \
+  /usr/local/include/assimp/quaternion.h \
+  /usr/local/include/assimp/vector2.inl \
+  /usr/local/include/assimp/vector3.inl \
+  /usr/local/include/assimp/color4.inl \
+  /usr/local/include/assimp/matrix3x3.inl \
+  /usr/local/include/assimp/matrix4x4.inl \
+  /usr/local/include/assimp/MathFunctions.h \
+  /usr/local/include/assimp/quaternion.inl \
+  /usr/local/include/assimp/scene.h \
+  /usr/local/include/assimp/texture.h \
+  /usr/local/include/assimp/Compiler/pushpack1.h \
+  /usr/local/include/assimp/Compiler/poppack1.h \
+  /usr/local/include/assimp/mesh.h \
+  /usr/local/include/assimp/aabb.h \
+  /usr/local/include/assimp/light.h \
+  /usr/local/include/assimp/camera.h \
+  /usr/local/include/assimp/material.h \
+  /usr/local/include/assimp/material.inl \
+  /usr/local/include/assimp/anim.h \
+  /usr/local/include/assimp/metadata.h \
+  /usr/local/include/assimp/postprocess.h
 
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o: ../SurfaceNavierStokes/explicit_advection.cpp \
   ../SurfaceNavierStokes/SurfaceNavierStokesSolver.h \
@@ -5175,9 +5206,37 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
   /usr/include/c++/8/bits/list.tcc
 
 
+../SurfaceNavierStokes/main.cpp:
+
+/usr/local/include/assimp/material.inl:
+
+/usr/local/include/assimp/material.h:
+
+/usr/local/include/assimp/light.h:
+
+/usr/local/include/assimp/aabb.h:
+
+/usr/local/include/assimp/Compiler/poppack1.h:
+
+/usr/local/include/assimp/texture.h:
+
 ../SurfaceNavierStokes/make_sparsity_image.cpp:
 
-../SurfaceNavierStokes/main.cpp:
+/usr/local/include/assimp/quaternion.inl:
+
+/usr/local/include/assimp/anim.h:
+
+/usr/local/include/assimp/MathFunctions.h:
+
+/usr/local/include/assimp/vector2.inl:
+
+/usr/local/include/assimp/config.h:
+
+/usr/local/include/assimp/defs.h:
+
+/usr/local/include/assimp/types.h:
+
+/home/lucas/computer_graphics/mesh_processing/include/mesh_processing/extensions/assimp_convert.h:
 
 ../mesh_generators.h:
 
@@ -5223,6 +5282,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 
 /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_heap_relax_snode.h:
 
+/usr/local/include/assimp/camera.h:
+
 /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Memory.h:
 
 /usr/include/eigen3/Eigen/src/SparseLU/SparseLU_Structs.h:
@@ -5247,9 +5308,15 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 
 /usr/include/eigen3/Eigen/src/SparseCore/SparseSelfAdjointView.h:
 
+/usr/local/include/assimp/mesh.h:
+
+/usr/local/include/assimp/scene.h:
+
 /usr/include/eigen3/Eigen/src/SparseCore/SparseProduct.h:
 
 /usr/include/eigen3/Eigen/src/SparseCore/SparseSparseProductWithPruning.h:
+
+/usr/local/include/assimp/color4.h:
 
 /usr/include/eigen3/Eigen/src/SparseCore/SparseView.h:
 
@@ -5291,11 +5358,17 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 
 /usr/include/eigen3/Eigen/src/Geometry/Translation.h:
 
+/usr/local/include/assimp/matrix3x3.inl:
+
 /usr/include/eigen3/Eigen/src/Geometry/AngleAxis.h:
 
 /usr/include/eigen3/Eigen/src/Geometry/Quaternion.h:
 
+/usr/local/include/assimp/postprocess.h:
+
 /usr/include/eigen3/Eigen/src/Geometry/Rotation2D.h:
+
+/usr/local/include/assimp/color4.inl:
 
 /usr/include/eigen3/Eigen/src/Geometry/Homogeneous.h:
 
@@ -5509,6 +5582,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 
 /usr/include/c++/8/cstdlib:
 
+/usr/local/include/assimp/matrix4x4.inl:
+
 /home/lucas/computer_graphics/cg_sandbox/lib/mathematics/spatial_algebra/mat3x3_mat4x4.h:
 
 /usr/include/c++/8/fstream:
@@ -5538,6 +5613,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
 /usr/include/time.h:
+
+/usr/local/include/assimp/quaternion.h:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
@@ -5687,6 +5764,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 
 /usr/include/eigen3/Eigen/src/Core/util/MKL_support.h:
 
+/usr/local/include/assimp/matrix4x4.h:
+
 /home/lucas/computer_graphics/cg_sandbox/include/world/world.h:
 
 /usr/include/eigen3/Eigen/src/SparseLU/SparseLUImpl.h:
@@ -5724,6 +5803,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 /usr/include/c++/8/math.h:
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
+
+/usr/local/include/assimp/Compiler/pushpack1.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
@@ -5838,6 +5919,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
+
+/usr/local/include/assimp/vector3.inl:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
@@ -5966,6 +6049,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 /usr/include/eigen3/Eigen/src/Core/Array.h:
 
 /usr/include/c++/8/bits/hashtable_policy.h:
+
+/usr/local/include/assimp/metadata.h:
 
 /usr/include/c++/8/climits:
 
@@ -6143,6 +6228,8 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
+/usr/local/include/assimp/matrix3x3.h:
+
 /usr/include/c++/8/bits/exception.h:
 
 /usr/include/x86_64-linux-gnu/bits/uio_lim.h:
@@ -6161,13 +6248,19 @@ CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o: ../core.cpp \
 
 /usr/include/eigen3/Eigen/src/Core/MathFunctions.h:
 
+/usr/local/include/assimp/vector2.h:
+
 /usr/include/eigen3/Eigen/src/Core/GenericPacketMath.h:
 
 /usr/include/eigen3/Eigen/src/Core/arch/SSE/PacketMath.h:
 
+/usr/local/include/assimp/Importer.hpp:
+
 /usr/include/eigen3/Eigen/src/Eigenvalues/RealSchur.h:
 
 /usr/include/eigen3/Eigen/src/Core/arch/CUDA/Half.h:
+
+/usr/local/include/assimp/vector3.h:
 
 /usr/include/c++/8/bits/functional_hash.h:
 
