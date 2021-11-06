@@ -4,7 +4,7 @@
     
     The boundary condition is no-slip for the entire boundary.
 ================================================================================*/
-#include "NavierStokes/NavierStokesSolver.h"
+#include "SurfaceNavierStokes/SurfaceNavierStokesSolver.h"
 #include "core.h"
 
 
@@ -20,19 +20,18 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
 
     triangle_normal(_geom.mesh),
     triangle_projection_matrix(_geom.mesh),
-    source_samples_P2(_geom.mesh)
+    source_samples_P2(_geom.mesh),
 
     velocity_prev(_geom.mesh),
     pressure_prev(_geom.mesh),
     centripetal_prev(_geom.mesh),
 
     velocity_node_indices(_geom.mesh),
-    pressure_node_indices(_geom.mesh),
+    pressure_node_indices(_geom.mesh)
 {
     m_solving = false;
     m_kinematic_viscosity = _kinematic_viscosity;
     m_time = 0.;
-    m_use_advection = true;
 
     m_num_velocity_variation_nodes = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
     m_num_pressure_variation_nodes = geom.mesh.num_vertices();
@@ -74,22 +73,22 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
 
     // Initialize the fields to 0.
     for (auto v : geom.mesh.vertices()) {
-        velocity[v] = vec2(0.,0.);
-        velocity_prev[v] = vec2(0.,0.);
+        velocity[v] = vec3(0.,0.,0.);
+        velocity_prev[v] = vec3(0.,0.,0.);
         pressure[v] = 0.;
         pressure_prev[v] = 0.;
     }
     for (auto e : geom.mesh.edges()) {
-        velocity[e] = vec2(0.,0.);
-        velocity_prev[e] = vec2(0.,0.);
+        velocity[e] = vec3(0.,0.,0.);
+        velocity_prev[e] = vec3(0.,0.,0.);
     }
     m_solution_vector = Eigen::VectorXd(m_system_N);
     for (int i = 0; i < m_system_N; i++) m_solution_vector[i] = 0.;
 
     // Set up surface normal data.
     for (auto tri : geom.mesh.faces()) {
-        Eigen::Vector3f n = geom.triangle_normal(tri);
-        triangle_normal[tri] = eigen_to_vec3(n);
+        vec3 n = eigen_to_vec3(geom.triangle_normal(tri));
+        triangle_normal[tri] = n;
         triangle_projection_matrix[tri] = mat3x3::identity() - vec3::outer(n, n);
     }
 
@@ -100,12 +99,11 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
 --------------------------------------------------------------------------------*/
 void SurfaceNavierStokesSolver::time_step(double delta_time)
 {
-    assert(!iterating());
     if (!solving()) {
         m_solving = true;
     }
     // Explicit advection.
-    // if (m_use_advection) explicit_advection_lagrangian();
+    // explicit_advection_lagrangian();
 
     // Initialize the previous state.
     for (auto v : geom.mesh.vertices()) {

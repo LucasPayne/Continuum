@@ -2,7 +2,7 @@
 
 std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_block_coefficients()
 {
-    auto coeffs = std::vector<TopLeftEntry>();
+    auto coeffs = std::vector<VelocityBlockEntry>();
 
     double inv_dt = 1./m_current_time_step_dt;
 
@@ -11,7 +11,7 @@ std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_bloc
     // For each psi^u based on a vertex.
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) continue;
-        auto v_pos = geom.position[v];
+        vec3 v_pos = eigen_to_vec3(geom.position[v]);
 
         // For each adjacent triangle.
         auto start = v.halfedge();
@@ -21,15 +21,15 @@ std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_bloc
             Face tri = he.face();
             Vertex vp = he.next().vertex();
             Vertex vpp = he.next().tip();
-            auto vp_pos = geom.position[vp];
-            auto vpp_pos = geom.position[vpp];
+            vec3 vp_pos = eigen_to_vec3(geom.position[vp]);
+            vec3 vpp_pos = eigen_to_vec3(geom.position[vpp]);
             Edge edge_110 = he.next().edge();
             Edge edge_011 = he.next().next().edge();
             Edge edge_101 = he.edge();
             // Triangle side vectors.
-            auto K1 = v_pos - vpp_pos;
-            auto K2 = vp_pos - v_pos;
-            auto K3 = vpp_pos - vp_pos;
+            vec3 K1 = v_pos - vpp_pos;
+            vec3 K2 = vp_pos - v_pos;
+            vec3 K3 = vpp_pos - vp_pos;
             double tri_area = geom.triangle_area(tri);
             mat3x3 tri_proj = triangle_projection_matrix[tri];
 
@@ -55,29 +55,29 @@ std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_bloc
 
             double val = 0.;
             // Diagonal term.
-            val = C * 0.5 * K3.dot(K3);
+            val = C * 0.5 * vec3::dot(K3, K3);
             coeffs.emplace_back(P2Element(v), P2Element(v), val * tri_proj);
 
             // vp contribution.
-            val = -(1./6.) * C * K1.dot(K3);
+            val = -(1./6.) * C * vec3::dot(K1, K3);
             if (!vp.on_boundary()) {
                 coeffs.emplace_back(P2Element(v), P2Element(vp), val * tri_proj);
             }
             
             // vpp contribution.
-            val = -(1./6.) * C * K2.dot(K3);
+            val = -(1./6.) * C * vec3::dot(K2, K3);
             if (!vpp.on_boundary()) {
                 coeffs.emplace_back(P2Element(v), P2Element(vpp), val * tri_proj);
             }
 
             // edge_101 contribution.
-            val = (2./3.)*C*K1.dot(K3);
+            val = (2./3.)*C*vec3::dot(K1, K3);
             if (!edge_101.on_boundary()) {
                 coeffs.emplace_back(P2Element(v), P2Element(edge_101), val * tri_proj);
             }
             
             // edge_011 contribution.
-            val = (2./3.)*C*K2.dot(K3);
+            val = (2./3.)*C*vec3::dot(K2, K3);
             if (!edge_011.on_boundary()) {
                 coeffs.emplace_back(P2Element(v), P2Element(edge_011), val * tri_proj);
             }
@@ -102,9 +102,9 @@ std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_bloc
             auto edge_110 = he.edge();
             auto edge_011 = he.next().edge();
             auto edge_101 = he.next().next().edge();
-            auto v_pos = geom.position[v];
-            auto vp_pos = geom.position[vp];
-            auto vpp_pos = geom.position[vpp];
+            vec3 v_pos = eigen_to_vec3(geom.position[v]);
+            vec3 vp_pos = eigen_to_vec3(geom.position[vp]);
+            vec3 vpp_pos = eigen_to_vec3(geom.position[vpp]);
             // Triangle side vectors.
             auto K1 = v_pos - vpp_pos;
             auto K2 = vp_pos - v_pos;
@@ -135,23 +135,23 @@ std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_bloc
 
             double val = 0.;
             // 110, 110
-            val = 4.*C/3. * (K3.dot(K3) - K1.dot(K2));
+            val = 4.*C/3. * (vec3::dot(K3, K3) - vec3::dot(K1, K2));
             coeffs.emplace_back(P2Element(edge), P2Element(edge_110), val * tri_proj);
 
             // 110, 011
-            val = 4.*C/3. * (K1.dot(K3));
+            val = 4.*C/3. * vec3::dot(K1,K3);
             if (!edge_011.on_boundary()) {
                 coeffs.emplace_back(P2Element(edge), P2Element(edge_011), val * tri_proj);
             }
             
             // 110, 101
-            val = 4.*C/3. * (K2.dot(K3));
+            val = 4.*C/3. * (vec3::dot(K2, K3));
             if (!edge_101.on_boundary()) {
                 coeffs.emplace_back(P2Element(edge), P2Element(edge_101), val * tri_proj);
             }
             
             // 110, 200
-            val = 2.*C/3. * (K1.dot(K2));
+            val = 2.*C/3. * (vec3::dot(K1, K2));
             if (!vp.on_boundary()) {
                 coeffs.emplace_back(P2Element(edge), P2Element(vp), val * tri_proj);
             }

@@ -13,7 +13,7 @@ std::vector<CentripetalBlockEntry> SurfaceNavierStokesSolver::compute_centripeta
     }
     for (auto v : geom.mesh.vertices()) {
         if (v == last_vertex) continue; // skip the last pressure node
-        auto v_pos = geom.position[v];
+        vec3 v_pos = eigen_to_vec3(geom.position[v]);
 
         // For each triangle.
         auto start = v.halfedge(); // If v is a boundary vertex, this should correspond to a triangle and be on the boundary.
@@ -23,8 +23,8 @@ std::vector<CentripetalBlockEntry> SurfaceNavierStokesSolver::compute_centripeta
 	    assert(!tri.null());
             auto vp = he.next().vertex();
             auto vpp = he.next().next().vertex();
-            auto vp_pos = geom.position[vp];
-            auto vpp_pos = geom.position[vpp];
+            auto vp_pos = eigen_to_vec3(geom.position[vp]);
+            auto vpp_pos = eigen_to_vec3(geom.position[vpp]);
             // Triangle side vectors.
             vec3 K1 = v_pos - vpp_pos;
             vec3 K2 = vp_pos - v_pos;

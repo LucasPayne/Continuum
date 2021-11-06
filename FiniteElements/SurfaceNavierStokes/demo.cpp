@@ -8,10 +8,6 @@ Demo::Demo()
     geom = nullptr;
 }
 
-void Demo::recreate_solver()
-{
-}
-
 void Demo::init()
 {
     // Create a camera controller.

@@ -107,7 +107,7 @@ add_executable(SurfaceNavierStokes
 
     SurfaceNavierStokes/make_sparsity_image.cpp
 )
-target_link_libraries(NavierStokes PRIVATE common)
+target_link_libraries(SurfaceNavierStokes PRIVATE common)
 
 add_executable(ReactionDiffusion
     ReactionDiffusion/main.cpp

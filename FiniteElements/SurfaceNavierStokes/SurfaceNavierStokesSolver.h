@@ -14,7 +14,7 @@ struct VelocityBlockEntry {
     P2Element velocity_trial_node;
     P2Element velocity_test_node;
     mat3x3 value;
-    TopLeftEntry(P2Element _vtrialn, P2Element _vtestn, mat3x3 val) :
+    VelocityBlockEntry(P2Element _vtrialn, P2Element _vtestn, mat3x3 val) :
         velocity_trial_node{_vtrialn}, velocity_test_node{_vtestn}, value{val}
     {}
 };
@@ -22,7 +22,7 @@ struct PressureBlockEntry {
     Vertex pressure_trial_node;
     P2Element velocity_test_node;
     vec3 value;
-    BottomLeftEntry(Vertex _ptn, P2Element _vtn, vec3 val) :
+    PressureBlockEntry(Vertex _ptn, P2Element _vtn, vec3 val) :
         pressure_trial_node{_ptn}, velocity_test_node{_vtn}, value{val}
     {}
 };
@@ -30,8 +30,8 @@ struct CentripetalBlockEntry {
     Vertex centripetal_trial_node;
     P2Element velocity_test_node;
     vec3 value;
-    BottomLeftEntry(Vertex _ptn, P2Element _vtn, vec3 val) :
-        pressure_trial_node{_ptn}, velocity_test_node{_vtn}, value{val}
+    CentripetalBlockEntry(Vertex _ptn, P2Element _vtn, vec3 val) :
+        centripetal_trial_node{_ptn}, velocity_test_node{_vtn}, value{val}
     {}
 };
 

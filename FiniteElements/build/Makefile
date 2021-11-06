@@ -77,6 +77,15 @@ install/strip/fast: preinstall/fast
 	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
@@ -110,15 +119,6 @@ install/local/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
 	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
@@ -225,6 +225,19 @@ ReactionDiffusion: cmake_check_build_system
 ReactionDiffusion/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/build
 .PHONY : ReactionDiffusion/fast
+
+#=============================================================================
+# Target rules for targets named SurfaceNavierStokes
+
+# Build rule for target.
+SurfaceNavierStokes: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SurfaceNavierStokes
+.PHONY : SurfaceNavierStokes
+
+# fast build rule for target.
+SurfaceNavierStokes/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/build
+.PHONY : SurfaceNavierStokes/fast
 
 #=============================================================================
 # Target rules for targets named FiniteVolumes
@@ -479,6 +492,7 @@ CameraController.o: CameraController.cpp.o
 # target to build an object file
 CameraController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.o
 .PHONY : CameraController.cpp.o
 
@@ -488,6 +502,7 @@ CameraController.i: CameraController.cpp.i
 # target to preprocess a source file
 CameraController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.i
 .PHONY : CameraController.cpp.i
 
@@ -497,6 +512,7 @@ CameraController.s: CameraController.cpp.s
 # target to generate assembly for a file
 CameraController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.s
 .PHONY : CameraController.cpp.s
 
@@ -908,6 +924,198 @@ ReactionDiffusion/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.s
 .PHONY : ReactionDiffusion/main.cpp.s
 
+SurfaceNavierStokes/SurfaceNavierStokesSolver.o: SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o
+.PHONY : SurfaceNavierStokes/SurfaceNavierStokesSolver.o
+
+# target to build an object file
+SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o
+.PHONY : SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o
+
+SurfaceNavierStokes/SurfaceNavierStokesSolver.i: SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.i
+.PHONY : SurfaceNavierStokes/SurfaceNavierStokesSolver.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.i
+.PHONY : SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.i
+
+SurfaceNavierStokes/SurfaceNavierStokesSolver.s: SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.s
+.PHONY : SurfaceNavierStokes/SurfaceNavierStokesSolver.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.s
+.PHONY : SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.s
+
+SurfaceNavierStokes/compute_centripetal_block_coefficients.o: SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o
+.PHONY : SurfaceNavierStokes/compute_centripetal_block_coefficients.o
+
+# target to build an object file
+SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o
+.PHONY : SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o
+
+SurfaceNavierStokes/compute_centripetal_block_coefficients.i: SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.i
+.PHONY : SurfaceNavierStokes/compute_centripetal_block_coefficients.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.i
+.PHONY : SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.i
+
+SurfaceNavierStokes/compute_centripetal_block_coefficients.s: SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s
+.PHONY : SurfaceNavierStokes/compute_centripetal_block_coefficients.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s
+.PHONY : SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s
+
+SurfaceNavierStokes/compute_pressure_block_coefficients.o: SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o
+.PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.o
+
+# target to build an object file
+SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o
+.PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o
+
+SurfaceNavierStokes/compute_pressure_block_coefficients.i: SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.i
+.PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.i
+.PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.i
+
+SurfaceNavierStokes/compute_pressure_block_coefficients.s: SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.s
+.PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.s
+.PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.s
+
+SurfaceNavierStokes/compute_velocity_block_coefficients.o: SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o
+.PHONY : SurfaceNavierStokes/compute_velocity_block_coefficients.o
+
+# target to build an object file
+SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o
+.PHONY : SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o
+
+SurfaceNavierStokes/compute_velocity_block_coefficients.i: SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.i
+.PHONY : SurfaceNavierStokes/compute_velocity_block_coefficients.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.i
+.PHONY : SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.i
+
+SurfaceNavierStokes/compute_velocity_block_coefficients.s: SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.s
+.PHONY : SurfaceNavierStokes/compute_velocity_block_coefficients.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.s
+.PHONY : SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.s
+
+SurfaceNavierStokes/demo.o: SurfaceNavierStokes/demo.cpp.o
+.PHONY : SurfaceNavierStokes/demo.o
+
+# target to build an object file
+SurfaceNavierStokes/demo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.o
+.PHONY : SurfaceNavierStokes/demo.cpp.o
+
+SurfaceNavierStokes/demo.i: SurfaceNavierStokes/demo.cpp.i
+.PHONY : SurfaceNavierStokes/demo.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.i
+.PHONY : SurfaceNavierStokes/demo.cpp.i
+
+SurfaceNavierStokes/demo.s: SurfaceNavierStokes/demo.cpp.s
+.PHONY : SurfaceNavierStokes/demo.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.s
+.PHONY : SurfaceNavierStokes/demo.cpp.s
+
+SurfaceNavierStokes/explicit_advection.o: SurfaceNavierStokes/explicit_advection.cpp.o
+.PHONY : SurfaceNavierStokes/explicit_advection.o
+
+# target to build an object file
+SurfaceNavierStokes/explicit_advection.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o
+.PHONY : SurfaceNavierStokes/explicit_advection.cpp.o
+
+SurfaceNavierStokes/explicit_advection.i: SurfaceNavierStokes/explicit_advection.cpp.i
+.PHONY : SurfaceNavierStokes/explicit_advection.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/explicit_advection.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.i
+.PHONY : SurfaceNavierStokes/explicit_advection.cpp.i
+
+SurfaceNavierStokes/explicit_advection.s: SurfaceNavierStokes/explicit_advection.cpp.s
+.PHONY : SurfaceNavierStokes/explicit_advection.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/explicit_advection.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.s
+.PHONY : SurfaceNavierStokes/explicit_advection.cpp.s
+
+SurfaceNavierStokes/main.o: SurfaceNavierStokes/main.cpp.o
+.PHONY : SurfaceNavierStokes/main.o
+
+# target to build an object file
+SurfaceNavierStokes/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/main.cpp.o
+.PHONY : SurfaceNavierStokes/main.cpp.o
+
+SurfaceNavierStokes/main.i: SurfaceNavierStokes/main.cpp.i
+.PHONY : SurfaceNavierStokes/main.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/main.cpp.i
+.PHONY : SurfaceNavierStokes/main.cpp.i
+
+SurfaceNavierStokes/main.s: SurfaceNavierStokes/main.cpp.s
+.PHONY : SurfaceNavierStokes/main.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/main.cpp.s
+.PHONY : SurfaceNavierStokes/main.cpp.s
+
+SurfaceNavierStokes/make_sparsity_image.o: SurfaceNavierStokes/make_sparsity_image.cpp.o
+.PHONY : SurfaceNavierStokes/make_sparsity_image.o
+
+# target to build an object file
+SurfaceNavierStokes/make_sparsity_image.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o
+.PHONY : SurfaceNavierStokes/make_sparsity_image.cpp.o
+
+SurfaceNavierStokes/make_sparsity_image.i: SurfaceNavierStokes/make_sparsity_image.cpp.i
+.PHONY : SurfaceNavierStokes/make_sparsity_image.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/make_sparsity_image.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.i
+.PHONY : SurfaceNavierStokes/make_sparsity_image.cpp.i
+
+SurfaceNavierStokes/make_sparsity_image.s: SurfaceNavierStokes/make_sparsity_image.cpp.s
+.PHONY : SurfaceNavierStokes/make_sparsity_image.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/make_sparsity_image.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.s
+.PHONY : SurfaceNavierStokes/make_sparsity_image.cpp.s
+
 WeaklyIncompressible/WeaklyIncompressible.o: WeaklyIncompressible/WeaklyIncompressible.cpp.o
 .PHONY : WeaklyIncompressible/WeaklyIncompressible.o
 
@@ -963,6 +1171,7 @@ core.o: core.cpp.o
 core.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.o
 .PHONY : core.cpp.o
@@ -974,6 +1183,7 @@ core.i: core.cpp.i
 core.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/core.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.i
 .PHONY : core.cpp.i
@@ -985,6 +1195,7 @@ core.s: core.cpp.s
 core.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QuadraticLaplaceSolver.dir/build.make CMakeFiles/QuadraticLaplaceSolver.dir/core.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/core.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/core.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.s
 .PHONY : core.cpp.s
@@ -1059,6 +1270,7 @@ help:
 	@echo "... NavierStokes"
 	@echo "... QuadraticLaplaceSolver"
 	@echo "... ReactionDiffusion"
+	@echo "... SurfaceNavierStokes"
 	@echo "... WeaklyIncompressible"
 	@echo "... basic_application"
 	@echo "... basis_quadratic_figure"
@@ -1127,6 +1339,30 @@ help:
 	@echo "... ReactionDiffusion/main.o"
 	@echo "... ReactionDiffusion/main.i"
 	@echo "... ReactionDiffusion/main.s"
+	@echo "... SurfaceNavierStokes/SurfaceNavierStokesSolver.o"
+	@echo "... SurfaceNavierStokes/SurfaceNavierStokesSolver.i"
+	@echo "... SurfaceNavierStokes/SurfaceNavierStokesSolver.s"
+	@echo "... SurfaceNavierStokes/compute_centripetal_block_coefficients.o"
+	@echo "... SurfaceNavierStokes/compute_centripetal_block_coefficients.i"
+	@echo "... SurfaceNavierStokes/compute_centripetal_block_coefficients.s"
+	@echo "... SurfaceNavierStokes/compute_pressure_block_coefficients.o"
+	@echo "... SurfaceNavierStokes/compute_pressure_block_coefficients.i"
+	@echo "... SurfaceNavierStokes/compute_pressure_block_coefficients.s"
+	@echo "... SurfaceNavierStokes/compute_velocity_block_coefficients.o"
+	@echo "... SurfaceNavierStokes/compute_velocity_block_coefficients.i"
+	@echo "... SurfaceNavierStokes/compute_velocity_block_coefficients.s"
+	@echo "... SurfaceNavierStokes/demo.o"
+	@echo "... SurfaceNavierStokes/demo.i"
+	@echo "... SurfaceNavierStokes/demo.s"
+	@echo "... SurfaceNavierStokes/explicit_advection.o"
+	@echo "... SurfaceNavierStokes/explicit_advection.i"
+	@echo "... SurfaceNavierStokes/explicit_advection.s"
+	@echo "... SurfaceNavierStokes/main.o"
+	@echo "... SurfaceNavierStokes/main.i"
+	@echo "... SurfaceNavierStokes/main.s"
+	@echo "... SurfaceNavierStokes/make_sparsity_image.o"
+	@echo "... SurfaceNavierStokes/make_sparsity_image.i"
+	@echo "... SurfaceNavierStokes/make_sparsity_image.s"
 	@echo "... WeaklyIncompressible/WeaklyIncompressible.o"
 	@echo "... WeaklyIncompressible/WeaklyIncompressible.i"
 	@echo "... WeaklyIncompressible/WeaklyIncompressible.s"
