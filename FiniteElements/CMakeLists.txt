@@ -92,6 +92,23 @@ add_executable(NavierStokes
 )
 target_link_libraries(NavierStokes PRIVATE common)
 
+add_executable(SurfaceNavierStokes
+    SurfaceNavierStokes/main.cpp
+
+    SurfaceNavierStokes/demo.cpp
+    CameraController.cpp
+    core.cpp
+
+    SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp
+    SurfaceNavierStokes/compute_velocity_block_coefficients.cpp
+    SurfaceNavierStokes/compute_pressure_block_coefficients.cpp
+    SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp
+    SurfaceNavierStokes/explicit_advection.cpp
+
+    SurfaceNavierStokes/make_sparsity_image.cpp
+)
+target_link_libraries(NavierStokes PRIVATE common)
+
 add_executable(ReactionDiffusion
     ReactionDiffusion/main.cpp
 
