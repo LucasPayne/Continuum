@@ -32,6 +32,8 @@ std::vector<CentripetalBlockEntry> SurfaceNavierStokesSolver::compute_centripeta
             double tri_area = geom.triangle_area(tri);
             
             P2Element elements[6] = {vp,vpp,v, edge_110, edge_011, edge_101};
+
+            #if 0
             double weights[6] = {
                 -1./120.,
                 -1./120.,
@@ -44,6 +46,33 @@ std::vector<CentripetalBlockEntry> SurfaceNavierStokesSolver::compute_centripeta
                 if (elements[i].on_boundary()) continue;
                 coeffs.emplace_back(v, elements[i], 2*tri_area * weights[i] * tri_normal);
             }
+            #endif
+
+            #if 0
+            double weights[6*6] = {
+// 0, 200:
+    1./420., 1./2520., -1./630., -1./630., -1./210., -1./315.,
+// 0., 020:
+    1./2520., 1./420., -1./630., -1./630., -1./315., -1./210.,
+// 0., 002:
+    -1./630., -1./630., 1./84., -1./630., 1./210., 1./210.,
+// 0., 110:
+    -1./630., -1./630., -1./630., 4./315., 4./315., 4./315.,
+// 0., 011:
+    -1./210., -1./315., 1./210., 4./315., 4./105., 2./105.,
+// 0., 101:
+    -1./315., -1./210., 1./210., 4./315., 2./105., 4./105.,
+            };
+            for (int i = 0; i < 6; i++) {
+                if (elements[i].on_boundary()) continue;
+	        vec3 integral = vec3(0,0,0);
+                for (int j = 0; j < 6; j++) {
+                    integral += weights[6*i + j] * normal[elements[j]];
+                }
+	        coeffs.emplace_back(v, elements[i], 2*tri_area * integral);
+            }
+            #endif
+
 
             he = he.twin().next();
         } while (!he.face().null() && he != start);

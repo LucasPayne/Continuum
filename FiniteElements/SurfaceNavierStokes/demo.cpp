@@ -3,8 +3,6 @@
 #include "mesh_generators.cpp"
 #include "mesh_processing/extensions/assimp_convert.h"
 
-int vel_mode = 0;
-
 
 Demo::Demo()
 {
@@ -53,7 +51,6 @@ void Demo::keyboard_handler(KeyboardEvent e)
             solver->time_step(0.1);
         }
         if (e.key.code == KEY_1) {
-            vel_mode = (vel_mode + 1)%2;
         }
     }
 }
@@ -61,14 +58,12 @@ void Demo::keyboard_handler(KeyboardEvent e)
 void Demo::update()
 {
     // world->graphics.paint.wireframe(*geom, mat4x4::identity(), 0.001);
-    double velocity_mul = 20;
+    double velocity_mul = 1;
     for (auto v : geom->mesh.vertices()) {
         vec3 p = eigen_to_vec3(geom->position[v]);
         vec3 u = solver->velocity[v];
-        if (vel_mode == 0) {
-            world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
-            world->graphics.paint.line(p, p + velocity_mul*u, 0.01, vec4(0,0,1,1));
-        }
+        world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
+        world->graphics.paint.line(p, p + velocity_mul*u, 0.01, vec4(0,0,1,1));
     }
     for (auto e : geom->mesh.edges()) {
         vec3 a = eigen_to_vec3(geom->position[e.a().vertex()]);
@@ -76,10 +71,8 @@ void Demo::update()
         world->graphics.paint.line(a,b,0.001,vec4(0,0,0,1));
         vec3 p = 0.5*a + 0.5*b;
         vec3 u = solver->velocity[e];
-        if (vel_mode == 1) {
-            world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
-            world->graphics.paint.line(p, p + velocity_mul*u, 0.01, vec4(0,0,1,1));
-        }
+        world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
+        world->graphics.paint.line(p, p + velocity_mul*u, 0.01, vec4(0,0,1,1));
     }
 
     for (auto tri : geom->mesh.faces()) {
