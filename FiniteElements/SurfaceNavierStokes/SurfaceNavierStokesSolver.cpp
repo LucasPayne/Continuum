@@ -14,6 +14,9 @@
 SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, double _kinematic_viscosity) :
     geom{_geom},
 
+    _test_point_1(_geom.mesh),
+    _test_point_2(_geom.mesh),
+
     velocity(_geom.mesh),
     pressure(_geom.mesh),
     centripetal(_geom.mesh),
@@ -24,7 +27,8 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
     source_samples_P2(_geom.mesh),
 
     velocity_node_indices(_geom.mesh),
-    pressure_node_indices(_geom.mesh)
+    pressure_node_indices(_geom.mesh),
+    centripetal_node_indices(_geom.mesh)
 {
     m_solving = false;
     m_kinematic_viscosity = _kinematic_viscosity;
@@ -32,7 +36,9 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
 
     m_num_velocity_variation_nodes = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
     m_num_pressure_variation_nodes = geom.mesh.num_vertices();
-    m_num_centripetal_variation_nodes = geom.mesh.num_vertices();
+    // m_num_centripetal_variation_nodes = geom.mesh.num_vertices() + geom.mesh.num_edges();
+    m_num_centripetal_variation_nodes = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
+
     // The size of the system is 3*N_u + N_p - 1 + N_r.
     // The -1 is due to one pressure node being fixed.
     // (As a convention, the fixed node is the last in the ordering.)
@@ -61,11 +67,28 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
         }
     }
     // Pressure node ordering. Vertex nodes (interior or on the boundary).
-    // These are also the centripetal node indices.
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
         pressure_node_indices[v] = counter;
         counter += 1;
+    }
+    // Centripetal node ordering.
+    counter = 0;
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) {
+            centripetal_node_indices[v] = -1;
+        } else {
+            centripetal_node_indices[v] = counter;
+            counter += 1;
+        }
+    }
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) {
+            centripetal_node_indices[e] = -1;
+        } else {
+            centripetal_node_indices[e] = counter;
+            counter += 1;
+        }
     }
 
     // Initialize the fields to 0.
@@ -133,14 +156,14 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
     m_current_time_step_dt = delta_time;
 
     // Explicit advection.
-    // explicit_advection_lagrangian();
+    explicit_advection();
 
     printf("Constructing matrix...\n");
     SparseMatrix matrix = compute_matrix();
-    make_sparsity_image(matrix, DATA "upr_matrix.ppm");
+    // make_sparsity_image(matrix, DATA "upr_matrix.ppm");
     printf("Constructing RHS...\n");
     Eigen::VectorXd rhs = compute_rhs();
-    std::cout << rhs << "\n";
+    // std::cout << rhs << "\n";
 
     Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
     printf("Factoring...\n");
@@ -179,7 +202,13 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
     // Centripetal.
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
         centripetal[v] = m_solution_vector[3*num_velocity_variation_nodes() + num_pressure_variation_nodes()-1 + counter];
+        counter += 1;
+    }
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) continue;
+        centripetal[e] = m_solution_vector[3*num_velocity_variation_nodes() + num_pressure_variation_nodes()-1 + counter];
         counter += 1;
     }
     
@@ -199,3 +228,19 @@ void SurfaceNavierStokesSolver::set_source(std::function<vec3(double,double,doub
         source_samples_P2[e] = vf(p.x(), p.y(), p.z());
     }
 }
+
+// For debugging.
+void SurfaceNavierStokesSolver::set_velocity(std::function<vec3(double,double,double)> vf)
+{
+    for (auto v : geom.mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        auto pos = geom.position[v];
+        velocity[v] = vf(pos.x(), pos.y(), pos.z());
+    }
+    for (auto e : geom.mesh.edges()) {
+        if (e.on_boundary()) continue;
+        auto pos = 0.5*geom.position[e.a().vertex()] + 0.5*geom.position[e.b().vertex()];
+        velocity[e] = vf(pos.x(), pos.y(), pos.z());
+    }
+}
+

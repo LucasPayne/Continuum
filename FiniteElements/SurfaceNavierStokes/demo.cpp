@@ -29,17 +29,24 @@ void Demo::init()
     geom = square_mesh(10);
     for (auto v : geom->mesh.vertices()) {
         vec3 p = eigen_to_vec3(geom->position[v]);
-        geom->position[v] += Eigen::Vector3f(0, 0.1*sin(4*p.x()), 0);
-        // geom->position[v] = Eigen::Vector3f(p.y(), p.x(), p.z());
+        float theta = 0.95*(p.x()+1)*M_PI;
+        // geom->position[v] += Eigen::Vector3f(0, 0.1*sin(4*p.x()), 0);
+        // geom->position[v] = Eigen::Vector3f(cos(theta), sin(theta), p.z());
     }
     
     solver = new SurfaceNavierStokesSolver(*geom, 1);
 
     solver->set_source([&](double x, double y, double z)->vec3 {
+        #if 1
         double r = 0.25;
-        if (x*x + z*z <= r*r) return vec3(1,0,0);
+        if (x*x + z*z <= r*r) return vec3(20,0,0);
         // if (y*y + z*z <= r*r) return vec3(1,0,1);
         return vec3(0,0,0);
+        #else
+        double r = 0.25;
+        if (x*x + z*z <= r*r) return vec3(1,-2,0);
+        return vec3(0,0,0);
+        #endif
     });
 }
 
@@ -50,7 +57,16 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_R) {
             solver->time_step(0.1);
         }
+        if (e.key.code == KEY_P) {
+            solver->m_current_time_step_dt = 0.025;
+            solver->explicit_advection();
+        }
         if (e.key.code == KEY_1) {
+            solver->set_velocity([&](double x, double y, double z)->vec3 {
+                double r = 0.25;
+                if (x*x + z*z <= r*r) return vec3(-2,0,-2);
+                return vec3(0,0,0);
+            });
         }
     }
 }
@@ -62,7 +78,7 @@ void Demo::update()
     for (auto v : geom->mesh.vertices()) {
         vec3 p = eigen_to_vec3(geom->position[v]);
         vec3 u = solver->velocity[v];
-        world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
+        // world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
         world->graphics.paint.line(p, p + velocity_mul*u, 0.01, vec4(0,0,1,1));
     }
     for (auto e : geom->mesh.edges()) {
@@ -71,10 +87,10 @@ void Demo::update()
         world->graphics.paint.line(a,b,0.001,vec4(0,0,0,1));
         vec3 p = 0.5*a + 0.5*b;
         vec3 u = solver->velocity[e];
-        world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
+        // world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
         world->graphics.paint.line(p, p + velocity_mul*u, 0.01, vec4(0,0,1,1));
     }
-
+    #if 0
     for (auto tri : geom->mesh.faces()) {
         vec3 c = eigen_to_vec3(geom->barycenter(tri));
         vec3 n = solver->triangle_normal[tri];
@@ -92,6 +108,27 @@ void Demo::update()
         vec3 n = solver->normal[v];
         world->graphics.paint.line(c,c+0.1*n,0.001,vec4(0,1,0,1));
     }
+    #endif
+
+    #if 0
+    for (auto v : geom->mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        vec3 c = eigen_to_vec3(geom->position[v]);
+        vec3 r =  solver->_test_point_1[v];
+        //world->graphics.paint.line(c,c+100*(r-c),0.005,vec4(0,0,0,1));
+        world->graphics.paint.line(c,r,0.005,vec4(0,0,0,1));
+        world->graphics.paint.sphere(r, 0.01, vec4(1,0,0,0));
+        // world->graphics.paint.line(c,eigen_to_vec3(geom->barycenter(solver->_test_point_2[v])),0.005,vec4(1,0,0,1));
+        // world->graphics.paint.line(c,solver->_test_point_2[v],0.005,vec4(1,0,0,1));
+    }
+    for (auto e : geom->mesh.edges()) {
+        if (e.on_boundary()) continue;
+        vec3 c = eigen_to_vec3(geom->midpoint(e));
+        vec3 r =  solver->_test_point_1[e];
+        // world->graphics.paint.line(c,r,0.005,vec4(0,0,0,1));
+        // world->graphics.paint.line(c,solver->_test_point_2[e],0.005,vec4(1,0,0,1));
+    }
+    #endif
 }
 
 

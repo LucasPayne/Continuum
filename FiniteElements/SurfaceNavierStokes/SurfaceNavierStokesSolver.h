@@ -27,10 +27,10 @@ struct PressureBlockEntry {
     {}
 };
 struct CentripetalBlockEntry {
-    Vertex centripetal_trial_node;
+    P2Element centripetal_trial_node;
     P2Element velocity_test_node;
     vec3 value;
-    CentripetalBlockEntry(Vertex _ptn, P2Element _vtn, vec3 val) :
+    CentripetalBlockEntry(P2Element _ptn, P2Element _vtn, vec3 val) :
         centripetal_trial_node{_ptn}, velocity_test_node{_vtn}, value{val}
     {}
 };
@@ -52,9 +52,16 @@ public:
 
     SurfaceGeometry &geom;
 
+
+    // Data for debugging.
+    //--------------------------------------------------------------------------------
+    P2Attachment<vec3> _test_point_1;
+    P2Attachment<vec3> _test_point_2;
+    //--------------------------------------------------------------------------------
+
     P2Attachment<vec3> velocity;
     P1Attachment<double> pressure;
-    P1Attachment<double> centripetal;
+    P2Attachment<double> centripetal;
 
     FaceAttachment<vec3> triangle_normal;
     FaceAttachment<mat3x3> triangle_projection_matrix;
@@ -63,13 +70,20 @@ public:
     P2Attachment<vec3> source_samples_P2; // Samples for approximate integration.
     void set_source(std::function<vec3(double,double,double)> vf);
 
+    // For debugging.
+    void set_velocity(std::function<vec3(double,double,double)> vf);
+
     void make_sparsity_image(SparseMatrix &matrix, std::string name);
+
+    void explicit_advection();
+
+    double m_current_time_step_dt;
 private:
     P2Attachment<int> velocity_node_indices;
     P1Attachment<int> pressure_node_indices;
+    P2Attachment<int> centripetal_node_indices;
 
     inline int system_N() const { return m_system_N; } // The size of the velocity-pressure-centripetal vectors.
-    void explicit_advection_lagrangian();
 
     std::vector<PressureBlockEntry> compute_pressure_block_coefficients();
     std::vector<VelocityBlockEntry> compute_velocity_block_coefficients();
@@ -86,7 +100,6 @@ private:
 
     double m_kinematic_viscosity;
     bool m_solving; // Has the simulation started?
-    double m_current_time_step_dt;
     double m_time;
 };
 
