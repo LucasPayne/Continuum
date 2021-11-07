@@ -20,11 +20,8 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
 
     triangle_normal(_geom.mesh),
     triangle_projection_matrix(_geom.mesh),
+    normal(_geom.mesh),
     source_samples_P2(_geom.mesh),
-
-    velocity_prev(_geom.mesh),
-    pressure_prev(_geom.mesh),
-    centripetal_prev(_geom.mesh),
 
     velocity_node_indices(_geom.mesh),
     pressure_node_indices(_geom.mesh)
@@ -36,10 +33,10 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
     m_num_velocity_variation_nodes = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
     m_num_pressure_variation_nodes = geom.mesh.num_vertices();
     m_num_centripetal_variation_nodes = geom.mesh.num_vertices();
-    // The size of the system is 2*N_u + N_p - 1 + N_r.
+    // The size of the system is 3*N_u + N_p - 1 + N_r.
     // The -1 is due to one pressure node being fixed.
     // (As a convention, the fixed node is the last in the ordering.)
-    m_system_N = 2*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes - 1 + m_num_centripetal_variation_nodes;
+    m_system_N = 3*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes - 1 + m_num_centripetal_variation_nodes;
     
     /*--------------------------------------------------------------------------------
         Set up the indexing for nodes in the mesh.
@@ -74,22 +71,53 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
     // Initialize the fields to 0.
     for (auto v : geom.mesh.vertices()) {
         velocity[v] = vec3(0.,0.,0.);
-        velocity_prev[v] = vec3(0.,0.,0.);
         pressure[v] = 0.;
-        pressure_prev[v] = 0.;
+        centripetal[v] = 0.;
     }
     for (auto e : geom.mesh.edges()) {
         velocity[e] = vec3(0.,0.,0.);
-        velocity_prev[e] = vec3(0.,0.,0.);
     }
     m_solution_vector = Eigen::VectorXd(m_system_N);
     for (int i = 0; i < m_system_N; i++) m_solution_vector[i] = 0.;
 
     // Set up surface normal data.
+    P2Attachment<int> num_tris(geom.mesh);
+    for (auto v : geom.mesh.vertices()) {
+        num_tris[v] = 0;
+        normal[v] = vec3(0,0,0);
+    }
+    for (auto e : geom.mesh.edges()) {
+        num_tris[e] = 0;
+        normal[e] = vec3(0,0,0);
+    }
     for (auto tri : geom.mesh.faces()) {
         vec3 n = eigen_to_vec3(geom.triangle_normal(tri));
         triangle_normal[tri] = n;
         triangle_projection_matrix[tri] = mat3x3::identity() - vec3::outer(n, n);
+        auto start = tri.halfedge();
+        auto he = start;
+        do {
+            normal[he.vertex()] += n;
+            num_tris[he.vertex()] += 1;
+            normal[he.edge()] += n;
+            num_tris[he.edge()] += 1;
+            he = he.next();
+        } while (he != start);
+    }
+    for (auto v : geom.mesh.vertices()) {
+        normal[v] /= num_tris[v];
+    }
+    for (auto e : geom.mesh.edges()) {
+        normal[e] /= num_tris[e];
+    }
+    
+
+    // Set up source data.
+    for (auto v : geom.mesh.vertices()) {
+        source_samples_P2[v] = vec3(0.,0.,0.);
+    }
+    for (auto e : geom.mesh.edges()) {
+        source_samples_P2[e] = vec3(0.,0.,0.);
     }
 
 }
@@ -99,121 +127,75 @@ SurfaceNavierStokesSolver::SurfaceNavierStokesSolver(SurfaceGeometry &_geom, dou
 --------------------------------------------------------------------------------*/
 void SurfaceNavierStokesSolver::time_step(double delta_time)
 {
-    m_current_time_step_dt = delta_time;
-
     if (!solving()) {
         m_solving = true;
     }
+    m_current_time_step_dt = delta_time;
+
     // Explicit advection.
     // explicit_advection_lagrangian();
 
-    // Initialize the previous state.
+    printf("Constructing matrix...\n");
+    SparseMatrix matrix = compute_matrix();
+    make_sparsity_image(matrix, DATA "upr_matrix.ppm");
+    printf("Constructing RHS...\n");
+    Eigen::VectorXd rhs = compute_rhs();
+    std::cout << rhs << "\n";
+
+    Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
+    printf("Factoring...\n");
+    linear_solver.compute(matrix);
+    printf("Solving...\n");
+    m_solution_vector = linear_solver.solve(rhs);
+    printf("Solved.\n");
+
+    // Associate the solution to the mesh.
     for (auto v : geom.mesh.vertices()) {
-        velocity_prev[v] = velocity[v];
-        pressure_prev[v] = pressure[v];
-        centripetal_prev[v] = centripetal[v];
+        if (v.on_boundary()) continue;
     }
-    for (auto e : geom.mesh.edges()) {
-        velocity_prev[e] = velocity[e];
-    }
-    
-    // Initialize the solution vector.
-    // Velocity.
     int counter = 0;
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) continue;
-        m_solution_vector[2*counter+0] = velocity[v].x();
-        m_solution_vector[2*counter+1] = velocity[v].y();
+        velocity[v].x() = m_solution_vector[3*counter+0];
+        velocity[v].y() = m_solution_vector[3*counter+1];
+        velocity[v].z() = m_solution_vector[3*counter+2];
         counter += 1;
     }
     counter = 0;
     for (auto e : geom.mesh.edges()) {
         if (e.on_boundary()) continue;
-        m_solution_vector[2*geom.mesh.num_interior_vertices() + 2*counter+0] = velocity[e].x();
-        m_solution_vector[2*geom.mesh.num_interior_vertices() + 2*counter+1] = velocity[e].y();
+        velocity[e].x() = m_solution_vector[3*(geom.mesh.num_interior_vertices() + counter)+0];
+        velocity[e].y() = m_solution_vector[3*(geom.mesh.num_interior_vertices() + counter)+1];
+        velocity[e].z() = m_solution_vector[3*(geom.mesh.num_interior_vertices() + counter)+2];
         counter += 1;
     }
     // Pressure.
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
         if (counter == m_num_pressure_variation_nodes-1) break; // skip the last pressure node
-        m_solution_vector[2*num_velocity_variation_nodes() + counter] = pressure[v];
+        pressure[v] = m_solution_vector[3*num_velocity_variation_nodes() + counter];
         counter += 1;
     }
     // Centripetal.
     counter = 0;
     for (auto v : geom.mesh.vertices()) {
-        m_solution_vector[2*num_velocity_variation_nodes() + num_pressure_variation_nodes()-1 + counter] = centripetal[v];
+        centripetal[v] = m_solution_vector[3*num_velocity_variation_nodes() + num_pressure_variation_nodes()-1 + counter];
         counter += 1;
     }
-    SparseMatrix matrix = compute_matrix();
-    make_sparsity_image(matrix, DATA "upr_matrix.ppm");
-
+    
     m_time += m_current_time_step_dt;
 }
 
 
 
-
-SparseMatrix SurfaceNavierStokesSolver::compute_matrix()
+void SurfaceNavierStokesSolver::set_source(std::function<vec3(double,double,double)> vf)
 {
-    auto velocity_block_coefficients = compute_velocity_block_coefficients();
-    auto pressure_block_coefficients = compute_pressure_block_coefficients();
-    auto centripetal_block_coefficients = compute_centripetal_block_coefficients();
-
-    // Construct the sparse matrix by converting the coefficient lists (which are in terms of the mesh)
-    // into a list of triplets indexing into a matrix.
-    auto eigen_coefficients = std::vector<EigenTriplet>();
-    auto add_eigen_coefficient = [&](int i, int j, double val) {
-        // printf("%d %d, %.6g\n", i,j, val);
-        eigen_coefficients.push_back(EigenTriplet(i, j, val));
-    };
-    for (auto coeff : velocity_block_coefficients) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                add_eigen_coefficient(
-                    2*velocity_node_indices[coeff.velocity_trial_node] + i,
-                    2*velocity_node_indices[coeff.velocity_test_node] + j,
-                    coeff.value.entry(i,j)
-                );
-            }
-        }
+    for (auto v : geom.mesh.vertices()) {
+        auto p = geom.position[v];
+        source_samples_P2[v] = vf(p.x(), p.y(), p.z());
     }
-    getchar();
-    for (auto coeff : pressure_block_coefficients) {
-        for (int i = 0; i < 3; i++) {
-            add_eigen_coefficient(
-                2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
-                2*velocity_node_indices[coeff.velocity_test_node] + i,
-                coeff.value[i]
-            );
-            add_eigen_coefficient(
-                2*velocity_node_indices[coeff.velocity_test_node] + i,
-                2*m_num_velocity_variation_nodes + pressure_node_indices[coeff.pressure_trial_node],
-                coeff.value[i]
-            );
-        }
+    for (auto e : geom.mesh.edges()) {
+        auto p = 0.5*geom.position[e.a().vertex()] + 0.5*geom.position[e.b().vertex()];
+        source_samples_P2[e] = vf(p.x(), p.y(), p.z());
     }
-    getchar();
-    for (auto coeff : centripetal_block_coefficients) {
-        for (int i = 0; i < 3; i++) {
-            add_eigen_coefficient(
-                2*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes-1 + pressure_node_indices[coeff.centripetal_trial_node],
-                2*velocity_node_indices[coeff.velocity_test_node] + i,
-                coeff.value[i]
-            );
-            add_eigen_coefficient(
-                2*velocity_node_indices[coeff.velocity_test_node] + i,
-                2*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes-1 + pressure_node_indices[coeff.centripetal_trial_node],
-                coeff.value[i]
-            );
-        }
-    }
-    getchar();
-
-
-    auto matrix = SparseMatrix(m_system_N, m_system_N);
-    matrix.setFromTriplets(eigen_coefficients.begin(), eigen_coefficients.end());
-    matrix.makeCompressed();
-    return matrix;
 }

@@ -58,16 +58,13 @@ public:
 
     FaceAttachment<vec3> triangle_normal;
     FaceAttachment<mat3x3> triangle_projection_matrix;
+    P2Attachment<vec3> normal;
 
     P2Attachment<vec3> source_samples_P2; // Samples for approximate integration.
+    void set_source(std::function<vec3(double,double,double)> vf);
 
     void make_sparsity_image(SparseMatrix &matrix, std::string name);
 private:
-    // The previous velocity and pressure are only changed after a time step.
-    P2Attachment<vec3> velocity_prev;
-    P1Attachment<double> pressure_prev;
-    P1Attachment<double> centripetal_prev;
-
     P2Attachment<int> velocity_node_indices;
     P1Attachment<int> pressure_node_indices;
 
@@ -78,6 +75,8 @@ private:
     std::vector<VelocityBlockEntry> compute_velocity_block_coefficients();
     std::vector<CentripetalBlockEntry> compute_centripetal_block_coefficients();
     SparseMatrix compute_matrix();
+    Eigen::VectorXd compute_rhs();
+
 
     int m_num_velocity_variation_nodes;
     int m_num_pressure_variation_nodes;

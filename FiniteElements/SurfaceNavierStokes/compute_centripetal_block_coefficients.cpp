@@ -4,15 +4,10 @@ std::vector<CentripetalBlockEntry> SurfaceNavierStokesSolver::compute_centripeta
 {
     auto coeffs = std::vector<CentripetalBlockEntry>();
     
-    // For each basis trial function psi^p ...
+    // For each basis trial function psi^r ...
     //------------------------------------------------------------
-    // For each psi^p (based on a vertex)
-    Vertex last_vertex;
+    // For each psi^r (based on a vertex)
     for (auto v : geom.mesh.vertices()) {
-        last_vertex = v;
-    }
-    for (auto v : geom.mesh.vertices()) {
-        if (v == last_vertex) continue; // skip the last pressure node
         vec3 v_pos = eigen_to_vec3(geom.position[v]);
 
         // For each triangle.
@@ -23,8 +18,8 @@ std::vector<CentripetalBlockEntry> SurfaceNavierStokesSolver::compute_centripeta
 	    assert(!tri.null());
             auto vp = he.next().vertex();
             auto vpp = he.next().next().vertex();
-            auto vp_pos = eigen_to_vec3(geom.position[vp]);
-            auto vpp_pos = eigen_to_vec3(geom.position[vpp]);
+            vec3 vp_pos = eigen_to_vec3(geom.position[vp]);
+            vec3 vpp_pos = eigen_to_vec3(geom.position[vpp]);
             // Triangle side vectors.
             vec3 K1 = v_pos - vpp_pos;
             vec3 K2 = vp_pos - v_pos;

@@ -104,6 +104,10 @@ add_executable(SurfaceNavierStokes
     SurfaceNavierStokes/compute_velocity_block_coefficients.cpp
     SurfaceNavierStokes/compute_pressure_block_coefficients.cpp
     SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp
+
+    SurfaceNavierStokes/compute_matrix.cpp
+    SurfaceNavierStokes/compute_rhs.cpp
+
     SurfaceNavierStokes/explicit_advection.cpp
 
     SurfaceNavierStokes/make_sparsity_image.cpp

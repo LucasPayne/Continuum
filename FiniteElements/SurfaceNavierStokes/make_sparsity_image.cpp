@@ -26,7 +26,26 @@ void SurfaceNavierStokesSolver::make_sparsity_image(SparseMatrix &matrix, std::s
                     fprintf(ppm_file, "0 0 0 ");
                 }
             } else {
-	        fprintf(ppm_file, "255 255 255 ");
+                if (i < 3*m_num_velocity_variation_nodes && j < 3*m_num_velocity_variation_nodes) {
+                    if (((i/3)%2 == 0) != ((j/3)%2 == 0)) {
+	                fprintf(ppm_file, "255 255 255 ");
+                    } else {
+	                fprintf(ppm_file, "0 255 255 ");
+                    }
+                } else if (i < 3*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes-1
+                            && j < 3*m_num_velocity_variation_nodes + m_num_pressure_variation_nodes-1) {
+                    if (((i/3)%2 == 0) != ((j/3)%2 == 0)) {
+	                fprintf(ppm_file, "230 230 230 ");
+                    } else {
+	                fprintf(ppm_file, "0 230 230 ");
+                    }
+                } else {
+                    if (((i/3)%2 == 0) != ((j/3)%2 == 0)) {
+	                fprintf(ppm_file, "255 255 255 ");
+                    } else {
+	                fprintf(ppm_file, "0 255 255 ");
+                    }
+                }
             }
         }
     }

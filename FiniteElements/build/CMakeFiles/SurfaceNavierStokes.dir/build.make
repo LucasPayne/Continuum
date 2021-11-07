@@ -181,10 +181,38 @@ CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp -o CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s
 
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/flags.make
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o: ../SurfaceNavierStokes/compute_matrix.cpp
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o -MF CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o.d -o CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o -c /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_matrix.cpp
+
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_matrix.cpp > CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.i
+
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_matrix.cpp -o CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.s
+
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/flags.make
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o: ../SurfaceNavierStokes/compute_rhs.cpp
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o -MF CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o.d -o CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o -c /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_rhs.cpp
+
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_rhs.cpp > CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.i
+
+CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_rhs.cpp -o CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.s
+
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/flags.make
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o: ../SurfaceNavierStokes/explicit_advection.cpp
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o -MF CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o.d -o CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o -c /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/explicit_advection.cpp
 
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.i: cmake_force
@@ -198,7 +226,7 @@ CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.s:
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/flags.make
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o: ../SurfaceNavierStokes/make_sparsity_image.cpp
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o: CMakeFiles/SurfaceNavierStokes.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o -MF CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o.d -o CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o -c /home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/make_sparsity_image.cpp
 
 CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.i: cmake_force
@@ -219,6 +247,8 @@ SurfaceNavierStokes_OBJECTS = \
 "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o" \
 "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o" \
 "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o" \
+"CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o" \
+"CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o" \
 "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o" \
 "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o"
 
@@ -233,6 +263,8 @@ SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/Surf
 SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o
 SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o
 SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o
+SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o
+SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o
 SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o
 SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o
 SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/build.make
@@ -250,7 +282,7 @@ SurfaceNavierStokes: /usr/lib/x86_64-linux-gnu/librt.so
 SurfaceNavierStokes: /usr/lib/x86_64-linux-gnu/libm.so
 SurfaceNavierStokes: /home/lucas/computer_graphics/assimp/bin/libassimp.so
 SurfaceNavierStokes: CMakeFiles/SurfaceNavierStokes.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable SurfaceNavierStokes"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/Continuum/FiniteElements/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable SurfaceNavierStokes"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SurfaceNavierStokes.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

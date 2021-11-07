@@ -46,7 +46,7 @@ std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_bloc
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;
                 double val = 2 * tri_area * element_weights[i] * inv_dt;
-                coeffs.emplace_back(P2Element(v), P2Element(elements[i]), val * tri_proj);
+                coeffs.emplace_back(P2Element(v), P2Element(elements[i]), val * mat3x3::identity());
             }
             /*--------------------------------------------------------------------------------
                 Viscosity term
@@ -125,7 +125,7 @@ std::vector<VelocityBlockEntry> SurfaceNavierStokesSolver::compute_velocity_bloc
             for (int i = 0; i < 6; i++) {
                 if (elements[i].on_boundary()) continue;
                 double val = 2 * tri_area * element_weights[i] * inv_dt;
-                coeffs.emplace_back(P2Element(edge), P2Element(elements[i]), val * tri_proj);
+                coeffs.emplace_back(P2Element(edge), P2Element(elements[i]), val * mat3x3::identity());
             }
 
             /*--------------------------------------------------------------------------------

@@ -972,6 +972,30 @@ SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s
 .PHONY : SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.s
 
+SurfaceNavierStokes/compute_matrix.o: SurfaceNavierStokes/compute_matrix.cpp.o
+.PHONY : SurfaceNavierStokes/compute_matrix.o
+
+# target to build an object file
+SurfaceNavierStokes/compute_matrix.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o
+.PHONY : SurfaceNavierStokes/compute_matrix.cpp.o
+
+SurfaceNavierStokes/compute_matrix.i: SurfaceNavierStokes/compute_matrix.cpp.i
+.PHONY : SurfaceNavierStokes/compute_matrix.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/compute_matrix.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.i
+.PHONY : SurfaceNavierStokes/compute_matrix.cpp.i
+
+SurfaceNavierStokes/compute_matrix.s: SurfaceNavierStokes/compute_matrix.cpp.s
+.PHONY : SurfaceNavierStokes/compute_matrix.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/compute_matrix.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.s
+.PHONY : SurfaceNavierStokes/compute_matrix.cpp.s
+
 SurfaceNavierStokes/compute_pressure_block_coefficients.o: SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o
 .PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.o
 
@@ -995,6 +1019,30 @@ SurfaceNavierStokes/compute_pressure_block_coefficients.s: SurfaceNavierStokes/c
 SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.s
 .PHONY : SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.s
+
+SurfaceNavierStokes/compute_rhs.o: SurfaceNavierStokes/compute_rhs.cpp.o
+.PHONY : SurfaceNavierStokes/compute_rhs.o
+
+# target to build an object file
+SurfaceNavierStokes/compute_rhs.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o
+.PHONY : SurfaceNavierStokes/compute_rhs.cpp.o
+
+SurfaceNavierStokes/compute_rhs.i: SurfaceNavierStokes/compute_rhs.cpp.i
+.PHONY : SurfaceNavierStokes/compute_rhs.i
+
+# target to preprocess a source file
+SurfaceNavierStokes/compute_rhs.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.i
+.PHONY : SurfaceNavierStokes/compute_rhs.cpp.i
+
+SurfaceNavierStokes/compute_rhs.s: SurfaceNavierStokes/compute_rhs.cpp.s
+.PHONY : SurfaceNavierStokes/compute_rhs.s
+
+# target to generate assembly for a file
+SurfaceNavierStokes/compute_rhs.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.s
+.PHONY : SurfaceNavierStokes/compute_rhs.cpp.s
 
 SurfaceNavierStokes/compute_velocity_block_coefficients.o: SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o
 .PHONY : SurfaceNavierStokes/compute_velocity_block_coefficients.o
@@ -1345,9 +1393,15 @@ help:
 	@echo "... SurfaceNavierStokes/compute_centripetal_block_coefficients.o"
 	@echo "... SurfaceNavierStokes/compute_centripetal_block_coefficients.i"
 	@echo "... SurfaceNavierStokes/compute_centripetal_block_coefficients.s"
+	@echo "... SurfaceNavierStokes/compute_matrix.o"
+	@echo "... SurfaceNavierStokes/compute_matrix.i"
+	@echo "... SurfaceNavierStokes/compute_matrix.s"
 	@echo "... SurfaceNavierStokes/compute_pressure_block_coefficients.o"
 	@echo "... SurfaceNavierStokes/compute_pressure_block_coefficients.i"
 	@echo "... SurfaceNavierStokes/compute_pressure_block_coefficients.s"
+	@echo "... SurfaceNavierStokes/compute_rhs.o"
+	@echo "... SurfaceNavierStokes/compute_rhs.i"
+	@echo "... SurfaceNavierStokes/compute_rhs.s"
 	@echo "... SurfaceNavierStokes/compute_velocity_block_coefficients.o"
 	@echo "... SurfaceNavierStokes/compute_velocity_block_coefficients.i"
 	@echo "... SurfaceNavierStokes/compute_velocity_block_coefficients.s"

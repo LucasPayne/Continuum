@@ -558,3 +558,22 @@ def integral(i, m):
     print("{}, {}{}{}: {} ".format(i, a,b,c, f_dy_dx))
 for m in range(6):
     integral(0, m)
+
+
+print("table")
+def table(i, m):
+    phi_p = pressure_basis_functions[i]
+    a,b,c = linear_index_to_barycentric(m)
+    psi_u = nodal_basis_functions[barycentric_index_to_linear(a, b, c)]
+    ints = []
+    for n in range(6):
+        psi_n = nodal_basis_functions[n]
+        f = phi_p * psi_u * psi_n
+        f_dy = sym.integrate(f, (y, 0,1-x))
+        f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+        ints.append(f_dy_dx)
+    print("{}, {}{}{}: ".format(i, a,b,c, f_dy_dx))
+    print("    ", end="")
+    print(", ".join([str(t) for t in ints]) + ",")
+for m in range(6):
+    table(0, m)

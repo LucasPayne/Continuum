@@ -36,8 +36,9 @@ std::vector<PressureBlockEntry> SurfaceNavierStokesSolver::compute_pressure_bloc
 
             // Gram-Schmidt to get a basis on this triangle.
             vec3 tri_basis_1 = (vp_pos - v_pos).normalized();
-            vec3 tri_basis_2 = (vpp_pos - v_pos).normalized();
+            vec3 tri_basis_2 = vpp_pos - v_pos;
             tri_basis_2 -= tri_basis_1 * vec3::dot(tri_basis_2, tri_basis_1);
+            tri_basis_2 = tri_basis_2.normalized();
             
             // Rotate a vector 90 degrees anticlockwise on the triangle plane.
             auto perp = [&](vec3 vec)->vec3 {
