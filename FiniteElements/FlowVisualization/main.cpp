@@ -113,8 +113,8 @@ App::App(World &_world, char *_directory_path, SurfaceGeometry &_geom) :
     //---example solution frame
     // load_solution(std::string(directory_path) + "navier_stokes_1.txt");
 
-    solution_index = 1;
-    load_solution(1);
+    solution_index = 0;
+    load_solution(solution_index);
 
     solution_shader.add_shader(GLShader(VertexShader, SHADERS "flow_visualization_solution/solution.vert"));
     solution_shader.add_shader(GLShader(TessControlShader, SHADERS "flow_visualization_solution/solution.tcs"));
@@ -811,7 +811,7 @@ int main(int argc, char *argv[])
     }
     char *directory_path = argv[1];
 
-    #define GEOM 4
+    #define GEOM 5
 
     // navier_3
     #if GEOM == 3
@@ -822,6 +822,8 @@ int main(int argc, char *argv[])
     double theta0 = 0.1257;
     vec2 obstruction_position = vec2(0,0);
     SurfaceGeometry *geom = square_minus_circle(0.18, theta0, 1, 1, 60, true, obstruction_position, false);
+    #elif GEOM == 5
+    SurfaceGeometry *geom = square_mesh(60);
     #endif
 
     printf("[main] Creating context...\n");

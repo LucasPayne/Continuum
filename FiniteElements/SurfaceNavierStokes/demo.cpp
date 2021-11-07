@@ -26,7 +26,7 @@ void Demo::init()
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "cylinder.stl");
     // geom->mesh.lock();
     
-    geom = square_mesh(10);
+    geom = square_mesh(60);
     for (auto v : geom->mesh.vertices()) {
         vec3 p = eigen_to_vec3(geom->position[v]);
         float theta = 0.95*(p.x()+1)*M_PI;
@@ -34,12 +34,13 @@ void Demo::init()
         // geom->position[v] = Eigen::Vector3f(cos(theta), sin(theta), p.z());
     }
     
-    solver = new SurfaceNavierStokesSolver(*geom, 1);
+    double viscosity = 0.001;
+    solver = new SurfaceNavierStokesSolver(*geom, viscosity);
 
     solver->set_source([&](double x, double y, double z)->vec3 {
         #if 1
-        double r = 0.25;
-        if (x*x + z*z <= r*r) return vec3(20,0,0);
+        double r = 0.125;
+        if ((x+0.8)*(x+0.8) + z*z <= r*r) return vec3(50,0,0);
         // if (y*y + z*z <= r*r) return vec3(1,0,1);
         return vec3(0,0,0);
         #else
@@ -55,7 +56,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
     if (e.action == KEYBOARD_PRESS) {
         if (e.key.code == KEY_Q) exit(EXIT_SUCCESS);
         if (e.key.code == KEY_R) {
-            solver->time_step(0.1);
+            solver->time_step(0.01);
         }
         if (e.key.code == KEY_P) {
             solver->m_current_time_step_dt = 0.025;
@@ -63,7 +64,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_1) {
             solver->set_velocity([&](double x, double y, double z)->vec3 {
-                double r = 0.25;
+                double r = 0.125;
                 if (x*x + z*z <= r*r) return vec3(-2,0,-2);
                 return vec3(0,0,0);
             });
@@ -129,6 +130,10 @@ void Demo::update()
         // world->graphics.paint.line(c,solver->_test_point_2[e],0.005,vec4(1,0,0,1));
     }
     #endif
+
+    solver->time_step(1./300.);
+    static int counter = 0;
+    save_solution(std::string(DATA) + "sns." + std::to_string(counter) + ".txt");
 }
 
 
@@ -141,4 +146,20 @@ void Demo::mouse_handler(MouseEvent e)
 {
     if (e.action == MOUSE_BUTTON_PRESS) {
     }
+}
+
+void Demo::save_solution(std::string filename)
+{
+    FILE *file = fopen(filename.c_str(), "w+");
+    for (auto v : geom->mesh.vertices()) {
+        fprintf(file, "%.7f %.7f\n", solver->velocity[v].x(), solver->velocity[v].y());
+    }
+    for (auto e : geom->mesh.edges()) {
+        fprintf(file, "%.7f %.7f\n", solver->velocity[e].x(), solver->velocity[e].y());
+    }
+    for (auto v : geom->mesh.vertices()) {
+        fprintf(file, "%.7g\n", solver->pressure[v]);
+    }
+
+    fclose(file);
 }

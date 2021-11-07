@@ -17,6 +17,8 @@ struct Demo : public IBehaviour {
 
     SurfaceNavierStokesSolver *solver;
     SurfaceGeometry *geom;
+
+    void save_solution(std::string filename);
 };
 
 #endif // HEADER_DEFINED_DEMO

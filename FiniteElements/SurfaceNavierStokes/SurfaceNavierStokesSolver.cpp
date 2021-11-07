@@ -155,9 +155,6 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
     }
     m_current_time_step_dt = delta_time;
 
-    // Explicit advection.
-    explicit_advection();
-
     printf("Constructing matrix...\n");
     SparseMatrix matrix = compute_matrix();
     // make_sparsity_image(matrix, DATA "upr_matrix.ppm");
@@ -211,6 +208,9 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
         centripetal[e] = m_solution_vector[3*num_velocity_variation_nodes() + num_pressure_variation_nodes()-1 + counter];
         counter += 1;
     }
+
+    // Explicit advection.
+    explicit_advection();
     
     m_time += m_current_time_step_dt;
 }
