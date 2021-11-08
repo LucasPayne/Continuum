@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/LaplaceSolver.dir/LaplaceSolver.cpp.o"
-  "CMakeFiles/LaplaceSolver.dir/LaplaceSolver.cpp.o.d"
   "LaplaceSolver"
   "LaplaceSolver.pdb"
 )

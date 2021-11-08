@@ -6,7 +6,7 @@
 
 Aspect<Camera> main_camera;
 
-
+bool HOLD_MODE = false;
 
 
 struct Solution {
@@ -162,13 +162,15 @@ void App::loop()
 
     std::cout << "Solution index: " << solution_index << "\n";
     
-    if (world.input.keyboard.down(KEY_M)) {
-        solution_index = (solution_index+1);
-        load_solution(solution_index);
-    }
-    if (world.input.keyboard.down(KEY_N)) {
-        solution_index = (solution_index-1);
-        load_solution(solution_index);
+    if (HOLD_MODE) {
+        if (world.input.keyboard.down(KEY_M)) {
+            solution_index = (solution_index+1);
+            load_solution(solution_index);
+        }
+        if (world.input.keyboard.down(KEY_N)) {
+            solution_index = (solution_index-1);
+            load_solution(solution_index);
+        }
     }
         
     // Draw boundaries.
@@ -203,6 +205,16 @@ void App::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_2) render_solution_mode = 1;
         if (e.key.code == KEY_3) render_solution_mode = 2;
         if (e.key.code == KEY_4) render_solution_mode = 3;
+        if (!HOLD_MODE) {
+            if (e.key.code == KEY_M) {
+                solution_index = (solution_index+1);
+                load_solution(solution_index);
+            }
+            if (e.key.code == KEY_N) {
+                solution_index = (solution_index-1);
+                load_solution(solution_index);
+            }
+        }
     }
 }
 
@@ -805,26 +817,39 @@ void App::div_P2_P1(P2Attachment<vec2> &vf, P1Attachment<double> &div)
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2) {
+    if (argc != 3 && argc != 4) {
         fprintf(stderr, "give good args\n");
         exit(EXIT_FAILURE);
     }
     char *directory_path = argv[1];
-
-    #define GEOM 5
+    int GEOM = 0;
+    sscanf(argv[2], "%d", &GEOM);
+    int square_n = 0;
+    if (argc == 4) {
+        sscanf(argv[3], "%d", &square_n);
+    }
 
     // navier_3
-    #if GEOM == 3
-    double theta0 = 0.13;
-    vec2 obstruction_position = vec2(0.2,0.2);
-    SurfaceGeometry *geom = square_minus_circle(0.25, theta0, 1, 1, 60, false, obstruction_position, false);
-    #elif GEOM == 4
-    double theta0 = 0.1257;
-    vec2 obstruction_position = vec2(0,0);
-    SurfaceGeometry *geom = square_minus_circle(0.18, theta0, 1, 1, 60, true, obstruction_position, false);
-    #elif GEOM == 5
-    SurfaceGeometry *geom = square_mesh(60);
-    #endif
+    SurfaceGeometry *geom = nullptr;
+    if (GEOM == 3) {
+        double theta0 = 0.13;
+        vec2 obstruction_position = vec2(0.2,0.2);
+        geom = square_minus_circle(0.25, theta0, 1, 1, 60, false, obstruction_position, false);
+    } else if (GEOM == 4) {
+        assert(square_n > 0);
+        double theta0 = 0.1257;
+        vec2 obstruction_position = vec2(0,0);
+        geom = square_minus_circle(0.18, theta0, 1, 1, square_n, true, obstruction_position, false);
+    } else if (GEOM == 5) {
+        assert(square_n > 0);
+        geom = square_mesh(square_n);
+    } else if (GEOM == 6) {
+        double theta0 = 0.13;
+        vec2 obstruction_position = vec2(0.2,0.2);
+        geom = square_minus_circle(0.25, theta0, 1, 1, 60, false, obstruction_position, false);
+    }
+
+    assert(geom != nullptr);
 
     printf("[main] Creating context...\n");
     IGC::Context context("A world");

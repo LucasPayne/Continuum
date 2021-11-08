@@ -78,6 +78,11 @@ public:
     void explicit_advection();
 
     double m_current_time_step_dt;
+
+    bool m_advect;
+
+
+    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift, int depth=0);
 private:
     P2Attachment<int> velocity_node_indices;
     P1Attachment<int> pressure_node_indices;

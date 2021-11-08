@@ -154,6 +154,10 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
         m_solving = true;
     }
     m_current_time_step_dt = delta_time;
+    m_advect = true;
+
+    // Explicit advection.
+    if (m_advect) explicit_advection();
 
     printf("Constructing matrix...\n");
     SparseMatrix matrix = compute_matrix();
@@ -162,12 +166,27 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
     Eigen::VectorXd rhs = compute_rhs();
     // std::cout << rhs << "\n";
 
-    Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
+    #define SOLVER 0
+
+    #if SOLVER == 0
+    // Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
+    Eigen::BiCGSTAB<SparseMatrix, Eigen::DiagonalPreconditioner<double> > linear_solver;
+    #elif SOLVER == 1
+    Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int> > linear_solver;
+    #endif
     printf("Factoring...\n");
     linear_solver.compute(matrix);
     printf("Solving...\n");
-    m_solution_vector = linear_solver.solve(rhs);
+    const double machine_epsilon = Eigen::NumTraits<double>::epsilon();
+    const double epsilon = 1e-4;
+    linear_solver.setTolerance(epsilon);
+    // linear_solver.setMaxIterations(100);
+    printf("machine epsilon = %.10g\n", machine_epsilon);
+    printf("epsilon = %.10g\n", epsilon);
+    m_solution_vector = linear_solver.solveWithGuess(rhs, m_solution_vector);
     printf("Solved.\n");
+    printf("error = %.10g\n", linear_solver.error());
+
 
     // Associate the solution to the mesh.
     for (auto v : geom.mesh.vertices()) {
@@ -208,9 +227,6 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
         centripetal[e] = m_solution_vector[3*num_velocity_variation_nodes() + num_pressure_variation_nodes()-1 + counter];
         counter += 1;
     }
-
-    // Explicit advection.
-    explicit_advection();
     
     m_time += m_current_time_step_dt;
 }

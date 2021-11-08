@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/triangle.dir/triangle/triangle.c.o"
-  "CMakeFiles/triangle.dir/triangle/triangle.c.o.d"
   "libtriangle.a"
   "libtriangle.pdb"
 )

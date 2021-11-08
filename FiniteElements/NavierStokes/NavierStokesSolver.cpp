@@ -176,7 +176,10 @@ void NavierStokesSolver::newton_iteration()
 
     // Pass the linear_term_matrix to the residual getter, as it is used to derive the homogeneous, linear parts of the residual.
     Eigen::VectorXd residual = compute_residual(linear_term_matrix);
-    Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
+    // Eigen::BiCGSTAB<SparseMatrix, Eigen::IncompleteLUT<double> > linear_solver;
+    Eigen::BiCGSTAB<SparseMatrix, Eigen::DiagonalPreconditioner<double> > linear_solver;
+    linear_solver.setTolerance(1e-4);
+
     printf("Solving %ld x %ld linear system\n", J.rows(), J.cols());
     int num_nonzeroes = 0;
     for (int i = 0; i < J.rows(); i++) {

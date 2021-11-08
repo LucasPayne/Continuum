@@ -1,6 +1,84 @@
 #include "SurfaceNavierStokes/SurfaceNavierStokesSolver.h"
 #include "core.h"
 
+std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin, vec3 shift, int depth)
+{
+    const int MAX_DEPTH = 50;
+    if (depth == MAX_DEPTH) return {tri, origin};
+
+    Halfedge hes[3] = {
+        tri.halfedge(),
+        tri.halfedge().next(),
+        tri.halfedge().next().next()
+    };
+    Vertex vs[3] = {
+        tri.halfedge().vertex(),
+        tri.halfedge().next().vertex(),
+        tri.halfedge().next().next().vertex()
+    };
+    vec3 ps[3];
+    for (int i = 0; i < 3; i++) {
+        ps[i] = eigen_to_vec3(geom.position[vs[i]]);
+    }
+    // Gram-Schmidt for a basis on this triangle.
+    vec3 e1 = (ps[1] - ps[0]).normalized();
+    vec3 e2 = ps[2] - ps[0];
+    e2 -= e1*vec3::dot(e2, e1);
+    e2 = e2.normalized();
+
+    // Express the triangle in this basis.
+    vec2 ps_t[3];
+    for (int i = 0; i < 3; i++) {
+        ps_t[i] = vec2(vec3::dot(ps[i]-ps[0], e1), vec3::dot(ps[i]-ps[0], e2));
+    }
+    // Create a ray.
+    vec2 o_t = vec2(vec3::dot(origin - ps[0], e1), vec3::dot(origin-ps[0], e2));
+    vec2 d_t = vec2(vec3::dot(shift, e1), vec3::dot(shift, e2));
+
+    int line_hit_index = -1;
+    double min_t = std::numeric_limits<double>::max();
+    // Intersect each line determined by the triangle sides.
+    for (int i = 0; i < 3; i++) {
+        vec2 line_n = (ps_t[(i+1)%3] - ps_t[i]).perp();
+        vec2 line_p = ps_t[i];
+        double t = vec2::dot(line_p - o_t, line_n)/vec2::dot(d_t, line_n);
+        if (t >= 0 && t < min_t) {
+            min_t = t;
+            line_hit_index = i;
+        }
+    }
+
+    if (line_hit_index == -1 || min_t > 1) {
+        // Travel stops on this triangle.
+        // printf("Travel stops.\n");
+        return {tri, origin+shift};
+    }
+    Halfedge hit_he = hes[line_hit_index];
+    if (hit_he.twin().face().null()) {
+        // Hit the boundary. Stop at the boundary intersection.
+        // printf("Hit the boundary.\n");
+        return {tri, origin + min_t*shift};
+    }
+    // Travel proceeds on another triangle.
+    // Create an orthonormal basis for each incident face to the edge being travelled over.
+    // This basis shares the E1 vector.
+    vec3 E1 = eigen_to_vec3(geom.vector(hit_he)).normalized();
+    vec3 from_E2 = -eigen_to_vec3(geom.vector(hit_he.next()));
+    from_E2 -= E1*vec3::dot(from_E2, E1);
+    from_E2 = from_E2.normalized();
+    vec3 to_E2 = -eigen_to_vec3(geom.vector(hit_he.twin().next().next()));
+    to_E2 -= E1*vec3::dot(to_E2, E1);
+    to_E2 = to_E2.normalized();
+    
+    vec3 new_shift = E1*vec3::dot((1-min_t)*shift, E1) + to_E2*vec3::dot((1-min_t)*shift, from_E2);
+
+    double fix = 0.001; // (To prevent intersections with the edge just passed through.)
+    // printf("Continuing travels...\n");
+    return traverse(hit_he.twin().face(), origin + min_t*shift + new_shift*fix, (1-fix)*new_shift, depth+1);
+}
+
+
+
 void SurfaceNavierStokesSolver::explicit_advection()
 {
     std::function<double(double,double,double)> u_basis[6] = {
@@ -24,7 +102,14 @@ void SurfaceNavierStokesSolver::explicit_advection()
         },
     };
 
+
     auto new_velocity = P2Attachment<vec3>(geom.mesh);
+
+    auto barycentric_coeff = [&](vec3 c, vec3 pa, vec3 pb, vec3 nor)->double {
+        vec3 cross = vec3::cross(pb - c, pa - c);
+        if (vec3::dot(cross, nor) < 0) return cross.length();
+        return -cross.length();
+    };
 
     for (auto v : geom.mesh.vertices()) {
         if (v.on_boundary()) {
@@ -34,11 +119,13 @@ void SurfaceNavierStokesSolver::explicit_advection()
         vec3 u = velocity[v];
         vec3 n = normal[v];
 
+
         auto start = v.halfedge();
         auto he = start;
         vec3 p1 = eigen_to_vec3(geom.position[v]);
         do {
             auto tri = he.face();
+            Vertex v1 = v;
             Vertex v2 = he.next().vertex();
             Vertex v3 = he.next().next().vertex();
             vec3 p2 = eigen_to_vec3(geom.position[v2]);
@@ -67,23 +154,37 @@ void SurfaceNavierStokesSolver::explicit_advection()
 	    _test_point_2[v] = eigen_to_vec3(geom.barycenter(tri));
             if (vec3::dot(shift, perp(p2 - p1)) <= 0 &&
                     vec3::dot(shift, perp(p3 - p1)) >= 0) {
+                double fix = 0.001;
+                Face out_face;
+                vec3 out_pos;
+                std::tie(out_face, out_pos) = traverse(tri, p1+(1+fix)*shift, (1-fix)*shift);
+                assert(!out_face.null());
+
+                Edge edges[3] = {
+                    out_face.halfedge().edge(),
+                    out_face.halfedge().next().edge(),
+                    out_face.halfedge().next().next().edge()
+                };
+                Vertex vs[3] = {
+                    out_face.halfedge().vertex(),
+                    out_face.halfedge().next().vertex(),
+                    out_face.halfedge().next().next().vertex()
+                };
+                vec3 ps[3];
+                for (int i = 0; i < 3; i++) ps[i] = eigen_to_vec3(geom.position[vs[i]]);
+                
                 // Compute barycentric coordinates.
-                vec3 c = shift + p1;
-                double x = vec3::cross(p2 - c, p3 - c).length();
-                double y = vec3::cross(p3 - c, p1 - c).length();
-                double z = vec3::cross(p1 - c, p2 - c).length();
+                double x = barycentric_coeff(out_pos, ps[1], ps[2], n);
+                double y = barycentric_coeff(out_pos, ps[2], ps[0], n);
+                double z = barycentric_coeff(out_pos, ps[0], ps[1], n);
                 double w = x+y+z;
                 x /= w;
                 y /= w;
                 z /= w;
-                // printf("%.2g %.2g %.2g\n", x, y, z);getchar();
-	        _test_point_1[v] = p1*x + p2*y + p3*z;
-            
-                auto edge_110 = he.next().edge();
-                auto edge_011 = he.next().next().edge();
-                auto edge_101 = he.edge();
-                P2Element elements[6] = {v, v2, v3, edge_110, edge_011, edge_101};
+	        _test_point_1[v] = ps[0]*x + ps[1]*y + ps[2]*z;
                 vec3 val = vec3(0,0,0);
+
+                P2Element elements[6] = {vs[0], vs[1], vs[2], edges[0], edges[1], edges[2]};
                 for (int i = 0; i < 6; i++) {
                     val += u_basis[i](x,y,z) * velocity[elements[i]];
                 }
@@ -121,23 +222,44 @@ void SurfaceNavierStokesSolver::explicit_advection()
         auto edge_110 = tri.halfedge().edge();
         auto edge_011 = tri.halfedge().next().edge();
         auto edge_101 = tri.halfedge().next().next().edge();
+        vec3 tri_n = triangle_normal[tri];
 
         vec3 shift = triangle_projection_matrix[tri] * (-m_current_time_step_dt*u);
-        vec3 c = shift + midpoint;
-	double x = vec3::cross(p2 - c, p3 - c).length();
-	double y = vec3::cross(p3 - c, p1 - c).length();
-	double z = vec3::cross(p1 - c, p2 - c).length();
-	double w = x+y+z;
+
+	double fix = 0.001;
+	Face out_face;
+	vec3 out_pos;
+	std::tie(out_face, out_pos) = traverse(tri, midpoint+(1+fix)*shift, (1-fix)*shift);
+	assert(!out_face.null());
+
+        Edge edges[3] = {
+            out_face.halfedge().edge(),
+            out_face.halfedge().next().edge(),
+            out_face.halfedge().next().next().edge()
+        };
+        Vertex vs[3] = {
+            out_face.halfedge().vertex(),
+            out_face.halfedge().next().vertex(),
+            out_face.halfedge().next().next().vertex()
+        };
+        vec3 ps[3];
+        for (int i = 0; i < 3; i++) ps[i] = eigen_to_vec3(geom.position[vs[i]]);
+        
+        // Compute barycentric coordinates.
+        double x = barycentric_coeff(out_pos, ps[1], ps[2], n);
+        double y = barycentric_coeff(out_pos, ps[2], ps[0], n);
+        double z = barycentric_coeff(out_pos, ps[0], ps[1], n);
+        double w = x+y+z;
         x /= w;
         y /= w;
         z /= w;
-	_test_point_1[edge] = p1*x + p2*y + p3*z;
-
-	P2Element elements[6] = {v1, v2, v3, edge_110, edge_011, edge_101};
+	_test_point_1[edge] = ps[0]*x + ps[1]*y + ps[2]*z;
         vec3 val = vec3(0,0,0);
-        for (int i = 0; i < 6; i++) {
-            val += u_basis[i](x,y,z) * velocity[elements[i]];
-        }
+
+	P2Element elements[6] = {vs[0], vs[1], vs[2], edges[0], edges[1], edges[2]};
+	for (int i = 0; i < 6; i++) {
+	    val += u_basis[i](x,y,z) * velocity[elements[i]];
+	}
         new_velocity[edge] = val;
     }
 

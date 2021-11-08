@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/quadratic_figure.dir/quadratic_figure.cpp.o"
-  "CMakeFiles/quadratic_figure.dir/quadratic_figure.cpp.o.d"
   "quadratic_figure"
   "quadratic_figure.pdb"
 )

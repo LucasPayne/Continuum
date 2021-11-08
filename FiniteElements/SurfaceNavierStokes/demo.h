@@ -19,6 +19,8 @@ struct Demo : public IBehaviour {
     SurfaceGeometry *geom;
 
     void save_solution(std::string filename);
+
+    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift);
 };
 
 #endif // HEADER_DEFINED_DEMO

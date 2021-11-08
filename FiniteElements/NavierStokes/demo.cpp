@@ -130,15 +130,16 @@ void Demo::keyboard_handler(KeyboardEvent e)
 {
     if (e.action == KEYBOARD_PRESS) {
         if (e.key.code == KEY_Q) exit(EXIT_SUCCESS);
-        // Separate Newton iterations for debugging.
-        if (e.key.code == KEY_I) solver->start_time_step(0.01);
-        if (e.key.code == KEY_O) solver->newton_iteration();
-        if (e.key.code == KEY_P) solver->end_time_step();
+    
+        if (e.key.code == KEY_P) {
+            solver->explicit_advection_lagrangian();
+        }
 
         // One iteration.
         // if (e.key.code == KEY_R) solver->time_step(0.0025);
         // if (e.key.code == KEY_R) solver->time_step(0.0025);
-        if (e.key.code == KEY_R) solver->time_step(0.03);
+        // if (e.key.code == KEY_R) solver->time_step(0.03);
+        if (e.key.code == KEY_R) solver->time_step(1./300.);
 
         // Take a screenshot.
         if (e.key.code == KEY_T) {
@@ -235,6 +236,7 @@ void Demo::update()
     }
 
     std::cout << "source_position: " << source_position << "\n";
+    source_position = vec2(-0.85, 0);
     solver->set_source(
         // navier_3
         // [&](double x, double y, double t)->vec2 {

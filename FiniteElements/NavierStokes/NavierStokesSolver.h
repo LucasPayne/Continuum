@@ -52,6 +52,9 @@ public:
     inline double kinematic_viscosity() const { return m_kinematic_viscosity; }
     inline double time() const { return m_time; }
 
+    void explicit_advection();
+    void explicit_advection_lagrangian();
+
     SurfaceGeometry &geom;
 
     // The velocity and pressure are changed during Newton iteration.
@@ -80,8 +83,6 @@ private:
     std::tuple<SparseMatrix, SparseMatrix> compute_gateaux_matrix(); // returns (linear_term_matrix, gateaux_matrix).
     Eigen::VectorXd compute_residual(SparseMatrix &linear_term_matrix);
     void add_nonlinear_velocity_residual(P2Attachment<vec2> &velocity_residual);
-    void explicit_advection();
-    void explicit_advection_lagrangian();
     std::vector<TopLeftEntry> compute_linear_term_matrix_top_left();
     std::vector<BottomLeftEntry> compute_linear_term_matrix_bottom_left();
 

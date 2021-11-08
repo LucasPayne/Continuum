@@ -1,25 +1,40 @@
-
-# Consider dependencies only in project.
-set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
-
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/lucas/Continuum/FiniteElements/CameraController.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_matrix.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_rhs.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/demo.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/explicit_advection.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/main.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/main.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/make_sparsity_image.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o"
+  "/home/lucas/Continuum/FiniteElements/core.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "DATA=\"/home/lucas/Continuum/FiniteElements/data/\""
+  "MODELS=\"/home/lucas/Continuum/FiniteElements/models/\""
+  "SHADERS=\"/home/lucas/Continuum/FiniteElements/shaders/\""
   )
 
-# The set of dependency files which are needed:
-set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/lucas/Continuum/FiniteElements/CameraController.cpp" "CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_centripetal_block_coefficients.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_matrix.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_matrix.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_pressure_block_coefficients.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_rhs.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_rhs.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/compute_velocity_block_coefficients.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/demo.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/explicit_advection.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/explicit_advection.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/main.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/main.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/main.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/SurfaceNavierStokes/make_sparsity_image.cpp" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/make_sparsity_image.cpp.o.d"
-  "/home/lucas/Continuum/FiniteElements/core.cpp" "CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o" "gcc" "CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o.d"
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../"
+  "/home/lucas/computer_graphics/cg_sandbox/include"
+  "/home/lucas/computer_graphics/cg_sandbox/lib"
+  "/home/lucas/computer_graphics/mesh_processing/include"
+  "../dependencies/triangle"
+  "/home/lucas/computer_graphics/cg_sandbox/dependencies/glfw/include"
+  "/usr/include/eigen3"
   )
 
 # Targets to which this target links.

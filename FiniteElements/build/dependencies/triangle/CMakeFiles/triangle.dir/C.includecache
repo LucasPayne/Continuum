@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+sys/time.h
+-
+float.h
+-
+fpu_control.h
+-
+triangle.h
+/home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.h
+
+/home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.h
+
