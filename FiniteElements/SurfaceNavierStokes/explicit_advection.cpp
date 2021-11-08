@@ -1,7 +1,7 @@
 #include "SurfaceNavierStokes/SurfaceNavierStokesSolver.h"
 #include "core.h"
 
-std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin, vec3 shift, int depth)
+std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin, vec3 shift, int depth, int ignore_index)
 {
     const int MAX_DEPTH = 50;
     if (depth == MAX_DEPTH) return {tri, origin};
@@ -39,6 +39,7 @@ std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin
     double min_t = std::numeric_limits<double>::max();
     // Intersect each line determined by the triangle sides.
     for (int i = 0; i < 3; i++) {
+        if (i == ignore_index) continue;
         vec2 line_n = (ps_t[(i+1)%3] - ps_t[i]).perp();
         vec2 line_p = ps_t[i];
         double t = vec2::dot(line_p - o_t, line_n)/vec2::dot(d_t, line_n);
@@ -72,9 +73,21 @@ std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin
     
     vec3 new_shift = E1*vec3::dot((1-min_t)*shift, E1) + to_E2*vec3::dot((1-min_t)*shift, from_E2);
 
-    double fix = 0.001; // (To prevent intersections with the edge just passed through.)
-    // printf("Continuing travels...\n");
-    return traverse(hit_he.twin().face(), origin + min_t*shift + new_shift*fix, (1-fix)*new_shift, depth+1);
+    Face to_face = hit_he.twin().face();
+    // Ignore the edge that was traversed over, when intersecting on the next triangle.
+    int to_ignore_index = 0;
+    {
+        auto start = to_face.halfedge();
+        auto he = start;
+        do {
+            if (he == hit_he.twin()) break;
+            to_ignore_index += 1;
+            he = he.next();
+        } while (he != start);
+        assert(to_ignore_index != 3);
+    }
+    float fix = -0.001;
+    return traverse(to_face, origin + min_t*shift + fix*new_shift, new_shift, depth+1, to_ignore_index);
 }
 
 
@@ -143,7 +156,7 @@ void SurfaceNavierStokesSolver::explicit_advection()
                 return -tri_basis_2*a + tri_basis_1*b;
             };
 
-            vec3 shift = triangle_projection_matrix[tri] * (-m_current_time_step_dt*u);
+            vec3 shift = 0.5 * triangle_projection_matrix[tri] * (-m_current_time_step_dt*u);
             // std::cout << triangle_projection_matrix[tri] << "\n";
             // std::cout << u << "\n";
             // printf("%.2g\n", m_current_time_step_dt);
@@ -223,7 +236,7 @@ void SurfaceNavierStokesSolver::explicit_advection()
         auto edge_101 = tri.halfedge().next().next().edge();
         vec3 tri_n = triangle_normal[tri];
 
-        vec3 shift = triangle_projection_matrix[tri] * (-m_current_time_step_dt*u);
+        vec3 shift = 0.5 * triangle_projection_matrix[tri] * (-m_current_time_step_dt*u);
 
 	double fix = 0.001;
 	Face out_face;

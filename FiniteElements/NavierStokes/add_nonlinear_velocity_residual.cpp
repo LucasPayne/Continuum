@@ -62,74 +62,7 @@ void NavierStokesSolver::add_nonlinear_velocity_residual(P2Attachment<vec2> &vel
                 if (elements[i].on_boundary()) continue;
                 integral += -2 * tri_area * element_weights[i] * source_samples_P2[elements[i]];
             }
-
-if (m_use_advection) {
-            /*--------------------------------------------------------------------------------
-                Explicit advection term.
-                This is approximated by taking a sample u_sample = u at psi^u.
-            dot(u_sample, grad(u)) psi^(u,s)
-            --------------------------------------------------------------------------------*/
-            // vertex
-            // 002,200: -A*K1**2/30 - B*K1*K2/30
-            // 002,020: -A*K1*K2/30 - B*K2**2/30
-            // 002,002: -A*K1**2/15 - A*K1*K2/15 - B*K1*K2/15 - B*K2**2/15
-            // 002,110: -A*K1**2/30 - A*K1*K2/30 - B*K1*K2/30 - B*K2**2/30
-            // 002,011: A*K1**2/30 + A*K1*K2/10 + B*K1*K2/30 + B*K2**2/10
-            // 002,101: A*K1**2/10 + A*K1*K2/30 + B*K1*K2/10 + B*K2**2/30
-            // midpoint
-            // 110,200: A*K1**2/10 + B*K1*K2/10
-            // 110,020: A*K1*K2/10 + B*K2**2/10
-            // 110,002: A*K1**2/30 + A*K1*K2/30 + B*K1*K2/30 + B*K2**2/30
-            // 110,110: 4*A*K1**2/15 + 4*A*K1*K2/15 + 4*B*K1*K2/15 + 4*B*K2**2/15
-            // 110,011: -4*A*K1**2/15 - 2*A*K1*K2/15 - 4*B*K1*K2/15 - 2*B*K2**2/15
-            // 110,101: -2*A*K1**2/15 - 4*A*K1*K2/15 - 2*B*K1*K2/15 - 4*B*K2**2/15
-            // vec2 u_sample = velocity_prev[v];
-            // double A = u_sample.x();
-            // double B = u_sample.y();
-            // float grad_weights[6] = {
-            //     -A*K1*K1/30 - B*K1*K2/30,
-            //     -A*K1*K2/30 - B*K2*K2/30,
-            //     -A*K1*K1/15 - A*K1*K2/15 - B*K1*K2/15 - B*K2*K2/15,
-            //     -A*K1*K1/30 - A*K1*K2/30 - B*K1*K2/30 - B*K2*K2/30,
-            //     A*K1*K1/30 + A*K1*K2/10 + B*K1*K2/30 + B*K2*K2/10,
-            //     A*K1*K1/10 + A*K1*K2/30 + B*K1*K2/10 + B*K2*K2/30
-            // };
-            // for (int i = 0; i < 6; i++) {
-            //     vec2 u_val = velocity_prev[elements[i]];
-            //     integral += (1/(2*tri_area)) * u_val * grad_weights[i];
-            // }
-#if RESIDUAL_ADVECTION
-            vec2 grad_weights[6*6] = {
-#if WEIGHTS_MODE == 0
--K1/140 - K2/140, 11*K1/2520 + 11*K2/2520, -K1/280 - K2/280, -2*K1/315 - 2*K2/315, -K1/126 - K2/126, -4*K1/315 - 4*K2/315,
-11*K1/2520 + 11*K2/2520, -K1/140 - K2/140, -K1/280 - K2/280, -2*K1/315 - 2*K2/315, -4*K1/315 - 4*K2/315, -K1/126 - K2/126,
--K1/280 - K2/280, -K1/280 - K2/280, 13*K1/420 + 13*K2/420, K1/210 + K2/210, 2*K1/105 + 2*K2/105, 2*K1/105 + 2*K2/105,
--2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315, K1/210 + K2/210, -4*K1/105 - 4*K2/105, 2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315,
--K1/126 - K2/126, -4*K1/315 - 4*K2/315, 2*K1/105 + 2*K2/105, 2*K1/315 + 2*K2/315, 4*K1/63 + 4*K2/63, 2*K1/63 + 2*K2/63,
--4*K1/315 - 4*K2/315, -K1/126 - K2/126, 2*K1/105 + 2*K2/105, 2*K1/315 + 2*K2/315, 2*K1/63 + 2*K2/63, 4*K1/63 + 4*K2/63,
-#else
-K1/280, -11*K1/2520, K1/140, K1/126, 2*K1/315, 4*K1/315,
--11*K2/2520, K2/280, K2/140, K2/126, 4*K2/315, 2*K2/315,
--K1/280 - K2/280, -K1/280 - K2/280, 13*K1/420 + 13*K2/420, K1/210 + K2/210, 2*K1/105 + 2*K2/105, 2*K1/105 + 2*K2/105,
--K1/630 + 2*K2/315, 2*K1/315 - K2/630, -K1/105 - K2/105, 2*K1/105 + 2*K2/105, 4*K1/315 + 2*K2/315, 2*K1/315 + 4*K2/315,
-K1/630 + K2/126, -2*K1/315, K1/105 - 4*K2/105, -2*K1/105 - 4*K2/315, -4*K1/315 - 2*K2/63, -2*K1/315 - 8*K2/315,
--2*K2/315, K1/126 + K2/630, -4*K1/105 + K2/105, -4*K1/315 - 2*K2/105, -8*K1/315 - 2*K2/315, -2*K1/63 - 4*K2/315,
-#endif
-            };
-            for (int i = 0; i < 6; i++) {
-                for (int K = 0; K < 6; K++) {
-                    vec2 u = velocity_prev[elements[i]];
-                    // vec2 u_transformed = u.x()*side1 + u.y()*side2;
-                    vec2 u_transformed = u;
-                    integral += u_transformed * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
-                }
-            }
-#endif
             
-
-
-
-} // endif m_use_advection
             he = he.twin().next();
         } while (he != start);
 
@@ -192,61 +125,6 @@ K1/630 + K2/126, -2*K1/315, K1/105 - 4*K2/105, -2*K1/105 - 4*K2/315, -4*K1/315 -
                 if (elements[i].on_boundary()) continue;
                 integral += -2 * tri_area * element_weights[i] * source_samples_P2[elements[i]];
             }
-
-            /*--------------------------------------------------------------------------------
-                Explicit advection term.
-                This is approximated by taking a sample u_sample = u at psi^u.
-            dot(u_sample, grad(u)) psi^(u,s)
-            --------------------------------------------------------------------------------*/
-if (m_use_advection) {
-            // vec2 u_sample = velocity_prev[v];
-            // double A = u_sample.x();
-            // double B = u_sample.y();
-            // float grad_weights[6] = {
-            //     A*K1*K1/10 + B*K1*K2/10,
-            //     A*K1*K2/10 + B*K2*K2/10,
-            //     A*K1*K1/30 + A*K1*K2/30 + B*K1*K2/30 + B*K2*K2/30,
-            //     4*A*K1*K1/15 + 4*A*K1*K2/15 + 4*B*K1*K2/15 + 4*B*K2*K2/15,
-            //     -4*A*K1*K1/15 - 2*A*K1*K2/15 - 4*B*K1*K2/15 - 2*B*K2*K2/15,
-            //     -2*A*K1*K1/15 - 4*A*K1*K2/15 - 2*B*K1*K2/15 - 4*B*K2*K2/15
-            // };
-            // for (int i = 0; i < 6; i++) {
-            //     vec2 u_val = velocity_prev[elements[i]];
-            //     integral += (1/(2*tri_area)) * u_val * grad_weights[i];
-            // }
-
-#if RESIDUAL_ADVECTION
-            vec2 grad_weights[6*6] = {
-#if WEIGHTS_MODE == 0
--K1/105 - K2/21, 2*K1/315 + 2*K2/315, -K1/630 + 2*K2/315, 4*K1/315 - 2*K2/105, 2*K1/105 + 2*K2/315, 2*K1/315 - 2*K2/105,
-2*K1/315 + 2*K2/315, -K1/21 - K2/105, 2*K1/315 - K2/630, -2*K1/105 + 4*K2/315, -2*K1/105 + 2*K2/315, 2*K1/315 + 2*K2/105,
--K1/630 + 2*K2/315, 2*K1/315 - K2/630, -K1/105 - K2/105, 2*K1/105 + 2*K2/105, 4*K1/315 + 2*K2/315, 2*K1/315 + 4*K2/315,
-4*K1/315 - 2*K2/105, -2*K1/105 + 4*K2/315, 2*K1/105 + 2*K2/105, -16*K1/105 - 16*K2/105, -8*K1/105 - 16*K2/315, -16*K1/315 - 8*K2/105,
-2*K1/105 + 2*K2/315, -2*K1/105 + 2*K2/315, 4*K1/315 + 2*K2/315, -8*K1/105 - 16*K2/315, -16*K1/105 - 16*K2/315, -16*K1/315 - 16*K2/315,
-2*K1/315 - 2*K2/105, 2*K1/315 + 2*K2/105, 2*K1/315 + 4*K2/315, -16*K1/315 - 8*K2/105, -16*K1/315 - 16*K2/315, -16*K1/315 - 16*K2/105,
-#else
--2*K1/105, 4*K1/315, K1/126, -4*K1/63, -2*K1/315, -2*K1/63,
-4*K2/315, -2*K2/105, K2/126, -4*K2/63, -2*K2/63, -2*K2/315,
--2*K1/315 - 2*K2/315, -2*K1/315 - 2*K2/315, K1/210 + K2/210, -4*K1/105 - 4*K2/105, 2*K1/315 + 2*K2/315, 2*K1/315 + 2*K2/315,
-4*K1/315 - 2*K2/105, -2*K1/105 + 4*K2/315, 2*K1/105 + 2*K2/105, -16*K1/105 - 16*K2/105, -8*K1/105 - 16*K2/315, -16*K1/315 - 8*K2/105,
--4*K1/315 - 2*K2/315, 2*K1/105 + 8*K2/315, -2*K1/105 - 4*K2/315, 16*K1/105 + 32*K2/315, 8*K1/105 + 8*K2/315, 16*K1/315,
-8*K1/315 + 2*K2/105, -2*K1/315 - 4*K2/315, -4*K1/315 - 2*K2/105, 32*K1/315 + 16*K2/105, 16*K2/315, 8*K1/315 + 8*K2/105,
-#endif
-            };
-            for (int i = 0; i < 6; i++) {
-                for (int K = 0; K < 6; K++) {
-                    // integral += velocity_prev[elements[i]] * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
-                    vec2 u = velocity_prev[elements[i]];
-                    // vec2 u_transformed = u.x()*side1 + u.y()*side2;
-                    vec2 u_transformed = u;
-                    integral += u_transformed * vec2::dot(velocity_prev[elements[K]], grad_weights[6*i + K]);
-                }
-            }
-#endif
-
-
-
-} // endif m_use_advection
         }
         velocity_residual[edge] += integral;
     }
@@ -403,10 +281,10 @@ void NavierStokesSolver::explicit_advection_lagrangian()
 }
 
 
-std::tuple<Face, vec3> NavierStokesSolver::traverse(Face tri, vec3 origin, vec3 shift, int depth)
+std::tuple<Face, vec3> NavierStokesSolver::traverse(Face tri, vec3 origin, vec3 shift, int depth, int ignore_index)
 {
-    const int MAX_DEPTH = 50;
-    if (depth == MAX_DEPTH) return {tri, origin};
+    // const int MAX_DEPTH = 50;
+    // if (depth == MAX_DEPTH) return {tri, origin};
 
     Halfedge hes[3] = {
         tri.halfedge(),
@@ -441,6 +319,7 @@ std::tuple<Face, vec3> NavierStokesSolver::traverse(Face tri, vec3 origin, vec3 
     double min_t = std::numeric_limits<double>::max();
     // Intersect each line determined by the triangle sides.
     for (int i = 0; i < 3; i++) {
+        if (i == ignore_index) continue;
         vec2 line_n = (ps_t[(i+1)%3] - ps_t[i]).perp();
         vec2 line_p = ps_t[i];
         double t = vec2::dot(line_p - o_t, line_n)/vec2::dot(d_t, line_n);
@@ -450,7 +329,10 @@ std::tuple<Face, vec3> NavierStokesSolver::traverse(Face tri, vec3 origin, vec3 
         }
     }
 
-    if (line_hit_index == -1 || min_t > 1) {
+    if (line_hit_index == -1) {
+        // assert(line_hit_index != -1);
+    }
+    if (min_t > 1) {
         // Travel stops on this triangle.
         // printf("Travel stops.\n");
         return {tri, origin+shift};
@@ -474,9 +356,21 @@ std::tuple<Face, vec3> NavierStokesSolver::traverse(Face tri, vec3 origin, vec3 
     
     vec3 new_shift = E1*vec3::dot((1-min_t)*shift, E1) + to_E2*vec3::dot((1-min_t)*shift, from_E2);
 
-    double fix = 0.001; // (To prevent intersections with the edge just passed through.)
-    // printf("Continuing travels...\n");
-    return traverse(hit_he.twin().face(), origin + min_t*shift + new_shift*fix, (1-fix)*new_shift, depth+1);
+    Face to_face = hit_he.twin().face();
+    // Ignore the edge that was traversed over, when intersecting on the next triangle.
+    int to_ignore_index = 0;
+    {
+        auto start = to_face.halfedge();
+        auto he = start;
+        do {
+            if (he == hit_he.twin()) break;
+            to_ignore_index += 1;
+            he = he.next();
+        } while (he != start);
+        assert(to_ignore_index != 3);
+    }
+    float fix = -0.001;
+    return traverse(to_face, origin + min_t*shift + fix*new_shift, new_shift, depth+1, to_ignore_index);
 }
 
 
@@ -556,10 +450,11 @@ void NavierStokesSolver::explicit_advection_traversal()
     
             if (vec3::dot(shift, perp(p2 - p1)) <= 0 &&
                     vec3::dot(shift, perp(p3 - p1)) >= 0) {
-                double fix = 0.001;
                 Face out_face;
                 vec3 out_pos;
-                std::tie(out_face, out_pos) = traverse(tri, p1+(1+fix)*shift, (1-fix)*shift);
+                // std::tie(out_face, out_pos) = traverse(tri, p1+(1+fix)*shift, (1-fix)*shift);
+                // ---0.5*shift
+                std::tie(out_face, out_pos) = traverse(tri, p1+0.5*shift, 0.5*shift);
                 assert(!out_face.null());
 
                 Edge edges[3] = {
@@ -579,6 +474,9 @@ void NavierStokesSolver::explicit_advection_traversal()
                 double x = barycentric_coeff(out_pos, ps[1], ps[2], n);
                 double y = barycentric_coeff(out_pos, ps[2], ps[0], n);
                 double z = barycentric_coeff(out_pos, ps[0], ps[1], n);
+                if (x < 0) x = 0;
+                if (y < 0) y = 0;
+                if (z < 0) z = 0;
                 double w = x+y+z;
                 x /= w;
                 y /= w;
@@ -632,10 +530,11 @@ void NavierStokesSolver::explicit_advection_traversal()
 
         vec3 shift = triangle_projection_matrix[tri] * (-m_current_time_step_dt*u);
 
-	double fix = 0.001;
 	Face out_face;
 	vec3 out_pos;
-	std::tie(out_face, out_pos) = traverse(tri, midpoint+(1+fix)*shift, (1-fix)*shift);
+	// std::tie(out_face, out_pos) = traverse(tri, midpoint+(1+fix)*shift, (1-fix)*shift);
+	// ---0.5*shift
+	std::tie(out_face, out_pos) = traverse(tri, midpoint+0.5*shift, 0.5*shift);
 	assert(!out_face.null());
 
         Edge edges[3] = {
@@ -655,6 +554,10 @@ void NavierStokesSolver::explicit_advection_traversal()
         double x = barycentric_coeff(out_pos, ps[1], ps[2], n);
         double y = barycentric_coeff(out_pos, ps[2], ps[0], n);
         double z = barycentric_coeff(out_pos, ps[0], ps[1], n);
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (z < 0) z = 0;
+
         double w = x+y+z;
         x /= w;
         y /= w;

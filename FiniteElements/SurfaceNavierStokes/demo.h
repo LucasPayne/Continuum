@@ -20,7 +20,7 @@ struct Demo : public IBehaviour {
 
     void save_solution(std::string filename);
 
-    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift);
+    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift, int ignore_index=-1);
 };
 
 #endif // HEADER_DEFINED_DEMO

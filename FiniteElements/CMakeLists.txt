@@ -132,3 +132,11 @@ add_executable(FlowVisualization
     Filmer.cpp
 )
 target_link_libraries(FlowVisualization PRIVATE common)
+
+add_executable(SurfaceFlowVisualization
+    SurfaceFlowVisualization/main.cpp
+    CameraController.cpp
+    core.cpp
+    Filmer.cpp
+)
+target_link_libraries(SurfaceFlowVisualization PRIVATE common)

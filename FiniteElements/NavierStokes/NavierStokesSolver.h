@@ -73,7 +73,7 @@ public:
     FaceAttachment<vec3> triangle_normal;
     FaceAttachment<mat3x3> triangle_projection_matrix;
     P2Attachment<vec3> normal;
-    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift, int depth=0);
+    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift, int depth=0, int ignore_index=-1);
 
 
     TimeDependentPlaneVectorField source_function; // Exact function.

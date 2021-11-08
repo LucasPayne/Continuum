@@ -178,7 +178,7 @@ void SurfaceNavierStokesSolver::time_step(double delta_time)
     linear_solver.compute(matrix);
     printf("Solving...\n");
     const double machine_epsilon = Eigen::NumTraits<double>::epsilon();
-    const double epsilon = 1e-4;
+    const double epsilon = 1e-3;
     linear_solver.setTolerance(epsilon);
     // linear_solver.setMaxIterations(100);
     printf("machine epsilon = %.10g\n", machine_epsilon);

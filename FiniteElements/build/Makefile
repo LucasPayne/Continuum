@@ -98,6 +98,16 @@ install/fast: preinstall/fast
 	/usr/local/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+.PHONY : rebuild_cache/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
@@ -119,16 +129,6 @@ install/local/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
 	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local/fast
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -227,6 +227,19 @@ ReactionDiffusion/fast:
 .PHONY : ReactionDiffusion/fast
 
 #=============================================================================
+# Target rules for targets named HeatSolver
+
+# Build rule for target.
+HeatSolver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HeatSolver
+.PHONY : HeatSolver
+
+# fast build rule for target.
+HeatSolver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
+.PHONY : HeatSolver/fast
+
+#=============================================================================
 # Target rules for targets named SurfaceNavierStokes
 
 # Build rule for target.
@@ -318,17 +331,17 @@ NavierStokes/fast:
 .PHONY : NavierStokes/fast
 
 #=============================================================================
-# Target rules for targets named HeatSolver
+# Target rules for targets named SurfaceFlowVisualization
 
 # Build rule for target.
-HeatSolver: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HeatSolver
-.PHONY : HeatSolver
+SurfaceFlowVisualization: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 SurfaceFlowVisualization
+.PHONY : SurfaceFlowVisualization
 
 # fast build rule for target.
-HeatSolver/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HeatSolver.dir/build.make CMakeFiles/HeatSolver.dir/build
-.PHONY : HeatSolver/fast
+SurfaceFlowVisualization/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/build
+.PHONY : SurfaceFlowVisualization/fast
 
 #=============================================================================
 # Target rules for targets named basic_application
@@ -494,6 +507,7 @@ CameraController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/CameraController.cpp.o
 .PHONY : CameraController.cpp.o
 
 CameraController.i: CameraController.cpp.i
@@ -504,6 +518,7 @@ CameraController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/CameraController.cpp.i
 .PHONY : CameraController.cpp.i
 
 CameraController.s: CameraController.cpp.s
@@ -514,6 +529,7 @@ CameraController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/CameraController.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/CameraController.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/CameraController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/CameraController.cpp.s
 .PHONY : CameraController.cpp.s
 
 Filmer.o: Filmer.cpp.o
@@ -522,6 +538,7 @@ Filmer.o: Filmer.cpp.o
 # target to build an object file
 Filmer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/Filmer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/Filmer.cpp.o
 .PHONY : Filmer.cpp.o
 
 Filmer.i: Filmer.cpp.i
@@ -530,6 +547,7 @@ Filmer.i: Filmer.cpp.i
 # target to preprocess a source file
 Filmer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/Filmer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/Filmer.cpp.i
 .PHONY : Filmer.cpp.i
 
 Filmer.s: Filmer.cpp.s
@@ -538,6 +556,7 @@ Filmer.s: Filmer.cpp.s
 # target to generate assembly for a file
 Filmer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FlowVisualization.dir/build.make CMakeFiles/FlowVisualization.dir/Filmer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/Filmer.cpp.s
 .PHONY : Filmer.cpp.s
 
 FiniteVolumes.o: FiniteVolumes.cpp.o
@@ -924,6 +943,30 @@ ReactionDiffusion/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ReactionDiffusion.dir/build.make CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.s
 .PHONY : ReactionDiffusion/main.cpp.s
 
+SurfaceFlowVisualization/main.o: SurfaceFlowVisualization/main.cpp.o
+.PHONY : SurfaceFlowVisualization/main.o
+
+# target to build an object file
+SurfaceFlowVisualization/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/SurfaceFlowVisualization/main.cpp.o
+.PHONY : SurfaceFlowVisualization/main.cpp.o
+
+SurfaceFlowVisualization/main.i: SurfaceFlowVisualization/main.cpp.i
+.PHONY : SurfaceFlowVisualization/main.i
+
+# target to preprocess a source file
+SurfaceFlowVisualization/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/SurfaceFlowVisualization/main.cpp.i
+.PHONY : SurfaceFlowVisualization/main.cpp.i
+
+SurfaceFlowVisualization/main.s: SurfaceFlowVisualization/main.cpp.s
+.PHONY : SurfaceFlowVisualization/main.s
+
+# target to generate assembly for a file
+SurfaceFlowVisualization/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/SurfaceFlowVisualization/main.cpp.s
+.PHONY : SurfaceFlowVisualization/main.cpp.s
+
 SurfaceNavierStokes/SurfaceNavierStokesSolver.o: SurfaceNavierStokes/SurfaceNavierStokesSolver.cpp.o
 .PHONY : SurfaceNavierStokes/SurfaceNavierStokesSolver.o
 
@@ -1222,6 +1265,7 @@ core.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/core.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/core.cpp.o
 .PHONY : core.cpp.o
 
 core.i: core.cpp.i
@@ -1234,6 +1278,7 @@ core.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/core.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/core.cpp.i
 .PHONY : core.cpp.i
 
 core.s: core.cpp.s
@@ -1246,6 +1291,7 @@ core.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceNavierStokes.dir/build.make CMakeFiles/SurfaceNavierStokes.dir/core.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WeaklyIncompressible.dir/build.make CMakeFiles/WeaklyIncompressible.dir/core.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NavierStokes.dir/build.make CMakeFiles/NavierStokes.dir/core.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SurfaceFlowVisualization.dir/build.make CMakeFiles/SurfaceFlowVisualization.dir/core.cpp.s
 .PHONY : core.cpp.s
 
 discretization_figure.o: discretization_figure.cpp.o
@@ -1318,6 +1364,7 @@ help:
 	@echo "... NavierStokes"
 	@echo "... QuadraticLaplaceSolver"
 	@echo "... ReactionDiffusion"
+	@echo "... SurfaceFlowVisualization"
 	@echo "... SurfaceNavierStokes"
 	@echo "... WeaklyIncompressible"
 	@echo "... basic_application"
@@ -1387,6 +1434,9 @@ help:
 	@echo "... ReactionDiffusion/main.o"
 	@echo "... ReactionDiffusion/main.i"
 	@echo "... ReactionDiffusion/main.s"
+	@echo "... SurfaceFlowVisualization/main.o"
+	@echo "... SurfaceFlowVisualization/main.i"
+	@echo "... SurfaceFlowVisualization/main.s"
 	@echo "... SurfaceNavierStokes/SurfaceNavierStokesSolver.o"
 	@echo "... SurfaceNavierStokes/SurfaceNavierStokesSolver.i"
 	@echo "... SurfaceNavierStokes/SurfaceNavierStokesSolver.s"

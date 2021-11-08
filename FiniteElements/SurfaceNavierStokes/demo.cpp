@@ -15,7 +15,7 @@ Demo::Demo()
     geom = nullptr;
 }
 
-std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift)
+std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift, int ignore_index)
 {
     Halfedge hes[3] = {
         tri.halfedge(),
@@ -37,8 +37,10 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift)
     e2 -= e1*vec3::dot(e2, e1);
     e2 = e2.normalized();
 
-    world->graphics.paint.line(origin, origin+e1, 0.01, vec4(1,1,0,1));
-    world->graphics.paint.line(origin, origin+e2, 0.01, vec4(0,1,0,1));
+    // world->graphics.paint.line(origin, origin + vec3(0,1,0), 0.005, vec4(0,0,0,1));
+    // world->graphics.paint.line(origin+vec3(0,0.001,0), origin+e1+vec3(0,0.001,0), 0.01, vec4(1,1,0,1));
+    // world->graphics.paint.line(origin+vec3(0,0.001,0), origin+e2+vec3(0,0.001,0), 0.01, vec4(0,1,0,1));
+    // if (ignore_index != -1) world->graphics.paint.line(ps[ignore_index], ps[(ignore_index+1)%3], 0.01, vec4(0,1,1,1));
 
     // Express the triangle in this basis.
     vec2 ps_t[3];
@@ -53,6 +55,7 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift)
     double min_t = std::numeric_limits<double>::max();
     // Intersect each line determined by the triangle sides.
     for (int i = 0; i < 3; i++) {
+        if (i == ignore_index) continue;
         vec2 line_n = (ps_t[(i+1)%3] - ps_t[i]).perp();
         vec2 line_p = ps_t[i];
         double t = vec2::dot(line_p - o_t, line_n)/vec2::dot(d_t, line_n);
@@ -64,12 +67,24 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift)
 
     if (line_hit_index == -1 || min_t > 1) {
         // Travel stops on this triangle.
-        return {tri, origin+shift};
+
+        vec3 to = origin+shift;
+
+        vec3 tri_normal = solver->triangle_normal[tri];
+        world->graphics.paint.line(origin+0.001*tri_normal, to+0.001*tri_normal, 0.01, vec4(0,1,0,1));
+
+        return {tri, to};
     }
     Halfedge hit_he = hes[line_hit_index];
     if (hit_he.twin().face().null()) {
         // Hit the boundary. Stop at the boundary intersection.
-        return {tri, origin + min_t*shift};
+
+        vec3 to = origin + min_t * shift;
+
+        vec3 tri_normal = solver->triangle_normal[tri];
+        world->graphics.paint.line(origin+0.001*tri_normal, to+0.001*tri_normal, 0.01, vec4(0,1,0,1));
+
+        return {tri, to};
     }
     // Travel proceeds on another triangle.
     // Create an orthonormal basis for each incident face to the edge being travelled over.
@@ -81,11 +96,29 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift)
     vec3 to_E2 = -eigen_to_vec3(geom->vector(hit_he.twin().next().next()));
     to_E2 -= E1*vec3::dot(to_E2, E1);
     to_E2 = to_E2.normalized();
-    
+    // Rotate the rest of the shift to this new triangle plane.
     vec3 new_shift = E1*vec3::dot((1-min_t)*shift, E1) + to_E2*vec3::dot((1-min_t)*shift, from_E2);
 
-    double fix = 0.001; // (To prevent intersections with the edge just passed through.)
-    return traverse(hit_he.twin().face(), origin + min_t*shift + new_shift*fix, (1-fix)*new_shift);
+    Face to_face = hit_he.twin().face();
+    // Ignore the edge that was traversed over, when intersecting on the next triangle.
+    int to_ignore_index = 0;
+    {
+        auto start = to_face.halfedge();
+        auto he = start;
+        do {
+            if (he == hit_he.twin()) break;
+            to_ignore_index += 1;
+            he = he.next();
+        } while (he != start);
+        assert(to_ignore_index != 3);
+    }
+
+    vec3 to = origin + min_t*shift;
+
+    vec3 tri_normal = solver->triangle_normal[tri];
+    world->graphics.paint.line(origin+0.001*tri_normal, to+0.001*tri_normal, 0.01, vec4(0,1,0,1));
+
+    return traverse(to_face, to, new_shift, to_ignore_index);
 }
 
 void Demo::init()
@@ -100,10 +133,32 @@ void Demo::init()
     controller->angle = -M_PI/2;
     controller->azimuth = M_PI;
 
+    geom = assimp_to_surface_geometry(std::string(MODELS) + "icosahedron.ply");
+    // geom = assimp_to_surface_geometry(std::string(MODELS) + "simple_gear.ply");
+    // geom = assimp_to_surface_geometry(std::string(MODELS) + "side_gear.stl");
+    // geom = assimp_to_surface_geometry(std::string(MODELS) + "drive_wheel.stl");
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "bunny_head.stl");
-    // // geom = assimp_to_surface_geometry(std::string(MODELS) + "tangram.stl");
-    // // geom = assimp_to_surface_geometry(std::string(MODELS) + "cylinder.stl");
-    // geom->mesh.lock();
+    // geom = assimp_to_surface_geometry(std::string(MODELS) + "tangram.stl");
+    // geom = assimp_to_surface_geometry(std::string(MODELS) + "cylinder.stl");
+    Eigen::Vector3f avg = Eigen::Vector3f(0,0,0);
+    for (auto v : geom->mesh.vertices()) {
+        // std::cout << geom->position[v] << "\n";
+        // getchar();
+        avg += geom->position[v];
+    }
+    avg /= geom->mesh.num_vertices();
+    double max_norm = 0;
+    for (auto v : geom->mesh.vertices()) {
+        geom->position[v] -= avg;
+        if (geom->position[v].norm() > max_norm) {
+            max_norm = geom->position[v].norm();
+        }
+    }
+    for (auto v : geom->mesh.vertices()) {
+        geom->position[v] /= max_norm;
+    }
+    
+    geom->mesh.lock();
     
     // geom = square_mesh(15);
     // for (auto v : geom->mesh.vertices()) {
@@ -120,24 +175,35 @@ void Demo::init()
         // vec2 obstruction_position = vec2(0,0);
         // geom = square_minus_circle(0.18, theta0, 1, 1, 60, true, obstruction_position, false);
 
-        geom = square_mesh(25);
+        // geom = square_mesh(25);
+        // geom = torus_mesh(25);
 
     // for (auto v : geom->mesh.vertices()) {
     //     vec3 p = eigen_to_vec3(geom->position[v]);
-    //     // float theta = 0.95*(p.x()+1)*M_PI;
-    //     // geom->position[v] = Eigen::Vector3f(cos(theta), sin(theta), p.z());
-    //     geom->position[v] += Eigen::Vector3f(0, 0.1*sin(4*p.x()), 0);
+    //     float theta = 0.95*(p.x()+1)*M_PI;
+    //     geom->position[v] = Eigen::Vector3f(cos(theta), sin(theta), p.z());
+    //     // geom->position[v] += Eigen::Vector3f(0, 0.1*sin(4*p.x()), 0);
     // }
     
     double viscosity = 0.001;
     solver = new SurfaceNavierStokesSolver(*geom, viscosity);
 
     solver->set_source([&](double x, double y, double z)->vec3 {
-        const double r = 0.125;
-        if ((vec2(x,z) - vec2(-0.85,0)).length() <= r) {
-            return vec3(3000, 0, 0);
+        //const double r = 0.125;
+        // if ((vec2(x,z) - vec2(-0.85,0)).length() <= r) {
+        //     return vec3(3000, 0, 0);
+        // }
+        const double r = 0.25;
+        vec3 s = vec3(0,0,0);
+        if (vec2(x,y).length() <= r) {
+            if (z > 0) {
+                s = vec3(3000, 0, 0);
+            }
+            if (z < 0) {
+                s = vec3(-3000, 0, 0);
+            }
         }
-        return vec3(0,0,0);
+        return s + vec3(0,-2000,0);
         // #if 0
         // double r = 0.125;
         // if ((x+0.8)*(x+0.8) + z*z <= r*r) return vec3(30,0,0);
@@ -235,7 +301,7 @@ void Demo::update()
     }
     #endif
 
-    #if 1
+    #if 0
     for (auto v : geom->mesh.vertices()) {
         if (v.on_boundary()) continue;
         vec3 c = eigen_to_vec3(geom->position[v]);
@@ -263,8 +329,8 @@ void Demo::update()
         counter += 1;
     }
 
-    #if 0
-    const float test_move_speed = 1;
+    #if 1
+    const float test_move_speed = 0.25;
     if (world->input.keyboard.down(KEY_LEFT_ARROW)) {
         test_shift_t += test_move_speed * dt;
     }
@@ -272,14 +338,14 @@ void Demo::update()
         test_shift_t -= test_move_speed * dt;
     }
     vec3 c = eigen_to_vec3(geom->barycenter(test_face));
-    vec3 s = solver->triangle_projection_matrix[test_face]*vec3(test_shift_t, 0, test_shift_t);
+    vec3 s = solver->triangle_projection_matrix[test_face]*vec3(-10*test_shift_t, 0, test_shift_t);
     world->graphics.paint.sphere(c, 0.01, vec4(0.5,0.5,0.5,1));
     world->graphics.paint.line(c + shift, c+s + shift, 0.005,  vec4(0.5,1,0.5,1));
 
     Face out_face;
     vec3 out_pos;
     std::tie(out_face, out_pos) = traverse(test_face, c, s);
-    world->graphics.paint.sphere(out_pos, 0.01, vec4(1,0.2,0.2,1));
+    world->graphics.paint.sphere(out_pos, 0.03, vec4(1,0.2,0.2,1));
     world->graphics.paint.sphere(eigen_to_vec3(geom->barycenter(out_face)), 0.02, vec4(0.5,1,0.2,1));
     #endif
 }
@@ -300,22 +366,22 @@ void Demo::save_solution(std::string filename)
 {
     FILE *file = fopen(filename.c_str(), "w+");
     for (auto v : geom->mesh.vertices()) {
-        // fprintf(file, "%.7f %.7f %.7f\n", solver->velocity[v].x(), solver->velocity[v].y(), solver->velocity[v].z());
-        fprintf(file, "%.7f %.7f\n", solver->velocity[v].x(), solver->velocity[v].z());
+        fprintf(file, "%.7f %.7f %.7f\n", solver->velocity[v].x(), solver->velocity[v].y(), solver->velocity[v].z());
+        // fprintf(file, "%.7f %.7f\n", solver->velocity[v].x(), solver->velocity[v].z());
     }
     for (auto e : geom->mesh.edges()) {
-        // fprintf(file, "%.7f %.7f %.7f\n", solver->velocity[e].x(), solver->velocity[e].y(), solver->velocity[e].z());
-        fprintf(file, "%.7f %.7f\n", solver->velocity[e].x(), solver->velocity[e].z());
+        fprintf(file, "%.7f %.7f %.7f\n", solver->velocity[e].x(), solver->velocity[e].y(), solver->velocity[e].z());
+        // fprintf(file, "%.7f %.7f\n", solver->velocity[e].x(), solver->velocity[e].z());
     }
     for (auto v : geom->mesh.vertices()) {
         fprintf(file, "%.7g\n", solver->pressure[v]);
     }
-    // for (auto v : geom->mesh.vertices()) {
-    //     fprintf(file, "%.7g\n", solver->centripetal[v]);
-    // }
-    // for (auto e : geom->mesh.edges()) {
-    //     fprintf(file, "%.7g\n", solver->centripetal[e]);
-    // }
+    for (auto v : geom->mesh.vertices()) {
+        fprintf(file, "%.7g\n", solver->centripetal[v]);
+    }
+    for (auto e : geom->mesh.edges()) {
+        fprintf(file, "%.7g\n", solver->centripetal[e]);
+    }
 
     fclose(file);
 }
