@@ -1,0 +1,32 @@
+#version 420
+layout(triangles, equal_spacing, ccw) in;
+
+in TCS_OUT {
+    vec3 position;
+    vec3 velocity;
+    float pressure;
+} tes_in[];
+
+out TES_OUT {
+    vec3 barycentric;
+    flat vec3 velocities[6];
+    float pressure;
+} tes_out;
+
+uniform mat4x4 mvp_matrix;
+
+void main(void)
+{
+    float x = gl_TessCoord.x;
+    float y = gl_TessCoord.y;
+    float z = gl_TessCoord.z;
+    tes_out.barycentric = vec3(x,y,z);
+    // Pass all the solution data for this patch to the fragment shader.
+    for (int i = 0; i < 6; i++) {
+        tes_out.velocities[i] = tes_in[i].velocity;
+    }
+    gl_Position = mvp_matrix * vec4(x*tes_in[0].position + y*tes_in[2].position + z*tes_in[4].position,1);
+
+    tes_out.pressure = x*tes_in[0].pressure + y*tes_in[2].pressure + z*tes_in[4].pressure;
+}
+

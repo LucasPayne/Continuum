@@ -14,7 +14,8 @@ struct Solution {
     Solution(SurfaceGeometry &_geom) :
         geom{_geom},
         velocity{_geom.mesh},
-        pressure{_geom.mesh}
+        pressure{_geom.mesh},
+        centripetal{_geom.mesh}
     {
     }
     SurfaceGeometry &geom;
@@ -47,17 +48,11 @@ public:
 
     Filmer *filmer;
     
-    GLShaderProgram solution_shader; // Render the solution (velocity and pressure) to textures.
-    GLuint solution_fbo; // For render-to-texture.
-    GLuint solution_texture; // 3 components: r:velocity_x, g:velocity_y, b:pressure.
-    GLuint solution_depth_texture; //--- Is this needed for completeness?
-    GLShaderProgram render_solution_shader;
-    GLuint render_solution_vao;
+    GLShaderProgram solution_shader;
 
     int render_solution_mode;
 
-    void render_solution_texture();
-    void render_solution(int mode);
+    void render_solution();
 };
 
 
@@ -93,7 +88,7 @@ App::App(World &_world, char *_directory_path, SurfaceGeometry &_geom) :
     filmer = world.add<Filmer>(filmer_e, std::string(DATA) + "navier_render", [&](int film_frame) {
         solution_index = film_frame;
         load_solution(solution_index);
-        render_solution(render_solution_mode);
+        render_solution();
     }, 1);
 
     //---example solution frame
@@ -107,27 +102,6 @@ App::App(World &_world, char *_directory_path, SurfaceGeometry &_geom) :
     solution_shader.add_shader(GLShader(TessEvaluationShader, SHADERS "surface_flow_visualization_solution/solution.tes"));
     solution_shader.add_shader(GLShader(FragmentShader, SHADERS "surface_flow_visualization_solution/solution.frag"));
     solution_shader.link();
-
-    render_solution_shader.add_shader(GLShader(VertexShader, SHADERS "surface_flow_visualization_render_solution/render_solution.vert"));
-    render_solution_shader.add_shader(GLShader(FragmentShader, SHADERS "surface_flow_visualization_render_solution/render_solution.frag"));
-    render_solution_shader.link();
-    
-    // Create framebuffer for render-to-texture.
-    glGenFramebuffers(1, &solution_fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
-    glGenTextures(1, &solution_texture);
-    glBindTexture(GL_TEXTURE_2D, solution_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1024, 1024, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);  
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, solution_texture, 0);
-    glGenTextures(1, &solution_depth_texture);
-    glBindTexture(GL_TEXTURE_2D, solution_depth_texture);
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 1024, 1024, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, solution_depth_texture, 0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
 }
 
 void App::close()
@@ -137,7 +111,7 @@ void App::close()
 void App::loop()
 {
     if (!filmer->filming) {
-        render_solution(render_solution_mode);
+        render_solution();
     }
 
     // world.graphics.paint.wireframe(geom, mat4x4::identity(), 0.001);
@@ -172,8 +146,6 @@ void App::loop()
         world.graphics.paint.chain(ps, 0.005, vec4(0,0,0,1));
     }
     #endif
-
-    render_solution_texture();
 }
 
 void App::window_handler(WindowEvent e)
@@ -188,8 +160,6 @@ void App::keyboard_handler(KeyboardEvent e)
         }
         if (e.key.code == KEY_1) render_solution_mode = 0;
         if (e.key.code == KEY_2) render_solution_mode = 1;
-        if (e.key.code == KEY_3) render_solution_mode = 2;
-        if (e.key.code == KEY_4) render_solution_mode = 3;
         if (!HOLD_MODE) {
             if (e.key.code == KEY_M) {
                 solution_index = (solution_index+1);
@@ -249,7 +219,7 @@ bool App::load_solution(int number)
 }
 
 
-void App::render_solution_texture()
+void App::render_solution()
 {
     const double pressure_mul = 1.;
 
@@ -328,25 +298,15 @@ void App::render_solution_texture()
         glEnableVertexAttribArray(i);
     }
 
-    // Render to texture.
+    // Render the mesh.
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_DEPTH_BUFFER_BIT); //------
     solution_shader.bind();
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport); // save the viewport to restore after rendering sample geometry.
-    glDisable(GL_SCISSOR_TEST);
-    glViewport(0,0,1024,1024);
-    glBindFramebuffer(GL_FRAMEBUFFER, solution_fbo);
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
-
+    glUniform1i(solution_shader.uniform_location("mode"), render_solution_mode);
+    auto vp_matrix = main_camera->view_projection_matrix();
+    glUniformMatrix4fv(solution_shader.uniform_location("mvp_matrix"), 1, GL_FALSE, (const GLfloat *) &vp_matrix);
     glPatchParameteri(GL_PATCH_VERTICES, 6);
     glDrawArrays(GL_PATCHES, 0, data_num_vertices);
-    glEnable(GL_DEPTH_TEST);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, world.graphics.screen_buffer.id);
-    glEnable(GL_SCISSOR_TEST);
-    glEnable(GL_DEPTH_TEST);
-    glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
     solution_shader.unbind();
 
     // Clean up.
@@ -355,58 +315,6 @@ void App::render_solution_texture()
 }
 
 
-void App::render_solution(int mode)
-{
-    GLuint vao;
-    glCreateVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    vec3 positions[4] = {
-        vec3(-1,0,-1),
-        vec3(1,0,-1),
-        vec3(1,0,1),
-        vec3(-1,0,1)
-    };
-    vec2 uvs[4] = {
-        vec2(0,0),
-        vec2(1,0),
-        vec2(1,1),
-        vec2(0,1)
-    };
-    GLuint vbos[2];
-    glGenBuffers(2, vbos);
-    struct {
-        const void *data;
-        size_t data_size;
-        size_t gl_data_number;
-        GLenum gl_data_type;
-    } data_to_upload[2] = {
-        {&positions[0], sizeof(vec3), 3, GL_FLOAT},
-        {&uvs[0], sizeof(vec2), 2, GL_FLOAT},
-    };
-    // Upload the data.
-    for (int i = 0; i < 2; i++) {
-        auto metadata = data_to_upload[i];
-        glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
-        glBufferData(GL_ARRAY_BUFFER, 4 * metadata.data_size, metadata.data, GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(i, metadata.gl_data_number, metadata.gl_data_type, GL_FALSE, 0, (const void *) 0);
-        glEnableVertexAttribArray(i);
-    }
-
-    render_solution_shader.bind();
-    glUniform1i(render_solution_shader.uniform_location("mode"), mode);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, solution_texture);
-    glUniform1i(render_solution_shader.uniform_location("solution"), 0);
-    auto vp_matrix = main_camera->view_projection_matrix();
-    glUniformMatrix4fv(render_solution_shader.uniform_location("mvp_matrix"), 1, GL_FALSE, (const GLfloat *) &vp_matrix);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    render_solution_shader.unbind();
-
-    // Clean up
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(2, vbos);
-}
 
 
 int main(int argc, char *argv[])
@@ -427,7 +335,7 @@ int main(int argc, char *argv[])
     SurfaceGeometry *geom = nullptr;
     if (GEOM == 1) {
         geom = assimp_to_surface_geometry(std::string(MODELS) + "icosahedron.ply");
-        geom->lock();
+        geom->mesh.lock();
     }
     assert(geom != nullptr);
 

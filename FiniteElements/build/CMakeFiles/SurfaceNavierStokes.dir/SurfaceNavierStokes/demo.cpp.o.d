@@ -422,6 +422,7 @@ CMakeFiles/SurfaceNavierStokes.dir/SurfaceNavierStokes/demo.cpp.o: \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/subdivision/subdivision.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/tetrahedralization/tetrahedralization.h \
   /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/fairing/fairing.h \
+  /home/lucas/computer_graphics/mesh_processing/include/mesh_processing/enmesh/enmesh.h \
   /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle_wrapper.h \
   /home/lucas/Continuum/FiniteElements/dependencies/triangle/triangle/triangle.h \
   /usr/include/eigen3/Eigen/SparseCore \

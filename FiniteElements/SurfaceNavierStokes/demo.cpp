@@ -133,7 +133,8 @@ void Demo::init()
     controller->angle = -M_PI/2;
     controller->azimuth = M_PI;
 
-    geom = assimp_to_surface_geometry(std::string(MODELS) + "icosahedron.ply");
+    geom = assimp_to_surface_geometry(std::string(MODELS) + "sphere.off");
+    // geom = assimp_to_surface_geometry(std::string(MODELS) + "icosahedron.ply");
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "simple_gear.ply");
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "side_gear.stl");
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "drive_wheel.stl");
@@ -325,7 +326,7 @@ void Demo::update()
     if (filming) {
         solver->time_step(1./300.);
         // solver->time_step(1./10.);
-        save_solution(std::string(DATA) + "flows/sns_2/navier_stokes_" + std::to_string(counter) + ".txt");
+        save_solution(std::string(DATA) + "flows/icosahedron/surface_navier_stokes_" + std::to_string(counter) + ".txt");
         counter += 1;
     }
 

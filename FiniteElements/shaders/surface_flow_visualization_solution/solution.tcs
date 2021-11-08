@@ -1,0 +1,29 @@
+#version 420
+
+layout (vertices = 6) out; 
+
+in VS_OUT {
+    vec3 position;
+    vec3 velocity;
+    float pressure;
+} tcs_in[];
+
+out TCS_OUT {
+    vec3 position;
+    vec3 velocity;
+    float pressure;
+} tcs_out[];
+
+
+void main(void)
+{
+    gl_TessLevelOuter[0] = 1;
+    gl_TessLevelOuter[1] = 1;
+    gl_TessLevelOuter[2] = 1;
+    gl_TessLevelInner[0] = 1;
+
+    tcs_out[gl_InvocationID].position = tcs_in[gl_InvocationID].position;
+    tcs_out[gl_InvocationID].velocity = tcs_in[gl_InvocationID].velocity;
+    tcs_out[gl_InvocationID].pressure = tcs_in[gl_InvocationID].pressure;
+}
+
