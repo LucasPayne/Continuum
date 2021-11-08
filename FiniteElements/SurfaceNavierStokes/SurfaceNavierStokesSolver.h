@@ -81,7 +81,7 @@ public:
 
     bool m_advect;
 
-    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift, int depth=0, int ignore_index=-1);
+    std::tuple<Face, vec3, mat3x3> traverse(Face tri, vec3 origin, vec3 shift, mat3x3 destination_to_origin_matrix, int depth=0, int ignore_index=-1);
 private:
     P2Attachment<int> velocity_node_indices;
     P1Attachment<int> pressure_node_indices;

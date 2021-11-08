@@ -20,7 +20,13 @@ struct Demo : public IBehaviour {
 
     void save_solution(std::string filename);
 
-    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift, int ignore_index=-1);
+    std::tuple<Face, vec3, mat3x3> traverse(Face tri, vec3 origin, vec3 shift, mat3x3 destination_to_origin_matrix, int ignore_index=-1);
+
+
+    GLShaderProgram solution_shader;
+    void render_solution();
+
+    Aspect<Camera> main_camera;
 };
 
 #endif // HEADER_DEFINED_DEMO

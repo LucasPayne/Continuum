@@ -1,10 +1,14 @@
 #include "SurfaceNavierStokes/SurfaceNavierStokesSolver.h"
 #include "core.h"
 
-std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin, vec3 shift, int depth, int ignore_index)
+std::tuple<Face, vec3, mat3x3> SurfaceNavierStokesSolver::traverse(Face tri,
+                                                                   vec3 origin,
+                                                                   vec3 shift,
+                                                                   mat3x3 destination_to_origin_matrix,
+                                                                   int depth, int ignore_index)
 {
-    const int MAX_DEPTH = 50;
-    if (depth == MAX_DEPTH) return {tri, origin};
+    // const int MAX_DEPTH = 50;
+    // if (depth == MAX_DEPTH) return {tri, origin};
 
     Halfedge hes[3] = {
         tri.halfedge(),
@@ -52,13 +56,13 @@ std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin
     if (line_hit_index == -1 || min_t > 1) {
         // Travel stops on this triangle.
         // printf("Travel stops.\n");
-        return {tri, origin+shift};
+        return {tri, origin+shift, destination_to_origin_matrix};
     }
     Halfedge hit_he = hes[line_hit_index];
     if (hit_he.twin().face().null()) {
         // Hit the boundary. Stop at the boundary intersection.
         // printf("Hit the boundary.\n");
-        return {tri, origin + min_t*shift};
+        return {tri, origin + min_t*shift, destination_to_origin_matrix};
     }
     // Travel proceeds on another triangle.
     // Create an orthonormal basis for each incident face to the edge being travelled over.
@@ -70,6 +74,13 @@ std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin
     vec3 to_E2 = -eigen_to_vec3(geom.vector(hit_he.twin().next().next()));
     to_E2 -= E1*vec3::dot(to_E2, E1);
     to_E2 = to_E2.normalized();
+
+    // Construct a rotation matrix which transforms vectors from the new face to the old face.
+    float d = vec3::dot(from_E2, to_E2);
+    if (d < 0) d = 0;
+    if (d > 1) d = 1;
+    float theta = -acos(d);
+    mat3x3 to_matrix = Quaternion::from_axis_angle(E1.normalized(), theta).matrix().top_left();
     
     vec3 new_shift = E1*vec3::dot((1-min_t)*shift, E1) + to_E2*vec3::dot((1-min_t)*shift, from_E2);
 
@@ -87,7 +98,8 @@ std::tuple<Face, vec3> SurfaceNavierStokesSolver::traverse(Face tri, vec3 origin
         assert(to_ignore_index != 3);
     }
     float fix = -0.001;
-    return traverse(to_face, origin + min_t*shift + fix*new_shift, new_shift, depth+1, to_ignore_index);
+    mat3x3 matrix = destination_to_origin_matrix * to_matrix;
+    return traverse(to_face, origin + min_t*shift + fix*new_shift, new_shift, matrix, depth+1, to_ignore_index);
 }
 
 
@@ -169,7 +181,8 @@ void SurfaceNavierStokesSolver::explicit_advection()
                 double fix = 0.001;
                 Face out_face;
                 vec3 out_pos;
-                std::tie(out_face, out_pos) = traverse(tri, p1+(1+fix)*shift, (1-fix)*shift);
+                mat3x3 out_matrix;
+                std::tie(out_face, out_pos, out_matrix) = traverse(tri, p1+(1+fix)*shift, (1-fix)*shift, mat3x3::identity());
                 assert(!out_face.null());
 
                 Edge edges[3] = {
@@ -199,7 +212,7 @@ void SurfaceNavierStokesSolver::explicit_advection()
 
                 P2Element elements[6] = {vs[0], vs[1], vs[2], edges[0], edges[1], edges[2]};
                 for (int i = 0; i < 6; i++) {
-                    val += u_basis[i](x,y,z) * velocity[elements[i]];
+                    val += u_basis[i](x,y,z) * out_matrix * velocity[elements[i]];
                 }
                 new_velocity[v] = val;
                 break;
@@ -241,7 +254,8 @@ void SurfaceNavierStokesSolver::explicit_advection()
 	double fix = 0.001;
 	Face out_face;
 	vec3 out_pos;
-	std::tie(out_face, out_pos) = traverse(tri, midpoint+(1+fix)*shift, (1-fix)*shift);
+	mat3x3 out_matrix;
+	std::tie(out_face, out_pos, out_matrix) = traverse(tri, midpoint+(1+fix)*shift, (1-fix)*shift, mat3x3::identity());
 	assert(!out_face.null());
 
         Edge edges[3] = {
@@ -271,7 +285,7 @@ void SurfaceNavierStokesSolver::explicit_advection()
 
 	P2Element elements[6] = {vs[0], vs[1], vs[2], edges[0], edges[1], edges[2]};
 	for (int i = 0; i < 6; i++) {
-	    val += u_basis[i](x,y,z) * velocity[elements[i]];
+	    val += u_basis[i](x,y,z) * out_matrix * velocity[elements[i]];
 	}
         new_velocity[edge] = val;
     }

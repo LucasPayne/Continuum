@@ -5,6 +5,7 @@
 
 bool filming = false;
 vec3 shift = vec3(0, 0.001, 0);
+int render_solution_mode = 0;
 
 Face test_face;
 double test_shift_t = 0.;
@@ -15,7 +16,7 @@ Demo::Demo()
     geom = nullptr;
 }
 
-std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift, int ignore_index)
+std::tuple<Face, vec3, mat3x3> Demo::traverse(Face tri, vec3 origin, vec3 shift, mat3x3 destination_to_origin_matrix, int ignore_index)
 {
     Halfedge hes[3] = {
         tri.halfedge(),
@@ -73,7 +74,7 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift, int ign
         vec3 tri_normal = solver->triangle_normal[tri];
         world->graphics.paint.line(origin+0.001*tri_normal, to+0.001*tri_normal, 0.01, vec4(0,1,0,1));
 
-        return {tri, to};
+        return {tri, to, destination_to_origin_matrix};
     }
     Halfedge hit_he = hes[line_hit_index];
     if (hit_he.twin().face().null()) {
@@ -84,7 +85,7 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift, int ign
         vec3 tri_normal = solver->triangle_normal[tri];
         world->graphics.paint.line(origin+0.001*tri_normal, to+0.001*tri_normal, 0.01, vec4(0,1,0,1));
 
-        return {tri, to};
+        return {tri, to, destination_to_origin_matrix};
     }
     // Travel proceeds on another triangle.
     // Create an orthonormal basis for each incident face to the edge being travelled over.
@@ -98,6 +99,13 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift, int ign
     to_E2 = to_E2.normalized();
     // Rotate the rest of the shift to this new triangle plane.
     vec3 new_shift = E1*vec3::dot((1-min_t)*shift, E1) + to_E2*vec3::dot((1-min_t)*shift, from_E2);
+    
+    // Construct a rotation matrix which transforms vectors from the new face to the old face.
+    float d = vec3::dot(from_E2, to_E2);
+    if (d < 0) d = 0;
+    if (d > 1) d = 1;
+    float theta = -acos(d);
+    mat3x3 to_matrix = Quaternion::from_axis_angle(E1, theta).matrix().top_left();
 
     Face to_face = hit_he.twin().face();
     // Ignore the edge that was traversed over, when intersecting on the next triangle.
@@ -118,7 +126,9 @@ std::tuple<Face, vec3> Demo::traverse(Face tri, vec3 origin, vec3 shift, int ign
     vec3 tri_normal = solver->triangle_normal[tri];
     world->graphics.paint.line(origin+0.001*tri_normal, to+0.001*tri_normal, 0.01, vec4(0,1,0,1));
 
-    return traverse(to_face, to, new_shift, to_ignore_index);
+    mat3x3 matrix = destination_to_origin_matrix * to_matrix;
+
+    return traverse(to_face, to, new_shift, matrix, to_ignore_index);
 }
 
 void Demo::init()
@@ -128,12 +138,12 @@ void Demo::init()
     auto camera = cameraman.add<Camera>(0.1, 300, 0.1, 0.566);
     camera->background_color = vec4(1,1,1,1);
     auto t = cameraman.add<Transform>(0,2,0);
-    // main_camera = camera;
+    main_camera = camera;
     controller = world->add<CameraController>(cameraman);
     controller->angle = -M_PI/2;
     controller->azimuth = M_PI;
 
-    geom = assimp_to_surface_geometry(std::string(MODELS) + "sphere.off");
+    geom = assimp_to_surface_geometry(std::string(MODELS) + "sphere_fine.off");
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "icosahedron.ply");
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "simple_gear.ply");
     // geom = assimp_to_surface_geometry(std::string(MODELS) + "side_gear.stl");
@@ -196,15 +206,17 @@ void Demo::init()
         // }
         const double r = 0.25;
         vec3 s = vec3(0,0,0);
-        if (vec2(x,y).length() <= r) {
-            if (z > 0) {
+        if (y > 0) {
+            if ((vec2(x,z)).length() <= r) {
                 s = vec3(3000, 0, 0);
             }
-            if (z < 0) {
-                s = vec3(-3000, 0, 0);
-            }
+            // if ((vec2(x,z) - vec2(-0.3, 0)).length() <= r) {
+            //     s = vec3(-3000, 0, 0);
+            // }
         }
-        return s + vec3(0,-2000,0);
+        return s;
+        // return s + vec3(0,-2000,0);
+        
         // #if 0
         // double r = 0.125;
         // if ((x+0.8)*(x+0.8) + z*z <= r*r) return vec3(30,0,0);
@@ -225,6 +237,109 @@ void Demo::init()
         }
         count += 1;
     }
+
+    // Shaders
+    //------------------------------------------------------------
+    solution_shader.add_shader(GLShader(VertexShader, SHADERS "surface_flow_visualization_solution/solution.vert"));
+    solution_shader.add_shader(GLShader(TessControlShader, SHADERS "surface_flow_visualization_solution/solution.tcs"));
+    solution_shader.add_shader(GLShader(TessEvaluationShader, SHADERS "surface_flow_visualization_solution/solution.tes"));
+    solution_shader.add_shader(GLShader(FragmentShader, SHADERS "surface_flow_visualization_solution/solution.frag"));
+    solution_shader.link();
+}
+
+void Demo::render_solution()
+{
+    const double pressure_mul = 1.;
+
+    // Scale the pressure.
+    VertexAttachment<double> scaled_pressure(geom->mesh);
+    double min_pressure = std::numeric_limits<double>::infinity();
+    double max_pressure = 0;
+    for (auto v : geom->mesh.vertices()) {
+        if (solver->pressure[v] < min_pressure) {
+            min_pressure = solver->pressure[v];
+        }
+        if (solver->pressure[v] > max_pressure) {
+            max_pressure = solver->pressure[v];
+        }
+    }
+    if (max_pressure != min_pressure) {
+        for (auto v : geom->mesh.vertices()) {
+            scaled_pressure[v] = pressure_mul*(solver->pressure[v] - min_pressure) / (max_pressure - min_pressure);
+        }
+    } else {
+        for (auto v : geom->mesh.vertices()) {
+            scaled_pressure[v] = 0;
+        }
+    }
+
+    // Render the solution textures.
+    auto position_data = std::vector<vec3>();
+    auto velocity_data = std::vector<vec3>();
+    auto pressure_data = std::vector<float>();
+    // Create a 6-vertex patch per triangle.
+    for (auto tri : geom->mesh.faces()) {
+        auto start = tri.halfedge();
+        auto he = start;
+        do {
+            auto v = he.vertex();
+            auto e = he.edge();
+            Eigen::Vector3f midpoint = 0.5*geom->position[e.a().vertex()] + 0.5*geom->position[e.b().vertex()];
+            for (auto pos : {geom->position[v], midpoint}) {
+                position_data.push_back(eigen_to_vec3(pos));
+            }
+            velocity_data.push_back(solver->velocity[v]);
+            velocity_data.push_back(solver->velocity[e]);
+            pressure_data.push_back(scaled_pressure[v]);
+            pressure_data.push_back(0.f); // Dummy data, as there is no midpoint pressure.
+
+            he = he.next();
+        } while (he != start);
+    }
+    // Check that the right number of vertices were created.
+    size_t data_num_vertices = 6*geom->mesh.num_faces();
+    for (size_t len : {position_data.size(), velocity_data.size(), pressure_data.size()}) {
+        assert(len == data_num_vertices);
+    }
+
+    GLuint vao;
+    glCreateVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    GLuint vbos[3]; // position, velocity, pressure
+    glGenBuffers(3, vbos);
+    struct {
+        const void *data;
+        size_t data_size;
+        size_t gl_data_number;
+        GLenum gl_data_type;
+    } data_to_upload[3] = {
+        {&position_data[0], sizeof(vec3), 3, GL_FLOAT}, // position
+        {&velocity_data[0], sizeof(vec3), 3, GL_FLOAT}, // velocity (P2)
+        {&pressure_data[0], sizeof(float), 1, GL_FLOAT}, // pressure (P1)
+    };
+    // Upload the data.
+    for (int i = 0; i < 3; i++) {
+        auto metadata = data_to_upload[i];
+        glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
+        glBufferData(GL_ARRAY_BUFFER, data_num_vertices * metadata.data_size, metadata.data, GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(i, metadata.gl_data_number, metadata.gl_data_type, GL_FALSE, 0, (const void *) 0);
+        glEnableVertexAttribArray(i);
+    }
+
+    // Render the mesh.
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_DEPTH_BUFFER_BIT); //------
+    solution_shader.bind();
+    glUniform1i(solution_shader.uniform_location("mode"), render_solution_mode);
+    auto vp_matrix = main_camera->view_projection_matrix();
+    glUniformMatrix4fv(solution_shader.uniform_location("mvp_matrix"), 1, GL_FALSE, (const GLfloat *) &vp_matrix);
+    glPatchParameteri(GL_PATCH_VERTICES, 6);
+    glDrawArrays(GL_PATCHES, 0, data_num_vertices);
+    solution_shader.unbind();
+
+    // Clean up.
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(3, vbos);
 }
 
 void Demo::keyboard_handler(KeyboardEvent e)
@@ -241,13 +356,15 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_B) {
             solver->m_advect = !solver->m_advect;
         }
-        if (e.key.code == KEY_1) {
+        if (e.key.code == KEY_6) {
             solver->set_velocity([&](double x, double y, double z)->vec3 {
                 double r = 0.50;
                 if ((x)*(x) + z*z <= r*r) return 6.7745353*vec3(1,0,1);
                 return vec3(0,0,0);
             });
         }
+        if (e.key.code == KEY_1) render_solution_mode = 0;
+        if (e.key.code == KEY_2) render_solution_mode = 1;
         if (e.key.code == KEY_9) {
             filming = true;
         }
@@ -281,6 +398,7 @@ void Demo::update()
         vec3 u = solver->velocity[e];
         // world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
         paint_velocity(p, u);
+
     }
     #if 0
     for (auto tri : geom->mesh.faces()) {
@@ -345,15 +463,19 @@ void Demo::update()
 
     Face out_face;
     vec3 out_pos;
-    std::tie(out_face, out_pos) = traverse(test_face, c, s);
+    mat3x3 out_matrix;
+    std::tie(out_face, out_pos, out_matrix) = traverse(test_face, c, s, mat3x3::identity());
     world->graphics.paint.sphere(out_pos, 0.03, vec4(1,0.2,0.2,1));
     world->graphics.paint.sphere(eigen_to_vec3(geom->barycenter(out_face)), 0.02, vec4(0.5,1,0.2,1));
+    vec3 transformed = out_matrix * eigen_to_vec3(geom->vector(out_face.halfedge()));
+    world->graphics.paint.line(c+shift, c+shift + transformed, 0.025, vec4(1,0,1,1));
     #endif
 }
 
 
 void Demo::post_render_update()
 {
+    render_solution();
 }
 
 
