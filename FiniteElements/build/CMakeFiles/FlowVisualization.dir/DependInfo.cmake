@@ -1,32 +1,17 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CXX"
-  )
-# The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/lucas/Continuum/FiniteElements/CameraController.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/FlowVisualization.dir/CameraController.cpp.o"
-  "/home/lucas/Continuum/FiniteElements/Filmer.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/FlowVisualization.dir/Filmer.cpp.o"
-  "/home/lucas/Continuum/FiniteElements/FlowVisualization/main.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/FlowVisualization.dir/FlowVisualization/main.cpp.o"
-  "/home/lucas/Continuum/FiniteElements/core.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/FlowVisualization.dir/core.cpp.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
-
-# Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS_CXX
-  "DATA=\"/home/lucas/Continuum/FiniteElements/data/\""
-  "MODELS=\"/home/lucas/Continuum/FiniteElements/models/\""
-  "SHADERS=\"/home/lucas/Continuum/FiniteElements/shaders/\""
   )
 
-# The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../"
-  "/home/lucas/computer_graphics/cg_sandbox/include"
-  "/home/lucas/computer_graphics/cg_sandbox/lib"
-  "/home/lucas/computer_graphics/mesh_processing/include"
-  "../dependencies/triangle"
-  "/home/lucas/computer_graphics/cg_sandbox/dependencies/glfw/include"
-  "/usr/include/eigen3"
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/lucas/Continuum/FiniteElements/CameraController.cpp" "CMakeFiles/FlowVisualization.dir/CameraController.cpp.o" "gcc" "CMakeFiles/FlowVisualization.dir/CameraController.cpp.o.d"
+  "/home/lucas/Continuum/FiniteElements/Filmer.cpp" "CMakeFiles/FlowVisualization.dir/Filmer.cpp.o" "gcc" "CMakeFiles/FlowVisualization.dir/Filmer.cpp.o.d"
+  "/home/lucas/Continuum/FiniteElements/FlowVisualization/main.cpp" "CMakeFiles/FlowVisualization.dir/FlowVisualization/main.cpp.o" "gcc" "CMakeFiles/FlowVisualization.dir/FlowVisualization/main.cpp.o.d"
+  "/home/lucas/Continuum/FiniteElements/core.cpp" "CMakeFiles/FlowVisualization.dir/core.cpp.o" "gcc" "CMakeFiles/FlowVisualization.dir/core.cpp.o.d"
   )
 
 # Targets to which this target links.

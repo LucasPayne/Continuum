@@ -53,13 +53,28 @@ public:
     inline double time() const { return m_time; }
 
     void explicit_advection();
+    void explicit_advection_traversal();
     void explicit_advection_lagrangian();
 
     SurfaceGeometry &geom;
+    
+    // Data for debugging.
+    //--------------------------------------------------------------------------------
+    P2Attachment<vec3> _test_point_1;
+    P2Attachment<vec3> _test_point_2;
+    bool _test_point_1_mode;
+    //--------------------------------------------------------------------------------
 
     // The velocity and pressure are changed during Newton iteration.
     P2Attachment<vec2> velocity;
     P1Attachment<double> pressure;
+
+    // Here for comparison with SurfaceNavierStokes, for debugging.
+    FaceAttachment<vec3> triangle_normal;
+    FaceAttachment<mat3x3> triangle_projection_matrix;
+    P2Attachment<vec3> normal;
+    std::tuple<Face, vec3> traverse(Face tri, vec3 origin, vec3 shift, int depth=0);
+
 
     TimeDependentPlaneVectorField source_function; // Exact function.
 
@@ -67,6 +82,8 @@ public:
 
 
     bool m_use_advection; // for debugging whether advection actually works
+    bool m_advection_traversal; // If true, traverse the mesh to advect the velocity, instead of looking up in a densely sampled grid.
+
     // For Lagrangian advection.
     // The samples are taken by rasterization.
     int velocity_grid_N;

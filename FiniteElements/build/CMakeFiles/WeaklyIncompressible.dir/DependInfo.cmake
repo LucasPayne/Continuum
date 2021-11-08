@@ -1,30 +1,15 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CXX"
-  )
-# The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/lucas/Continuum/FiniteElements/WeaklyIncompressible/WeaklyIncompressible.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.o"
-  "/home/lucas/Continuum/FiniteElements/core.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/WeaklyIncompressible.dir/core.cpp.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
-
-# Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS_CXX
-  "DATA=\"/home/lucas/Continuum/FiniteElements/data/\""
-  "MODELS=\"/home/lucas/Continuum/FiniteElements/models/\""
-  "SHADERS=\"/home/lucas/Continuum/FiniteElements/shaders/\""
   )
 
-# The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../"
-  "/home/lucas/computer_graphics/cg_sandbox/include"
-  "/home/lucas/computer_graphics/cg_sandbox/lib"
-  "/home/lucas/computer_graphics/mesh_processing/include"
-  "../dependencies/triangle"
-  "/home/lucas/computer_graphics/cg_sandbox/dependencies/glfw/include"
-  "/usr/include/eigen3"
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/lucas/Continuum/FiniteElements/WeaklyIncompressible/WeaklyIncompressible.cpp" "CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.o" "gcc" "CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.o.d"
+  "/home/lucas/Continuum/FiniteElements/core.cpp" "CMakeFiles/WeaklyIncompressible.dir/core.cpp.o" "gcc" "CMakeFiles/WeaklyIncompressible.dir/core.cpp.o.d"
   )
 
 # Targets to which this target links.

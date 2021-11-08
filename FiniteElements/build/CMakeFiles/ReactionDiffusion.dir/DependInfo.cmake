@@ -1,32 +1,17 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CXX"
-  )
-# The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/CameraController.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/CameraController.cpp.o"
-  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/ReactionDiffusion.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/ReactionDiffusion.cpp.o"
-  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/demo.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/demo.cpp.o"
-  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/main.cpp" "/home/lucas/Continuum/FiniteElements/build/CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
-
-# Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS_CXX
-  "DATA=\"/home/lucas/Continuum/FiniteElements/data/\""
-  "MODELS=\"/home/lucas/Continuum/FiniteElements/models/\""
-  "SHADERS=\"/home/lucas/Continuum/FiniteElements/shaders/\""
   )
 
-# The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../"
-  "/home/lucas/computer_graphics/cg_sandbox/include"
-  "/home/lucas/computer_graphics/cg_sandbox/lib"
-  "/home/lucas/computer_graphics/mesh_processing/include"
-  "../dependencies/triangle"
-  "/home/lucas/computer_graphics/cg_sandbox/dependencies/glfw/include"
-  "/usr/include/eigen3"
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/CameraController.cpp" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/CameraController.cpp.o" "gcc" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/CameraController.cpp.o.d"
+  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/ReactionDiffusion.cpp" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/ReactionDiffusion.cpp.o" "gcc" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/ReactionDiffusion.cpp.o.d"
+  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/demo.cpp" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/demo.cpp.o" "gcc" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/demo.cpp.o.d"
+  "/home/lucas/Continuum/FiniteElements/ReactionDiffusion/main.cpp" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.o" "gcc" "CMakeFiles/ReactionDiffusion.dir/ReactionDiffusion/main.cpp.o.d"
   )
 
 # Targets to which this target links.

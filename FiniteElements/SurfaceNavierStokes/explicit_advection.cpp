@@ -151,7 +151,6 @@ void SurfaceNavierStokesSolver::explicit_advection()
             // std::cout << shift << "\n";getchar();
     
 	    _test_point_1[v] = shift;
-	    _test_point_2[v] = eigen_to_vec3(geom.barycenter(tri));
             if (vec3::dot(shift, perp(p2 - p1)) <= 0 &&
                     vec3::dot(shift, perp(p3 - p1)) >= 0) {
                 double fix = 0.001;
@@ -182,6 +181,7 @@ void SurfaceNavierStokesSolver::explicit_advection()
                 y /= w;
                 z /= w;
 	        _test_point_1[v] = ps[0]*x + ps[1]*y + ps[2]*z;
+	        _test_point_2[v] = eigen_to_vec3(geom.barycenter(out_face));
                 vec3 val = vec3(0,0,0);
 
                 P2Element elements[6] = {vs[0], vs[1], vs[2], edges[0], edges[1], edges[2]};
@@ -211,7 +211,6 @@ void SurfaceNavierStokesSolver::explicit_advection()
         } else {
             tri = edge.a().face();
         }
-        _test_point_2[edge] = eigen_to_vec3(geom.barycenter(tri));
 
         auto v1 = tri.halfedge().vertex();
         auto v2 = tri.halfedge().next().vertex();
@@ -254,6 +253,7 @@ void SurfaceNavierStokesSolver::explicit_advection()
         y /= w;
         z /= w;
 	_test_point_1[edge] = ps[0]*x + ps[1]*y + ps[2]*z;
+        _test_point_2[edge] = eigen_to_vec3(geom.barycenter(out_face));
         vec3 val = vec3(0,0,0);
 
 	P2Element elements[6] = {vs[0], vs[1], vs[2], edges[0], edges[1], edges[2]};

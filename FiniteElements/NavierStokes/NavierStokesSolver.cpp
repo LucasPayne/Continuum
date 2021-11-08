@@ -13,8 +13,17 @@
 --------------------------------------------------------------------------------*/
 NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic_viscosity) :
     geom{_geom},
+
+    _test_point_1(_geom.mesh),
+    _test_point_2(_geom.mesh),
+
     velocity(_geom.mesh),
     pressure(_geom.mesh),
+
+    triangle_normal(_geom.mesh),
+    triangle_projection_matrix(_geom.mesh),
+    normal(_geom.mesh),
+
     velocity_prev(_geom.mesh),
     pressure_prev(_geom.mesh),
     velocity_node_indices(_geom.mesh),
@@ -26,6 +35,8 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
     m_kinematic_viscosity = _kinematic_viscosity;
     m_time = 0.;
     m_use_advection = true;
+    m_advection_traversal = true;
+    _test_point_1_mode = 0;
 
     m_num_velocity_variation_nodes = geom.mesh.num_interior_vertices() + geom.mesh.num_interior_edges();
     m_num_pressure_variation_nodes = geom.mesh.num_vertices();
@@ -76,6 +87,40 @@ NavierStokesSolver::NavierStokesSolver(SurfaceGeometry &_geom, double _kinematic
     }
     m_velocity_pressure_vector = Eigen::VectorXd(m_system_N);
     for (int i = 0; i < m_system_N; i++) m_velocity_pressure_vector[i] = 0.;
+    
+    // Set up surface normal data.
+    // --- Here for comparison with SurfaceNavierStokes, for debugging.
+    P2Attachment<int> num_tris(geom.mesh);
+    for (auto v : geom.mesh.vertices()) {
+        num_tris[v] = 0;
+        normal[v] = vec3(0,0,0);
+    }
+    for (auto e : geom.mesh.edges()) {
+        num_tris[e] = 0;
+        normal[e] = vec3(0,0,0);
+    }
+    for (auto tri : geom.mesh.faces()) {
+        vec3 n = eigen_to_vec3(geom.triangle_normal(tri));
+        triangle_normal[tri] = n;
+        triangle_projection_matrix[tri] = mat3x3::identity() - vec3::outer(n, n);
+        auto start = tri.halfedge();
+        auto he = start;
+        do {
+            normal[he.vertex()] += n;
+            num_tris[he.vertex()] += 1;
+            normal[he.edge()] += n;
+            num_tris[he.edge()] += 1;
+            he = he.next();
+        } while (he != start);
+    }
+    for (auto v : geom.mesh.vertices()) {
+        normal[v] /= num_tris[v];
+    }
+    for (auto e : geom.mesh.edges()) {
+        normal[e] /= num_tris[e];
+    }
+    
+
 }
 
 /*--------------------------------------------------------------------------------
@@ -126,8 +171,10 @@ void NavierStokesSolver::start_time_step(double delta_time)
         m_solving = true;
     }
     // Explicit advection.
-    if (m_use_advection) explicit_advection_lagrangian();
-    // if (m_use_advection) explicit_advection();
+    std::cout << "Advecting\n";
+    if (m_use_advection) {
+        explicit_advection();
+    }
 
     // Initialize the previous state.
     // (The start of the Newton iteration is at the previous state.)

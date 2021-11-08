@@ -131,8 +131,8 @@ void Demo::keyboard_handler(KeyboardEvent e)
     if (e.action == KEYBOARD_PRESS) {
         if (e.key.code == KEY_Q) exit(EXIT_SUCCESS);
     
-        if (e.key.code == KEY_P) {
-            solver->explicit_advection_lagrangian();
+        if (e.key.code == KEY_0) {
+            solver->explicit_advection();
         }
 
         // One iteration.
@@ -144,6 +144,7 @@ void Demo::keyboard_handler(KeyboardEvent e)
         // Take a screenshot.
         if (e.key.code == KEY_T) {
             take_screenshot();
+            film_frame += 1;
         }
         // Take a sequence of screenshots, to be converted to a video.
         if (e.key.code == KEY_9) {
@@ -185,12 +186,18 @@ void Demo::keyboard_handler(KeyboardEvent e)
         if (e.key.code == KEY_4) {
             solver->set_velocity([&](double x, double y)->vec2 {
                 // return 0.06*vec2(exp(x), exp(3*y+x));
-                const double r = 0.25;
-                if ((vec2(x,y) - source_position).length() <= r) {
-                    return vec2(0, 100);
+                const double r = 0.5;
+                if (vec2(x,y).length() <= r) {
+                    return vec2(3000, 3000);
                 }
                 return vec2(0,0);
             });
+        }
+        if (e.key.code == KEY_5) {
+            solver->m_advection_traversal = !solver->m_advection_traversal;
+        }
+        if (e.key.code == KEY_6) {
+            solver->_test_point_1_mode = (solver->_test_point_1_mode + 1) % 2;
         }
     }
 }
@@ -388,6 +395,7 @@ void Demo::render_solution_texture()
             solver->velocity_grid_samples[1024*j + i] = vec2(velocity_x, velocity_y);
         }
     }
+    std::cout << "Uploaded solution texture.\n";
 }
 
 
@@ -428,6 +436,7 @@ void Demo::post_render_update()
     // render solution texture
     render_solution_texture();
     
+    #if 0
     // Draw velocity field.
     // Also draw source velocity field.
     if (show_vector_field) {
@@ -477,7 +486,51 @@ void Demo::post_render_update()
             }
         }
     } //endif show_vector_field
+    #endif
 
+    const vec3 shift = vec3(0,0.001,0);
+    auto paint_velocity = [&](vec3 p, vec3 u) {
+        const float rho = 1;
+        float len = 1 - exp(-rho*sqrt(u.x()*u.x() + u.z()*u.z()));
+	len *= 0.035;
+        world->graphics.paint.line(p + shift, p + shift + len*u/u.length(), 0.001, vec4(0,0,1,1));
+    };
+
+    for (auto v : geom->mesh.vertices()) {
+        vec3 p = eigen_to_vec3(geom->position[v]);
+        vec3 u = vec3(solver->velocity[v].x(), 0, solver->velocity[v].y());
+        // world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
+        paint_velocity(p, u);
+    }
+    for (auto e : geom->mesh.edges()) {
+        vec3 a = eigen_to_vec3(geom->position[e.a().vertex()]);
+        vec3 b = eigen_to_vec3(geom->position[e.b().vertex()]);
+        // world->graphics.paint.line(a,b,0.001,vec4(0,0,0,1));
+        vec3 p = 0.5*a + 0.5*b;
+        vec3 u = vec3(solver->velocity[e].x(), 0, solver->velocity[e].y());
+        // world->graphics.paint.sphere(p, 0.01, vec4(0,0,1,1));
+        paint_velocity(p, u);
+    }
+
+    #if 1
+    for (auto v : geom->mesh.vertices()) {
+        if (v.on_boundary()) continue;
+        vec3 c = eigen_to_vec3(geom->position[v]);
+        vec3 r =  solver->_test_point_1[v];
+        //world->graphics.paint.line(c,c+100*(r-c),0.005,vec4(0,0,0,1));
+        world->graphics.paint.line(c+shift,r+shift,0.005,vec4(1,0,0,1));
+        world->graphics.paint.sphere(r, 0.006, solver->_test_point_1_mode==0 ? vec4(0,0,0,1) : vec4(1,0.45,0.2,1));
+        // world->graphics.paint.line(c+shift,solver->_test_point_2[v]+shift,0.001,vec4(0,1,0,1));
+    }
+    for (auto e : geom->mesh.edges()) {
+        if (e.on_boundary()) continue;
+        vec3 c = eigen_to_vec3(geom->midpoint(e));
+        vec3 r =  solver->_test_point_1[e];
+        world->graphics.paint.line(c+shift,r+shift,0.005,vec4(1,0,0,1));
+        world->graphics.paint.sphere(r, 0.006, solver->_test_point_1_mode==0 ? vec4(0,0,0,1) : vec4(1,0.45,0.2,1));
+        // world->graphics.paint.line(c+shift,solver->_test_point_2[e]+shift,0.005,vec4(0.5,1,0,1));
+    }
+    #endif
 
 }
 
@@ -501,6 +554,7 @@ void Demo::mouse_handler(MouseEvent e)
             }
         }
     }
+
 }
 
 void Demo::take_screenshot()

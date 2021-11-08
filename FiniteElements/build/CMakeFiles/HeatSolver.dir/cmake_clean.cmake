@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/HeatSolver.dir/HeatSolver.cpp.o"
+  "CMakeFiles/HeatSolver.dir/HeatSolver.cpp.o.d"
   "HeatSolver"
   "HeatSolver.pdb"
 )

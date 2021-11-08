@@ -1,2 +1,2 @@
-/usr/bin/ar qc libtriangle.a  CMakeFiles/triangle.dir/triangle/triangle.c.o
+/usr/bin/ar qc libtriangle.a CMakeFiles/triangle.dir/triangle/triangle.c.o
 /usr/bin/ranlib libtriangle.a

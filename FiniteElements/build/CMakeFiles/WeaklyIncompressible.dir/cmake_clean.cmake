@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.o"
+  "CMakeFiles/WeaklyIncompressible.dir/WeaklyIncompressible/WeaklyIncompressible.cpp.o.d"
   "CMakeFiles/WeaklyIncompressible.dir/core.cpp.o"
+  "CMakeFiles/WeaklyIncompressible.dir/core.cpp.o.d"
   "WeaklyIncompressible"
   "WeaklyIncompressible.pdb"
 )

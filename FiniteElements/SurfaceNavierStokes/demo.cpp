@@ -120,7 +120,7 @@ void Demo::init()
         // vec2 obstruction_position = vec2(0,0);
         // geom = square_minus_circle(0.18, theta0, 1, 1, 60, true, obstruction_position, false);
 
-        geom = square_mesh(15);
+        geom = square_mesh(25);
 
     // for (auto v : geom->mesh.vertices()) {
     //     vec3 p = eigen_to_vec3(geom->position[v]);
@@ -243,7 +243,7 @@ void Demo::update()
         //world->graphics.paint.line(c,c+100*(r-c),0.005,vec4(0,0,0,1));
         world->graphics.paint.line(c+shift,r+shift,0.005,vec4(1,0,0,1));
         world->graphics.paint.sphere(r, 0.006, vec4(0,0,0,1));
-        // world->graphics.paint.line(c,solver->_test_point_2[v],0.005,vec4(1,0,0,1));
+        world->graphics.paint.line(c+shift,solver->_test_point_2[v]+shift,0.001,vec4(0,1,0,1));
     }
     for (auto e : geom->mesh.edges()) {
         if (e.on_boundary()) continue;
@@ -251,7 +251,7 @@ void Demo::update()
         vec3 r =  solver->_test_point_1[e];
         world->graphics.paint.line(c+shift,r+shift,0.005,vec4(1,0,0,1));
         world->graphics.paint.sphere(r, 0.006, vec4(0,0,0,1));
-        // world->graphics.paint.line(c,solver->_test_point_2[e],0.005,vec4(1,0,0,1));
+        world->graphics.paint.line(c+shift,solver->_test_point_2[e]+shift,0.005,vec4(0.5,1,0,1));
     }
     #endif
 
