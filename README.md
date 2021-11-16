@@ -1,6 +1,6 @@
 ## Continuum
 ------------------------
-This contains my undergraduate honours project report.
+My undergraduate honours project report, completed November 2021.
 The purpose of this project was to learn some continuum mechanics and fluid mechanics, and to implement numerical finite element
 and finite volume solvers. The main files are
 
