@@ -1,0 +1,50 @@
+import sympy as sym
+
+# Helper function to convert a barycentric index to an index into
+# a flat array.
+def barycentric_index_to_linear(i,j,k):
+    assert(i+j+k == 2)
+    ...
+
+# Define algebraic symbols for the variables.
+x,y,z = sym.symbols("x y z")
+
+# The reference triangle has vertices $v,v^\pr,v^\ppr$.
+# We define $K_1,K_2,K_3$ by
+#     $K_1 = (v - v^\ppr)^\perp$,
+#     $K_2 = (v^\pr - v)^\perp$,
+#     $K_3 = (v^\ppr - v^\pr)^\perp$.
+# $K_1$ and $K_2$ are the columns of the matrix $K$
+# (which is the inverse transpose Jacobian without the constant term).
+# while $K_3 = -K_1-K_2$.
+K1,K2,K3 = sym.symbols("K1 K2 K3")
+
+# Define the quadratic basis functions $\Phi_{ijk}$
+# given in barycentric coordinates (x,y,z).
+# The order with respect to barycentric indices is $200,020,002, 110,011,101$.
+nodal_basis_functions_barycentric = [
+    x*(1 - 2*y - 2*z),
+    y*(1 - 2*z - 2*x),
+    z*(1 - 2*x - 2*y),
+    4*x*y,
+    4*y*z,
+    4*z*x
+]
+# Map the nodal basis functions to the reference triangle
+# by substituting $z$ with $1-x-y$.
+# These remapped basis functions will be denoted by $\Phi_{ijk}^\reftri$.
+nodal_basis_functions = [p.subs(z,1-x-y).expand() for p in nodal_basis_functions_barycentric]
+# Compute the gradients $\nabla\Phi_{ijk}^\reftri$.
+nodal_basis_gradients = [(sym.diff(p, x), sym.diff(p, y)) for p in nodal_basis_functions]
+
+# Provide a function to compute the integral
+#     $\int_\reftri (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,d\hat{x}$
+#     $= \int_{x=0}^{x=1}\int_{y=0}^{y=1-x} (K\nabla\Phi^\reftri_{abc})\cdot(K\nabla\Phi^\reftri_{ijk})\,dy\,dx.$
+def integrate_gradients(a,b,c, i,j,k):
+    grad1 = nodal_basis_gradients[barycentric_index_to_linear(a,b,c)]
+    grad2 = nodal_basis_gradients[barycentric_index_to_linear(i,j,k)]
+    f = (K1*grad1[0] + K2*grad1[1])*(K1*grad2[0] + K2*grad2[1])
+    f_dy = sym.integrate(f, (y, 0,1-x))
+    f_dy_dx = sym.integrate(f_dy, (x, 0,1))
+    # Print the result.
+    print("{}{}{},{}{}{}:".format(a,b,c,i,j,k), f_dy_dx.simplify().subs(-K1-K2,K3))

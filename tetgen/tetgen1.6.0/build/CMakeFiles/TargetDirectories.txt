@@ -1,4 +1,0 @@
-/home/lucas/Continuum/tetgen/tetgen1.6.0/build/CMakeFiles/rebuild_cache.dir
-/home/lucas/Continuum/tetgen/tetgen1.6.0/build/CMakeFiles/edit_cache.dir
-/home/lucas/Continuum/tetgen/tetgen1.6.0/build/CMakeFiles/tetgen.dir
-/home/lucas/Continuum/tetgen/tetgen1.6.0/build/CMakeFiles/tet.dir

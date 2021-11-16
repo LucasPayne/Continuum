@@ -1,0 +1,419 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{cancel}
+\usetikzlibrary{arrows.meta, positioning}
+\tikzset{%
+    block/.style = {draw=cyan,rectangle,thick,
+        minimum height=2em, text width=25em, align=center},
+    line/.style = {draw=cyan, line width=3pt, 
+        -{Triangle[length=6pt, width=8pt]}, shorten >=2pt, shorten <=2pt},
+}
+
+
+\begin{document}
+\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+{\large Continuum mechanics}
+\vskip 0.2in
+\noindent
+In a flow problem on a 2D domain {\Large $\Omega$}, the primary physical variable is the velocity field $\text{\Large $u : \Omega \rightarrow \mathbb{R}^2$}$.
+This field evolves in accord with continuum versions of Newton's laws of motion.
+The Cauchy momentum equation is the {\large $F = ma$} of continuum mechanics. It can be stated as an integral conservation law quantified
+over all pieces of space, $\Omega_0 \subset $ {\Large $\Omega$}:
+\begin{align*}
+\frac{d}{dt} \int_{\Omega_0(t)} \rho u(\hat{x}) \,d\hat{x} &= \int_{\Omega_0}F(\hat{x})\,d\hat{x} + \oint_{\partial \Omega_0} \sigma(\hat{x})\cdot\hat{n}\,d\hat{x}.\\
+\end{align*}
+This says that the rate of change of total momentum (pointwise $\rho u$) in the piece $\Omega_0$, as it moves with the material,
+is accounted for by body forces (pointwise $F$) and the \textit{tractions} (pointwise $\sigma\cdot\hat{n}$ on the boundary of the piece of space),
+which measure internal forces due to the interaction of nearby material elements. $\sigma$, a $2\times 2$ matrix for each point in $\Omega$, is the \textit{Cauchy stress tensor}, and its specification
+depends on the material being modelled. Conservation of mass is written as
+\begin{align*}
+\frac{d}{dt} \int_{\Omega_0(t)} \rho(\hat{x})\,d\hat{x} = 0,
+\end{align*}
+which says that the a small piece $\Omega_0$, as it moves with the material, has constant total mass.
+
+
+\newpage
+\vskip 0.2in
+{\large The Navier-Stokes equations}
+\vskip 0.2in
+\noindent
+The incompressible Navier-Stokes equations are a Cauchy momentum equation ($F = ma$),
+along with a stronger version of mass conservation called incompressibility (conservation of volume):
+    $$\oint_{\partial\Omega_0}u(\hat{x})\cdot\hat{n}\,d\hat{x} = 0 \text{\quad\quad for all pieces $\Omega_0 \subset \Omega$}.$$
+These equations model an incompressible Newtonian fluid
+with traction forces $\sigma\cdot\hat{n}$ being decomposable into two parts:
+\begin{itemize}
+    \item A viscous force (which causes adjacent particles
+in the fluid to tend to the same speed, like a ``momentum diffusion''),
+    \item and an isotropic force which pushes
+    small pieces of the material apart from each other, in order for the flow to obey the incompressibility constraint.
+\end{itemize}
+This second force is due to the pressure field
+$\text{\Large $p : \Omega \rightarrow \mathbb{R}$}$,
+which is a Lagrange multiplier
+for the constraint. The Navier-Stokes equations, in integral ``primal-dual'' form, to be solved for both
+$u$ and the Lagrange multiplier $p$, are
+\begin{equation}\label{navier_stokes}
+\begin{split}
+    \frac{d}{dt} \int_{\Omega_0(t)} \rho u(\hat{x}) \,d\hat{x} &=
+        \int_{\Omega_0}F(\hat{x})\,d\hat{x} + \oint_{\partial \Omega_0} \mu\nabla u(\hat{x})\cdot \hat{n}\,d\hat{x}
+            -\oint_{\partial\Omega_0} p(\hat{x})\hat{n}\,dx\\
+    \text{and\quad} \oint_{\partial\Omega_0}u(\hat{x})\cdot\hat{n}\,d\hat{x} &= 0 \text{\quad\quad for all pieces $\Omega_0 \subset \Omega$}.
+\end{split}
+\end{equation}
+$\text{\huge $\mu$}$ is the dynamic viscosity, which controls the momentum diffusion force.
+
+\newpage
+\vskip 0.2in
+{\large Steady flow and the steady Stokes equations}
+\vskip 0.2in
+A steady flow is one for which the velocity $u$ does not change with time. This means that
+a particle moving through the fluid will always follow the same path.
+The left-hand side of the Navier-Stokes equations \eqref{navier_stokes} describes the change of momentum in the piece $\Omega_0$ as it moves
+with the material. The \textit{Reynolds transport theorem} rephrases this as a change of momentum internal to the piece $\Omega_0$,
+if it were to stay still, and the total momentum that the piece loses or gains at the boundary as it flows: \eqref{navier_stokes}
+is rewritten as
+\begin{equation*}
+\cancel{\int_{\Omega_0} \rho \frac{\partial u(\hat{x})}{\partial t}\,d\hat{x}}
++ \oint_{\partial \Omega_0}\rho u(u\cdot \hat{n})\,d\hat{x}
+      = \int_{\Omega_0}F(\hat{x})\,d\hat{x} + \oint_{\partial \Omega_0} \mu\nabla u(\hat{x})\cdot \hat{n}\,d\hat{x}
+            -\oint_{\partial\Omega_0} p\hat{n}\,dx\\
+\end{equation*}
+for which the time-dependent component is set to zero, resulting in the steady Navier-Stokes equations. There is still a non-linear term on
+the left-hand side, describing the advection (the fluid is still moving, even though it is steady):
+$$
+\text{\Large Non-linear!}\longrightarrow
+\oint_{\partial\Omega_0}\rho u(u\cdot \hat{n})\,d\hat{x} \longleftarrow \text{\Large Non-linear!}
+$$
+If this term is ignored, the resulting equations are linear and model a steady-state flow for which there is a well-defined velocity,
+but the material doesn't ``actually move'' --- this turns out to be a useful approximation if the \textit{Reynolds number} is small:
+    {\large $$Re = \frac{\rho \norm{u} L}{\mu} \ll 1 \quad\Longrightarrow\quad \text{momentum diffusion} \gg \text{momentum advection}.$$}
+The result is the steady Stokes equations:
+\begin{equation}\label{steady_stokes}
+\begin{split}
+        -\oint_{\partial \Omega_0} \mu\nabla u(\hat{x})\cdot \hat{n}\,d\hat{x}
+            &= \int_{\Omega_0}F(\hat{x})\,d\hat{x}
+            -\oint_{\partial\Omega_0} p(\hat{x})\hat{n}\,dx\\
+    \text{and\quad} \oint_{\partial\Omega_0}u(\hat{x})\cdot\hat{n}\,d\hat{x} &= 0 \text{\quad\quad for all pieces $\Omega_0 \subset \Omega$}.
+\end{split}
+\end{equation}
+
+\newpage
+\vskip 0.2in
+{\large The finite element method for flow problems: A network of pieces of space}
+\vskip 0.2in
+Continuum mechanics provides the foundation for understanding of fluid motion, and the Navier-Stokes equations
+are the primary model for the prediction of fluid behaviour in engineering.
+The domain and initial/boundary conditions can be arbitrarily complex. For example, fluid motion is often simulated
+through a digital surface model of a real-world object or system created in computer-aided design software.
+On the other side of the coin, fluid models are very often used in modern film, both live action and animated,
+and all relevant geometry can be adjusted by artists for a desired visual effect.
+
+In applications, the Navier-Stokes equations are primarily
+solved on a computer, and a computer works with both finite data and finite precision.
+Galerkin methods 
+are particularly amenable to computer implementation, so much so that the whole process of geometric modelling, boundary condition handling,
+residual minimisation, and solution reconstruction, can be automated. The finite volume method and finite element method are
+
+\newpage
+\vskip 0.2in
+{\large Solving the Stokes equations numerically}
+\vskip 0.2in
+\noindent
+The solution {\large $(u,p)$} has infinite degrees of freedom.
+The conservation laws are quantified over arbitrary pieces of the domain,
+giving an infinite number of residual equations. These residuals can be thought of
+as ``trials'', which check if a supposed solution satisfies the conservation laws.
+Why not choose finite degrees of freedom for approximate {\large $(\tilde{u}, \tilde{p})$},
+and the same number of trial equations to go with them?
+Suppose $\tilde{u} \in \Phi^u$ and $\tilde{p} \in \Phi^p$, where
+    $$\Phi^u = \text{span}\left\{\phi^u_1,\cdots,\phi^u_{2n_u}\right\},\quad 
+        \Phi^p = \text{span}\left\{\phi^p_1,\cdots,\phi^p_{n_p}\right\}$$
+are, respectively, spaces of vector velocity fields and of scalar pressure fields, both compatible with the integral equations.
+% A finite number of pieces $\Omega^{u}_1,\cdots,\Omega^u_{n_u}$, which might tessellate the interior of $\Omega$, can be chosen.
+% If the residual for the linearized momentum equation is zero for all of these, this means ``momentum is approximately conserved''.
+% Another finite number of pieces $\Omega^{p}_1,\cdots,\Omega^p_{n_p}$ could also be chosen to check that ``$\tilde{u}$ is approximately
+% incompressible''. This is called a finite volume method, and is a good idea for conservation laws such as Poisson's equation)
+% but a pure FVM, as just described, turns out not to lead to a stable method for the Stokes equations.
+% A finite number of pieces $\Omega_0$ could be chosen.
+% If the residual for the linearized momentum equation is zero for all of these,
+% and the residual for the incompressibility constraint is zero, this can be taken to mean ``momentum is approximately conserved'',
+% and ``$\tilde{u}$ is approximately non-compressing''.
+% This is called a finite volume method, and is a good idea for conservation laws such as Poisson's equation.
+% A pure FVM, as just described, turns out not to lead to a stable method for the Stokes equations.
+In an attempt to find an alternative finite set of equations, the Stokes equations can be written in the \textit{weak form}
+\begin{equation}\label{steady_stokes_weak_form}
+\begin{split}
+        \int_{\Omega} \mu\nabla u(\hat{x})\cdot \nabla\psi^u(\hat{x})\,d\hat{x}
+            &= \int_{\Omega}F(\hat{x})\psi^u\,d\hat{x}
+            +\int_{\Omega} p(\hat{x})\nabla\cdot\psi^u\,dx \text{\quad for all $\psi^u \in \Psi^u$}\\
+    \text{and\quad} -\int_{\Omega}u(\hat{x})\cdot\nabla\psi^p\,d\hat{x} &= 0 \text{\quad for all $\psi^p \in \Psi^p$}.
+\end{split}
+\end{equation}
+This is a sort of ``rearrangement'' of the infinite system of equations which was given in terms of fluxes
+(analogous to a rebasis of a linear system).
+For the continuous PDE, the ``trial spaces'' $\Psi^u$ and $\Psi^p$ are certain generalised function spaces.
+For the discretized method, why not choose $\Psi^u = \Phi^u$ and $\Psi^p = \Phi^p$?
+
+
+\newpage
+\vskip 0.2in
+{\large A mixed finite element method}
+\vskip 0.2in
+The Stokes flow problem at the top of this poster is a Dirichlet boundary value problem, with a no-slip condition ($u = (0,0)$) on the top
+and bottom walls, and unit-speed in-flow and out-flow $u = (-1,0)$ at the left and right boundaries. This approximates the effect of motion
+($\dot{x} = 1$)
+of the obstruction through an infinite cylinder, as long as the boundaries are far enough away.
+
+This problem has been solved with a \textit{finite element method}, effectively by choosing some discrete function spaces, plugging in approximations to the weak
+form of the Stokes equations, then rearranging everything into a large, sparse linear system.
+In a finite element method,
+``test spaces'' $\Phi^\cdot$ and ``trial spaces'' $\Psi^\cdot$ are constructed as the spans of basis functions built on a domain tessellation
+(such as a triangulating mesh).
+These basis functions are zero except on a small number of triangles localised around some point on the mesh, a property which leads to
+sparsity of the resulting matrix and right-hand side.
+
+Let the $\Psi$ spaces be equal to the $\Phi$ spaces (called a ``Bubnov--Galerkin method'').
+The velocity space $\Phi^u$, for simplicity, can be a product space of scalar function spaces: $\Phi^u = \Phi^{u,s} \times \Phi^{u,s}$,
+with basis functions
+    $$\Phi^u = \text{span}\left\{\phi^u_{1x},\phi^u_{1y},\cdots,\phi^u_{n_ux},\phi^u_{n_uy}\right\}.$$
+
+The boundary values can be accounted for by letting $\tilde{u}_\Gamma$ be some arbitrary approximating function which satisfies the boundary condition,
+and restricting $\Phi^u$ to be zero on the boundary. The resulting linear system is the one above.
+\begin{equation}
+\begin{split}
+    \sum_{i=1}^{n_u}\left[
+        u_{ix}\int_\Omega\mu\nabla\phi_{ix}^u:\nabla\psi_j^u\,d\hat{x}
+        +
+        u_{iy}\int_\Omega\mu\nabla\phi_{iy}^u:\nabla\psi_j^u\,d\hat{x}
+    \right]
+    +
+    \sum_{i=1}^{n_p} p_i\int_\Omega \phi_i^p\nabla\cdot\psi^u_j\,d\hat{x}
+    =
+    \int_\Omega\nabla\tilde{u}_\Gamma:\nabla\psi_j^u\,d\hat{x},\\
+    \text{\quad for $j=1,\cdots,2n_u$}.\\
+    \sum_{i=1}^{n_u}\left[
+        u_{ix}\int_\Omega\psi_k^p\nabla\cdot\phi_{ix}^u\,d\hat{x}
+        +
+        u_{iy}\int_\Omega\psi_k^p\nabla\cdot\phi_{iy}^u\,d\hat{x}
+    \right]
+    =
+    \int_\Omega\psi_k^p\nabla\cdot\tilde{u}_\Gamma\,d\hat{x},\\
+    \text{\quad for $k=1,\cdots,n_p$}.\\
+\end{split}
+\end{equation}
+Since pressure is defined up to a constant, this linear system will have at most rank $2n_u + p_n - 1$,
+but, if it is well-formed, it can be solved in the least-squares sense for a valid solution.
+This is a \textit{mixed finite element method}, as the solution is solved for a function in a ``mixed finite element space'' $\Phi^u \times \Phi^p$.
+This method is also an instance of a primal-dual method, as the mixed space is introduced in order to approximate the primal variable $u$
+and the Lagrange multiplier $p$ simultaneously.
+
+
+\newpage
+\vskip 0.2in
+{\large Taylor-Hood mixed finite elements and implementation}
+\vskip 0.2in
+One possible stable finite element scheme uses piecewise quadratic velocity fields
+and piecewise linear pressure fields, called \textit{Taylor-Hood elements}.
+The velocity field is sampled at midpoints of a triangulation as well as at vertices.
+In a routine manner, the linear system is calculated by traversing a mesh data structure to find
+overlapping domains (as each basis function has compact support), separating the integrals into polynomial integrals over triangles,
+performing a change of variables to a ``reference triangle'', and analytically integrating over each triangle.
+Once the sparse linear system is formed, it is sent to a sparse linear solver.
+
+
+\newpage
+\begin{align*}
+    \tilde{p}\\
+    \tilde{u}_x\\
+    \tilde{u}_y
+\end{align*}
+
+
+\begin{tikzpicture}[node distance = 2cm, auto] 
+    \node [block] (init) {
+\begin{center}
+The Cauchy momentum equation is the $F = ma$ of continuum mechanics. It is an integral conservation law
+\end{center}
+\begin{align*}
+\frac{d}{dt} \int_{\Omega_0(t)} \rho u \,d\hat{x} &= \int_{\Omega_0}\rho g\,d\hat{x} + \oint_{\partial \Omega_0} \sigma\hat{n}\,d\hat{x}\\
+\end{align*}
+\begin{center}
+Conservation of mass an incompressibility
+\begin{align*}
+\nabla\cdot u = 0.
+\end{align*}
+\end{center}
+}; 
+    \node [block, below=30pt of init] (expert) {
+\begin{equation*}
+\begin{split}
+    \sum_{i=1}^{n_u}\left[
+        u_{ix}\int_\Omega\mu\nabla\phi_{ix}^u:\nabla\psi_j^u\,d\hat{x}
+        +
+        u_{iy}\int_\Omega\mu\nabla\phi_{iy}^u:\nabla\psi_j^u\,d\hat{x}
+    \right]
+    +
+    \sum_{i=1}^{n_p} p_i\int_\Omega \phi_i^p\nabla\cdot\psi^u_j\,d\hat{x}
+    =
+    \int_\Omega\nabla\tilde{u}_\Gamma:\nabla\psi_j^u\,d\hat{x},\\
+    \text{\quad for $j=1,\cdots,2n_u$}.\\
+    \sum_{i=1}^{n_u}\left[
+        u_{ix}\int_\Omega\psi_k^p\nabla\cdot\phi_{ix}^u\,d\hat{x}
+        +
+        u_{iy}\int_\Omega\psi_k^p\nabla\cdot\phi_{iy}^u\,d\hat{x}
+    \right]
+    =
+    \int_\Omega\psi_k^p\nabla\cdot\tilde{u}_\Gamma\,d\hat{x},\\
+    \text{\quad for $k=1,\cdots,n_p$}.\\
+\end{split}
+\end{equation*}
+}; 
+    \path [line] (init) -- (expert); 
+    \node [block, below=30pt of expert] (third) {
+\begin{equation*}
+\begin{split}
+        -\oint_{\partial \Omega_0} \mu\nabla u(\hat{x})\cdot \hat{n}\,d\hat{x}
+            &= \int_{\Omega_0}F(\hat{x})\,d\hat{x}
+            -\oint_{\partial\Omega_0} p(\hat{x})\hat{n}\,dx\\
+    \text{and\quad} \oint_{\partial\Omega_0}u(\hat{x})\cdot\hat{n}\,d\hat{x} &= 0 \text{\quad\quad for all pieces $\Omega_0 \subset \Omega$}.
+\end{split}
+\end{equation*}
+\vskip 0.02in
+.
+}; 
+    \path [line] ([xshift=6em]expert.south) -- ([xshift=6em]third.north); 
+    \node [block, below=70pt of third] (fourth) {fourth}; 
+    \path [line] (third.south) -- (fourth.north); 
+\end{tikzpicture}
+
+
+\newpage
+214 vertices, 334 triangles.
+
+$1361 \times 1361$ system with 1852321 entries.
+
+12120 non-zeroes, fill $\sim 0.0065$.
+
+Reconstructed velocity.
+
+Mesh traversal and sparse matrix assembly.
+
+Sparse solve for coefficients of quadratic basis functions.
+
+Triangle mesh generation.
+
+Input: Domain $\Omega$, boundary condition $u_\Gamma$.
+
+
+$$
+\left\{
+\begin{array}{c}
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{array}
+\right\}
+$$
+
+
+
+$$w$$
+$$h$$
+$$\propto \nabla \phi_1$$
+
+Mixed Voronoi cell $\Omega_j$
+
+Circumcenters pulled back to the opposite midpoints
+
+$$\frac{\text{Area}(T_1)}{4} + \frac{\text{Area}(T_1)}{4}$$
+
+$$m_1 \quad m_2 \quad c$$
+
+$$\frac{\text{Area}(T_2)}{4} + \frac{\norm{(m_1 - m_2)\times (c - m_1)}}{2}$$
+
+\begin{align*}
+& 0.0292\\
+& 0.0121\\
+& 0.0039\\
+& 0.0012
+% 2 1.1035532951 0.1696321219
+% 3 0.7419784069 0.0292010531
+% 4 0.5591734052 0.0192608777
+% 5 0.4487308264 0.0120403590
+% 6 0.3747550249 0.0083531048
+% 7 0.3217325211 0.0061530401
+% 8 0.2818628550 0.0047695236
+% 9 0.2507884502 0.0038741885
+% 10 0.2258879989 0.0032390396
+% 11 0.2054873407 0.0027596513
+% 12 0.1884671003 0.0023931381
+% 13 0.1740513444 0.0021153116
+% 14 0.1616854221 0.0018946256
+% 15 0.1509592384 0.0017117159
+% 16 0.1415692866 0.0015590886
+% 17 0.1332777292 0.0014328429
+% 18 0.1259050518 0.0013274478
+% 19 0.1193039417 0.0012351761
+% 20 0.1133610904 0.0011533984
+% 21 0.1079848558 0.0010842005
+% 22 0.1030916721 0.0010230416
+% 23 0.0986237451 0.0009681379
+% 24 0.0945290700 0.0009187306
+% 25 0.0907595083 0.0008753467
+% 26 0.0872789994 0.0008329116
+% 27 0.0840539858 0.0007979029
+% 28 0.0810610503 0.0007646796
+% 29 0.0782738253 0.0007336181
+% 30 0.0756721571 0.0007062946
+% 31 0.0732358247 0.0006835422
+% 32 0.0709545314 0.0006563467
+% 33 0.0688080862 0.0006339368
+% 34 0.0667906106 0.0006132727
+% 35 0.0648847744 0.0005938972
+% 36 0.0630878806 0.0005742146
+% 37 0.0613831095 0.0005604807
+% 38 0.0597725809 0.0005425444
+% 39 0.0582433455 0.0005274659
+% 40 0.0567895249 0.0005147812
+% 41 0.0554071777 0.0004997196
+% 42 0.0540927164 0.0004907019
+% 43 0.0528340675 0.0004747849
+% 44 0.0516349152 0.0004672089
+% 45 0.0504906289 0.0004519266
+% 46 0.0493952297 0.0004410778
+% 47 0.0483495817 0.0004319187
+\end{align*}
+
+
+$$\phi^\mathcal{R}_1$$
+$$\phi^\mathcal{R}_2$$
+$$\phi^\mathcal{R}_3$$
+
+$$\phi_v$$
+$$\phi_{v^\prime}$$
+$$\phi_{v^{\prime\prime}}$$
+
+$$T
+\quad
+\mathcal{R}\quad
+v\quad
+v^\prime\quad
+v^{\prime\prime}$$
+
+
+\end{document}
+

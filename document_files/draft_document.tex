@@ -1,0 +1,391 @@
+% Terry Tao, on writing: https://terrytao.wordpress.com/advice-on-writing-papers/
+
+% https://fenicsproject.org/olddocs/dolfin/1.5.0/python/demo/documented/stokes-iterative/python/documentation.html
+%
+%
+%
+%
+%
+
+% Preamble
+% <<<
+\documentclass[11pt,a4paper]{memoir}
+\setsecnumdepth{subsection}
+\setcounter{tocdepth}{2}
+\setlrmarginsandblock{3cm}{3cm}{*} % Centre adjustment
+\setulmarginsandblock{2.5cm}{*}{1}
+\checkandfixthelayout 
+
+\usepackage{authblk}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{microtype}
+\usepackage{dirtytalk}
+\usepackage{relsize}
+\usepackage{csquotes}
+\usepackage{epigraph}
+\usepackage{physics}
+\usepackage{cancel}
+\usepackage{bm}
+\usepackage{float}
+\usepackage{algorithm2e}
+% \RestyleAlgo{ruled}
+\usepackage{subfig}
+\usepackage{stackengine}
+\usepackage[bookmarks]{hyperref}
+\usepackage{listings}
+
+% Python code listings
+% https://tex.stackexchange.com/questions/475826/how-to-present-a-python-code-snippet-efficiently-in-latex
+\usepackage{tcolorbox}
+\tcbuselibrary{minted,breakable,xparse,skins}
+\definecolor{bg}{gray}{0.95}
+\DeclareTCBListing{mintedbox}{O{}mO{}}{%
+  breakable=true,
+  listing engine=minted,
+  listing only,
+  minted language=#2,
+  minted style=default,
+  minted options={%
+    linenos,
+    gobble=0,
+    breaklines=true,
+    breakafter=,,
+    fontsize=\small,
+    numbersep=8pt,
+    #1},
+  boxsep=0pt,
+  left skip=0pt,
+  right skip=0pt,
+  left=25pt,
+  right=0pt,
+  top=3pt,
+  bottom=3pt,
+  arc=5pt,
+  leftrule=0pt,
+  rightrule=0pt,
+  bottomrule=2pt,
+  toprule=2pt,
+  colback=bg,
+  colframe=orange!70,
+  enhanced,
+  overlay={%
+    \begin{tcbclipinterior}
+    \fill[orange!20!white] (frame.south west) rectangle ([xshift=20pt]frame.north west);
+    \end{tcbclipinterior}},
+  #3}
+
+\newcommand{\bb}{\begin{bmatrix}}
+\newcommand{\bbe}{\end{bmatrix}}
+\newcommand{\pr}{{\prime}}
+\newcommand{\ppr}{{\prime\prime}}
+\newcommand{\pppr}{{\prime\prime\prime}}
+\newcommand{\inner}[1]{\left<#1\right>}
+\newcommand{\fancyA}{\mathcal{A}}
+\newcommand{\fancyL}{\mathcal{L}}
+\newcommand{\fancyN}{\mathcal{N}}
+\newcommand{\fancyP}{\mathcal{P}}
+% \newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+\newcommand{\om}{{\Omega}}
+\newcommand{\pom}{{\partial\Omega}}
+\newcommand{\omn}{{\Omega_0}}
+\newcommand{\pomn}{{\partial\Omega_0}}
+\newcommand{\diver}{\text{div}}
+\newcommand{\Part}[2]{\frac{\partial #1}{\partial #2}}
+% footnotes
+\renewcommand\footnoterule{}
+
+\newcommand{\todo}[1]{\vskip 0.1in \hrule \vskip 0.03in {#1} \vskip 0.03in \hrule \vskip 0.1in}
+
+% aside
+% https://tex.stackexchange.com/questions/21388/implementing-aside-environment-for-explaining-details-of-calculation
+\usepackage{framed}
+\newcommand{\optionrule}{\noindent\rule{1.0\textwidth}{0.75pt}}
+\newenvironment{aside}
+  {\def\FrameCommand{\hspace{2em}}
+   \MakeFramed {\advance\hsize-\width}\optionrule\small}
+{\par\vskip-\smallskipamount\optionrule\endMakeFramed}
+
+% >>>
+
+\begin{document}
+\title{\Huge \textbf{The finite element method for the Navier-Stokes equations}}
+\author{Lucas Payne
+\and Supervisor: Miguel Moyers Gonzalez
+\and {Submitted for BSc with Honours at the University of Canterbury, School of Mathematics and Statistics}
+}
+
+\maketitle
+
+\renewcommand{\abstractname}{}
+\begin{abstract}
+This paper describes those basic theoretical principles necessary to understand
+the integral form of the incompressible Navier-Stokes equations and the fundamental problems that need to be addressed when writing a solver
+based on this integral form.
+Given two additional necessary components (an efficient mesh data structure and a sparse linear solver),
+a working Navier-Stokes solver can be implemented by routine mesh traversals and assembly of linear systems.
+
+\vskip 0.05in
+Firstly, the incompressible Navier-Stokes equations are derived in the framework of continuum mechanics as a Cauchy momentum equation
+with a volume-conserving constraint. If the advection is ignored, the fluid pressure is a Lagrange multiplier
+for the constraint in the resulting linear Stokes equations.
+
+\vskip 0.05in
+Finite element (and additionally, finite volume) methods are then introduced in the context of the Poisson equation.
+The resulting Poisson solvers form the basis of a stable, Taylor-Hood mixed finite element solver for the linear, steady Stokes equations.
+This method solves for the velocity and the Lagrange multiplier, pressure, simultaneously.
+Finally, with the addition of a semi-Lagrangian advection scheme, the Stokes solver is used as the basis for an unsteady Navier-Stokes solver.
+\end{abstract}
+
+\newpage
+\tableofcontents
+
+\chapter{Continuum mechanics}
+\input{chapters/continuum_mechanics.tex}
+
+\chapter{The Navier-Stokes equations}
+\input{chapters/navier_stokes.tex}
+
+\chapter{Two Galerkin methods for Poisson's equation}
+\input{chapters/finite_element_method.tex}
+
+\chapter{Solving the Stokes equations with the finite element method}
+\input{chapters/solving_stokes.tex}
+
+\chapter{A semi-Lagrangian mixed finite element method for the incompressible Navier-Stokes equations}
+\input{chapters/solving_navier_stokes.tex}
+
+
+% \chapter{Solving the Navier-Stokes equations}
+
+\begin{thebibliography}{9}
+
+\bibitem{newton}
+Isaac Newton,
+\textit{Philosophiae Naturalis Principia Mathematica (Third edition)},
+1726.
+
+\bibitem{johann_bernoulli}
+Johann Bernoulli,
+\textit{``Problema novum ad cujus solutionem Mathematici invitantur.'' (A new problem to whose solution mathematicians are invited.)},
+1696.
+(retrieved from wikipedia/brachistochrone\_curve)
+
+\bibitem{dirichlet_principle}
+A. F. Monna,
+\textit{Dirichlet's principle: A mathematical comedy of errors and its influence on the development of analysis},
+1975.
+
+\bibitem{pde_larsson}
+Stig Larsson,
+\textit{Partial differential equations with numerical methods},
+2003.
+
+\bibitem{lax_1973}
+Peter Lax,
+\textit{Hyperbolic Systems of Conservation Laws and the Mathematical Theory of Shock Waves},
+1973.
+
+\bibitem{lanczos}
+Cornelius Lanczos,
+\textit{The Variational Principles of Mechanics},
+1952.
+
+\bibitem{batchelor}
+G. K. Batchelor,
+\textit{Introduction to Fluid Dynamics},
+1967.
+
+\bibitem{leal}
+L. Gary Leal,
+\textit{Advanced Transport Phenomena: Fluid Mechanics and Convective Transport Processes},
+2007.
+
+\bibitem{fem_ns}
+Vivette Girault, Pierre-Arnaud Raviart,
+\textit{Finite Element Methods for Navier-Stokes equations},
+1986.
+
+\bibitem{feynman_trick}
+Richard Feynman,
+\textit{Surely You're Joking, Mr. Feynman!},
+1985.
+
+\bibitem{arnold}
+V.I. Arnol'd,
+\textit{Mathematical Methods of Classical Mechanics},
+1978.
+
+\bibitem{turing}
+Alan Turing,
+\textit{The Chemical Basis of Morphogenesis},
+1952.
+
+\bibitem{applied_mathematics}
+\textit{The Princeton Companion to Applied Mathematics},
+2015.
+
+\bibitem{polygon_mesh_processing}
+Mario Botsch, Leif Kobbelt, Mark Pauly, Pierre Alliez, Bruno L\'evy,
+\textit{Polygon Mesh Processing},
+2010.
+
+\bibitem{ddg_triangulated}
+M. Meyer, M. Desbrun,  P. Schroder and A.H. Barr,
+\textit{Discrete Differential-Geometry Operators for Triangulated 2-Manifolds},
+2003.
+
+\bibitem{ciarlet}
+P. G. Ciarlet,
+\textit{The Finite Element Method for Elliptic Problems},
+1978.
+
+\bibitem{tum}
+Daniel Cremers,
+\textit{Variational Methods in Computer Vision},
+\\(https://vision.in.tum.de/teaching/online/cvvm)
+
+\bibitem{evans}
+Lawrence Evans,
+\textit{Partial Differential Equations},
+2010.
+
+\bibitem{DOLFIN}
+Documentation for DOLFIN-1.5.0 (Python),\\
+(https://fenicsproject.org/olddocs/dolfin/1.5.0/python/index.html)
+
+\bibitem{fenics_book}
+Anders Logg, Kent-Andre Mardal, Garth N. Wells (editors),
+\textit{The FEniCS book},
+2012.
+
+\bibitem{fenics_tutorial}
+Hans Petter Langtangen, Anders Logg,
+\textit{Solving PDEs in Python: The FEniCS tutorial I},
+2016.
+
+\bibitem{approximation_theory}
+E. Ward Cheney,
+\textit{Introduction to Approximation Theory},
+1966.
+
+\bibitem{stam}
+Jos Stam,
+\textit{Flows on surfaces of arbitrary topology},
+2003.
+
+\bibitem{ham_fem}
+David Ham, Finite Element Course
+(Imperial College London, 2013-2014),\\
+http://wp.doc.ic.ac.uk/spo/finite-element/
+
+\bibitem{fem_incompressible}
+Howard Elman, David Silvester, Andy Wathen,
+\textit{Finite Elements and Fast Iterative Solvers, with Applications in Incompressible Fluid Dynamics, 2nd edition},
+2014.
+
+\bibitem{strang_equilibrium}
+Gilbert Strang,
+\textit{A Framework for Equilibrium Equations},
+1988.
+
+\bibitem{brenner_scott}
+Susanne C. Brenner, L. Ridgway Scott,
+\textit{The Mathematical Theory of Finite Element Methods},
+2008.
+
+\bibitem{golub_van_loan}
+Gene H. Golub, Charles F. Van Loan,
+\textit{Matrix Computations, third edition},
+1996.
+
+\bibitem{triangle}
+Jonathan Richard Shewchuk,
+\textit{Triangle: Engineering a 2D Quality Mesh Generator and Delaunay Triangulator},
+1996.
+
+\bibitem{tetgen}
+Hang Si,
+\textit{TetGen: A quality tetrahedral mesh generator and a 3D Delaunay triangulator},
+2015.
+
+\bibitem{orourke}
+Joseph O'Rourke,
+\textit{Computational Geometry in C},
+1998.
+
+\bibitem{petsc}
+Balay et al.,
+PETSc web page, https://petsc.org/,
+2021.
+
+\bibitem{armadillo}
+Conrad Sanderson, Ryan Curtin,
+\textit{Armadillo: a template-based C++ library for linear algebra},
+2016.
+
+\bibitem{eigen}
+Ga\"el Guennebaud,
+\textit{Eigen: A C\texttt{++} linear algebra library},
+2013.
+
+\bibitem{geometry_central}
+Nicholas Sharp, Keenan Crane, and others,
+Geometry Central (surface mesh library), www.geometry-central.net,
+2019.
+
+\bibitem{polygon_mesh_processing_library}
+Daniel Sieger, Mario Botsch,
+The Polygon Mesh Processing Library,
+http://www.pmp-library.org,
+2020.
+
+\bibitem{openmesh}
+Leif Kobbelt,
+OpenMesh (surface mesh library),
+https://www.graphics.rwth-aachen.de/software/openmesh/,
+2021.
+
+\bibitem{one_hundred_years_galerkin}
+Sergey Repin,
+\textit{One hundred  years of the Galerkin method},
+2017.
+
+\bibitem{boris_galerkin}
+Boris Galerkin,
+\textit{Beams and plates. Series in some questions of elastic equilibrium of beams and plates (In Russian)},
+1915.
+
+\bibitem{sobolev_web_page}
+Sobolev Institute of Mathematics,
+Sergei Sobolev, biographical web page,
+http://www.math.nsc.ru/conference/sobolev/english/About\_Sobolev\_SL.htm
+
+\bibitem{firedrake}
+Florian Rathgeber, David A. Ham, and others,
+\textit{Firedrake: automating the finite element method by composing abstractions},
+2016.
+
+
+\bibitem{sympy}
+A. Meurer, C.P. Smith., and many others,
+\textit{SymPy: symbolic computing in Python},
+2017.
+
+\bibitem{automating_fem}
+Anders Logg,
+\textit{Automating the Finite Element Method},
+2006.
+
+\bibitem{taylor_hood_fenics}
+FEniCS Dolfin documentation: Stokes equations with Taylor-Hood elements,
+https://fenicsproject.org/olddocs/dolfin/1.5.0/python/demo/documented/stokes-taylor-hood/python/documentation.html
+
+\bibitem{stam_stable_fluids}
+Jos Stam,
+\textit{Stable fluids},
+---
+
+\end{thebibliography}
+\end{document}

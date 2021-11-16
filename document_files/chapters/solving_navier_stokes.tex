@@ -1,0 +1,152 @@
+\section{Extending the steady Stokes flow method to unsteady Navier-Stokes flow}
+
+To extend the the previously described mixed finite element method to the general incompressible Navier-Stokes equations \eqref{navier_stokes},
+we must introduce time dependence and advection. We will focus on the Navier-Stokes equations in a closed cavity, with $\rho = 1$, and with zero initial condition and
+a no-slip boundary condition everywhere. The equation to solve is then
+
+\begin{equation}\label{navier_stokes_ibvp}
+\begin{split}
+    \frac{\partial u}{\partial t} + u\cdot\nabla u &= \nu\Delta u - \nabla p + \rho g,\\
+    \nabla\cdot u &= 0,\\
+    u(\hat{x}, 0) &= 0, \quad \left.u\right|_\Gamma = 0.
+\end{split}
+\end{equation}
+
+\subsection{Adding time dependence to the Stokes flow solver}
+If we temporarily ignore the $u\cdot \nabla u$ term,
+this is an unsteady Stokes flow.
+Due to the diffusive nature of the Stokes equation, a viable option for time discretization (to maintain stability) is implicit Euler.
+The discretized weak form of the time-dependent Stokes equations is then
+\newcommand{\uprev}{{u_{\text{prev}}}}
+\begin{equation}
+\begin{split}
+    \int_\om \frac{u - \uprev}{\Delta t}\cdot \psi^u\,d\hat{x}
+        &= \int_\om -\nu \nabla u : \nabla \psi^u - p\nabla\cdot \psi^u + \rho g \cdot \psi^u\,d\hat{x},\\
+    \int_\om -\psi^p \nabla\cdot u &= 0 \text{\quad\quad for all $\psi^u \in \Psi^u$ and $\psi^p \in \Psi^p$.}
+\end{split}
+\end{equation}
+The resulting linear system is a simple modification of the system used to solve steady Stokes flow in chapter 4.
+All that is needed is to add $\frac{1}{\Delta t}$ times the P2 (Gramian) $L^2$ projection matrix to the upper-left block of the steady Stokes matrix,
+and to add the P2 $L^2$ projection of $\frac{\uprev}{\Delta t}$ to the right-hand-side vector.
+
+\subsection{The problem of advection}
+The last step is to introduce the advection due to the term $u\cdot \nabla u$,
+which is the single source of nonlinearity for the Navier-Stokes equations \eqref{navier_stokes}.
+There are many choices.
+
+\subsubsection{Fully implicit Euler with Newton iterations}
+If full implicit Euler is used, and the nonlinear advection term is expanded, the result is a nonlinear system of equations.
+The simplest option is then a Newton iteration, solving a sequence of linear systems after computing the Gateaux derivative of the system
+at each step. This fully implicit method might be highly accurate, but requires a not-so-straightforward modification of the Stokes flow code.
+
+\subsubsection{A mixed implicit-explicit (IMEX) method}
+An alternative method is IMEX, where $u\cdot \nabla u$ is instead $\uprev \cdot \nabla \uprev$ in the implicit Euler step.
+This gives a stable implicit momentum diffusion, with a fast, explicit advection step. There are, however, still difficulties in the accurate computation
+of $\uprev \cdot \nabla \uprev$ projected onto the P2 finite element space.
+
+\subsection{A splitting method with semi-Lagrangian advection}
+The difficulties of the above two methods can be avoided by performing a splitting method.
+The essence of the difficulty of solving a fully hyperbolic advection equation lies in the motion of solution data along \textit{characteristic curves}.
+The diffusive component of the Navier-Stokes equations, however, makes the system parabolic: there are no well-defined characteristic curves.
+If we instead alternate between 
+the inertial advective motion of the fluid,
+and then apply those non-advective forces (viscosity, body forces, and pressure),
+then this first step can use the method of characteristics. The simplest such method is \textit{semi-Lagrangian advection},
+which is common in computer graphics \cite{stam_stable_fluids}.
+The resulting split equations are
+\begin{equation}
+\begin{split}
+    \frac{u^* - \uprev}{\Delta t} &= -\uprev\cdot \nabla\uprev. \\
+    \frac{u - u^*}{\Delta t} &= \nu \nabla u -\nabla p + \rho g.
+\end{split}
+\end{equation}
+The second step can be solved with the time-step Stokes flow equation described previously. For the first, advective, step
+we can use the method of characteristics. Given that $\uprev$ is sampled at vertex and midpoint nodes in the triangulation, the characteristic curve
+at a node $\hat{x}$ is tangent to $\uprev(\hat{x})$. An explicit Euler step will simply ``shift'' the node to $\hat{x} + \Delta t \uprev(\hat{x})$,
+with the same velocity (due to inertia).
+This is the Lagrangian perspective, and will require either modification of the mesh, or reprojection of the ``shifted''
+finite element spaces onto the non-shifted finite element space.
+The alternative, \textit{semi}-Lagrangian method, is to sample the velocity \textit{backward} along the characteristic curve,
+    $$u^*(\hat{x}) \leftarrow \uprev(\hat{x} - \Delta t \uprev(\hat{x})).$$
+Given the no-slip boundary condition, for small enough $\Delta t$ it seems reasonable to say that
+$\uprev(\hat{x} - \Delta t \uprev(\hat{x}))$ is $0$ when $\hat{x} - \Delta t \uprev(\hat{x})$ lies outside of the domain.
+The resampling is done with the exact $\uprev$ reconstructed by quadratic basis functions. This can be achieved by either mesh traversal, to locate the triangle
+containing $\hat{x} - \Delta t \uprev(\hat{x})$, followed by combination of the quadratic triangle basis functions, or by densely sampling $\uprev$ into
+a fine grid, which is used as a lookup table through bilinear filtering. Given that the domain is 2D, this second option can be done extremely quickly by triangle rasterization (function sampling) on a modern GPU. This avoids the necessity of additional data structures for mesh search.
+
+
+
+\section{Results}
+I have implemented the semi-Lagrangian method, as described above, by two small extensions
+of the Stokes flow method of chapter 5
+(timestepping and split semi-Lagrangian advection).
+\subsubsection{The sample problem}
+As a specific test case, the kinematic viscosity is set to $\nu = 0.001$, and
+the domain $\Omega$ is taken as a square with circular obstruction
+    $$\Omega = [-1,1]^2 - D,$$
+where $D$ is the disk of radius $0.18$ centred at $\hat{x} = (0,0)$.
+The initial condition and boundary conditions are the simplest possible: $0$ initial velocity, and no-slip everywhere.
+The source function $g$ is what introduces motion into the system. It is defined as
+$$
+g(\hat{x}) = 
+    \left\{\begin{array}{lr}
+        (-3000, 0) &\text{if $\hat{x} \in D_g$},\\
+        (0, 0) &\text{otherwise},\\
+        \end{array}\right.
+$$
+where $D_g$ is a disk of radius $0.125$ centred at $\hat{x} = (0.85, 0)$.
+This emulates a sort of inflow condition at the right wall, without the necessity of handling non-trivial boundary conditions.
+
+\subsubsection{The discretization}
+The base square mesh is $60 \times 60$, with velocity sampled at additional midpoints. This mesh, along with the source disk, is
+displayed in figure \ref{navier_wireframe}. The circular obstruction boundary is approximated naively with many fans of thin triangles,
+which, thankfully, the finite element method can handle with ease.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/navier_stokes/wireframe_full.png}
+    \caption{\small
+        The wireframe mesh used. This is a relatively dense mesh in comparison to the
+        ones used with the Stokes solver, so the resulting sparse linear system is very large.
+        A naive boundary-conforming triangulation is used near the obstruction.
+    }
+    \label{navier_wireframe}
+\end{figure}
+
+The time step is constant, chosen as $\Delta t = 1/300$. A total of $900$ time steps have been computed, from $t = 0$ to $t = 3$.
+This computation took 14 hours on a 2012 laptop, and the code is very unoptimized --- however, the major bottleneck is by far the sparse linear solve,
+so the speed of this algorithm depends almost entirely on a fast sparse saddle point linear solver and an effective preconditioner. The
+advection step is effectively free in comparison (interactive-speed advection versus a minute for the solve on my machine). The resulting sparse matrix is $31895 \times 31895$, with a
+fill of approximately $0.0003845/1$.
+
+\subsubsection{Visualisation of the results}
+Figures \ref{navier_0} and \ref{navier_1} display the resulting solution at varying times. A video of the solution (at roughly 1/10 the speed) is
+available \href{https://youtu.be/m5He2x3gNz8}{online} (\texttt{https://youtu.be/m5He2x3gNz8}).
+The average fluid speed is roughly $\norm{u} = 6$, giving a Reynolds number of roughly $2000$ to $12000$,
+depending on whether the reference length $L$ is taken as the square width or the obstruction diameter. The image colour ranges from $0$ (black) to $1$ (white),
+determined by the function
+    $$\text{Colour}(\hat{x}) = 1-\exp(-0.1\cdot \norm{u}).$$
+For example, the source flow is bright white as it has the highest speed, while the centres of vortices are almost pitch black.
+Note that the first frame displayed ($t = 0.02$) makes the naive rectangle-rule integration of the source function obvious.
+
+The initial flow shown in \ref{navier_0}, as expected, splits symmetrically at the obstruction into two sets of coupled vortices, which will then split as they hit the walls in figure \ref{navier_1}.
+Subsequently, in figure \ref{navier_1} (which displays a larger range of time steps), symmetry breaks down, and the source flow deflects downward.
+The solution past this point cannot be considered as anywhere close to the real solution, due to the onset of turbulence in this medium-Reynolds-number flow. However, important qualitative effects
+(for example incompressibility and oppositely-oriented vortices being pushed against the corners of the cavity) are apparent. The incompressibility condition is
+in fact held everywhere with a maximum absolute error of at worst $10^{-3}$, usually on the order of $10^{-4}$.
+
+\begin{figure}[htbp]
+    \includegraphics[width=\textwidth]{figures/navier_stokes/navier_0.png}
+    \caption{
+        Flow speed visualisations for the closed cavity test problem, $t = 0.02$ to $t = 0.203$.
+    }
+    \label{navier_0}
+\end{figure}
+\begin{figure}[htbp]
+    \includegraphics[width=\textwidth]{figures/navier_stokes/navier_1.png}
+    \caption{
+        Flow speed visualisations for the closed cavity test problem, $t = 0.403$ to $t = 2.603$.
+    }
+    \label{navier_1}
+\end{figure}
+
