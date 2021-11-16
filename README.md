@@ -4,8 +4,8 @@ My undergraduate honours project report, completed November 2021.
 The purpose of this project was to learn some continuum mechanics and fluid mechanics, and to implement numerical finite element
 and finite volume solvers. The main files are
 
-- FEM_Navier_Stokes_report.pdf: An overview of concepts and the solvers (aimed as being a sort of tutorial and discussion).
-- FEM_Navier_Stokes_poster.pdf: A more brief poster presentation of the project (as an A1 wall poster).
+- report.pdf: An overview of concepts and the solvers (aimed as being a sort of tutorial and discussion).
+- poster.pdf: A more brief poster presentation of the project (as an A1 wall poster).
 
 The code is not very general, and is somewhat haphazard, as after a certain point I just wanted each application to create specific figures.
 Each executable is an interactive 3D program which demonstrates a solver. The figures in the report and poster have been created
