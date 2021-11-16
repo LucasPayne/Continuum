@@ -9,7 +9,7 @@ and finite volume solvers. The main files are
 
 The code is not very general, and is somewhat haphazard, as after a certain point I just wanted each application to create specific figures.
 Each executable is an interactive 3D program which demonstrates a solver. The figures in the report and poster have been created
-by flying a camera around and snapshots of the framebuffer. Here is a [video](https://www.youtube.com/watch?v=m5He2x3gNz8) showing some simulation results.
+by flying a camera around while taking snapshots of the framebuffer. Here is a [video](https://www.youtube.com/watch?v=m5He2x3gNz8) showing some simulation results.
 
 ## Dependencies
 -----------------------
