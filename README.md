@@ -19,6 +19,6 @@ it simple to start implementing the actual demos.
 
 # External dependencies
 -----------------------
-- [Eigen3 (C++ header-only linear algebra library.)](https://gitlab.com/libeigen/eigen)
+- [Eigen3 (C++ header-only linear algebra library)](https://gitlab.com/libeigen/eigen)
 - [triangle (Delaunay triangulator. C source code, built in-tree)](http://www.cs.cmu.edu/~quake/triangle.html)
 - [GLFW (OpenGL context, window, and system input)](https://www.glfw.org/)
